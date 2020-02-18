@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/services/auth.dart';
+import 'package:tues_pairs/modules/user.dart';
 
 class Login extends StatefulWidget {
   final Function toggleView;
@@ -13,19 +15,13 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
-  final Auth _auth = Auth();
-
-  final _key = GlobalKey<FormState>(); // creating a global key again to identify our form
-
-  String email = ''; // TO-DO: optimise code later on with one superwidget containing email and password (maybe extends Authenticate?)
-  String password = '';
-  String errorMessage = '';
+  final BaseAuth baseAuth = new BaseAuth();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar( // TO-DO: Encapsulate widget in one class
-        backgroundColor: Colors.grey[400],
+        backgroundColor: Colors.teal[500],
         title: Text(
             'Login',
             style: TextStyle(
@@ -37,7 +33,7 @@ class _LoginState extends State<Login> {
         ),
         actions: <Widget>[
           FlatButton.icon(
-              onPressed: () => widget.toggleView(), // since the toggleView() function is known in the context of the widget, we need to address the widget and then access it
+              onPressed: () {widget.toggleView();}, // since the toggleView() function is known in the context of the widget, we need to address the widget and then access it
               icon: Icon(Icons.person),
               label: Text(
                 'Register',
@@ -52,19 +48,18 @@ class _LoginState extends State<Login> {
       ),
 
       body: Container(
-        color: Colors.grey[500],
+        color: Colors.teal[400],
         child: Form(
-          key: _key,
+          key: baseAuth.key,
           child: Padding(
-            padding: EdgeInsets.all(20.0), // Padding accessed by EdgeInsets
+            padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0), // Padding accessed by EdgeInsets
             child: Column(
               children: <Widget>[
                 SizedBox(height: 15.0),
                 TextFormField(
-                  onChanged: (value) => setState(() => email = value), // need to define the setState() method as to rerun the build method each time we change the inputs
+                  onChanged: (value) => setState(() => baseAuth.email = value), // need to define the setState() method as to rerun the build method each time we change the inputs
                   validator: (value) => value.isEmpty ? 'Enter an e-mail' : null,
                   keyboardType: TextInputType.emailAddress,
-
                 ),
                 SizedBox(height: 15.0), // SizedBox widget creates an invisible box with a height/width to help separate elements
                 TextFormField(
@@ -72,13 +67,14 @@ class _LoginState extends State<Login> {
                   keyboardType: TextInputType.visiblePassword,
                   onChanged: (value) => setState(() => value.isEmpty ? 'Enter a password' : null),
                 ),
-                SizedBox(height: 15.0),
+                SizedBox(height: 25.0),
                 RaisedButton(
                   onPressed: () async {
-                    if(_key.currentState.validate()) {
-                      FirebaseUser user = await _auth.loginUserByEmailAndPassword(email, password); // call the login method
+                    if(baseAuth.key.currentState.validate()) {
+                      User user = await baseAuth.auth.loginUserByEmailAndPassword(baseAuth.email, baseAuth.password); // call the login method
+
                       if(user == null) {
-                        setState(() => errorMessage = 'Invalid login credentials');
+                        setState(() => baseAuth.errorMessage = 'Invalid login credentials');
                       }
                     }
                   },
@@ -94,7 +90,7 @@ class _LoginState extends State<Login> {
                   )
                 ),
                 Text(
-                    errorMessage,
+                    baseAuth.errorMessage,
                     style: TextStyle(
                       color: Colors.redAccent[200],
                       fontSize: 20.0,

@@ -4,6 +4,7 @@ import 'package:tues_pairs/screens/register/register.dart';
 import 'package:tues_pairs/screens/login/login.dart';
 import 'package:tues_pairs/screens/home/home.dart';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/screens/authenticate/authenticate.dart';
 
 class AuthListener extends StatelessWidget {
   @override
@@ -20,6 +21,6 @@ class AuthListener extends StatelessWidget {
     // user is not auth'd if Provider returns null
     // user is auth'd if Provder returns instance of FirebaseUser (or whichever class we passed as a generic parameter)
 
-    return user == null ? Login() : Home();
+    return user == null ? Authenticate() : Home();
   }
 }
