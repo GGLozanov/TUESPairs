@@ -51,17 +51,33 @@ class _RegisterState extends State<Register> {
       body: Container( // Container grants access to basic layout principles and properties
         color: Colors.teal[400],
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
+          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
           child: Form(
             key: baseAuth.key, // set the form's key to the key defined above (keeps track of the state of the form)
             child: Column( // Column orders widgets in a Column and its children property takes a list of Widgets
               children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
+                  child: Text(
+                    'Welcome to TUESPairs',
+                    style: TextStyle(
+                      color: Colors.orange[400],
+                      fontFamily: 'BebasNeue',
+                      letterSpacing: 1.0,
+                      fontSize: 40.0,
+                    ),
+                  ),
+                ),
                 SizedBox(height: 15.0),
                 TextFormField(
                   onChanged: (value) => setState(() {baseAuth.email = value;}), // onChanged property takes a function with val and can be used to update our form properties with the passed values
                   // validator property is used for the validation of separate TextFormFields (takes a function with a value and you can
                   validator: (value) => value.isEmpty ? 'Enter an e-mail' : null, // validator returns string (tag to put on the field if input is invalid)
                   keyboardType: TextInputType.emailAddress, // optimize type set to e-mail
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.mail),
+                    hintText: 'Enter an e-mail',
+                  ),
                 ),
                 SizedBox(height: 15.0),
                 TextFormField(
@@ -69,13 +85,26 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) => setState(() {baseAuth.password = value;}),
                   validator: (value) => value.isEmpty ? 'Enter a password' : null,
                   keyboardType: TextInputType.visiblePassword,
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.lock),
+                    hintText: 'Enter a password',
+                  ),
+                ),
+                SizedBox(height: 25.0),
+                TextFormField(
+                  onChanged: (value) {},
+                  validator: (value) {},
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.border_color),
+                    hintText: 'Enter GPA throughout 8-12th grade',
+                  ),
                 ),
                 SizedBox(height: 25.0),
                 RaisedButton(
                     onPressed: () async {
                       // the form is valid only when each time the validator receives null as a result (this affects the key for the form)
                       if(baseAuth.key.currentState.validate()) { // access the currentState property of the key and run the validate() method on it (checks if the input is valid)
-                        User user = await baseAuth.auth.getUserByEmailAndPassword(baseAuth.email, baseAuth.password);
+                        User user = await baseAuth.authInstance.getUserByEmailAndPassword(baseAuth.email, baseAuth.password);
 
                         if(user == null) {
                           setState(() => baseAuth.errorMessage = 'Please enter valid credentials'); // rerun the build method and update the Text widget below holding the error message

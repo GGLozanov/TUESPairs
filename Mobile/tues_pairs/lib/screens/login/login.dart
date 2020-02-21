@@ -55,26 +55,49 @@ class _LoginState extends State<Login> {
             padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0), // Padding accessed by EdgeInsets
             child: Column(
               children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
+                  child: Text(
+                    'Welcome to TUESPairs',
+                    style: TextStyle(
+                      color: Colors.orange[400],
+                      fontFamily: 'BebasNeue',
+                      letterSpacing: 1.0,
+                      fontSize: 40.0,
+                    ),
+                  ),
+                ),
                 SizedBox(height: 15.0),
                 TextFormField(
                   onChanged: (value) => setState(() => baseAuth.email = value), // need to define the setState() method as to rerun the build method each time we change the inputs
                   validator: (value) => value.isEmpty ? 'Enter an e-mail' : null,
                   keyboardType: TextInputType.emailAddress,
+                  decoration: new InputDecoration(
+                    icon: Icon(Icons.email),
+                    hintText: 'Enter an e-mail',
+                  ),
                 ),
                 SizedBox(height: 15.0), // SizedBox widget creates an invisible box with a height/width to help separate elements
                 TextFormField(
                   obscureText: true,
                   keyboardType: TextInputType.visiblePassword,
-                  onChanged: (value) => setState(() => value.isEmpty ? 'Enter a password' : null),
+                  onChanged: (value) => setState(() => baseAuth.password = value),
+                  validator: (value) => value.isEmpty ? 'Enter a password' : null,
+                  decoration: new InputDecoration(
+                    icon: Icon(Icons.lock),
+                    hintText: 'Enter a password',
+                  ),
                 ),
                 SizedBox(height: 25.0),
                 RaisedButton(
                   onPressed: () async {
                     if(baseAuth.key.currentState.validate()) {
-                      User user = await baseAuth.auth.loginUserByEmailAndPassword(baseAuth.email, baseAuth.password); // call the login method
+                      User user = await baseAuth.authInstance.loginUserByEmailAndPassword(baseAuth.email, baseAuth.password); // call the login method
 
                       if(user == null) {
                         setState(() => baseAuth.errorMessage = 'Invalid login credentials');
+                        // override the setState() function with the changed error message
+                        // and rerun the build() method with the same context
                       }
                     }
                   },
@@ -89,8 +112,9 @@ class _LoginState extends State<Login> {
                     )
                   )
                 ),
+                SizedBox(height: 15.0),
                 Text(
-                    baseAuth.errorMessage,
+                    baseAuth.errorMessage == null ? '' : baseAuth.errorMessage,
                     style: TextStyle(
                       color: Colors.redAccent[200],
                       fontSize: 20.0,

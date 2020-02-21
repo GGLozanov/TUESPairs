@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/screens/register/register.dart';
 import 'package:tues_pairs/screens/login/login.dart';
-import 'package:tues_pairs/screens/home/home.dart';
+import 'package:tues_pairs/screens/main/match.dart';
+import 'package:tues_pairs/screens/main/home.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/screens/authenticate/authenticate.dart';
+import 'package:tues_pairs/modules/user.dart';
 
 class AuthListener extends StatelessWidget {
   @override
@@ -15,7 +17,7 @@ class AuthListener extends StatelessWidget {
     // that means we can use the value set in the StreamProvider widget here as well!
 
     // using the Provider.of() generic method
-    final user = Provider.of<FirebaseUser>(context); // the Provider.of() generic method takes context
+    final user = Provider.of<User>(context); // the Provider.of() generic method takes context
 
     // return either register or login widget if User is auth'ed
     // user is not auth'd if Provider returns null

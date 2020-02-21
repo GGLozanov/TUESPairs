@@ -9,18 +9,25 @@ class Auth {
   // streams send their data one by one, allowing for listening in changes
   // Need to use instance.collection('users') and set custom fields through there (?)
 
-  User _FireBaseUsertoUser(FirebaseUser user) {
-    return user != null ? User(id: user.uid, photoURL: user.photoUrl) : null;
+  User FireBaseUsertoUser(FirebaseUser user) {
+    return user != null ? User(firebaseUser: user) : null;
   }
 
-  Stream<FirebaseUser> get user {
-    return _auth.onAuthStateChanged; // getter method which returns whether Auth State has changed (returns null if it hasn't)
+  FirebaseAuth get auth {
+    return _auth;
+  }
+
+  Stream<User> get user {
+    return _auth.onAuthStateChanged.map((FirebaseUser user) => FireBaseUsertoUser(user));
+    // getter method which returns whether Auth State has changed (returns null if it hasn't)
+    // map the current stream to the conversion method for FirebaseUser to our custom User
   }
 
   Future getUserByEmailAndPassword(String email, String password) async { // async function returns Future (placeholder variable until callback from other thread is received)
     try {
       AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      return _FireBaseUsertoUser(authResult.user); // return the user property garnered by the authResult
+      await authResult.user.sendEmailVerification();
+      return FireBaseUsertoUser(authResult.user); // return the user property garnered by the authResult
     } catch(exception) {
       print(exception.toString());
       return null;
@@ -30,7 +37,7 @@ class Auth {
   Future loginUserByEmailAndPassword(String email, String password) async {
     try {
       AuthResult authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
-      return _FireBaseUsertoUser(authResult.user);
+      return FireBaseUsertoUser(authResult.user);
     } catch(exception) {
       print(exception.toString());
       return null;
