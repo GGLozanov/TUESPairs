@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
+import 'package:tues_pairs/screens/loading/loading.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/modules/user.dart';
 
@@ -19,7 +20,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return baseAuth.isLoading ? Loading() : Scaffold(
       appBar: AppBar( // TO-DO: Encapsulate widget in one class
         backgroundColor: Colors.teal[500],
         title: Text(
@@ -92,10 +93,12 @@ class _LoginState extends State<Login> {
                 RaisedButton(
                   onPressed: () async {
                     if(baseAuth.key.currentState.validate()) {
+                      setState(() => baseAuth.toggleLoading());
                       User user = await baseAuth.authInstance.loginUserByEmailAndPassword(baseAuth.email, baseAuth.password); // call the login method
 
                       if(user == null) {
                         setState(() => baseAuth.errorMessage = 'Invalid login credentials');
+                        baseAuth.toggleLoading();
                         // override the setState() function with the changed error message
                         // and rerun the build() method with the same context
                       }
@@ -114,7 +117,7 @@ class _LoginState extends State<Login> {
                 ),
                 SizedBox(height: 15.0),
                 Text(
-                    baseAuth.errorMessage == null ? '' : baseAuth.errorMessage,
+                    baseAuth.errorMessage ?? '', // double question mark operator stands for 'is null'
                     style: TextStyle(
                       color: Colors.redAccent[200],
                       fontSize: 20.0,

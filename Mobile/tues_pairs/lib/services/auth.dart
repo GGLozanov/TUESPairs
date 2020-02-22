@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tues_pairs/modules/user.dart';
+import 'package:tues_pairs/services/database.dart';
+import 'package:tues_pairs/modules/tag.dart';
 
 class Auth {
   final FirebaseAuth _auth = FirebaseAuth.instance; // property to receive a default FirebaseAuth instance
@@ -14,6 +16,7 @@ class Auth {
   }
 
   FirebaseAuth get auth {
+
     return _auth;
   }
 
@@ -23,10 +26,11 @@ class Auth {
     // map the current stream to the conversion method for FirebaseUser to our custom User
   }
 
-  Future getUserByEmailAndPassword(String email, String password) async { // async function returns Future (placeholder variable until callback from other thread is received)
+  Future getUserByEmailAndPassword(String email, String password, List<Tag> tags, double GPA, bool isAdmin) async { // async function returns Future (placeholder variable until callback from other thread is received)
     try {
       AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       await authResult.user.sendEmailVerification();
+      await Database(uid: authResult.user.uid).updateUserData(tags, GPA, isAdmin); // create the document when the user registers
       return FireBaseUsertoUser(authResult.user); // return the user property garnered by the authResult
     } catch(exception) {
       print(exception.toString());

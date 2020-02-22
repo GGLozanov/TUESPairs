@@ -7,6 +7,7 @@ class User {
   final List<Tag> tags; // list of tags he'd like to have for matching with other users
   final bool isAdmin;
   final FirebaseUser firebaseUser;
+  FirebaseUser matchedUser; // matched firbase user
 
   User({this.tags, this.isAdmin, this.firebaseUser});
 

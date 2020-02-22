@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/screens/loading/loading.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/modules/user.dart';
@@ -19,7 +20,8 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold( // Scaffold grants the material design palette and general layout of the app (properties like appBar)
+    return baseAuth.isLoading ? Loading() : Scaffold(
+      // Scaffold grants the material design palette and general layout of the app (properties like appBar)
       appBar: AppBar(
           backgroundColor: Colors.teal[500],
           title: Text(
@@ -91,23 +93,32 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
                 SizedBox(height: 25.0),
-                TextFormField(
-                  onChanged: (value) {},
-                  validator: (value) {},
+                baseAuth.isCurrentAdmin ? SizedBox() : TextFormField( // if the current user wants to be a teacher, he doesn't need GPA field
+                  onChanged: (value) => baseAuth.GPA = double.parse(value), // parse the given string to a double
+                  validator: (value) => value.isEmpty ? 'Enter a GPA' : null,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     icon: Icon(Icons.border_color),
                     hintText: 'Enter GPA throughout 8-12th grade',
                   ),
                 ),
                 SizedBox(height: 25.0),
+                Switch(
+                  value: baseAuth.isCurrentAdmin, // has the current user selected the isAdmin property
+                  onChanged: (value) => setState(() => baseAuth.isCurrentAdmin = value),  // Rerun the build method in order for the switch to actually change
+                ),
+                SizedBox(height: 25.0),
                 RaisedButton(
                     onPressed: () async {
                       // the form is valid only when each time the validator receives null as a result (this affects the key for the form)
                       if(baseAuth.key.currentState.validate()) { // access the currentState property of the key and run the validate() method on it (checks if the input is valid)
-                        User user = await baseAuth.authInstance.getUserByEmailAndPassword(baseAuth.email, baseAuth.password);
+                        setState(() => baseAuth.toggleLoading()); // toggle the loading widget and rerun the build method
+                        User user = await baseAuth.authInstance.getUserByEmailAndPassword(baseAuth.email, baseAuth.password, null, baseAuth.GPA, baseAuth.isCurrentAdmin);
+                        // TODO: Don't have tags be null
 
                         if(user == null) {
                           setState(() => baseAuth.errorMessage = 'Please enter valid credentials'); // rerun the build method and update the Text widget below holding the error message
+                          baseAuth.toggleLoading();
                         }
                         // if the input is valid, create the user with the inputted email and password and return him
                         // the auth state changes if the result is successful, so the user gets rerouted to the homepage
@@ -126,7 +137,7 @@ class _RegisterState extends State<Register> {
                 ),
                 SizedBox(height: 15.0),
                 Text(
-                  baseAuth.errorMessage == null ? '' : baseAuth.errorMessage,
+                  baseAuth.errorMessage ?? '',
                   style: TextStyle(
                     color: Colors.redAccent[200],
                     fontSize: 20.0,

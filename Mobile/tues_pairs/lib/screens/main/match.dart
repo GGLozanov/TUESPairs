@@ -10,7 +10,6 @@ class Match extends StatefulWidget {
 
 class _MatchState extends State<Match> {
 
-
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -23,7 +23,7 @@ class _HomeState extends State<Home> {
     Chat(),
     Match(),
     Settings(),
-  ]; // list of children widgets to naviage between
+  ]; // list of children widgets to navigate between
 
   void onItemTap(int index) {
     setState(() => _selectedIndex = index); // set the selected index to the index given
@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( // TO-DO: Encapsulate widget in one class
+      appBar: AppBar( // TODO: Encapsulate widget in one class
         backgroundColor: Colors.teal[400],
         title: Text(
           _widgets[_selectedIndex].toString(), // convert widget title to string
