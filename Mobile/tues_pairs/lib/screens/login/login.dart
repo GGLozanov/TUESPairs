@@ -21,7 +21,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return baseAuth.isLoading ? Loading() : Scaffold(
-      appBar: AppBar( // TO-DO: Encapsulate widget in one class
+      appBar: AppBar(
         backgroundColor: Colors.teal[500],
         title: Text(
             'Login',
@@ -34,7 +34,7 @@ class _LoginState extends State<Login> {
         ),
         actions: <Widget>[
           FlatButton.icon(
-              onPressed: () {widget.toggleView();}, // since the toggleView() function is known in the context of the widget, we need to address the widget and then access it
+              onPressed: () => widget.toggleView(), // since the toggleView() function is known in the context of the widget, we need to address the widget and then access it
               icon: Icon(Icons.person),
               label: Text(
                 'Register',

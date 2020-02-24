@@ -16,7 +16,6 @@ class Auth {
   }
 
   FirebaseAuth get auth {
-
     return _auth;
   }
 
@@ -26,11 +25,14 @@ class Auth {
     // map the current stream to the conversion method for FirebaseUser to our custom User
   }
 
-  Future getUserByEmailAndPassword(String email, String password, List<Tag> tags, double GPA, bool isAdmin) async { // async function returns Future (placeholder variable until callback from other thread is received)
+  Future registerUserByEmailAndPassword(String email, String password, List<Tag> tags, double GPA, bool isAdmin) async { // async function returns Future (placeholder variable until callback from other thread is received)
     try {
       AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      await authResult.user.sendEmailVerification();
-      await Database(uid: authResult.user.uid).updateUserData(tags, GPA, isAdmin); // create the document when the user registers
+      FirebaseUser user = authResult.user;
+
+      await user.sendEmailVerification();
+      await Database(uid: user.uid).updateUserData(email.split("@")[0], tags, GPA, isAdmin); // create the document when the user registers
+
       return FireBaseUsertoUser(authResult.user); // return the user property garnered by the authResult
     } catch(exception) {
       print(exception.toString());

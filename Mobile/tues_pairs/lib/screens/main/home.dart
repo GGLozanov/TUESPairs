@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/screens/main/settings.dart';
 import 'package:tues_pairs/screens/main/chat.dart';
 import 'package:tues_pairs/screens/main/match.dart';
+import 'package:tues_pairs/services/database.dart';
+import 'package:tues_pairs/modules/user.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -18,6 +22,10 @@ class _HomeState extends State<Home> {
   // ---------------
 
   final Auth _auth = new Auth();
+  PageController _controller = PageController(
+    initialPage: 1,
+    keepPage: true,
+  );
 
   List<Widget> _widgets = [
     Chat(),
@@ -26,13 +34,16 @@ class _HomeState extends State<Home> {
   ]; // list of children widgets to navigate between
 
   void onItemTap(int index) {
-    setState(() => _selectedIndex = index); // set the selected index to the index given
+    setState(() {
+      _selectedIndex = index;
+      _controller.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);
+    }); // set the selected index to the index given
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( // TODO: Encapsulate widget in one class
+      appBar: AppBar(
         backgroundColor: Colors.teal[400],
         title: Text(
           _widgets[_selectedIndex].toString(), // convert widget title to string
@@ -62,11 +73,10 @@ class _HomeState extends State<Home> {
 
       body: PageView(
         scrollDirection: Axis.horizontal,
-        controller: PageController(
-          initialPage: _selectedIndex,
-        ),
+        controller: _controller,
         children: _widgets,
         onPageChanged: onItemTap,
+        pageSnapping: true,
       ),
 
       bottomNavigationBar: BottomNavigationBar(
@@ -113,6 +123,6 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.teal[600],
       ),
 
-    );
+      );
   }
 }

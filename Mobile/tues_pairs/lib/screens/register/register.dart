@@ -107,13 +107,13 @@ class _RegisterState extends State<Register> {
                   value: baseAuth.isCurrentAdmin, // has the current user selected the isAdmin property
                   onChanged: (value) => setState(() => baseAuth.isCurrentAdmin = value),  // Rerun the build method in order for the switch to actually change
                 ),
-                SizedBox(height: 25.0),
+                SizedBox(height: 15.0),
                 RaisedButton(
                     onPressed: () async {
                       // the form is valid only when each time the validator receives null as a result (this affects the key for the form)
                       if(baseAuth.key.currentState.validate()) { // access the currentState property of the key and run the validate() method on it (checks if the input is valid)
                         setState(() => baseAuth.toggleLoading()); // toggle the loading widget and rerun the build method
-                        User user = await baseAuth.authInstance.getUserByEmailAndPassword(baseAuth.email, baseAuth.password, null, baseAuth.GPA, baseAuth.isCurrentAdmin);
+                        User user = await baseAuth.authInstance.registerUserByEmailAndPassword(baseAuth.email, baseAuth.password, null, baseAuth.GPA, baseAuth.isCurrentAdmin);
                         // TODO: Don't have tags be null
 
                         if(user == null) {

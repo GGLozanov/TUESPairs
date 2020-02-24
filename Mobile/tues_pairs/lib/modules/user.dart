@@ -4,11 +4,13 @@ import 'package:tues_pairs/modules/tag.dart';
 
 class User {
 
+  // TODO: Get tags from tags collection
   final List<Tag> tags; // list of tags he'd like to have for matching with other users
-  final bool isAdmin;
+  final bool isAdmin; // is the current user a teacher (admin) or an alumni
   final FirebaseUser firebaseUser;
-  FirebaseUser matchedUser; // matched firbase user
+  final String username; // derived from email
+  FirebaseUser matchedUser; // matched firebase user
 
-  User({this.tags, this.isAdmin, this.firebaseUser});
+  User({this.tags, this.isAdmin, this.firebaseUser, this.username});
 
 }

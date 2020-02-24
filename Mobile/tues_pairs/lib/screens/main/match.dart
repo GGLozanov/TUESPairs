@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/screens/main/settings.dart';
 import 'package:tues_pairs/screens/main/chat.dart';
+import 'package:tues_pairs/widgets/user_list.dart';
+import 'package:provider/provider.dart';
+import 'package:tues_pairs/services/database.dart';
+import 'package:tues_pairs/modules/user.dart';
 
 class Match extends StatefulWidget {
   @override
@@ -12,8 +16,12 @@ class _MatchState extends State<Match> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.teal[300],
+    return StreamProvider<List<User>>.value(
+      value: Database().users,
+      child: Container(
+        color: Colors.teal[300],
+        child: UserList(),
+      ),
     );
   }
 }
