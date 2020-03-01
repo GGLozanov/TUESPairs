@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/modules/user.dart';
-import 'package:tues_pairs/modules/alumni.dart';
+import 'package:tues_pairs/modules/student.dart';
 
 class UserCard extends StatelessWidget {
 

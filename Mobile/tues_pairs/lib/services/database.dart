@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/teacher.dart';
-import 'package:tues_pairs/modules/alumni.dart';
+import 'package:tues_pairs/modules/student.dart';
 
 // Firestore - new DB by Google designed to make it easier to store information with collections and documents inside collections
 
@@ -21,17 +21,7 @@ class Database { // DB Class for all DB interactions
   Database({this.uid});
 
   List<User> _listUserFromQuerySnapshot(QuerySnapshot querySnapshot) {
-    return querySnapshot.documents.map((doc) {
-      return doc.data['isAdmin'] ?
-      Teacher(
-        doc.data['isAdmin'] ?? true,
-        doc.data['username'] ?? '',
-      ) : Alumni(
-        doc.data['GPA'] ?? 0.0,
-        doc.data['isAdmin'] ?? false,
-        doc.data['username'] ?? '',
-      );
-    }).toList();
+    return querySnapshot.documents.map((doc) => getUserBySnapshot(doc)).toList();
 
     // User(username: doc.data['username'], isAdmin: doc.data['isAdmin']);
   }
@@ -60,6 +50,29 @@ class Database { // DB Class for all DB interactions
       _listUserFromQuerySnapshot
     );
   }
+
+  User getUserBySnapshot (DocumentSnapshot doc) {
+    return doc.data['isAdmin'] ?
+      Teacher(
+        doc.documentID,
+        doc.data['isAdmin'] ?? true,
+        doc.data['username'] ?? '',
+      ) : Student(
+        doc.documentID,
+        doc.data['GPA'] ?? 0.0,
+        doc.data['isAdmin'] ?? false,
+        doc.data['username'] ?? '',
+      );
+  }
+
+  CollectionReference userCollectionReference() {
+    return _userCollectionReference;
+  }
+
+  Future<User> getUserById (String uid) async {
+    return getUserBySnapshot(await _userCollectionReference.document(uid).get());
+  }
+
 
   // our uid is the document path
   // Firestore will create this document since it doesn't exist yet

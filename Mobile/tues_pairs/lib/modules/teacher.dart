@@ -5,6 +5,6 @@ import 'package:tues_pairs/modules/tag.dart';
 
 class Teacher extends User {
 
-  Teacher(bool isAdmin, String username) : super(isAdmin: isAdmin, username: username);
+  Teacher(String uid, bool isAdmin, String username) : super(uid: uid, isAdmin: isAdmin, username: username);
 
 }

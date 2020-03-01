@@ -12,7 +12,7 @@ class Auth {
   // Need to use instance.collection('users') and set custom fields through there (?)
 
   User FireBaseUsertoUser(FirebaseUser user) {
-    return user != null ? User(firebaseUser: user) : null;
+    return user != null ? User(uid: user.uid, photoUrl: user.photoUrl) : null;
   }
 
   FirebaseAuth get auth {
