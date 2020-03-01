@@ -46,13 +46,12 @@ class _UserListState extends State<UserList> {
               final user = users[index];
               if(currentUser.uid != user.uid && currentUser.isAdmin != user.isAdmin){
                 return UserCard(user: users[index]);
-              }
-              else{
+              } else {
                 return SizedBox();
               }
             },
           );
-        }else {
+        } else {
           return Container();
         }
       }, // context & index of whichever item we're iterating through
