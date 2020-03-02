@@ -94,8 +94,16 @@ class _RegisterState extends State<Register> {
                 ),
                 SizedBox(height: 25.0),
                 baseAuth.isCurrentAdmin ? SizedBox() : TextFormField( // if the current user wants to be a teacher, he doesn't need GPA field
-                  onChanged: (value) => baseAuth.GPA = double.parse(value), // parse the given string to a double
-                  validator: (value) => value.isEmpty ? 'Enter a GPA' : null,
+                   // parse the given string to a double
+                  onChanged: (value) => baseAuth.GPA = double.tryParse(value),
+                  validator: (value) {
+                    double GPA = double.tryParse(value); 
+                    if(GPA == null || value.isEmpty || GPA < 2 || GPA > 6){
+                      return "Incorrect GPA (Range: 2 to 6)";
+                    } else {
+                      return null;
+                    }
+                  },
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     icon: Icon(Icons.border_color),
@@ -109,31 +117,32 @@ class _RegisterState extends State<Register> {
                 ),
                 SizedBox(height: 15.0),
                 RaisedButton(
-                    onPressed: () async {
-                      // the form is valid only when each time the validator receives null as a result (this affects the key for the form)
-                      if(baseAuth.key.currentState.validate()) { // access the currentState property of the key and run the validate() method on it (checks if the input is valid)
-                        setState(() => baseAuth.toggleLoading()); // toggle the loading widget and rerun the build method
-                        User user = await baseAuth.authInstance.registerUserByEmailAndPassword(baseAuth.email, baseAuth.password, null, baseAuth.GPA, baseAuth.isCurrentAdmin);
-                        // TODO: Don't have tags be null
+                  onPressed: () async {
+                    // the form is valid only when each time the validator receives null as a result (this affects the key for the form)
+                    if(baseAuth.key.currentState.validate()) { // access the currentState property of the key and run the validate() method on it (checks if the input is valid)
+                      setState(() => baseAuth.toggleLoading()); // toggle the loading widget and rerun the build method
+                      User user = await baseAuth.authInstance.registerUserByEmailAndPassword(baseAuth.email, baseAuth.password, null, baseAuth.GPA, baseAuth.isCurrentAdmin);
+                      // TODO: Don't have tags be null
 
-                        if(user == null) {
-                          setState(() => baseAuth.errorMessage = 'Please enter valid credentials'); // rerun the build method and update the Text widget below holding the error message
-                          baseAuth.toggleLoading();
-                        }
-                        // if the input is valid, create the user with the inputted email and password and return him
-                        // the auth state changes if the result is successful, so the user gets rerouted to the homepage
+                      if(user == null) {
+                        setState(() => baseAuth.errorMessage = 'Please enter valid credentials'); // rerun the build method and update the Text widget below holding the error message
+                        baseAuth.toggleLoading();
                       }
-                    },
-                    color: Colors.cyanAccent,
-                    child: Text( // TO-DO: Encapsulate text into custom widget
-                        'Sign up',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.0,
-                        )
-                    )
+                      // if the input is valid, create the user with the inputted email and password and return him
+                      // the auth state changes if the result is successful, so the user gets rerouted to the homepage
+                    }
+                  },
+                
+                  color: Colors.cyanAccent,
+                  child: Text( // TO-DO: Encapsulate text into custom widget
+                      'Sign up',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
+                      )
+                  )
                 ),
                 SizedBox(height: 15.0),
                 Text(
