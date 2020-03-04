@@ -70,7 +70,7 @@ class _LoginState extends State<Login> {
                 ),
                 SizedBox(height: 15.0),
                 TextFormField(
-                  onChanged: (value) => setState(() => baseAuth.email = value), // need to define the setState() method as to rerun the build method each time we change the inputs
+                  onChanged: (value) => setState(() => baseAuth.user.email = value), // need to define the setState() method as to rerun the build method each time we change the inputs
                   validator: (value) => value.isEmpty ? 'Enter an e-mail' : null,
                   keyboardType: TextInputType.emailAddress,
                   decoration: new InputDecoration(
@@ -82,7 +82,7 @@ class _LoginState extends State<Login> {
                 TextFormField(
                   obscureText: true,
                   keyboardType: TextInputType.visiblePassword,
-                  onChanged: (value) => setState(() => baseAuth.password = value),
+                  onChanged: (value) => setState(() => baseAuth.user.password = value),
                   validator: (value) => value.isEmpty ? 'Enter a password' : null,
                   decoration: new InputDecoration(
                     icon: Icon(Icons.lock),
@@ -94,7 +94,7 @@ class _LoginState extends State<Login> {
                   onPressed: () async {
                     if(baseAuth.key.currentState.validate()) {
                       setState(() => baseAuth.toggleLoading());
-                      User user = await baseAuth.authInstance.loginUserByEmailAndPassword(baseAuth.email, baseAuth.password); // call the login method
+                      User user = await baseAuth.authInstance.loginUserByEmailAndPassword(baseAuth.user.email, baseAuth.user.password); // call the login method
 
                       if(user == null) {
                         setState(() => baseAuth.errorMessage = 'Invalid login credentials');

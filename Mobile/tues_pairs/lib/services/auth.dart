@@ -12,7 +12,7 @@ class Auth {
   // Need to use instance.collection('users') and set custom fields through there (?)
 
   User FireBaseUsertoUser(FirebaseUser user) {
-    return user != null ? User(uid: user.uid, photoUrl: user.photoUrl) : null;
+    return user != null ? User(uid: user.uid, email: user.email, photoURL: user.photoUrl) : null;
   }
 
   FirebaseAuth get auth {
@@ -25,13 +25,13 @@ class Auth {
     // map the current stream to the conversion method for FirebaseUser to our custom User
   }
 
-  Future registerUserByEmailAndPassword(String email, String password, List<Tag> tags, double GPA, bool isAdmin) async { // async function returns Future (placeholder variable until callback from other thread is received)
+  Future registerUserByEmailAndPassword(User authUser) async { // async function returns Future (placeholder variable until callback from other thread is received)
     try {
-      AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: authUser.email, password: authUser.password);
       FirebaseUser user = authResult.user;
 
       await user.sendEmailVerification();
-      await Database(uid: user.uid).updateUserData(email.split("@")[0], tags, GPA, isAdmin); // create the document when the user registers
+      await Database(uid: user.uid).updateUserData(authUser); // create the document when the user registers
 
       return FireBaseUsertoUser(authResult.user); // return the user property garnered by the authResult
     } catch(exception) {

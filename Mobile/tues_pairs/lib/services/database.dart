@@ -4,6 +4,7 @@ import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/teacher.dart';
 import 'package:tues_pairs/modules/student.dart';
+import 'package:tues_pairs/templates/baseauth.dart';
 
 // Firestore - new DB by Google designed to make it easier to store information with collections and documents inside collections
 
@@ -22,26 +23,35 @@ class Database { // DB Class for all DB interactions
 
   List<User> _listUserFromQuerySnapshot(QuerySnapshot querySnapshot) {
     return querySnapshot.documents.map((doc) => getUserBySnapshot(doc)).toList();
-
-    // User(username: doc.data['username'], isAdmin: doc.data['isAdmin']);
   }
 
   // method to update user data by given information in custom registration fields
-  Future updateUserData(String username, List<Tag> tags, double GPA, bool isAdmin) async {
+  Future updateUserData(User user) async {
     // TODO: Fix tags method
     // TODO: Create field in users for id for matched user
+    // TODO: Don't have tags be null here too
     // tags.forEach((tag) async => await updateTagData(tag.name, tag.color)); -> fix later
     return await _userCollectionReference.document(uid).setData({
-      'GPA': GPA,
-      'isAdmin': isAdmin,
-      'username': username,
+      'GPA': user.GPA ?? 0,
+      'isAdmin': user.isAdmin,
+      'photoURL': user.photoURL,
+      'username': user.username,
     });
   }
 
-  Future updateTagData(String name, Color color) async {
-    return await _tagsCollectionReference.document(name).setData({
-      'name': name,
-      'color': color,
+  Future updateTagData(Tag tag) async {
+    return await _tagsCollectionReference.document(tag.name).setData({
+      'name': tag.name,
+      'color': tag.color,
+    });
+  }
+
+  Future updateUserPhotoURL(User user, String photoURL) async {
+    return await _userCollectionReference.document(user.uid).setData({
+      'GPA': user.GPA ?? 0,
+      'isAdmin': user.isAdmin,
+      'photoURL': photoURL,
+      'username': user.username,
     });
   }
 
@@ -51,14 +61,18 @@ class Database { // DB Class for all DB interactions
     );
   }
 
-  User getUserBySnapshot (DocumentSnapshot doc) {
+  User getUserBySnapshot(DocumentSnapshot doc) {
     return doc.data['isAdmin'] ?
       Teacher(
         doc.documentID,
+        doc.data['email'] ?? '',
+        doc.data['photoURL'] ?? null,
         doc.data['isAdmin'] ?? true,
         doc.data['username'] ?? '',
       ) : Student(
         doc.documentID,
+        doc.data['email'] ?? '',
+        doc.data['photoURL'] ?? null,
         doc.data['GPA'] ?? 0.0,
         doc.data['isAdmin'] ?? false,
         doc.data['username'] ?? '',
@@ -69,7 +83,7 @@ class Database { // DB Class for all DB interactions
     return _userCollectionReference;
   }
 
-  Future<User> getUserById (String uid) async {
+  Future<User> getUserById(String uid) async {
     return getUserBySnapshot(await _userCollectionReference.document(uid).get());
   }
 

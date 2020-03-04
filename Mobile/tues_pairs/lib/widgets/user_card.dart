@@ -5,7 +5,9 @@ import 'package:tues_pairs/modules/student.dart';
 class UserCard extends StatelessWidget {
 
   final User user;
-  UserCard({this.user});
+  final NetworkImage userImage;
+
+  UserCard({this.user, this.userImage});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +17,17 @@ class UserCard extends StatelessWidget {
         child: ListTile(
           leading: CircleAvatar(
             radius: 25.0,
-            backgroundColor: Colors.cyanAccent[700],
+            backgroundColor: Colors.cyanAccent[700], // TODO: Use user photoURL here
+            child: ClipOval(
+              child: SizedBox(
+                width: 100.0,
+                height: 100.0,
+                child: Image(
+                  image: userImage,
+                  fit: BoxFit.fill,
+                ),
+              )
+            ),
           ),
           subtitle: ButtonBar(
             children: <Widget>[

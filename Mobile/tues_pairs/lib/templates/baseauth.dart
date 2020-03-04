@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/services/auth.dart';
+import 'package:tues_pairs/modules/user.dart';
 
 class BaseAuth {
 
@@ -11,10 +12,9 @@ class BaseAuth {
   // GlobalKey-s provide access to other objects that are associated with the elements in the generic class (ex. FormState)
   // GlobalKey-s also provide access to State.
 
-  String email = ''; // TO-DO: optimise code later on with one superwidget containing email, password, and error message -> done
-  String password = ''; // also, apparently in Dart fields and getters/setters are on the same level, so encapsulation doesn't matter that much
+  User user = new User(isAdmin: false);
+
   String errorMessage = ''; // and wrapping fields in getters and setters isn't considered a generally prudent move
-  double GPA = 0.0;
   bool isCurrentAdmin = false;
   bool isLoading = false;
 
@@ -22,7 +22,7 @@ class BaseAuth {
     isLoading = !isLoading;
   }
 
-  BaseAuth({this.email, this.password, this.errorMessage});
+  BaseAuth({this.errorMessage});
 
   Auth get authInstance => _authInstance;
 
