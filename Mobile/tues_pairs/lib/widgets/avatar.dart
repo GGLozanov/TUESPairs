@@ -25,9 +25,14 @@ class _AvatarState extends State<Avatar> {
 
 
   Future setPictureFromGallery() async {
-    var image = await widget.imageService.getImageByGallery();
+    
+    try{
+      var image = await widget.imageService.getImageByGallery();
+      setImage(image);
+    }catch(e){
+      print(e.toString());
+    }
 
-    setImage(image);
   }
 
 
@@ -43,14 +48,15 @@ class _AvatarState extends State<Avatar> {
       children: <Widget>[
           CircleAvatar(
             radius: 65.0,
-            backgroundColor: Colors.orangeAccent,
+            backgroundColor: Color.fromRGBO(33, 36, 44, 1),
             child: ClipOval(
               child: SizedBox(
                 width: 180.0,
                 height: 180.0,
-                child: widget.userImage == null ? widget.imageService.profilePicture == null ? Image.network(
-                  'https://cdn4.iconfinder.com/data/icons/photos-and-pictures/60/camera_sign_copy-512.png',
-                  fit: BoxFit.fill,
+                child: widget.userImage == null ? widget.imageService.profilePicture == null ? Icon(
+                  Icons.person,
+                  size: 100.0,
+                  color: Colors.orange,
                 ) : Image.file(
                   widget.imageService.profilePicture,
                   fit: BoxFit.fill,
@@ -66,18 +72,24 @@ class _AvatarState extends State<Avatar> {
               Padding(
                 padding: EdgeInsets.only(top: 5.0),
                 child: IconButton(
-                  icon: Icon(Icons.camera_alt),
+                  icon: Icon(
+                    Icons.camera_alt,
+                    color: Colors.orange,
+                  ),
                   onPressed: () {
-                    setPictureFromGallery();
+                    setPictureFromCamera();
                   },
                 ),
               ),
               Padding(
                 padding: EdgeInsets.only(top: 5.0),
                 child: IconButton(
-                  icon: Icon(Icons.camera),
+                  icon: Icon(
+                    Icons.folder,
+                    color: Colors.orange,
+                  ),
                   onPressed: () {
-                    setPictureFromCamera();
+                    setPictureFromGallery();
                   },
                 ),
               ),

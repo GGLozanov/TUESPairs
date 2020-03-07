@@ -33,7 +33,7 @@ class _SettingsState extends State<Settings> {
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.done) {
           return Container(
-            color: Colors.teal[300],
+            color: Color.fromRGBO(59, 64, 78, 1),
             child: Center(
               child: Column(
                 children: <Widget>[
@@ -73,7 +73,7 @@ class _SettingsState extends State<Settings> {
           );
         } else {
           return Container(
-            color: Colors.teal[300],
+            color: Color.fromRGBO(59, 64, 78, 1),
           ); // TODO: snapshot.hasError
         }
       },

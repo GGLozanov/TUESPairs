@@ -44,8 +44,8 @@ class _UserListState extends State<UserList> {
               final user = users[index];
               final currentUser = currentUserHandler.currentUser;
 
-              if(currentUser.uid != user.uid && currentUser.isAdmin != user.isAdmin){
-                return UserCard(user: users[index], userImage: images[index] ?? NetworkImage('https://cdn4.iconfinder.com/data/icons/photos-and-pictures/60/camera_sign_copy-512.png'));
+              if(currentUser.uid != user.uid && currentUser.isTeacher != user.isTeacher){
+                return UserCard(user: users[index], userImage: images[index]);
               } else {
                 return SizedBox();
               }

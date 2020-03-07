@@ -19,7 +19,7 @@ class _MatchState extends State<Match> {
     return StreamProvider<List<User>>.value(
       value: Database().users,
       child: Container(
-        color: Colors.teal[300],
+        color: Color.fromRGBO(59, 64, 78, 1),
         child: UserList(),
       ),
     );

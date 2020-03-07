@@ -32,8 +32,8 @@ class Database { // DB Class for all DB interactions
     // TODO: Don't have tags be null here too
     // tags.forEach((tag) async => await updateTagData(tag.name, tag.color)); -> fix later
     return await _userCollectionReference.document(uid).setData({
-      'GPA': user.GPA ?? 0,
-      'isAdmin': user.isAdmin,
+      'GPA': user.GPA ?? 0.0,
+      'isTeacher': user.isTeacher,
       'photoURL': user.photoURL,
       'username': user.username,
     });
@@ -49,7 +49,7 @@ class Database { // DB Class for all DB interactions
   Future updateUserPhotoURL(User user, String photoURL) async {
     return await _userCollectionReference.document(user.uid).setData({
       'GPA': user.GPA ?? 0,
-      'isAdmin': user.isAdmin,
+      'isTeacher': user.isTeacher,
       'photoURL': photoURL,
       'username': user.username,
     });
@@ -62,21 +62,24 @@ class Database { // DB Class for all DB interactions
   }
 
   User getUserBySnapshot(DocumentSnapshot doc) {
-    return doc.data['isAdmin'] ?
-      Teacher(
-        doc.documentID,
-        doc.data['email'] ?? '',
-        doc.data['photoURL'] ?? null,
-        doc.data['isAdmin'] ?? true,
-        doc.data['username'] ?? '',
-      ) : Student(
-        doc.documentID,
-        doc.data['email'] ?? '',
-        doc.data['photoURL'] ?? null,
-        doc.data['GPA'] ?? 0.0,
-        doc.data['isAdmin'] ?? false,
-        doc.data['username'] ?? '',
-      );
+    
+    if(doc.data != null){
+      return doc.data['isTeacher'] ?
+        Teacher(
+          doc.documentID,
+          doc.data['email'] ?? '',
+          doc.data['photoURL'] ?? null,
+          doc.data['isTeacher'] ?? true,
+          doc.data['username'] ?? '',
+        ) : Student(
+          doc.documentID,
+          doc.data['email'] ?? '',
+          doc.data['photoURL'] ?? null,
+          doc.data['GPA'],
+          doc.data['isTeacher'] ?? false,
+          doc.data['username'] ?? '',
+        );
+    }
   }
 
   CollectionReference userCollectionReference() {

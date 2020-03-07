@@ -12,9 +12,10 @@ class BaseAuth {
   // GlobalKey-s provide access to other objects that are associated with the elements in the generic class (ex. FormState)
   // GlobalKey-s also provide access to State.
 
-  User user = new User(isAdmin: false);
+  User user = new User(isTeacher: false);
 
-  String errorMessage = ''; // and wrapping fields in getters and setters isn't considered a generally prudent move
+  List<String> errorMessages = ['']; // and wrapping fields in getters and setters isn't considered a generally prudent move
+  String confirmPassword;
   bool isCurrentAdmin = false;
   bool isLoading = false;
 
@@ -22,7 +23,7 @@ class BaseAuth {
     isLoading = !isLoading;
   }
 
-  BaseAuth({this.errorMessage});
+  BaseAuth({this.errorMessages});
 
   Auth get authInstance => _authInstance;
 

@@ -4,7 +4,7 @@ import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/tag.dart';
 
 class Student extends User {
-  Student(String uid, String email, String photoURL, double GPA, bool isAdmin, String username) :
-        super(uid: uid, email: email, photoURL: photoURL, isAdmin: isAdmin, username: username);
+  Student(String uid, String email, String photoURL, double GPA, bool isTeacher, String username) :
+        super(uid: uid, email: email, photoURL: photoURL, isTeacher: isTeacher, username: username);
 
 }

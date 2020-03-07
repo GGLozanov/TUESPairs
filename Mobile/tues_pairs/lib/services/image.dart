@@ -42,10 +42,14 @@ class ImageService {
   }
 
   Future<NetworkImage> getImageByURL(String photoURL) async {
-    StorageReference reference = firebaseStorage.ref().child(photoURL);
-    String URL = await reference.getDownloadURL();
-    print(URL);
-    return NetworkImage(URL);
+    try{
+      StorageReference reference = firebaseStorage.ref().child(photoURL);
+      String URL = await reference.getDownloadURL();
+      print(URL);
+      return NetworkImage(URL);
+    }catch(e){
+      print(e.toString());
+    }
   }
 
 }

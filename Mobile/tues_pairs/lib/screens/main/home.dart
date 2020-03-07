@@ -23,9 +23,10 @@ class _HomeState extends State<Home> {
 
   final Auth _auth = new Auth();
   PageController _controller = PageController(
-    initialPage: 1,
-    keepPage: true,
-  );
+      initialPage: 1,
+      keepPage: true,
+    );
+
 
   List<Widget> _widgets = [
     Chat(),
@@ -35,16 +36,19 @@ class _HomeState extends State<Home> {
 
   void onItemTap(int index) {
     setState(() {
+      print(index);
       _selectedIndex = index;
       _controller.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);
     }); // set the selected index to the index given
   }
 
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.teal[400],
+        backgroundColor: Color.fromRGBO(33, 36, 44, 1),
         title: Text(
           _widgets[_selectedIndex].toString(), // convert widget title to string
           style: TextStyle(
@@ -57,7 +61,11 @@ class _HomeState extends State<Home> {
         actions: <Widget>[
           FlatButton.icon(
             onPressed: () => _auth.logout(),
-            icon: Icon(Icons.exit_to_app),
+            icon: Icon(
+              Icons.exit_to_app,
+              color: Colors.orange,
+              size: 35.0,
+            ),
             label: Text(
             'Logout',
             style: TextStyle(
@@ -80,6 +88,7 @@ class _HomeState extends State<Home> {
       ),
 
       bottomNavigationBar: BottomNavigationBar(
+        fixedColor: Colors.orange,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
@@ -120,7 +129,7 @@ class _HomeState extends State<Home> {
         ],
         currentIndex: _selectedIndex,
         onTap: onItemTap,
-        backgroundColor: Colors.teal[600],
+        backgroundColor: Color.fromRGBO(33, 36, 44, 1),
       ),
 
       );

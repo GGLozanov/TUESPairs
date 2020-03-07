@@ -22,7 +22,11 @@ class UserCard extends StatelessWidget {
               child: SizedBox(
                 width: 100.0,
                 height: 100.0,
-                child: Image(
+                child: userImage == null ? Icon(
+                  Icons.person,
+                  size: 100.0,
+                  color: Colors.orange,
+                ) : Image(
                   image: userImage,
                   fit: BoxFit.fill,
                 ),

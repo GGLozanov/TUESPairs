@@ -12,10 +12,10 @@ class User {
   String password;
   String photoURL;
   double GPA;
-  bool isAdmin; // is the current user a teacher (admin) or an alumni
+  bool isTeacher; // is the current user a teacher or a student
   String username; // derived from email
   String matchedUserID; // matched firebase user
 
-  User({this.uid, this.email, this.password, this.photoURL, this.GPA, this.matchedUserID, this.tags, this.isAdmin, this.username});
+  User({this.uid, this.email, this.password, this.photoURL, this.GPA, this.matchedUserID, this.tags, this.isTeacher, this.username});
 
 }
