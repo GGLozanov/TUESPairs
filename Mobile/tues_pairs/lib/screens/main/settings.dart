@@ -24,59 +24,46 @@ class _SettingsState extends State<Settings> {
   final BaseAuth baseAuth = new BaseAuth();
   final ImageService imageService = new ImageService(); // TODO: Check image here upon instantiation to see if it exists for the given user (semi-done)
 
-  final CurrentUserHandler currentUserHandler = new CurrentUserHandler();
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: currentUserHandler.getCurrentUser(),
-      builder: (context, snapshot) {
-        if(snapshot.connectionState == ConnectionState.done) {
-          return Container(
-            color: Color.fromRGBO(59, 64, 78, 1),
-            child: Center(
-              child: Column(
-                children: <Widget>[
-                  Provider<User>.value(
-                    value: currentUserHandler.currentUser,
-                    child: AvatarWrapper(imageService: imageService),
-                  ),
-                  SizedBox(height: 15.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      RaisedButton(
-                        child: Text(
-                          'Clear',
-                        ),
-                        onPressed: () {
-                          // TODO: Implement clear functionality
-                        },
-                      ),
-                      RaisedButton(
-                        child: Text(
-                          'Submit',
-                        ),
-                        onPressed: () async {
-                          // TODO: Use updateUserData from Database here
-                          final currentUser = currentUserHandler.currentUser;
+    final currentUser = Provider.of<User>(context);
 
-                          imageService.uploadPicture();
-                          await imageService.updateUserProfileImage(currentUser); // upload image + wait for update
-                        },
-                      )
-                    ],
+    return Container(
+        color: Color.fromRGBO(59, 64, 78, 1),
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Provider<User>.value(
+                value: currentUser,
+                child: AvatarWrapper(imageService: imageService),
+              ),
+              SizedBox(height: 15.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text(
+                      'Clear',
+                    ),
+                    onPressed: () {
+                      // TODO: Implement clear functionality
+                    },
+                  ),
+                  RaisedButton(
+                    child: Text(
+                      'Submit',
+                    ),
+                    onPressed: () async {
+                      // TODO: Use updateUserData from Database here
+                      imageService.uploadPicture();
+                      await imageService.updateUserProfileImage(currentUser); // upload image + wait for update
+                    },
                   )
                 ],
-              ),
-            ),
-          );
-        } else {
-          return Container(
-            color: Color.fromRGBO(59, 64, 78, 1),
-          ); // TODO: snapshot.hasError
-        }
-      },
-    );
+              )
+            ],
+          ),
+        ),
+      );
   }
 }

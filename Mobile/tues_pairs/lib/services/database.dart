@@ -48,7 +48,7 @@ class Database { // DB Class for all DB interactions
 
   Future updateUserPhotoURL(User user, String photoURL) async {
     return await _userCollectionReference.document(user.uid).setData({
-      'GPA': user.GPA ?? 0,
+      'GPA': user.GPA ?? 0.0,
       'isTeacher': user.isTeacher,
       'photoURL': photoURL,
       'username': user.username,

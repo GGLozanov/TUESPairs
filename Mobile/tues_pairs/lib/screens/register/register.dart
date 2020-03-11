@@ -39,6 +39,7 @@ class _RegisterState extends State<Register> {
       }
       return false;
     }
+
     bool formIsValid(){
       final FormState formState = baseAuth.key.currentState;
       bool isValid = true;
@@ -59,23 +60,24 @@ class _RegisterState extends State<Register> {
       }
       return isValid;
     }
+
     Future registerUser() async {
-      if(formIsValid()){
+      if(formIsValid()) {
         final FormState formState = baseAuth.key.currentState;
         formState.save();
         baseAuth.toggleLoading();
         baseAuth.user.photoURL = imageService.profilePicture == null ? null : basename(imageService.profilePicture.path);
         User userResult = await baseAuth.authInstance.registerUserByEmailAndPassword(baseAuth.user);
-        if(userResult == null){
+        if(userResult == null) {
           setState(() {       
             baseAuth.errorMessages = [''];
             baseAuth.errorMessages.add('There was an error please try again');
             baseAuth.toggleLoading();
           });
-        }else{
+        } else {
           await imageService.uploadPicture();
         }
-      }else{
+      } else {
         setState(() {});
       }
     }
@@ -124,7 +126,6 @@ class _RegisterState extends State<Register> {
             key: baseAuth.key, // set the form's key to the key defined above (keeps track of the state of the form)
             child: Column( // Column orders widgets in a Column and its children property takes a list of Widgets
               children: <Widget>[
-                
                 Center(
                   child: Row(
                     children: <Widget>[

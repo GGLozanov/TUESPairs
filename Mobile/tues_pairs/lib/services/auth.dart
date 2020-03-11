@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/modules/tag.dart';
+import 'package:tues_pairs/screens/authlistener.dart';
 
 class Auth {
   final FirebaseAuth _auth = FirebaseAuth.instance; // property to receive a default FirebaseAuth instance

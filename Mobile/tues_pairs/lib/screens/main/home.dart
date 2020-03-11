@@ -36,7 +36,6 @@ class _HomeState extends State<Home> {
 
   void onItemTap(int index) {
     setState(() {
-      print(index);
       _selectedIndex = index;
       _controller.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);
     }); // set the selected index to the index given

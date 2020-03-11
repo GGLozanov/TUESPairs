@@ -20,29 +20,35 @@ class _UserListState extends State<UserList> {
 
   final CurrentUserHandler currentUserHandler = new CurrentUserHandler();
   final ImageService imageService = new ImageService();
-  NetworkImage userImage;
+
+  NetworkImage currentUserImage;
+
+  List<User> users;
+  List<NetworkImage> images;
+
+  Future getUserImages() async {
+    for(int i = 0; i < images.length; i++) {
+      images[i] = await imageService.getImageByURL(users[i].photoURL);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     // access StreamProvider of QuerySnapshots info here
 
-    final users = Provider.of<List<User>>(context) ?? []; // get the info from the stream
-    List<NetworkImage> images = new List<NetworkImage>(users.length); // user images
+    final currentUser = Provider.of<User>(context);
+    users = Provider.of<List<User>>(context) ?? []; // get the info from the stream
+    images = new List<NetworkImage>(users.length); // user images
 
     return FutureBuilder(
-      future: currentUserHandler.getCurrentUser().then((value) async {
-        for(int i = 0; i < images.length; i++) {
-          images[i] = await imageService.getImageByURL(users[i].photoURL);
-        }
-      }),
+      future: getUserImages(),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.done) {
           return ListView.builder(// list of users widget
-          itemCount: users.length,
-          // ignore: missing_return
-          itemBuilder: (context, index) {
+            itemCount: users.length,
+            // ignore: missing_return
+            itemBuilder: (context, index) {
               final user = users[index];
-              final currentUser = currentUserHandler.currentUser;
 
               if(currentUser.uid != user.uid && currentUser.isTeacher != user.isTeacher){
                 return UserCard(user: users[index], userImage: images[index]);
