@@ -36,6 +36,7 @@ class Database { // DB Class for all DB interactions
       'isTeacher': user.isTeacher,
       'photoURL': user.photoURL,
       'username': user.username,
+      'email': user.email,
     });
   }
 
@@ -46,15 +47,6 @@ class Database { // DB Class for all DB interactions
     });
   }
 
-  Future updateUserPhotoURL(User user, String photoURL) async {
-    return await _userCollectionReference.document(user.uid).setData({
-      'GPA': user.GPA ?? 0.0,
-      'isTeacher': user.isTeacher,
-      'photoURL': photoURL,
-      'username': user.username,
-    });
-  }
-
   Stream<List<User>> get users {
     return _userCollectionReference.snapshots().map(
       _listUserFromQuerySnapshot
@@ -62,7 +54,6 @@ class Database { // DB Class for all DB interactions
   }
 
   User getUserBySnapshot(DocumentSnapshot doc) {
-    
     if(doc.data != null){
       return doc.data['isTeacher'] ?
         Teacher(
@@ -75,7 +66,7 @@ class Database { // DB Class for all DB interactions
           doc.documentID,
           doc.data['email'] ?? '',
           doc.data['photoURL'] ?? null,
-          doc.data['GPA'],
+          doc.data['GPA'] ?? 0.0,
           doc.data['isTeacher'] ?? false,
           doc.data['username'] ?? '',
         );
@@ -86,7 +77,7 @@ class Database { // DB Class for all DB interactions
     return _userCollectionReference;
   }
 
-  Future<User> getUserById(String uid) async {
+  Future<User> getUserById() async {
     return getUserBySnapshot(await _userCollectionReference.document(uid).get());
   }
 

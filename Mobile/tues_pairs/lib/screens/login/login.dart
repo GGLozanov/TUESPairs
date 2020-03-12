@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/screens/authlistener.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/modules/user.dart';
+import 'package:tues_pairs/widgets/form_widgets/input_button.dart';
 
 class Login extends StatefulWidget {
   final Function toggleView;
@@ -22,7 +24,6 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return baseAuth.isLoading ? Loading() : Scaffold(
-
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(33, 36, 44, 1),
         title: Text(
@@ -103,36 +104,24 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 SizedBox(height: 25.0),
-                ButtonTheme(
+                InputButton(
                   minWidth: 250.0,
                   height: 60.0,
-                  child: RaisedButton(
-                    child: Text(
-                      'Log in',
-                      style: TextStyle(
-                        fontSize: 20.0,
-                      ),
-                    ),
-                    textColor: Colors.white,
-                    color: Color.fromRGBO(33, 36, 44, 1),
-                    shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                    onPressed: () async {
-                      if(baseAuth.key.currentState.validate()) {
-                        setState(() => baseAuth.toggleLoading());
-                        User user = await baseAuth.authInstance.loginUserByEmailAndPassword(baseAuth.user.email, baseAuth.user.password); // call the login method
-                        if(user == null) {
-                          setState(() {
-                            baseAuth.errorMessages = [];
-                            baseAuth.errorMessages.add('Invalid login credentials');
-                            baseAuth.toggleLoading();
-                          });
-
-                        }
+                  text: 'Log in',
+                  onPressed: () async {
+                    if(baseAuth.key.currentState.validate()) {
+                      setState(() => baseAuth.toggleLoading());
+                      User user = await baseAuth.authInstance.loginUserByEmailAndPassword(baseAuth.user.email, baseAuth.user.password); // call the login method
+                      if(user == null) {
+                        setState(() {
+                          baseAuth.errorMessages = [];
+                          baseAuth.errorMessages.add('Invalid login credentials');
+                          baseAuth.toggleLoading();
+                        });
                       }
-                    },
-                  ),
+                    }
+                  },
                 ),
-                
                 SizedBox(height: 15.0),
                 Column(
                   children: baseAuth.errorMessages?.map((message) => Text(

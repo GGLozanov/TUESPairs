@@ -7,9 +7,15 @@ import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/image.dart';
-import 'package:tues_pairs/widgets/avatar_wrapper.dart';
+import 'package:tues_pairs/widgets/avatar_widgets/avatar_wrapper.dart';
 import 'package:tues_pairs/modules/student.dart';
 import 'package:tues_pairs/modules/teacher.dart';
+import 'package:tues_pairs/widgets/form_widgets/GPA_input_field.dart';
+import 'package:tues_pairs/widgets/form_widgets/input_button.dart';
+import 'package:tues_pairs/widgets/form_widgets/username_input_field.dart';
+import 'package:tues_pairs/widgets/form_widgets/email_input_field.dart';
+import 'package:tues_pairs/widgets/form_widgets/password_input_field.dart';
+import 'package:tues_pairs/widgets/form_widgets/confim_password_input_field.dart';
 import 'package:path/path.dart';
 
 class Register extends StatefulWidget {
@@ -30,33 +36,33 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
 
     final users = Provider.of<List<User>>(context) ?? [];
-    
+
     bool usernameExists() {
-      for(User data in users ?? []){
-        if(baseAuth.user.username == data.username){
+      for(User data in users ?? []) {
+        if(baseAuth.user.username == data.username) {
           return true;
         }
       }
       return false;
     }
 
-    bool formIsValid(){
+    bool formIsValid() {
       final FormState formState = baseAuth.key.currentState;
       bool isValid = true;
 
       baseAuth.errorMessages = [''];
-      if(!formState.validate()){
+      if(!formState.validate()) {
         isValid = false;
         baseAuth.errorMessages.add('Please enter correct data');
       }
-      if(usernameExists()){
+      if(usernameExists()) {
         isValid = false;
         baseAuth.errorMessages.add('Username exists');
       }
-      if(baseAuth.user.password != baseAuth.confirmPassword){
+      if(baseAuth.user.password != baseAuth.confirmPassword) {
         isValid = false;
         baseAuth.errorMessages.add('Passwords do not match');
-      
+
       }
       return isValid;
     }
@@ -65,17 +71,17 @@ class _RegisterState extends State<Register> {
       if(formIsValid()) {
         final FormState formState = baseAuth.key.currentState;
         formState.save();
-        baseAuth.toggleLoading();
-        baseAuth.user.photoURL = imageService.profilePicture == null ? null : basename(imageService.profilePicture.path);
+        setState(() => baseAuth.toggleLoading());
+        baseAuth.user.photoURL = imageService.profileImage == null ? null : basename(imageService.profileImage.path);
         User userResult = await baseAuth.authInstance.registerUserByEmailAndPassword(baseAuth.user);
         if(userResult == null) {
-          setState(() {       
+          setState(() {
             baseAuth.errorMessages = [''];
-            baseAuth.errorMessages.add('There was an error please try again');
+            baseAuth.errorMessages.add('There was an error. Please try again.');
             baseAuth.toggleLoading();
           });
         } else {
-          await imageService.uploadPicture();
+          await imageService.uploadImage();
         }
       } else {
         setState(() {});
@@ -134,11 +140,11 @@ class _RegisterState extends State<Register> {
                         padding: const EdgeInsets.only(bottom: 50, left: 12.5),
                         child: Column(
                           children: baseAuth.errorMessages?.map((message) => Text(
-                            "$message",
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 15.0,
-                            ),
+                              "$message",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 10.0,
+                              ),
                           ))?.toList() ?? [],
                         ),
                       ),
@@ -146,111 +152,51 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
                 SizedBox(height: 15.0),
-                TextFormField(
-                  onChanged: (value) => setState(() {baseAuth.user.username = value;}), // onChanged property takes a function with val and can be used to update our form properties with the passed values
-                  // validator property is used for the validation of separate TextFormFields (takes a function with a value and you can
-                  style: textInputColor,
-                  validator: (value) => value.isEmpty ? 'Enter a username' : null, // validator returns string (tag to put on the field if input is invalid)
-                  keyboardType: TextInputType.text, // optimize type set to e-mail
-                  decoration: textInputDecoration.copyWith(
-                    icon: Icon(
-                      Icons.person,
-                      color: Colors.orange,
-                    ),
-                    hintText: 'Enter a username',
-                  ),
+                UsernameInputField(
+                  onChanged: (value) => setState(() {baseAuth.user.username = value;}),
                 ),
                 SizedBox(height: 15.0),
-                TextFormField(
-                  onChanged: (value) => setState(() {baseAuth.user.email = value;}), // onChanged property takes a function with val and can be used to update our form properties with the passed values
-                  style: textInputColor,
-                  // validator property is used for the validation of separate TextFormFields (takes a function with a value and you can
-                  validator: (value) => value.isEmpty ? 'Enter an e-mail' : null, // validator returns string (tag to put on the field if input is invalid)
-                  keyboardType: TextInputType.emailAddress, // optimize type set to e-mail
-                  decoration: textInputDecoration.copyWith(
-                    icon: Icon(
-                      Icons.mail,
-                      color: Colors.orange,
-                    ),
-                    hintText: 'Enter an e-mail',
-                  ),
+                EmailInputField(
+                  onChanged: (value) => setState(() {baseAuth.user.email = value;}),
                 ),
                 SizedBox(height: 15.0),
-                TextFormField(
-                  obscureText: true, // obscures text (like for a password)
-                  style: textInputColor,
+                PasswordInputField(
                   onChanged: (value) => setState(() {baseAuth.user.password = value;}),
-                  validator: (value) => value.isEmpty ? 'Enter a password' : null,
-                  keyboardType: TextInputType.visiblePassword,
-                  decoration: textInputDecoration.copyWith(
-                    icon: Icon(
-                      Icons.lock,
-                      color: Colors.orange,
-                    ),
-                    hintText: 'Enter a password',
-                  ),
                 ),
                 SizedBox(height: 15.0),
-                TextFormField(
-                  obscureText: true, // obscures text (like for a password)
-                  style: textInputColor,
+                ConfirmPasswordInputField(
                   onChanged: (value) => setState(() {baseAuth.confirmPassword = value;}),
-                  validator: (value) => value.isEmpty ? 'Confirm password' : null,
-                  keyboardType: TextInputType.visiblePassword,
-                  decoration: textInputDecoration.copyWith(
-                    icon: Icon(
-                      Icons.repeat,
-                      color: Colors.orange,
-                    ),
-                    hintText: 'Confirm password',
-                  ),
                 ),
                 SizedBox(height: 15.0),
-                baseAuth.user.isTeacher ? SizedBox() : TextFormField( // if the current user wants to be a teacher, he doesn't need GPA field
-                   // parse the given string to a double
-                  style: textInputColor,
+                baseAuth.user.isTeacher ? SizedBox() : GPAInputField(
                   onChanged: (value) => baseAuth.user.GPA = double.tryParse(value),
-                  validator: (value) {
-                    double GPA = double.tryParse(value);
-                    if(GPA == null || value.isEmpty || GPA < 2 || GPA > 6){
-                      return "Incorrect GPA (Range: 2 to 6)";
-                    } else {
-                      return null;
-                    }
-                  },
-                  keyboardType: TextInputType.number,
-                  decoration: textInputDecoration.copyWith(
-                    icon: Icon(
-                      Icons.border_color,
-                      color: Colors.orange,
-                    ),
-                    hintText: 'Enter GPA throughout 8-12th grade',
-                  ),
-                ),
-                SizedBox(height: 25.0),
-                Switch(
-                  value: baseAuth.user.isTeacher, // has the current user selected the isTeacher property
-                  onChanged: (value) => setState(() => baseAuth.user.isTeacher = value),  // Rerun the build method in order for the switch to actually change
-                  activeColor: Colors.orange,
                 ),
                 SizedBox(height: 15.0),
-                ButtonTheme(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'Are you a teacher?',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
+                        fontSize: 10.0,
+                      )
+                    ),
+                    Switch(
+                      value: baseAuth.user.isTeacher, // has the current user selected the isTeacher property
+                      onChanged: (value) => setState(() {baseAuth.user.isTeacher = value;}),  // Rerun the build method in order for the switch to actually change
+                      activeColor: Colors.orange,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 15.0),
+                InputButton(
                   minWidth: 250.0,
                   height: 60.0,
-                  child: RaisedButton(
-                    child: Text(
-                      'Create account',
-                      style: TextStyle(
-                        fontSize: 15.0,
-                      ),
-                    ),
-                    textColor: Colors.white,
-                    color: Color.fromRGBO(33, 36, 44, 1),
-                    shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                    onPressed: () {
-                      registerUser(); 
-                    }
-                  ),
+                  text: 'Create account',
+                  onPressed: registerUser,
                 ),
               ],
             ),

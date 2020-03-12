@@ -25,8 +25,7 @@ class _HomeState extends State<Home> {
   PageController _controller = PageController(
       initialPage: 1,
       keepPage: true,
-    );
-
+  );
 
   List<Widget> _widgets = [
     Chat(),

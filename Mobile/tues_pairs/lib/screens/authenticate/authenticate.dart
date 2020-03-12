@@ -17,7 +17,6 @@ class Authenticate extends StatefulWidget { // widget.
 
 class _AuthenticateState extends State<Authenticate> { // state
 
-  Database _db = new Database();
   bool isLoginView = true;
   void toggleView() {
     setState(() => isLoginView = !isLoginView); // setState() method reruns the build method and the function it's been given
@@ -26,7 +25,7 @@ class _AuthenticateState extends State<Authenticate> { // state
   @override
   Widget build(BuildContext context) {
     return isLoginView ? Login(toggleView: toggleView) : StreamProvider<List<User>>.value(
-      value: _db.users,
+      value: Database().users,
       child: Register(toggleView: toggleView),
     );
     // give the toggleView function to the Register and Login widgets for usage in their own contexts
