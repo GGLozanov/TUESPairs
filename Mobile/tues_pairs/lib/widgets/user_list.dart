@@ -43,7 +43,16 @@ class _UserListState extends State<UserList> {
     return FutureBuilder(
       future: getUserImages(),
       builder: (context, snapshot) {
-        if(snapshot.connectionState == ConnectionState.done) {
+        if(snapshot.hasError) {
+          return Container(
+            alignment: Alignment.center,
+            child: Text(
+              'Oops an error occurred!',
+              style: TextStyle(color: Colors.black),
+            ),
+          );
+        }
+        else if(snapshot.connectionState == ConnectionState.done) {
           return ListView.builder(// list of users widget
             itemCount: users.length,
             // ignore: missing_return

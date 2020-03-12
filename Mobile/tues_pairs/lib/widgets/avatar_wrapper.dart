@@ -33,7 +33,16 @@ class _AvatarWrapperState extends State<AvatarWrapper> {
         userImage = value;
       }),
       builder: (context, snapshot) {
-        if(snapshot.connectionState == ConnectionState.done) {
+        if(snapshot.hasError) {
+          return Container(
+            alignment: Alignment.center,
+            child: Text(
+              'Oops an error occurred!',
+              style: TextStyle(color: Colors.black),
+            ),
+          );
+        }
+        else if(snapshot.connectionState == ConnectionState.done) {
           return Avatar(imageService: widget.imageService, userImage: userImage);
         } else {
           return Container(); // TODO: shapshot.hasError
