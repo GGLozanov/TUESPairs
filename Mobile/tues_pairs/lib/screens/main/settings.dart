@@ -46,7 +46,10 @@ class _SettingsState extends State<Settings> {
                 padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
                 child: Column(
                   children: <Widget>[
-
+                    UsernameInputField(onChanged: (value) => setState(() => currentUser.username = value), initialValue: currentUser.username),
+                    EmailInputField(onChanged: (value) => setState(() => currentUser.email = value), initialValue: currentUser.email),
+                    currentUser.isTeacher ? SizedBox() : GPAInputField(onChanged: (value) => setState(() => currentUser.GPA = double.tryParse(value)),
+                        initialValue: currentUser.GPA.toString()),
                   ],
                 ),
               ),
