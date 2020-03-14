@@ -26,7 +26,7 @@ class ImageService {
   }
 
   Future uploadImage() async {
-    if(profileImage == null) return;
+    if(profileImage == null) return null;
     String fileName = basename(profileImage.path); // derive the name from the full file path
     StorageReference firebaseStorageReference = firebaseStorage.ref().child(fileName); // creates such a reference if not found
     StorageUploadTask uploadTask = firebaseStorageReference.putFile(profileImage);

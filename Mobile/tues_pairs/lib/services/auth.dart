@@ -31,8 +31,8 @@ class Auth {
       AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: authUser.email, password: authUser.password);
       FirebaseUser user = authResult.user;
 
-      await user.sendEmailVerification();
       await Database(uid: user.uid).updateUserData(authUser); // create the document when the user registers
+      await user.sendEmailVerification();
 
       return FireBaseUsertoUser(authResult.user); // return the user property garnered by the authResult
     } catch(exception) {

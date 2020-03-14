@@ -54,7 +54,7 @@ class Database { // DB Class for all DB interactions
   }
 
   User getUserBySnapshot(DocumentSnapshot doc) {
-    if(doc.data != null){
+    if(doc.data != null) {
       return doc.data['isTeacher'] ?
         Teacher(
           doc.documentID,
@@ -69,11 +69,11 @@ class Database { // DB Class for all DB interactions
           doc.data['GPA'] ?? 0.0,
           doc.data['isTeacher'] ?? false,
           doc.data['username'] ?? '',
-        );
+      );
     }
   }
 
-  CollectionReference userCollectionReference() {
+  CollectionReference get userCollectionReference {
     return _userCollectionReference;
   }
 

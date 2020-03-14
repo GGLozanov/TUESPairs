@@ -9,7 +9,6 @@ import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/student.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/widgets/user_display_widgets/user_card.dart';
-import 'package:tues_pairs/templates/user_handler.dart';
 
 class UserList extends StatefulWidget {
   @override
@@ -18,7 +17,6 @@ class UserList extends StatefulWidget {
 
 class _UserListState extends State<UserList> {
 
-  final CurrentUserHandler currentUserHandler = new CurrentUserHandler();
   final ImageService imageService = new ImageService();
 
   NetworkImage currentUserImage;

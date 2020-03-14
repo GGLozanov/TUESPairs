@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'dart:io';
-import 'package:tues_pairs/templates/user_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/widgets/avatar_widgets/avatar_wrapper.dart';
 import 'package:tues_pairs/widgets/form_widgets/GPA_input_field.dart';
@@ -28,10 +27,13 @@ class _SettingsState extends State<Settings> {
 
   final BaseAuth baseAuth = new BaseAuth();
   final ImageService imageService = new ImageService(); // TODO: Check image here upon instantiation to see if it exists for the given user (semi-done)
+  bool isUserModified = false;
+
+  User currentUser;
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = Provider.of<User>(context);
+    if(!isUserModified) currentUser = Provider.of<User>(context);
     final Database database = new Database(uid: currentUser.uid);
 
     return Container(
@@ -46,9 +48,9 @@ class _SettingsState extends State<Settings> {
                 padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
                 child: Column(
                   children: <Widget>[
-                    UsernameInputField(onChanged: (value) => setState(() => currentUser.username = value), initialValue: currentUser.username),
-                    EmailInputField(onChanged: (value) => setState(() => currentUser.email = value), initialValue: currentUser.email),
-                    currentUser.isTeacher ? SizedBox() : GPAInputField(onChanged: (value) => setState(() => currentUser.GPA = double.tryParse(value)),
+                    UsernameInputField(onChanged: (value) => setState(() {currentUser.username = value; isUserModified = true;}), initialValue: currentUser.username),
+                    EmailInputField(onChanged: (value) => setState(() {currentUser.email = value; isUserModified = true;}), initialValue: currentUser.email),
+                    currentUser.isTeacher ? SizedBox() : GPAInputField(onChanged: (value) => setState(() {currentUser.GPA = double.tryParse(value); isUserModified = true;}),
                         initialValue: currentUser.GPA.toString()),
                   ],
                 ),
@@ -68,6 +70,7 @@ class _SettingsState extends State<Settings> {
                       currentUser.username = '';
                       currentUser.photoURL = null;
                       imageService.profileImage = null;
+                      isUserModified = true;
                     });
                   },
                 ),
@@ -77,9 +80,11 @@ class _SettingsState extends State<Settings> {
                   text: 'Submit',
                   onPressed: () async {
                     // TODO: Use updateUserData from Database here -> done
-                    imageService.uploadImage();
-                    currentUser.photoURL = basename(imageService?.profileImage?.path);
+                    if(imageService.uploadImage() == null) {
+                      currentUser.photoURL = basename(imageService?.profileImage?.path);
+                    }
                     await database.updateUserData(currentUser); // upload image + wait for update
+
                   },
                 )
               ],
