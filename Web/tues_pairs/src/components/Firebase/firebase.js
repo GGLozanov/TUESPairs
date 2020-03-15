@@ -1,7 +1,7 @@
 import app from 'firebase/app';
 import 'firebase/auth';
 
-const firebaseConfig = {
+const config = {
     apiKey: "AIzaSyCKbaA0epDZJnNLaehLEb5iuhwHAbXCe7Y",
     authDomain: "tuespairs.firebaseapp.com",
     databaseURL: "https://tuespairs.firebaseio.com",
@@ -14,7 +14,7 @@ const firebaseConfig = {
 
   class Firebase {
     constructor() {
-        app.initializeApp(firebaseConfig);
+        app.initializeApp(config);
 
         this.auth = app.auth();
     }
