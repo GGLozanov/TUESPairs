@@ -8,6 +8,7 @@ import 'package:tues_pairs/modules/user.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
   runApp(App());
 }
 

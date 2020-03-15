@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/shared/constants.dart';
+import 'package:tues_pairs/widgets/form_widgets/input_field.dart';
 
-class GPAInputField extends StatelessWidget {
+class GPAInputField extends InputField {
 
-  final Function onChanged;
-  final String initialValue;
-
-  GPAInputField({this.onChanged, this.initialValue});
+  GPAInputField({Function onChanged, String initialValue}) : super(onChanged: onChanged, initialValue: initialValue);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField( // if the current user wants to be a teacher, he doesn't need GPA field
       // parse the given string to a double
-      initialValue: initialValue,
-      style: textInputColor,
+      initialValue: initialValue ?? 0.0,
       onChanged: onChanged,
+      style: textInputColor,
       validator: (value) {
         double GPA = double.tryParse(value);
         if(GPA == null || value.isEmpty || GPA < 2 || GPA > 6){

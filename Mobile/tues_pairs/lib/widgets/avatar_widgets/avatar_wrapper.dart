@@ -8,10 +8,6 @@ import 'package:tues_pairs/widgets/avatar_widgets/avatar.dart';
 
 class AvatarWrapper extends StatefulWidget {
 
-  final ImageService imageService;
-
-  AvatarWrapper({this.imageService});
-
   @override
   _AvatarWrapperState createState() => _AvatarWrapperState();
 }
@@ -22,14 +18,15 @@ class _AvatarWrapperState extends State<AvatarWrapper> {
 
   @override
   Widget build(BuildContext context) {
+    final imageService = Provider.of<ImageService>(context) ?? null;
     final currentUser = Provider.of<User>(context) ?? null;
 
     if(currentUser == null) { // if no currentUser is detected, go with just the layout
-      return Avatar(imageService: widget.imageService, userImage: null);
+      return Avatar(imageService: imageService, userImage: null);
     }
 
     return FutureBuilder( // else, get his image (avoid ternaries if possible)
-      future: widget.imageService.getImageByURL(currentUser.photoURL).then((value) {
+      future: imageService.getImageByURL(currentUser.photoURL).then((value) {
         userImage = value;
       }),
       builder: (context, snapshot) {
@@ -43,7 +40,7 @@ class _AvatarWrapperState extends State<AvatarWrapper> {
           );
         }
         else if(snapshot.connectionState == ConnectionState.done) {
-          return Avatar(imageService: widget.imageService, userImage: userImage);
+          return Avatar(imageService: imageService, userImage: userImage);
         } else {
           return Container(); // TODO: shapshot.hasError
         }

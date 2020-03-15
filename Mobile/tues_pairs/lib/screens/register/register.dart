@@ -145,7 +145,10 @@ class _RegisterState extends State<Register> {
                 Center(
                   child: Row(
                     children: <Widget>[
-                      AvatarWrapper(imageService: imageService),
+                      Provider<ImageService>.value(
+                        value: imageService,
+                        child: AvatarWrapper(),
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 50, left: 12.5),
                         child: Column(

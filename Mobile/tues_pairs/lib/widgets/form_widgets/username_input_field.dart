@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/shared/constants.dart';
+import 'package:tues_pairs/widgets/form_widgets/input_field.dart';
 
-class UsernameInputField extends StatelessWidget {
+class UsernameInputField extends InputField {
 
-  final Function onChanged;
-  final String initialValue;
-
-  UsernameInputField({this.onChanged, this.initialValue});
+  UsernameInputField({Function onChanged, String initialValue}) : super(onChanged: onChanged, initialValue: initialValue);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: initialValue ?? '',
-      onChanged: onChanged, // onChanged property takes a function with val and can be used to update our form properties with the passed values
+      onChanged: onChanged,
       // validator property is used for the validation of separate TextFormFields (takes a function with a value and you can
       style: textInputColor,
       validator: (value) => value.isEmpty ? 'Enter a username' : null, // validator returns string (tag to put on the field if input is invalid)

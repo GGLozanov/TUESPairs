@@ -37,6 +37,7 @@ class Database { // DB Class for all DB interactions
       'photoURL': user.photoURL,
       'username': user.username,
       'email': user.email,
+      'matchedUserID': user.matchedUserID ?? '',
     });
   }
 
@@ -57,18 +58,20 @@ class Database { // DB Class for all DB interactions
     if(doc.data != null) {
       return doc.data['isTeacher'] ?
         Teacher(
-          doc.documentID,
-          doc.data['email'] ?? '',
-          doc.data['photoURL'] ?? null,
-          doc.data['isTeacher'] ?? true,
-          doc.data['username'] ?? '',
+          uid: doc.documentID,
+          email: doc.data['email'] ?? '',
+          photoURL: doc.data['photoURL'] ?? null,
+          isTeacher: doc.data['isTeacher'] ?? true,
+          username: doc.data['username'] ?? '',
+          matchedUserID: doc.data['matchedUserID'] ?? '',
         ) : Student(
-          doc.documentID,
-          doc.data['email'] ?? '',
-          doc.data['photoURL'] ?? null,
-          doc.data['GPA'] ?? 0.0,
-          doc.data['isTeacher'] ?? false,
-          doc.data['username'] ?? '',
+          uid: doc.documentID,
+          email: doc.data['email'] ?? '',
+          photoURL: doc.data['photoURL'] ?? null,
+          GPA: doc.data['GPA'],
+          isTeacher: doc.data['isTeacher'] ?? false,
+          username: doc.data['username'] ?? '',
+          matchedUserID: doc.data['matchedUserID'] ?? '',
       );
     }
   }
