@@ -182,7 +182,7 @@ class _RegisterState extends State<Register> {
                 ),
                 SizedBox(height: 15.0),
                 baseAuth.user.isTeacher ? SizedBox() : GPAInputField(
-                  onChanged: (value) => baseAuth.user.GPA = double.tryParse(value),
+                  onChanged: (value) => setState(() => baseAuth.user.GPA = double.tryParse(value)),
                 ),
                 SizedBox(height: 15.0),
                 Row(

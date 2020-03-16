@@ -11,7 +11,7 @@ class GPAInputField extends InputField {
   Widget build(BuildContext context) {
     return TextFormField( // if the current user wants to be a teacher, he doesn't need GPA field
       // parse the given string to a double
-      initialValue: initialValue ?? 0.0,
+      initialValue: initialValue ?? '',
       onChanged: onChanged,
       style: textInputColor,
       validator: (value) {
