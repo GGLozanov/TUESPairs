@@ -30,6 +30,8 @@ class _UserListState extends State<UserList> {
     }
   }
 
+  // TODO: add method that checks skipped ID array with a user ID
+
   @override
   Widget build(BuildContext context) {
     // access StreamProvider of QuerySnapshots info here
@@ -49,9 +51,8 @@ class _UserListState extends State<UserList> {
               style: TextStyle(color: Colors.black),
             ),
           );
-        }
-        else if(snapshot.connectionState == ConnectionState.done) {
-          return ListView.builder(// list of users widget
+        } else if(snapshot.connectionState == ConnectionState.done) {
+          return ListView.builder( // list of users widget
             itemCount: users.length,
             // ignore: missing_return
             itemBuilder: (context, index) {

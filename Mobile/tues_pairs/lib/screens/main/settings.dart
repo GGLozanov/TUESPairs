@@ -26,16 +26,75 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
 
+  Database database;
+
   @override
   Widget build(BuildContext context) {
-    return Provider<ImageService>.value(
-      value: new ImageService(),
+    User currentUser = Provider.of<User>(context);
+    ImageService imageService = new ImageService();
+    database = new Database(uid: currentUser.uid);
+
+    return MultiProvider(
+      providers: [
+        Provider<User>.value(value: currentUser),
+        Provider<ImageService>.value(value: imageService),
+      ],
       child: Container(
         color: Color.fromRGBO(59, 64, 78, 1),
         child: Column(
           children: <Widget>[
             SizedBox(height: 15.0),
+            AvatarWrapper(),
             InputFormSettings(),
+            Padding(
+              padding: const EdgeInsets.only(left: 70.0, top: 15.0, right: 60.0, bottom: 20.0),
+              child: Row(
+                children: <Widget>[
+                  InputButton(
+                    minWidth: 100.0,
+                    height: 50.0,
+                    text: 'Submit',
+                    onPressed: () async {
+                      // TODO: Use updateUserData from Database here -> done
+                      final FormState currentState = InputFormSettings.baseAuth.key.currentState;
+                      if(currentState.validate() && currentUser.email != null && currentUser.username != null) {
+                        if (imageService.uploadImage() != null) {
+                          try {
+                            currentUser.photoURL = basename(imageService
+                                ?.profileImage?.path ?? null);
+                          } catch(e) {}
+                        }
+                        await database.updateUserData(currentUser); // upload image + wait for update
+                      }
+                    },
+                  ),
+                  SizedBox(width: 15.0),
+                  InputButton(
+                    minWidth: 100.0,
+                    height: 50.0,
+                    text: 'Clear',
+                    onPressed: () {
+                      setState(() {
+                        currentUser.email = null;
+                        currentUser.username = null;
+                        if(!currentUser.isTeacher) currentUser.GPA = null;
+                        currentUser.photoURL = null;
+                        imageService.profileImage = null;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            InputButton(
+              minWidth: 100.0,
+              height: 50.0,
+              text: currentUser.isTeacher ? 'Clear Matched Student' : 'Clear Matched Teacher',
+              onPressed: () async {
+                // TODO: Use updateUserData from Database here to update matchedUserID
+                currentUser.matchedUserID = null;
+              },
+            ),
             SizedBox(height: 15.0),
             Center(
               child: Text(

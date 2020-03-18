@@ -37,7 +37,7 @@ class Database { // DB Class for all DB interactions
       'photoURL': user.photoURL,
       'username': user.username,
       'email': user.email,
-      'matchedUserID': user.matchedUserID ?? '',
+      'matchedUserID': user.matchedUserID,
     });
   }
 
