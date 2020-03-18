@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/screens/authenticate/authenticate.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
@@ -17,6 +18,8 @@ import 'package:tues_pairs/widgets/form_widgets/email_input_field.dart';
 import 'package:tues_pairs/widgets/form_widgets/password_input_field.dart';
 import 'package:tues_pairs/widgets/form_widgets/confim_password_input_field.dart';
 import 'package:path/path.dart';
+
+import '../authlistener.dart';
 
 class Register extends StatefulWidget {
   final Function toggleView;
@@ -68,12 +71,19 @@ class _RegisterState extends State<Register> {
     }
 
     Future registerUser() async {
+      final User registeredUser = baseAuth.user;
+
       if(formIsValid()) {
         final FormState formState = baseAuth.key.currentState;
         formState.save();
+
         setState(() => baseAuth.toggleLoading());
-        baseAuth.user.photoURL = imageService.profileImage == null ? null : basename(imageService.profileImage.path);
-        User userResult = await baseAuth.authInstance.registerUserByEmailAndPassword(baseAuth.user);
+
+        if(registeredUser.isTeacher) registeredUser.GPA = null;
+        registeredUser.photoURL = imageService.profileImage == null ? null : basename(imageService.profileImage.path);
+
+        User userResult = await baseAuth.authInstance.registerUserByEmailAndPassword(registeredUser);
+
         if(userResult == null) {
           setState(() {
             baseAuth.errorMessages = [''];
@@ -135,7 +145,10 @@ class _RegisterState extends State<Register> {
                 Center(
                   child: Row(
                     children: <Widget>[
-                      AvatarWrapper(imageService: imageService),
+                      Provider<ImageService>.value(
+                        value: imageService,
+                        child: AvatarWrapper(),
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 50, left: 12.5),
                         child: Column(
@@ -169,7 +182,7 @@ class _RegisterState extends State<Register> {
                 ),
                 SizedBox(height: 15.0),
                 baseAuth.user.isTeacher ? SizedBox() : GPAInputField(
-                  onChanged: (value) => baseAuth.user.GPA = double.tryParse(value),
+                  onChanged: (value) => setState(() => baseAuth.user.GPA = double.tryParse(value)),
                 ),
                 SizedBox(height: 15.0),
                 Row(

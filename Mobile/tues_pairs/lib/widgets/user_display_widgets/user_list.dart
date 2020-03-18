@@ -9,7 +9,6 @@ import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/student.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/widgets/user_display_widgets/user_card.dart';
-import 'package:tues_pairs/templates/user_handler.dart';
 
 class UserList extends StatefulWidget {
   @override
@@ -18,7 +17,6 @@ class UserList extends StatefulWidget {
 
 class _UserListState extends State<UserList> {
 
-  final CurrentUserHandler currentUserHandler = new CurrentUserHandler();
   final ImageService imageService = new ImageService();
 
   NetworkImage currentUserImage;
@@ -31,6 +29,8 @@ class _UserListState extends State<UserList> {
       images[i] = await imageService.getImageByURL(users[i].photoURL);
     }
   }
+
+  // TODO: add method that checks skipped ID array with a user ID
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +51,8 @@ class _UserListState extends State<UserList> {
               style: TextStyle(color: Colors.black),
             ),
           );
-        }
-        else if(snapshot.connectionState == ConnectionState.done) {
-          return ListView.builder(// list of users widget
+        } else if(snapshot.connectionState == ConnectionState.done) {
+          return ListView.builder( // list of users widget
             itemCount: users.length,
             // ignore: missing_return
             itemBuilder: (context, index) {

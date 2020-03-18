@@ -9,7 +9,6 @@ import 'package:tues_pairs/screens/authenticate/authenticate.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
-import 'package:tues_pairs/templates/user_handler.dart';
 
 class AuthListener extends StatelessWidget {
 
@@ -25,21 +24,20 @@ class AuthListener extends StatelessWidget {
     // user is not auth'd if Provider returns null
     // user is auth'd if Provder returns instance of FirebaseUser (or whichever class we passed as a generic parameter)
 
+    User authUser = Provider.of<User>(context);
 
-    final authUser = Provider.of<User>(context);
-
-    print(authUser);
-
-    return FutureBuilder( // Get current user here for use down the entire widget tree
-      future: CurrentUserHandler().getCurrentUser(authUser), // the Provider.of() generic method takes context,
-      builder: (context, snapshot) {
-        if(snapshot.connectionState == ConnectionState.done) {
-          return Provider<User>.value(
-              value: CurrentUserHandler.currentUser,
-              child: CurrentUserHandler.currentUser == null ? Authenticate() : Home(),
-          );
-        } else return Loading();
-      }
-    );
+    if(authUser != null) {
+      return FutureBuilder<User>( // Get current user here for use down the entire widget tree
+        future: Database(uid: authUser.uid).getUserById(), // the Provider.of() generic method takes context,
+        builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.done) {
+            return Provider<User>.value(
+              value: snapshot.data,
+              child: Home(),
+            );
+          } else return Loading();
+        }
+      );
+    } else return Authenticate();
   }
 }

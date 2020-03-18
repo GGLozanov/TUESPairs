@@ -8,11 +8,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'dart:io';
-import 'package:tues_pairs/templates/user_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/widgets/avatar_widgets/avatar_wrapper.dart';
 import 'package:tues_pairs/widgets/form_widgets/GPA_input_field.dart';
 import 'package:tues_pairs/widgets/form_widgets/email_input_field.dart';
+import 'package:tues_pairs/widgets/form_widgets/input_form_settings.dart';
 import 'package:tues_pairs/widgets/form_widgets/username_input_field.dart';
 import 'package:tues_pairs/widgets/form_widgets/password_input_field.dart';
 import 'package:tues_pairs/widgets/form_widgets/confim_password_input_field.dart';
@@ -26,62 +26,75 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
 
-  final BaseAuth baseAuth = new BaseAuth();
-  final ImageService imageService = new ImageService(); // TODO: Check image here upon instantiation to see if it exists for the given user (semi-done)
+  Database database;
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = Provider.of<User>(context);
-    final Database database = new Database(uid: currentUser.uid);
+    User currentUser = Provider.of<User>(context);
+    ImageService imageService = new ImageService();
+    database = new Database(uid: currentUser.uid);
 
-    return Container(
-      color: Color.fromRGBO(59, 64, 78, 1),
-      child: Center(
+    return MultiProvider(
+      providers: [
+        Provider<User>.value(value: currentUser),
+        Provider<ImageService>.value(value: imageService),
+      ],
+      child: Container(
+        color: Color.fromRGBO(59, 64, 78, 1),
         child: Column(
           children: <Widget>[
-            AvatarWrapper(imageService: imageService),
             SizedBox(height: 15.0),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                child: Column(
-                  children: <Widget>[
-
-                  ],
-                ),
+            AvatarWrapper(),
+            InputFormSettings(),
+            Padding(
+              padding: const EdgeInsets.only(left: 70.0, top: 15.0, right: 60.0, bottom: 20.0),
+              child: Row(
+                children: <Widget>[
+                  InputButton(
+                    minWidth: 100.0,
+                    height: 50.0,
+                    text: 'Submit',
+                    onPressed: () async {
+                      // TODO: Use updateUserData from Database here -> done
+                      final FormState currentState = InputFormSettings.baseAuth.key.currentState;
+                      if(currentState.validate() && currentUser.email != null && currentUser.username != null) {
+                        if (imageService.uploadImage() != null) {
+                          try {
+                            currentUser.photoURL = basename(imageService
+                                ?.profileImage?.path ?? null);
+                          } catch(e) {}
+                        }
+                        await database.updateUserData(currentUser); // upload image + wait for update
+                      }
+                    },
+                  ),
+                  SizedBox(width: 15.0),
+                  InputButton(
+                    minWidth: 100.0,
+                    height: 50.0,
+                    text: 'Clear',
+                    onPressed: () {
+                      setState(() {
+                        currentUser.email = null;
+                        currentUser.username = null;
+                        if(!currentUser.isTeacher) currentUser.GPA = null;
+                        currentUser.photoURL = null;
+                        imageService.profileImage = null;
+                      });
+                    },
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 15.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                InputButton(
-                  minWidth: 100.0,
-                  height: 50.0,
-                  text: 'Clear',
-                  onPressed: () {
-                    setState(() {
-                      currentUser.email = '';
-                      currentUser.username = '';
-                      currentUser.photoURL = null;
-                      imageService.profileImage = null;
-                    });
-                  },
-                ),
-                InputButton(
-                  minWidth: 100.0,
-                  height: 50.0,
-                  text: 'Submit',
-                  onPressed: () async {
-                    // TODO: Use updateUserData from Database here -> done
-                    imageService.uploadImage();
-                    currentUser.photoURL = basename(imageService?.profileImage?.path);
-                    await database.updateUserData(currentUser); // upload image + wait for update
-                  },
-                )
-              ],
+            InputButton(
+              minWidth: 100.0,
+              height: 50.0,
+              text: currentUser.isTeacher ? 'Clear Matched Student' : 'Clear Matched Teacher',
+              onPressed: () async {
+                // TODO: Use updateUserData from Database here to update matchedUserID
+                currentUser.matchedUserID = null;
+              },
             ),
-
             SizedBox(height: 15.0),
             Center(
               child: Text(

@@ -17,7 +17,7 @@ class UserCard extends StatelessWidget {
         color: Color.fromRGBO(33, 36, 44, 1),
         child: ListTile(
           leading: CircleAvatar(
-            radius: 27.0,
+            radius: 25.0,
             backgroundColor: Color.fromRGBO(33, 36, 44, 1), // TODO: Use user photoURL here
             child: ClipOval(
               child: SizedBox(
@@ -25,7 +25,7 @@ class UserCard extends StatelessWidget {
                 height: 100.0,
                 child: userImage == null ? Icon(
                   Icons.person,
-                  size: 100.0,
+                  size: 50.0,
                   color: Colors.orange,
                 ) : Image(
                   image: userImage,
