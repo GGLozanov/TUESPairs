@@ -39,7 +39,7 @@ class SignUpFormBase extends Component {
                 authUser = this.props.firebase.db.collection("users").add({
                     username: username,
                     email: email,
-                    isTeacher: isTeacher,
+                    isTeacher: Boolean(isTeacher),
                     GPA: parseFloat(GPA),
                     photoURL: photoURL,
                 });
