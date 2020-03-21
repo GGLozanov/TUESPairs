@@ -14,8 +14,10 @@ class User {
   double GPA;
   bool isTeacher; // is the current user a teacher or a student
   String username; // derived from email
-  String matchedUserID; // matched firebase user
+  String matchedUserID; // matched TUESPairs user
+  List<String> skippedUserIDs; // skipped TUESPairs users
 
-  User({this.uid, this.email, this.password, this.photoURL, this.GPA, this.matchedUserID, this.tags, this.isTeacher, this.username});
+  User({this.uid, this.email, this.password, this.photoURL, this.GPA, this.matchedUserID,
+    this.tags, this.isTeacher, this.username, this.skippedUserIDs});
 
 }

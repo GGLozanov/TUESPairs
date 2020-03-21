@@ -56,10 +56,13 @@ class _UserListState extends State<UserList> {
             itemCount: users.length,
             // ignore: missing_return
             itemBuilder: (context, index) {
+              // TODO: get array of skipped users from database (user instance probably won't hold it) through FutureBuilder again maybe
+              // TODO: then use contains method to check rendering in if statement
               final user = users[index];
 
               if(currentUser.uid != user.uid && currentUser.isTeacher != user.isTeacher){
-                return UserCard(user: users[index], userImage: images[index]);
+                return UserCard(user: users[index], userImage: images[index],
+                    onSkip: () => setState(() => users.removeAt(index)), onMatch: () => setState(() => users.removeAt(index)));
               } else {
                 return SizedBox();
               }
