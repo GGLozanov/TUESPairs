@@ -42,7 +42,7 @@ class Database { // DB Class for all DB interactions
       'username': user.username,
       'email': user.email,
       'matchedUserID': user.matchedUserID,
-      'skippedUserIDs': user.skippedUserIDs ?? <String>[],
+      'skippedUserIDs': user.skippedUserIDs ?? List<String>.filled(10, '', growable: true),
     });
   }
 
@@ -69,7 +69,6 @@ class Database { // DB Class for all DB interactions
   }
 
   User getUserBySnapshot(DocumentSnapshot doc) {
-    print(doc.data);
     if(doc.data != null) {
       return doc.data['isTeacher'] ?
         Teacher(
@@ -78,8 +77,8 @@ class Database { // DB Class for all DB interactions
           photoURL: doc.data['photoURL'] ?? null,
           isTeacher: doc.data['isTeacher'] ?? true,
           username: doc.data['username'] ?? '',
-          matchedUserID: doc.data['matchedUserID'] ?? '',
-          skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : doc.data['skippedUserIDs'].cast<String>(),
+          matchedUserID: doc.data['matchedUserID'] ?? null,
+          skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : List<String>.from(doc.data['skippedUserIDs']),
         ) : Student(
           uid: doc.documentID,
           email: doc.data['email'] ?? '',
@@ -87,8 +86,8 @@ class Database { // DB Class for all DB interactions
           GPA: doc.data['GPA'],
           isTeacher: doc.data['isTeacher'] ?? false,
           username: doc.data['username'] ?? '',
-          matchedUserID: doc.data['matchedUserID'] ?? '',
-          skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : doc.data['skippedUserIDs'].cast<String>(),
+          matchedUserID: doc.data['matchedUserID'] ?? null,
+          skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : List<String>.from(doc.data['skippedUserIDs']),
       );
     }
   }

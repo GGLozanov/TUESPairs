@@ -79,10 +79,9 @@ class _RegisterState extends State<Register> {
 
         setState(() => baseAuth.toggleLoading());
 
-        // TODO: narrow down in function
+        // TODO: narrow these final settings of values down in function
         if(registeredUser.isTeacher) registeredUser.GPA = null;
         registeredUser.photoURL = imageService.profileImage == null ? null : basename(imageService.profileImage.path);
-        registeredUser.skippedUserIDs = [];
 
         User userResult = await baseAuth.authInstance.registerUserByEmailAndPassword(registeredUser);
 

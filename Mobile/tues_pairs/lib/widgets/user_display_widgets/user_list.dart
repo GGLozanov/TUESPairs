@@ -35,8 +35,8 @@ class _UserListState extends State<UserList> {
   @override
   Widget build(BuildContext context) {
     // access StreamProvider of QuerySnapshots info here
-
     final currentUser = Provider.of<User>(context);
+    final Database database = new Database(uid: currentUser.uid);
     users = Provider.of<List<User>>(context) ?? []; // get the info from the stream
     images = new List<NetworkImage>(users.length); // user images
 
@@ -61,8 +61,31 @@ class _UserListState extends State<UserList> {
               final user = users[index];
 
               if(currentUser.uid != user.uid && currentUser.isTeacher != user.isTeacher){
-                return UserCard(user: users[index], userImage: images[index],
-                    onSkip: () => setState(() => users.removeAt(index)), onMatch: () => setState(() => users.removeAt(index)));
+                return UserCard(
+                  user: user,
+                  userImage: images[index],
+                  onSkip: () async {
+                    // TODO: append to array of skippedUserIDs here
+                    if(!currentUser.skippedUserIDs.contains(user.uid)) {
+                      print(currentUser.skippedUserIDs);
+                      currentUser.skippedUserIDs.add(user.uid);
+                      await database.updateUserData(currentUser); // optimise later maybe
+                    } // TODO: Add global bools for isUserAlreadySkipped to display error snack bars
+                    setState(() {
+                        users.removeAt(index);
+                    });
+                  },
+                  onMatch: () async {
+                    if(currentUser.matchedUserID == null) {
+                      currentUser.matchedUserID = user.uid;
+                      await database.updateUserData(currentUser); // optimise late maybe
+                    } else throw new Exception(); // TODO: Add global bools for isUserAlreadyMatched to display error snack bars instead of Exception
+                    setState(() {
+                      // TODO: set matchedUserID here
+                      users.removeAt(index);
+                    });
+                  }
+                );
               } else {
                 return SizedBox();
               }

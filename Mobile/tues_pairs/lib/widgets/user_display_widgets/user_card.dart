@@ -48,7 +48,6 @@ class _UserCardState extends State<UserCard> {
             children: <Widget>[
               FloatingActionButton(
                 onPressed: () {
-                  // TODO: set matchedUserID here
                   widget.onMatch();
                 },
                 child: Text(
@@ -58,7 +57,6 @@ class _UserCardState extends State<UserCard> {
               ),
               FloatingActionButton(
                 onPressed: () {
-                  // TODO: append to array of skippedUserIDs here
                   widget.onSkip(); // destroy the widget
                 },
                 child: Text(
