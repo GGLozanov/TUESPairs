@@ -47,6 +47,35 @@ class _SettingsState extends State<Settings> {
             AvatarWrapper(),
             InputFormSettings(),
             Padding(
+              padding: const EdgeInsets.only(left: 10.0, top: 15.0, right: 10.0, bottom: 20.0),
+              child: Row(
+                children: <Widget>[
+                  InputButton(
+                    minWidth: 100.0,
+                    height: 50.0,
+                    text: currentUser.isTeacher ? 'Clear Student' : 'Clear Teacher',
+                    onPressed: () async {
+                      // TODO: Use updateUserData from Database here to update matchedUserID
+                      // TODO: Safeguard this option when two people are matched (have the other user consent to it w/bool flag notification maybe?)
+                      // TODO: if both users have pressed this button, then their matchedUserID becomes null; until then, it isn't null.
+                      currentUser.matchedUserID = null; // to be changed
+                      await database.updateUserData(currentUser);
+                    },
+                  ),
+                  SizedBox(width: 15.0),
+                  InputButton(
+                    minWidth: 100.0,
+                    height: 50.0,
+                    text: 'Clear Skipped',
+                    onPressed: () async {
+                      currentUser.skippedUserIDs = [];
+                      await database.updateUserData(currentUser);
+                    }
+                  ),
+                ],
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.only(left: 70.0, top: 15.0, right: 60.0, bottom: 20.0),
               child: Row(
                 children: <Widget>[
@@ -86,19 +115,10 @@ class _SettingsState extends State<Settings> {
                 ],
               ),
             ),
-            InputButton(
-              minWidth: 100.0,
-              height: 50.0,
-              text: currentUser.isTeacher ? 'Clear Matched Student' : 'Clear Matched Teacher',
-              onPressed: () async {
-                // TODO: Use updateUserData from Database here to update matchedUserID
-                currentUser.matchedUserID = null;
-              },
-            ),
             SizedBox(height: 15.0),
             Center(
               child: Text(
-                'Warning: Modifications on account only take change after hitting the Submit button!',
+                'Warning: Modifications on account fields only take change after hitting the Submit button!',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 20.0,

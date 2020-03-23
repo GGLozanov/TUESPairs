@@ -42,7 +42,7 @@ class Database { // DB Class for all DB interactions
       'username': user.username,
       'email': user.email,
       'matchedUserID': user.matchedUserID,
-      'skippedUserIDs': user.skippedUserIDs ?? List<String>.filled(10, '', growable: true),
+      'skippedUserIDs': user.skippedUserIDs ?? <String>[],
     });
   }
 
@@ -69,6 +69,7 @@ class Database { // DB Class for all DB interactions
   }
 
   User getUserBySnapshot(DocumentSnapshot doc) {
+    print(doc.data);
     if(doc.data != null) {
       return doc.data['isTeacher'] ?
         Teacher(

@@ -9,8 +9,14 @@ import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/student.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/widgets/user_display_widgets/user_card.dart';
+import 'package:tues_pairs/widgets/general/error.dart';
 
 class UserList extends StatefulWidget {
+
+  final Function reinitializeMatch;
+
+  UserList({this.reinitializeMatch});
+
   @override
   _UserListState createState() => _UserListState();
 }
@@ -44,13 +50,7 @@ class _UserListState extends State<UserList> {
       future: getUserImages(),
       builder: (context, snapshot) {
         if(snapshot.hasError) {
-          return Container(
-            alignment: Alignment.center,
-            child: Text(
-              'Oops an error occurred!',
-              style: TextStyle(color: Colors.black),
-            ),
-          );
+          return Error();
         } else if(snapshot.connectionState == ConnectionState.done) {
           return ListView.builder( // list of users widget
             itemCount: users.length,
@@ -58,32 +58,30 @@ class _UserListState extends State<UserList> {
             itemBuilder: (context, index) {
               // TODO: get array of skipped users from database (user instance probably won't hold it) through FutureBuilder again maybe
               // TODO: then use contains method to check rendering in if statement
+              // TODO: User NEVER enters this state if they have matchedUserID != null; do that check in match.dart
               final user = users[index];
 
-              if(currentUser.uid != user.uid && currentUser.isTeacher != user.isTeacher){
+              if(currentUser.uid != user.uid && currentUser.isTeacher != user.isTeacher
+                  && !currentUser.skippedUserIDs.contains(user.uid) &&
+                  (user.matchedUserID == null || user.matchedUserID == currentUser.uid) && !user.skippedUserIDs.contains(currentUser)){
                 return UserCard(
                   user: user,
                   userImage: images[index],
                   onSkip: () async {
                     // TODO: append to array of skippedUserIDs here
-                    if(!currentUser.skippedUserIDs.contains(user.uid)) {
-                      print(currentUser.skippedUserIDs);
-                      currentUser.skippedUserIDs.add(user.uid);
-                      await database.updateUserData(currentUser); // optimise later maybe
-                    } // TODO: Add global bools for isUserAlreadySkipped to display error snack bars
+                    currentUser.skippedUserIDs.add(user.uid);
+                    await database.updateUserData(currentUser); // optimise later maybe
+                    // TODO: Add global bools for isUserAlreadySkipped to display error snack bars
                     setState(() {
-                        users.removeAt(index);
+                      users.removeAt(index);
                     });
                   },
                   onMatch: () async {
                     if(currentUser.matchedUserID == null) {
                       currentUser.matchedUserID = user.uid;
                       await database.updateUserData(currentUser); // optimise late maybe
-                    } else throw new Exception(); // TODO: Add global bools for isUserAlreadyMatched to display error snack bars instead of Exception
-                    setState(() {
-                      // TODO: set matchedUserID here
-                      users.removeAt(index);
-                    });
+                    } // else throw new Exception(); // TODO: Add global bools for isUserAlreadyMatched to display error snack bars instead of Exception
+                    widget.reinitializeMatch();
                   }
                 );
               } else {

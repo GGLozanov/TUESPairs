@@ -25,16 +25,13 @@ class _AvatarState extends State<Avatar> {
 
 
   Future setPictureFromGallery() async {
-    
-    try{
+    try {
       var image = await widget.imageService.getImageByGallery();
       setImage(image);
-    }catch(e){
+    } catch(e) {
       print(e.toString());
     }
-
   }
-
 
   Future setPictureFromCamera() async {
     var image = await widget.imageService.getImageByCamera();
