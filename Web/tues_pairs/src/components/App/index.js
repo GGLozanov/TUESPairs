@@ -8,6 +8,7 @@ import SignInPage from '../SignIn/login';
 import PasswordForgetPage from '../PasswordForget/passwordforget';
 import HomePage from '../Home/home';
 import AccountPage from '../Account/account';
+import ImageUploadPage from '../ImageUpload/imageUpload';
 
 import * as ROUTES from '../../constants/routes';
 import { withAuthentication } from '../Session';
@@ -25,6 +26,7 @@ const App = () => (
             <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
             <Route path={ROUTES.HOME} component={HomePage} />
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
+            <Route path={ROUTES.IMAGE_UPLOAD} component={ImageUploadPage} />
         </div>
     </Router>
 );

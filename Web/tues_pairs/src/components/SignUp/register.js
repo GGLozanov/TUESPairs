@@ -18,7 +18,7 @@ const INITIAL_STATE = {
     passwordOne: '',
     passwordTwo: '',
     isTeacher: false,
-    GPA: 0.1,
+    GPA: 2.1,
     photoURL: null,
     error: null,
 };
@@ -36,17 +36,19 @@ class SignUpFormBase extends Component {
             .doCreateUserWithEmailAndPassword(email, passwordOne)
             .then(authUser => {
                 // Create a user in your Firestore database
-                authUser = this.props.firebase.db.collection("users").add({
-                    username: username,
-                    email: email,
-                    isTeacher: Boolean(isTeacher),
-                    GPA: parseFloat(GPA),
-                    photoURL: photoURL,
-                });
+                this.props.firebase.getCurrentUser().then(currentUser => {
+                    authUser = this.props.firebase.db.collection("users").doc(currentUser.uid).set({
+                        username: username,
+                        email: email,
+                        isTeacher: Boolean(isTeacher),
+                        GPA: parseFloat(GPA),
+                        photoURL: photoURL,
+                    });
+                })
             })
             .then(() => {
                 this.setState({ ...INITIAL_STATE });
-                this.props.history.push(ROUTES.HOME);
+                this.props.history.push(ROUTES.IMAGE_UPLOAD);
             })
             .catch(error => {
                 this.setState({ error });
@@ -81,6 +83,7 @@ class SignUpFormBase extends Component {
             isTeacher === true;
 
         return(
+
             <form onSubmit={this.onSubmit}>
                 <input
                     name="username"
