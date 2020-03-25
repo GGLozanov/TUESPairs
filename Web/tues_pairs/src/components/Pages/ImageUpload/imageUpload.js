@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import { withAuthentication } from '../Session';
+import { withAuthorization } from '../../Authentication';
 
-import * as ROUTES from '../../constants/routes';
-import { Link, withRouter } from 'react-router-dom';
+import * as ROUTES from '../../../constants/routes';
+import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 
 
@@ -94,9 +94,11 @@ class ImageUploadBase extends Component {
     }
 }
 
+const condition = authUser => !!authUser;
+
 const ImageUploadForm = compose (
     withRouter,
-    withAuthentication,
+    withAuthorization(condition)
 )(ImageUploadBase);
 
 export default ImageUploadPage;

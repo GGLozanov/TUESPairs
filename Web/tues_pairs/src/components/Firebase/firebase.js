@@ -41,9 +41,9 @@ const config = {
 
     getCurrentUser = async () => this.auth.currentUser;
 
-    user = uid => this.db.ref(`users/${uid}`);
+    user = uid => this.db.doc(`users/${uid}`);
 
-    users = () => this.db.ref(`users`);
+    users = () => this.db.collection(`users`);
     
   }
 
