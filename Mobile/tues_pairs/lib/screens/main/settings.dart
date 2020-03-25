@@ -16,9 +16,13 @@ import 'package:tues_pairs/widgets/form_widgets/input_form_settings.dart';
 import 'package:tues_pairs/widgets/form_widgets/username_input_field.dart';
 import 'package:tues_pairs/widgets/form_widgets/password_input_field.dart';
 import 'package:tues_pairs/widgets/form_widgets/confim_password_input_field.dart';
+import 'package:tues_pairs/templates/error_notifier.dart';
 import 'package:tues_pairs/widgets/form_widgets/input_button.dart';
 
 class Settings extends StatefulWidget {
+
+  static int currentMatchedUserClears = 0;
+  static final int maxMatchedUserClears = 5;
 
   @override
   _SettingsState createState() => _SettingsState();
@@ -27,6 +31,11 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
 
   Database database;
+  ErrorNotifier errorNotifier = new ErrorNotifier();
+
+  void setError(String errorMessage) {
+    setState(() => errorNotifier.setError(errorMessage));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +67,11 @@ class _SettingsState extends State<Settings> {
                       // TODO: Use updateUserData from Database here to update matchedUserID
                       // TODO: Safeguard this option when two people are matched (have the other user consent to it w/bool flag notification maybe?)
                       // TODO: if both users have pressed this button, then their matchedUserID becomes null; until then, it isn't null.
-                      currentUser.matchedUserID = null; // to be changed
-                      await database.updateUserData(currentUser);
+                      print(Settings.currentMatchedUserClears);
+                      if(Settings.currentMatchedUserClears++ < Settings.maxMatchedUserClears) {
+                        currentUser.matchedUserID = null; // to be changed
+                        await database.updateUserData(currentUser);
+                      } else setError("Too many clears!");
                     },
                   ),
                   SizedBox(width: 15.0),
@@ -87,14 +99,9 @@ class _SettingsState extends State<Settings> {
                       // TODO: Use updateUserData from Database here -> done
                       final FormState currentState = InputFormSettings.baseAuth.key.currentState;
                       if(currentState.validate() && currentUser.email != null && currentUser.username != null) {
-                        if (imageService.uploadImage() != null) {
-                          try {
-                            currentUser.photoURL = basename(imageService
-                                ?.profileImage?.path ?? null);
-                          } catch(e) {}
-                        }
+                        currentUser.photoURL = await imageService.uploadImage();
                         await database.updateUserData(currentUser); // upload image + wait for update
-                      }
+                      } else setError("Invalid info in fields!");
                     },
                   ),
                   SizedBox(width: 15.0),
@@ -124,7 +131,8 @@ class _SettingsState extends State<Settings> {
                   fontSize: 20.0,
                 ),
               ),
-            )
+            ),
+            errorNotifier.isError ? errorNotifier.showError() : SizedBox(),
           ],
         ),
       ),

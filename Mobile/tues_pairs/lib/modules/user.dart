@@ -9,7 +9,7 @@ class User {
   final List<Tag> tags; // list of tags he'd like to have for matching with other users
 
   String email;
-  String password;
+  String password; // temporary password (DESTROYED upon auth and isn't accessible later)
   String photoURL;
   double GPA;
   bool isTeacher; // is the current user a teacher or a student

@@ -69,7 +69,6 @@ class Database { // DB Class for all DB interactions
   }
 
   User getUserBySnapshot(DocumentSnapshot doc) {
-    print(doc.data);
     if(doc.data != null) {
       return doc.data['isTeacher'] ?
         Teacher(

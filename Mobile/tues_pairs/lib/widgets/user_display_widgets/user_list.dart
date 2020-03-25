@@ -28,14 +28,15 @@ class _UserListState extends State<UserList> {
   NetworkImage currentUserImage;
 
   List<User> users;
-  List<NetworkImage> images;
+  List<NetworkImage> images ;
 
-  Future getUserImages() async {
+  void getUserImages() {
     for(int i = 0; i < images.length; i++) {
-      images[i] = await imageService.getImageByURL(users[i].photoURL);
+      if(users[i].photoURL != null) {
+        images[i] = imageService.getImageByURL(users[i].photoURL);
+      }
     }
   }
-
   // TODO: add method that checks skipped ID array with a user ID
 
   @override
@@ -45,54 +46,44 @@ class _UserListState extends State<UserList> {
     final Database database = new Database(uid: currentUser.uid);
     users = Provider.of<List<User>>(context) ?? []; // get the info from the stream
     images = new List<NetworkImage>(users.length); // user images
+    getUserImages();
 
-    return FutureBuilder(
-      future: getUserImages(),
-      builder: (context, snapshot) {
-        if(snapshot.hasError) {
-          return Error();
-        } else if(snapshot.connectionState == ConnectionState.done) {
-          return ListView.builder( // list of users widget
-            itemCount: users.length,
-            // ignore: missing_return
-            itemBuilder: (context, index) {
-              // TODO: get array of skipped users from database (user instance probably won't hold it) through FutureBuilder again maybe
-              // TODO: then use contains method to check rendering in if statement
-              // TODO: User NEVER enters this state if they have matchedUserID != null; do that check in match.dart
-              final user = users[index];
+    return ListView.builder( // list of users widget
+      itemCount: users.length,
+      // ignore: missing_return
+      itemBuilder: (context, index) {
+        // TODO: get array of skipped users from database (user instance probably won't hold it) through FutureBuilder again maybe
+        // TODO: then use contains method to check rendering in if statement
+        // TODO: User NEVER enters this state if they have matchedUserID != null; do that check in match.dart
+        final user = users[index];
 
-              if(currentUser.uid != user.uid && currentUser.isTeacher != user.isTeacher
-                  && !currentUser.skippedUserIDs.contains(user.uid) &&
-                  (user.matchedUserID == null || user.matchedUserID == currentUser.uid) && !user.skippedUserIDs.contains(currentUser)){
-                return UserCard(
-                  user: user,
-                  userImage: images[index],
-                  onSkip: () async {
-                    // TODO: append to array of skippedUserIDs here
-                    currentUser.skippedUserIDs.add(user.uid);
-                    await database.updateUserData(currentUser); // optimise later maybe
-                    // TODO: Add global bools for isUserAlreadySkipped to display error snack bars
-                    setState(() {
-                      users.removeAt(index);
-                    });
-                  },
-                  onMatch: () async {
-                    if(currentUser.matchedUserID == null) {
-                      currentUser.matchedUserID = user.uid;
-                      await database.updateUserData(currentUser); // optimise late maybe
-                    } // else throw new Exception(); // TODO: Add global bools for isUserAlreadyMatched to display error snack bars instead of Exception
-                    widget.reinitializeMatch();
-                  }
-                );
-              } else {
-                return SizedBox();
-              }
+        if(currentUser.uid != user.uid && currentUser.isTeacher != user.isTeacher
+            && !currentUser.skippedUserIDs.contains(user.uid) &&
+            (user.matchedUserID == null || user.matchedUserID == currentUser.uid) && !user.skippedUserIDs.contains(currentUser)){
+          return UserCard(
+            user: user,
+            userImage: images[index],
+            onSkip: () async {
+              // TODO: append to array of skippedUserIDs here
+              currentUser.skippedUserIDs.add(user.uid);
+              await database.updateUserData(currentUser); // optimise later maybe
+              // TODO: Add global bools for isUserAlreadySkipped to display error snack bars
+              setState(() {
+                users.removeAt(index);
+              });
             },
+            onMatch: () async {
+              if(currentUser.matchedUserID == null) {
+                currentUser.matchedUserID = user.uid;
+                await database.updateUserData(currentUser); // optimise late maybe
+              } // else throw new Exception(); // TODO: Add global bools for isUserAlreadyMatched to display error snack bars instead of Exception
+              widget.reinitializeMatch();
+            }
           );
         } else {
-          return Container();
+          return SizedBox();
         }
-      }, // context & index of whichever item we're iterating through
-    );
+      },
+    );// context & index of whichever item we're iterating through
   }
 }

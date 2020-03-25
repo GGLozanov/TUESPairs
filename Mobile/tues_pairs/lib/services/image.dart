@@ -33,14 +33,13 @@ class ImageService {
 
     // check completion through a snapshot
     StorageTaskSnapshot storageTaskSnapshot = await uploadTask.onComplete;
+    return await firebaseStorageReference.getDownloadURL();
   }
 
-  Future<NetworkImage> getImageByURL(String photoURL) async {
+  NetworkImage getImageByURL(String photoURL) {
     try{
-      StorageReference reference = firebaseStorage.ref().child(photoURL);
-      String URL = await reference.getDownloadURL();
-      return NetworkImage(URL);
-    }catch(e){
+      return NetworkImage(photoURL);
+    } catch(e){
       print(e.toString());
     }
   }

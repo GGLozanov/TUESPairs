@@ -81,7 +81,9 @@ class _RegisterState extends State<Register> {
 
         // TODO: narrow these final settings of values down in function
         if(registeredUser.isTeacher) registeredUser.GPA = null;
-        registeredUser.photoURL = imageService.profileImage == null ? null : basename(imageService.profileImage.path);
+        if(imageService != null && imageService.profileImage != null) {
+          registeredUser.photoURL = await imageService.uploadImage();
+        }
 
         User userResult = await baseAuth.authInstance.registerUserByEmailAndPassword(registeredUser);
 
@@ -91,8 +93,6 @@ class _RegisterState extends State<Register> {
             baseAuth.errorMessages.add('There was an error. Please try again.');
             baseAuth.toggleLoading();
           });
-        } else {
-          await imageService.uploadImage();
         }
       } else {
         setState(() {});
@@ -103,15 +103,15 @@ class _RegisterState extends State<Register> {
       backgroundColor: Color.fromRGBO(59, 64, 78, 1),
       // Scaffold grants the material design palette and general layout of the app (properties like appBar)
       appBar: AppBar(
-          backgroundColor: Color.fromRGBO(33, 36, 44, 1),
-          title: Text(
-              'Register',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 40.0,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.5,
-              )
+        backgroundColor: Color.fromRGBO(33, 36, 44, 1),
+        title: Text(
+          'Register',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 40.0,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.5,
+          )
         ),
         // actions take a list of Widgets and are used to display available actions on the AppBar
         actions: <Widget>[
@@ -154,11 +154,11 @@ class _RegisterState extends State<Register> {
                         padding: const EdgeInsets.only(bottom: 50, left: 12.5),
                         child: Column(
                           children: baseAuth.errorMessages?.map((message) => Text(
-                              "$message",
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 10.0,
-                              ),
+                            "$message",
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 10.0,
+                            ),
                           ))?.toList() ?? [],
                         ),
                       ),
