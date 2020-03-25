@@ -36,7 +36,6 @@ class ImageUploadBase extends Component {
             const image = e.target.files[0];
             this.setState(() => ({image}));
         }
-        console.log(this.props.firebase.getCurrentUser().uid);
     }
 
     handleUpload = () => {

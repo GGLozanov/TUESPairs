@@ -19,7 +19,6 @@ const config = {
         app.initializeApp(config);
 
         this.auth = app.auth();
-        app.firestore().settings({ timestampsInSnapshots: true });
         this.db = app.firestore();
         this.storage = app.storage();
     }
