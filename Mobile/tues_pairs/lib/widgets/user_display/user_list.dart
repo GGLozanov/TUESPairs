@@ -123,7 +123,7 @@ class _UserListState extends State<UserList> {
         // TODO: User NEVER enters this state if they have matchedUserID != null; do that check in match.dart -> done
         final user = users[index];
 
-        if(currentUser.uid != user.uid && currentUser.isTeacher != user.isTeacher
+        if(currentUser.isTeacher != user.isTeacher
             && !currentUser.skippedUserIDs.contains(user.uid) &&
             (user.matchedUserID == null || user.matchedUserID == currentUser.uid) && !user.skippedUserIDs.contains(currentUser)) {
           return SlideTransition(
