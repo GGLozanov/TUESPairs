@@ -6,7 +6,7 @@ import LandingPage from '../Pages/Landing/landing';
 import SignUpPage from '../Pages/SignUp/register';
 import SignInPage from '../Pages/SignIn/login';
 import PasswordForgetPage from '../Pages/PasswordForget/passwordforget';
-import HomePage from '../Pages/Home/home';
+import HomePage, { AlreadyMatchedPage } from '../Pages/Home/home';
 import AccountPage from '../Pages/Account/account';
 import ImageUploadPage from '../Pages/ImageUpload/imageUpload';
 
@@ -27,6 +27,7 @@ const App = () => (
             <Route path={ROUTES.HOME} component={HomePage} />
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
             <Route path={ROUTES.IMAGE_UPLOAD} component={ImageUploadPage} />
+            <Route path={ROUTES.ALREADY_MATCHED_PAGE} component={AlreadyMatchedPage} />
         </div>
     </Router>
 );

@@ -43,6 +43,8 @@ class SignUpFormBase extends Component {
                         isTeacher: Boolean(isTeacher),
                         GPA: parseFloat(GPA),
                         photoURL: photoURL,
+                        matchedUserID: null,
+                        skippedUserIDs: []
                     });
                 })
             })
@@ -59,7 +61,7 @@ class SignUpFormBase extends Component {
 
     onChange = event => {
         this.setState({ [event.target.name]: event.target.value });
-      };    
+    };    
 
     render() {
 
