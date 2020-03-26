@@ -11,7 +11,7 @@ class AlreadyMatched extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentUser = Provider.of<User>(context);
 
-    return FutureBuilder<User>(
+    return FutureBuilder<User>( // TODO: export into home dart without killing app
       future: Database(uid: currentUser.matchedUserID).getUserById(),
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.done) {

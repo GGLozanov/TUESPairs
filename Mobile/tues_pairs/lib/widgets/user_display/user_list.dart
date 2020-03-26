@@ -27,8 +27,13 @@ class _UserListState extends State<UserList> {
 
   NetworkImage currentUserImage;
 
-  List<User> users;
-  List<NetworkImage> images ;
+  List<User> users = <User>[];
+  List<NetworkImage> images;
+  List<UserCard> listItems;
+
+  bool isFirstBuild = true;
+
+  final _animatedListKey = GlobalKey<AnimatedListState>(); // key used to follow our animated list through its states
 
   void getUserImages() {
     for(int i = 0; i < images.length; i++) {
@@ -37,48 +42,96 @@ class _UserListState extends State<UserList> {
       }
     }
   }
+
+  void loadListItems(User currentUser, List<User> users) {
+      // method that utilises a Future delay to simulate a smooth loading effect.
+      // Credit to user NearHuscarl from the thread https://stackoverflow.com/questions/57100219/how-to-animate-the-items-rendered-initially-using-animated-list-in-flutter
+      // for the solution
+      // users = fetchedUsers
+      listItems = <UserCard>[];
+      var future = Future(() {});
+      for(int i = 0; i < users.length; i++) {
+        future = future.then((_) { // reinitializing future with lvalue helps futures wait for one-another (+then)
+          return Future.delayed(Duration(milliseconds: 100), () {
+            listItems.add(buildUserCard(
+                currentUser, i, users[i])); // add card item here
+            _animatedListKey.currentState.insertItem(
+                listItems.length - 1); // insert the latest item here
+          });
+        });
+    }
+  }
+
+  UserCard buildUserCard(User currentUser, int index, User user) {
+    final Database database = new Database(uid: currentUser.uid);
+    return UserCard(
+      user: user,
+      userImage: images[index],
+      onMatch: () async {
+        if(currentUser.matchedUserID == null) {
+          currentUser.matchedUserID = user.uid;
+          await database.updateUserData(currentUser); // optimise late maybe
+        } // TODO: Add global bools for isUserAlreadyMatched to display error snack bars instead of Exception
+        widget.reinitializeMatch();
+      },
+      onSkip: () async {
+        // TODO: append to array of skippedUserIDs here
+        currentUser.skippedUserIDs.add(user.uid);
+        await database.updateUserData(currentUser); // optimise later maybe
+        // TODO: Add global bools for isUserAlreadySkipped to display error snack bars
+        users.removeAt(index);
+        listItems.removeAt(index);
+        setState(() {
+          // remove from both lists
+          _animatedListKey.currentState.removeItem(index,
+                (context, animation) => SlideTransition(
+                  position: CurvedAnimation(
+                  curve: Curves.easeOut,
+                  parent: animation,
+                ).drive(Tween<Offset>(
+                  begin: const Offset(1, 0),
+                  end: const Offset(0, 0),
+                )
+              )
+            )
+          );
+        });
+      },
+    );
+  }
+
   // TODO: add method that checks skipped ID array with a user ID
 
   @override
   Widget build(BuildContext context) {
     // access StreamProvider of QuerySnapshots info here
     final currentUser = Provider.of<User>(context);
-    final Database database = new Database(uid: currentUser.uid);
-    users = Provider.of<List<User>>(context) ?? []; // get the info from the stream
-    images = new List<NetworkImage>(users.length); // user images
-    getUserImages();
+    if(users.length == 0) { // if list is just initialized (first build run)
+      users = Provider.of<List<User>>(context) ?? [];
+      loadListItems(currentUser, users);
+      images = new List<NetworkImage>(users.length); // user images
+      getUserImages();
+    } // get the info from the stream
 
-    return ListView.builder( // list of users widget
-      itemCount: users.length,
+    return AnimatedList( // list of users widget
+      key: _animatedListKey,
+      initialItemCount: listItems.length,
       // ignore: missing_return
-      itemBuilder: (context, index) {
-        // TODO: get array of skipped users from database (user instance probably won't hold it) through FutureBuilder again maybe
-        // TODO: then use contains method to check rendering in if statement
-        // TODO: User NEVER enters this state if they have matchedUserID != null; do that check in match.dart
+      itemBuilder: (context, index, animation) {
+        // TODO: get array of skipped users from database (user instance probably won't hold it) through FutureBuilder again maybe -> done
+        // TODO: then use contains method to check rendering in if statement -> done
+        // TODO: User NEVER enters this state if they have matchedUserID != null; do that check in match.dart -> done
         final user = users[index];
 
         if(currentUser.uid != user.uid && currentUser.isTeacher != user.isTeacher
             && !currentUser.skippedUserIDs.contains(user.uid) &&
-            (user.matchedUserID == null || user.matchedUserID == currentUser.uid) && !user.skippedUserIDs.contains(currentUser)){
-          return UserCard(
-            user: user,
-            userImage: images[index],
-            onSkip: () async {
-              // TODO: append to array of skippedUserIDs here
-              currentUser.skippedUserIDs.add(user.uid);
-              await database.updateUserData(currentUser); // optimise later maybe
-              // TODO: Add global bools for isUserAlreadySkipped to display error snack bars
-              setState(() {
-                users.removeAt(index);
-              });
-            },
-            onMatch: () async {
-              if(currentUser.matchedUserID == null) {
-                currentUser.matchedUserID = user.uid;
-                await database.updateUserData(currentUser); // optimise late maybe
-              } // else throw new Exception(); // TODO: Add global bools for isUserAlreadyMatched to display error snack bars instead of Exception
-              widget.reinitializeMatch();
-            }
+            (user.matchedUserID == null || user.matchedUserID == currentUser.uid) && !user.skippedUserIDs.contains(currentUser)) {
+          return SlideTransition(
+            position: animation.drive(Tween<Offset>(
+              begin: const Offset(1, 0), // represent a point in Cartesian (x-y coordinate) space; dx and dy are args for points
+              end: const Offset(0, 0), // points are between 1 and 0 (use that!)
+            ).chain(CurveTween(curve: Curves.decelerate))),
+            child: listItems[index], // get the generated user card from here
           );
         } else {
           return SizedBox();

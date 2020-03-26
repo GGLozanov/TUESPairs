@@ -66,14 +66,25 @@ class _UserCardState extends State<UserCard> {
               ),
             ],
           ),
-          trailing: Text(
-            widget.user.username,
-            style: TextStyle(
-              color: Colors.white,
-            ),
+          trailing: Column(
+            children: <Widget>[
+              Text(
+                widget.user.username,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 5.0),
+              !widget.user.isTeacher ? Text(
+                'GPA ' + widget.user.GPA.toString(),
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ) : SizedBox(),
+            ]
           ),
         ),
-      ),
+      )
     );
   }
 }
