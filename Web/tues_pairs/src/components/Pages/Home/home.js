@@ -92,8 +92,11 @@ class UserList extends Component {
     const currentUser = this.props.authUser;
 
     for(let i = 0; i < users.length; i++) {
-      if(currentUser.isTeacher !== users[i].isTeacher && !currentUser.skippedUserIDs.includes(users[i].uid)) {
-        if(users[i].photoURL == null) {
+      if(currentUser.isTeacher !== users[i].isTeacher && 
+        !currentUser.skippedUserIDs.includes(users[i].uid) &&
+        (users[i].matchedUserID === null || users[i].matchedUserID === currentUser.uid) &&
+        !users[i].skippedUserIDs.includes(currentUser)){
+        if(users[i].photoURL === null) {
           users[i].photoURL = "https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png";
         }
         mappedUsers.push(users[i]);
