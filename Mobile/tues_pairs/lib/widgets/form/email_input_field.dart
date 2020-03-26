@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/shared/constants.dart';
-import 'package:tues_pairs/widgets/form_widgets/input_field.dart';
+import 'package:tues_pairs/widgets/form/input_field.dart';
 
 class EmailInputField extends InputField {
 

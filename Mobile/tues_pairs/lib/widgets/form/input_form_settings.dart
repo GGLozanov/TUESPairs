@@ -4,11 +4,11 @@ import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
-import 'package:tues_pairs/widgets/avatar_widgets/avatar_wrapper.dart';
-import 'package:tues_pairs/widgets/form_widgets/GPA_input_field.dart';
-import 'package:tues_pairs/widgets/form_widgets/email_input_field.dart';
-import 'package:tues_pairs/widgets/form_widgets/input_button.dart';
-import 'package:tues_pairs/widgets/form_widgets/username_input_field.dart';
+import 'package:tues_pairs/widgets/avatar/avatar_wrapper.dart';
+import 'package:tues_pairs/widgets/form/GPA_input_field.dart';
+import 'package:tues_pairs/widgets/form/email_input_field.dart';
+import 'package:tues_pairs/widgets/form/input_button.dart';
+import 'package:tues_pairs/widgets/form/username_input_field.dart';
 import 'package:path/path.dart';
 
 // TODO: Improve code here by creating reusable input form for register and login

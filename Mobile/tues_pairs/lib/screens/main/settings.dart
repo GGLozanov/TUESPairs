@@ -9,15 +9,15 @@ import 'package:path/path.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
-import 'package:tues_pairs/widgets/avatar_widgets/avatar_wrapper.dart';
-import 'package:tues_pairs/widgets/form_widgets/GPA_input_field.dart';
-import 'package:tues_pairs/widgets/form_widgets/email_input_field.dart';
-import 'package:tues_pairs/widgets/form_widgets/input_form_settings.dart';
-import 'package:tues_pairs/widgets/form_widgets/username_input_field.dart';
-import 'package:tues_pairs/widgets/form_widgets/password_input_field.dart';
-import 'package:tues_pairs/widgets/form_widgets/confim_password_input_field.dart';
+import 'package:tues_pairs/widgets/avatar/avatar_wrapper.dart';
+import 'package:tues_pairs/widgets/form/GPA_input_field.dart';
+import 'package:tues_pairs/widgets/form/email_input_field.dart';
+import 'package:tues_pairs/widgets/form/input_form_settings.dart';
+import 'package:tues_pairs/widgets/form/username_input_field.dart';
+import 'package:tues_pairs/widgets/form/password_input_field.dart';
+import 'package:tues_pairs/widgets/form/confim_password_input_field.dart';
 import 'package:tues_pairs/templates/error_notifier.dart';
-import 'package:tues_pairs/widgets/form_widgets/input_button.dart';
+import 'package:tues_pairs/widgets/form/input_button.dart';
 
 class Settings extends StatefulWidget {
 

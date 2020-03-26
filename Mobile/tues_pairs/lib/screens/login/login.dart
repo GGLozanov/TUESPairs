@@ -6,9 +6,9 @@ import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/modules/user.dart';
-import 'package:tues_pairs/widgets/form_widgets/input_button.dart';
-import 'package:tues_pairs/widgets/form_widgets/email_input_field.dart';
-import 'package:tues_pairs/widgets/form_widgets/password_input_field.dart';
+import 'package:tues_pairs/widgets/form/input_button.dart';
+import 'package:tues_pairs/widgets/form/email_input_field.dart';
+import 'package:tues_pairs/widgets/form/password_input_field.dart';
 
 class Login extends StatefulWidget {
   final Function toggleView;

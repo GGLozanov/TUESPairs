@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/modules/user.dart';
-import 'package:tues_pairs/widgets/avatar_widgets/avatar.dart';
+import 'package:tues_pairs/widgets/avatar/avatar.dart';
 import 'package:tues_pairs/widgets/general/error.dart';
 
 class AvatarWrapper extends StatefulWidget {

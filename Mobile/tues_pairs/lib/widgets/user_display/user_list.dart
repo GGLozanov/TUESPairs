@@ -8,7 +8,7 @@ import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/student.dart';
 import 'package:tues_pairs/services/image.dart';
-import 'package:tues_pairs/widgets/user_display_widgets/user_card.dart';
+import 'package:tues_pairs/widgets/user_display/user_card.dart';
 import 'package:tues_pairs/widgets/general/error.dart';
 
 class UserList extends StatefulWidget {
