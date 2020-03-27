@@ -6,7 +6,9 @@ import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/modules/user.dart';
-import 'package:tues_pairs/widgets/form_widgets/input_button.dart';
+import 'package:tues_pairs/widgets/form/input_button.dart';
+import 'package:tues_pairs/widgets/form/email_input_field.dart';
+import 'package:tues_pairs/widgets/form/password_input_field.dart';
 
 class Login extends StatefulWidget {
   final Function toggleView;
@@ -27,31 +29,31 @@ class _LoginState extends State<Login> {
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(33, 36, 44, 1),
         title: Text(
-            'Login',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 40.0,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.5,
-            )
+          'Login',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 40.0,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.5,
+          )
         ),
         actions: <Widget>[
           FlatButton.icon(
-              onPressed: () => widget.toggleView(), // since the toggleView() function is known in the context of the widget, we need to address the widget and then access it
-              icon: Icon(
-                Icons.person,
-                color: Colors.orange,
-                size: 30.0,
-              ),
-              label: Text(
-                'Register',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0,
-                  fontSize: 25.0,
-                )
-              ),
+            onPressed: () => widget.toggleView(), // since the toggleView() function is known in the context of the widget, we need to address the widget and then access it
+            icon: Icon(
+              Icons.person,
+              color: Colors.orange,
+              size: 30.0,
+            ),
+            label: Text(
+              'Register',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.0,
+                fontSize: 25.0,
+              )
+            ),
           )
         ],
       ),
@@ -77,32 +79,9 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 SizedBox(height: 15.0),
-                TextFormField(
-                  onChanged: (value) => setState(() => baseAuth.user.email = value), // need to define the setState() method as to rerun the build method each time we change the inputs
-                  validator: (value) => value.isEmpty ? 'Enter an e-mail' : null,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: textInputDecoration.copyWith(
-                    icon: Icon(
-                      Icons.mail,
-                      color: Colors.orange,
-                    ),
-                    hintText: 'Enter email',
-                  ),
-                ),
+                EmailInputField(onChanged: (value) => setState(() => baseAuth.user.email = value), initialValue: baseAuth.user.email),
                 SizedBox(height: 15.0), // SizedBox widget creates an invisible box with a height/width to help separate elements
-                TextFormField(
-                  obscureText: true,
-                  keyboardType: TextInputType.visiblePassword,
-                  onChanged: (value) => setState(() => baseAuth.user.password = value),
-                  validator: (value) => value.isEmpty ? 'Enter a password' : null,
-                  decoration: textInputDecoration.copyWith(
-                    icon: Icon(
-                      Icons.lock,
-                      color: Colors.orange,
-                    ),
-                    hintText: 'Enter password',
-                  ),
-                ),
+                PasswordInputField(onChanged: (value) => setState(() => baseAuth.user.password = value)),
                 SizedBox(height: 25.0),
                 InputButton(
                   minWidth: 250.0,

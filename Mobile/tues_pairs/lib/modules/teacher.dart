@@ -5,7 +5,14 @@ import 'package:tues_pairs/modules/tag.dart';
 
 class Teacher extends User {
 
-  Teacher({String uid, String email, String photoURL, bool isTeacher, String username, String matchedUserID}) :
-        super(uid: uid, email: email, photoURL: photoURL, isTeacher: isTeacher, username: username, matchedUserID: matchedUserID);
+  Teacher({
+    String uid, String email,
+    String photoURL, bool isTeacher,
+    String username, String matchedUserID, List<String> skippedUserIDs}) :
+        super(
+          uid: uid, email: email,
+          photoURL: photoURL, isTeacher: isTeacher,
+          username: username, matchedUserID: matchedUserID,
+          skippedUserIDs: skippedUserIDs);
 
 }

@@ -7,6 +7,8 @@ import 'package:tues_pairs/screens/main/match.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/screens/loading/loading.dart';
+import 'package:tues_pairs/widgets/general/error.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -23,8 +25,8 @@ class _HomeState extends State<Home> {
 
   final Auth _auth = new Auth();
   PageController _controller = PageController(
-      initialPage: 1,
-      keepPage: true,
+    initialPage: 1,
+    keepPage: true,
   );
 
   List<Widget> _widgets = [
@@ -36,19 +38,19 @@ class _HomeState extends State<Home> {
   void onItemTap(int index) {
     setState(() {
       _selectedIndex = index;
-      _controller.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);
+      _controller.animateToPage(
+          index, duration: Duration(milliseconds: 500), curve: Curves.ease);
     }); // set the selected index to the index given
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(33, 36, 44, 1),
         title: Text(
-          _widgets[_selectedIndex].toString(), // convert widget title to string
+          _widgets[_selectedIndex].toString(),
+          // convert widget title to string
           style: TextStyle(
             color: Colors.white,
             fontSize: 40.0,
@@ -65,12 +67,12 @@ class _HomeState extends State<Home> {
               size: 35.0,
             ),
             label: Text(
-            'Logout',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 25.0,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.5,
+              'Logout',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 25.0,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.5,
               ),
             ),
           ),
@@ -129,7 +131,6 @@ class _HomeState extends State<Home> {
         onTap: onItemTap,
         backgroundColor: Color.fromRGBO(33, 36, 44, 1),
       ),
-
-      );
+    );
   }
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/shared/constants.dart';
-import 'package:tues_pairs/widgets/form_widgets/input_field.dart';
+import 'package:tues_pairs/widgets/form/input_field.dart';
 
-class ConfirmPasswordInputField extends InputField {
+class PasswordInputField extends InputField {
 
-  ConfirmPasswordInputField({Function onChanged}) : super(onChanged: onChanged);
+  PasswordInputField({Function onChanged}) : super(onChanged: onChanged);
+
 
   @override
   Widget build(BuildContext context) {
@@ -12,14 +14,14 @@ class ConfirmPasswordInputField extends InputField {
       obscureText: true, // obscures text (like for a password)
       onChanged: onChanged,
       style: textInputColor,
-      validator: (value) => value.isEmpty ? 'Confirm password' : null,
+      validator: (value) => value.isEmpty ? 'Enter a password' : null,
       keyboardType: TextInputType.visiblePassword,
       decoration: textInputDecoration.copyWith(
         icon: Icon(
-          Icons.repeat,
+          Icons.lock,
           color: Colors.orange,
         ),
-        hintText: 'Confirm password',
+        hintText: 'Enter a password',
       ),
     );
   }

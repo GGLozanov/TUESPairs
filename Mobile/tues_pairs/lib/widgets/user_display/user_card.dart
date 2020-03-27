@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/student.dart';
+import 'package:tues_pairs/services/database.dart';
 
-class UserCard extends StatelessWidget {
+class UserCard extends StatefulWidget {
 
   final User user;
+  final Function onSkip;
+  final Function onMatch;
   final NetworkImage userImage;
 
-  UserCard({this.user, this.userImage});
+  UserCard({this.user, this.onSkip, this.onMatch, this.userImage});
+
+  @override
+  _UserCardState createState() => _UserCardState();
+}
+
+class _UserCardState extends State<UserCard> {
+  final Database database = new Database();
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +33,12 @@ class UserCard extends StatelessWidget {
               child: SizedBox(
                 width: 100.0,
                 height: 100.0,
-                child: userImage == null ? Icon(
+                child: widget.userImage == null ? Icon(
                   Icons.person,
                   size: 50.0,
                   color: Colors.orange,
                 ) : Image(
-                  image: userImage,
+                  image: widget.userImage,
                   fit: BoxFit.fill,
                 ),
               )
@@ -37,14 +47,18 @@ class UserCard extends StatelessWidget {
           subtitle: ButtonBar(
             children: <Widget>[
               FloatingActionButton(
-                onPressed: () {},
+                onPressed: () {
+                  widget.onMatch();
+                },
                 child: Text(
                 'Match',
                 ),
                 backgroundColor: Colors.deepOrangeAccent
               ),
               FloatingActionButton(
-                onPressed: () {},
+                onPressed: () {
+                  widget.onSkip(); // destroy the widget
+                },
                 child: Text(
                   'Skip',
                 ),
@@ -52,14 +66,25 @@ class UserCard extends StatelessWidget {
               ),
             ],
           ),
-          trailing: Text(
-            user.username,
-            style: TextStyle(
-              color: Colors.white,
-            ),
+          trailing: Column(
+            children: <Widget>[
+              Text(
+                widget.user.username,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 5.0),
+              !widget.user.isTeacher ? Text(
+                'GPA ' + widget.user.GPA.toString(),
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ) : SizedBox(),
+            ]
           ),
         ),
-      ),
+      )
     );
   }
 }

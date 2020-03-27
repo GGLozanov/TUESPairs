@@ -25,6 +25,10 @@ class Database { // DB Class for all DB interactions
     return querySnapshot.documents.map((doc) => getUserBySnapshot(doc)).toList();
   }
 
+  List<Tag> _listTagFromQuerySnapshot(QuerySnapshot querySnapshot) {
+    return querySnapshot.documents.map((doc) => getTagBySnapshot(doc)).toList();
+  }
+
   // method to update user data by given information in custom registration fields
   Future updateUserData(User user) async {
     // TODO: Fix tags method
@@ -38,6 +42,7 @@ class Database { // DB Class for all DB interactions
       'username': user.username,
       'email': user.email,
       'matchedUserID': user.matchedUserID,
+      'skippedUserIDs': user.skippedUserIDs ?? <String>[],
     });
   }
 
@@ -54,6 +59,15 @@ class Database { // DB Class for all DB interactions
     );
   }
 
+  Tag getTagBySnapshot(DocumentSnapshot doc) {
+    if(doc.data != null) {
+      return Tag(
+        name: doc.data['name'],
+        color: doc.data['color'],
+      );
+    }
+  }
+
   User getUserBySnapshot(DocumentSnapshot doc) {
     if(doc.data != null) {
       return doc.data['isTeacher'] ?
@@ -63,7 +77,8 @@ class Database { // DB Class for all DB interactions
           photoURL: doc.data['photoURL'] ?? null,
           isTeacher: doc.data['isTeacher'] ?? true,
           username: doc.data['username'] ?? '',
-          matchedUserID: doc.data['matchedUserID'] ?? '',
+          matchedUserID: doc.data['matchedUserID'] ?? null,
+          skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : List<String>.from(doc.data['skippedUserIDs']),
         ) : Student(
           uid: doc.documentID,
           email: doc.data['email'] ?? '',
@@ -71,7 +86,8 @@ class Database { // DB Class for all DB interactions
           GPA: doc.data['GPA'],
           isTeacher: doc.data['isTeacher'] ?? false,
           username: doc.data['username'] ?? '',
-          matchedUserID: doc.data['matchedUserID'] ?? '',
+          matchedUserID: doc.data['matchedUserID'] ?? null,
+          skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : List<String>.from(doc.data['skippedUserIDs']),
       );
     }
   }
