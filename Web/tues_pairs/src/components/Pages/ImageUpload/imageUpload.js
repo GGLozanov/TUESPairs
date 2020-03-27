@@ -4,6 +4,7 @@ import { withAuthorization } from '../../Authentication';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
+import { withCurrentUser } from '../../Authentication/context';
 
 
 const ImageUploadPage = () => (
@@ -36,12 +37,14 @@ class ImageUploadBase extends Component {
             const image = e.target.files[0];
             this.setState(() => ({image}));
         }
-        console.log(this.props.firebase.getCurrentUser().uid);
     }
 
     handleUpload = () => {
         const {image} = this.state;
         const uploadTask = this.props.firebase.storage.ref(`/${image.name}`).put(image);
+        let hasImage = null;
+        const currentUser = this.props.authUser;
+
         uploadTask.on('state_changed', 
         (snapshot) => {
             // progrss function ....
@@ -56,14 +59,20 @@ class ImageUploadBase extends Component {
             // complete function ....
             this.props.firebase.storage.ref('/').child(image.name).getDownloadURL().then(url => {
                 console.log(url);
-                this.props.firebase.getCurrentUser()
-                .then(currentUser => {
-                    this.props.firebase.db.collection("users").doc(currentUser.uid).set({
-                        photoURL: url,
-                    }, {merge: true});
-                })
+                if(currentUser.photoURL === null) {
+                    hasImage = false;
+                } else {
+                    hasImage = true;
+                }
+                this.props.firebase.db.collection("users").doc(currentUser.uid).set({
+                    photoURL: url,
+                }, {merge: true})
                 .then(() => {
-                    this.props.history.push(ROUTES.HOME);
+                    if(hasImage === false) {
+                        this.props.history.push(ROUTES.HOME);
+                    } else {
+                        this.props.history.push(ROUTES.ACCOUNT);
+                    }
                 })
                 .catch(error => {
                     console.log(error);
@@ -98,6 +107,7 @@ const condition = authUser => !!authUser;
 
 const ImageUploadForm = compose (
     withRouter,
+    withCurrentUser,
     withAuthorization(condition)
 )(ImageUploadBase);
 

@@ -18,9 +18,6 @@ const Navigation = ({ authUser }) => (
 const NavigationLogged = () => (
   <ul>
       <li>
-        <Link to={ROUTES.LANDING}>Laning</Link>
-      </li>
-      <li>
         <Link to={ROUTES.HOME}>Home</Link>
       </li>
       <li>

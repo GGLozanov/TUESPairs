@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 import { withFirebase } from '../../Firebase';
 import * as ROUTES from '../../../constants/routes';
+import { compose } from 'recompose';
+import { withCurrentUser } from '../../Authentication/context';
 
 const PasswordForgetPage = () => (
   <div>
@@ -12,14 +14,14 @@ const PasswordForgetPage = () => (
 );
 
 const INITIAL_STATE = {
-  email: '',
+  email: null,
   error: null,
 };
 
 class PasswordForgetFormBase extends Component {
   constructor(props) {
     super(props);
-    this.state = { ...INITIAL_STATE };
+    this.state = { ...INITIAL_STATE, email: this.props.authUser.email };
   }
 
   onSubmit = event => {
@@ -28,6 +30,7 @@ class PasswordForgetFormBase extends Component {
       .doPasswordReset(email)
       .then(() => {
         this.setState({ ...INITIAL_STATE });
+        this.props.history.push(ROUTES.ACCOUNT);
       })
       .catch(error => {
         this.setState({ error });
@@ -44,15 +47,9 @@ class PasswordForgetFormBase extends Component {
     const isInvalid = email === '';
     return (
       <form onSubmit={this.onSubmit}>
-        <input
-          name="email"
-          value={this.state.email}
-          onChange={this.onChange}
-          type="text"
-          placeholder="Email Address"
-        />
+        <p>You have to approve the email confirmation</p>
         <button disabled={isInvalid} type="submit">
-          Reset My Password
+          Send email
         </button>
         {error && <p>{error.message}</p>}
       </form>
@@ -66,8 +63,17 @@ const PasswordForgetLink = () => (
   </p>
 );
 
+const PasswordChangeLink = () => (
+  <p>
+    <Link to={ROUTES.PASSWORD_FORGET}>Change my password</Link>
+  </p>
+)
 export default PasswordForgetPage;
 
-const PasswordForgetForm = withFirebase(PasswordForgetFormBase);
+const PasswordForgetForm = compose (
+  withRouter,
+  withFirebase,
+  withCurrentUser
+)(PasswordForgetFormBase);
 
-export { PasswordForgetForm, PasswordForgetLink };
+export { PasswordForgetForm, PasswordForgetLink, PasswordChangeLink };
