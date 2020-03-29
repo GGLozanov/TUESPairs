@@ -36,8 +36,12 @@ Flutter (Google Framework), Dart, Android Studio (Java-based SDK), React (JS Fra
   * Unit Tests
 
 ## 6.	 Branching Strategy
-Git Flow
+Git Flow разделен на няколко бранча:
+ * master - само и единствено стабилен код готов за deployment
+ * Mobile/Web (development) - development бранчове за разработка на general purpose features и мърджване на feature бранчове
+ * Development-Feature_Name - feature бранч за разработка на специфични, large-scale features, които се мърджват с development
+Git Flow е избрана заради възможността за колаборация по еднакви feature-и със съотборници и обезопасяването на стабилната част от кода от бъгове и конфликти.
 ## 7.	Database
-Firebase и, by extension, Firestore.
+Firebase и, by extension, Firestore database и Firebase Storage.
 ## 8.	 Авторизация 
 Superuser директор, който да одобрява регистрация за ръководител, среден успех и т.н.
