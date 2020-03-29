@@ -36,6 +36,8 @@ const NavigationNotLogged = () => (
       </li>
       <li>
         <Link to={ROUTES.SIGN_IN}>Sign In</Link>
+        <p>or</p>
+        <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
       </li>
   </ul>
 );

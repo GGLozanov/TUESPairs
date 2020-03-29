@@ -63,6 +63,9 @@ class UserList extends Component {
   }
 
   componentDidMount(){
+    if(this.props.authUser.matchedUserID) {
+      this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE);
+    }
     this.setState({ loading: true });
 
     this.unsubscribe = this.props.firebase.users()
