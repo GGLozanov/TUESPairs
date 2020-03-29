@@ -13,7 +13,7 @@ const HomePage = () => (
   </div>
 );
 
-const AlreadyMatchedPage = () => (
+const AlreadyMatched = () => (
   <div>
     <h1>Match Page</h1>
     <p>You have sent a match request!</p>
@@ -143,6 +143,8 @@ const MatchPage =  compose (
   withFirebase,
   withCurrentUser
 )(UserList);
+
+const AlreadyMatchedPage = withAuthorization(condition)(AlreadyMatched);
 
 export default withAuthorization(condition)(HomePage);
 

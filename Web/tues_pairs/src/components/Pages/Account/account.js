@@ -80,7 +80,7 @@ class UserProfile extends Component {
         this.props.firebase.db.collection("users").doc(currentUser.uid).delete()
         .then(this.props.firebase.auth.currentUser.delete())
         .catch(error => {
-            console.log(error);
+            this.setState({ error });
         });
     }
 
