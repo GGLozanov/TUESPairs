@@ -41,7 +41,8 @@ class _AvatarState extends State<Avatar> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
           CircleAvatar(
             radius: 65.0,
@@ -64,7 +65,8 @@ class _AvatarState extends State<Avatar> {
               ),
             ),
           ),
-          Column(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.only(top: 5.0),
@@ -90,7 +92,7 @@ class _AvatarState extends State<Avatar> {
                   },
                 ),
               ),
-            ],
+            ]
           )
         ],
       );

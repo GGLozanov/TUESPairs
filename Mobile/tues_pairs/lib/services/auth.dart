@@ -6,6 +6,7 @@ import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/screens/authlistener.dart';
 
 class Auth {
+
   final FirebaseAuth _auth = FirebaseAuth.instance; // property to receive a default FirebaseAuth instance
 
   // auth changes are listened by streams which are a generic class returning an instance of the stream of what we want
@@ -30,7 +31,6 @@ class Auth {
     try {
       AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: authUser.email, password: authUser.password);
       FirebaseUser user = authResult.user;
-
       // -----------------------------------
       // User has successfully auth'd at this point
       // -----------------------------------
@@ -52,6 +52,16 @@ class Auth {
       AuthResult authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
       return FireBaseUsertoUser(authResult.user);
     } catch(exception) {
+      print(exception.toString());
+      return null;
+    }
+  }
+
+  Future deleteFirebaseUser() async{
+    try{
+      FirebaseUser firebaseUser = await _auth.currentUser();
+      await firebaseUser.delete();
+    } catch(exception){
       print(exception.toString());
       return null;
     }

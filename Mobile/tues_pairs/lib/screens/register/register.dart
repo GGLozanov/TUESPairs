@@ -98,7 +98,7 @@ class _RegisterState extends State<Register> {
         setState(() {});
       }
     }
-
+    
     return baseAuth.isLoading ? Loading() : Scaffold(
       backgroundColor: Color.fromRGBO(59, 64, 78, 1),
       // Scaffold grants the material design palette and general layout of the app (properties like appBar)
@@ -135,88 +135,90 @@ class _RegisterState extends State<Register> {
         ],
       ),
 
-      body: Container( // Container grants access to basic layout principles and properties
-        color: Color.fromRGBO(59, 64, 78, 1),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-          child: Form(
-            key: baseAuth.key, // set the form's key to the key defined above (keeps track of the state of the form)
-            child: Column( // Column orders widgets in a Column and its children property takes a list of Widgets
-              children: <Widget>[
-                Center(
-                  child: Row(
-                    children: <Widget>[
-                      Provider<ImageService>.value(
-                        value: imageService,
-                        child: AvatarWrapper(),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 50, left: 12.5),
-                        child: Column(
-                          children: baseAuth.errorMessages?.map((message) => Text(
-                            "$message",
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 10.0,
-                            ),
-                          ))?.toList() ?? [],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 15.0),
-                UsernameInputField(
-                  onChanged: (value) => setState(() {baseAuth.user.username = value;}),
-                ),
-                SizedBox(height: 15.0),
-                EmailInputField(
-                  onChanged: (value) => setState(() {baseAuth.user.email = value;}),
-                ),
-                SizedBox(height: 15.0),
-                PasswordInputField(
-                  onChanged: (value) => setState(() {baseAuth.user.password = value;}),
-                ),
-                SizedBox(height: 15.0),
-                ConfirmPasswordInputField(
-                  onChanged: (value) => setState(() {baseAuth.confirmPassword = value;}),
-                ),
-                SizedBox(height: 15.0),
-                baseAuth.user.isTeacher ? SizedBox() : GPAInputField(
-                  onChanged: (value) => setState(() => baseAuth.user.GPA = double.tryParse(value)),
-                ),
-                SizedBox(height: 15.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+      body: ListView(
+        children: <Widget>[
+          Container( // Container grants access to basic layout principles and properties
+            color: Color.fromRGBO(59, 64, 78, 1),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+              child: Form(
+                key: baseAuth.key, // set the form's key to the key defined above (keeps track of the state of the form)
+                child: Column( // Column orders widgets in a Column and its children property takes a list of Widgets
                   children: <Widget>[
-                    Text(
-                      'Are you a teacher?',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.0,
-                        fontSize: 10.0,
-                      )
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Provider<ImageService>.value(
+                            value: imageService,
+                            child: AvatarWrapper(),
+                          ),
+                          Column(
+                            children: baseAuth.errorMessages?.map((message) => Text(
+                              "$message",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 10.0,
+                              ),
+                            ))?.toList() ?? [],
+                          ),
+                        ],
+                      ),
                     ),
-                    Switch(
-                      value: baseAuth.user.isTeacher, // has the current user selected the isTeacher property
-                      onChanged: (value) => setState(() {baseAuth.user.isTeacher = value;}),  // Rerun the build method in order for the switch to actually change
-                      activeColor: Colors.orange,
+                    SizedBox(height: 15.0),
+                    UsernameInputField(
+                      onChanged: (value) => setState(() {baseAuth.user.username = value;}),
+                    ),
+                    SizedBox(height: 15.0),
+                    EmailInputField(
+                      onChanged: (value) => setState(() {baseAuth.user.email = value;}),
+                    ),
+                    SizedBox(height: 15.0),
+                    PasswordInputField(
+                      onChanged: (value) => setState(() {baseAuth.user.password = value;}),
+                    ),
+                    SizedBox(height: 15.0),
+                    ConfirmPasswordInputField(
+                      onChanged: (value) => setState(() {baseAuth.confirmPassword = value;}),
+                    ),
+                    SizedBox(height: 15.0),
+                    baseAuth.user.isTeacher ? SizedBox() : GPAInputField(
+                      onChanged: (value) => setState(() => baseAuth.user.GPA = double.tryParse(value)),
+                    ),
+                    SizedBox(height: 15.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Are you a teacher?',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.0,
+                            fontSize: 10.0,
+                          )
+                        ),
+                        Switch(
+                          value: baseAuth.user.isTeacher, // has the current user selected the isTeacher property
+                          onChanged: (value) => setState(() {baseAuth.user.isTeacher = value;}),  // Rerun the build method in order for the switch to actually change
+                          activeColor: Colors.orange,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 15.0),
+                    InputButton(
+                      minWidth: 250.0,
+                      height: 60.0,
+                      text: 'Create account',
+                      onPressed: registerUser,
                     ),
                   ],
                 ),
-                SizedBox(height: 15.0),
-                InputButton(
-                  minWidth: 250.0,
-                  height: 60.0,
-                  text: 'Create account',
-                  onPressed: registerUser,
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        ]
+      )
     );
   }
 }
