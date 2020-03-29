@@ -24,10 +24,11 @@ class UserProfile extends Component {
             GPA: this.props.authUser.GPA,
             error: '',
             message: '',
+            users: null,
         };
     }
 
-    onSubmit = event => {
+    onSaveChanges = event => {
         const { username, GPA } = this.state;
         const currentUser = this.props.authUser;
     
@@ -45,9 +46,43 @@ class UserProfile extends Component {
         event.preventDefault();
       };
     
-      onChange = event => {
+    onChange = event => {
         this.setState({ [event.target.name]: event.target.value });
-      };
+    };
+
+    onDelete = () => {
+        let users = [];
+
+        const currentUser = this.props.authUser;
+
+        this.props.firebase.users()
+            .onSnapshot(snapshot => {
+
+                snapshot.forEach(doc =>
+                    users.push({ ...doc.data(), uid: doc.id }),
+            );
+
+            for(let i = 0; i < users.length; i++) {
+                if(users[i].matchedUserID === currentUser.uid){
+                    this.props.firebase.db.collection("users").doc(users[i].uid).set({
+                        matchedUserID: null
+                    }, {merge: true});
+                }
+                if(users[i].skippedUserIDs.includes(currentUser.uid)){
+                    users[i].skippedUserIDs.splice(currentUser.uid, 1);
+                    this.props.firebase.db.collection("users").doc(users[i].uid).set({
+                        skippedUserIDs: users[i].skippedUserIDs
+                    }, {merge: true});
+                }
+            }
+        });
+
+        this.props.firebase.db.collection("users").doc(currentUser.uid).delete()
+        .then(this.props.firebase.auth.currentUser.delete())
+        .catch(error => {
+            console.log(error);
+        });
+    }
 
     render() {
         const { username, email, photoURL, error, message, GPA} = this.state;
@@ -92,9 +127,11 @@ class UserProfile extends Component {
 
                     <br /><br /><br />
 
-                    <button disabled={isInvalid} type="submit">
+                    <button disabled={isInvalid} onClick={this.onSaveChanges}>
                         Save Changes
                     </button>
+
+                    <button type="button" onClick={this.onDelete}>Delete</button>
 
                     {error && <p>{error.message}</p>}
                     {message && <p>{message}</p>}
