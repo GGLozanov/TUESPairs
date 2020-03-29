@@ -46,6 +46,10 @@ class Database { // DB Class for all DB interactions
     });
   }
 
+  Future deleteUser() async {
+    return await _userCollectionReference.document(uid).delete();
+  }
+
   Future updateTagData(Tag tag) async {
     return await _tagsCollectionReference.document(tag.name).setData({
       'name': tag.name,

@@ -2,6 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/modules/tag.dart';
 
+import '../services/auth.dart';
+import '../templates/baseauth.dart';
+
 class User {
 
   // TODO: Get tags from tags collection
@@ -16,7 +19,6 @@ class User {
   String username; // derived from email
   String matchedUserID; // matched TUESPairs user
   List<String> skippedUserIDs; // skipped TUESPairs users
-
   User({this.uid, this.email, this.password, this.photoURL, this.GPA, this.matchedUserID,
     this.tags, this.isTeacher, this.username, this.skippedUserIDs});
 

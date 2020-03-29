@@ -16,7 +16,6 @@ import 'package:path/path.dart';
 class InputFormSettings extends StatefulWidget {
 
   static BaseAuth baseAuth = new BaseAuth();
-
   @override
   InputFormSettingsState createState() => InputFormSettingsState();
 
@@ -30,8 +29,8 @@ class InputFormSettingsState extends State<InputFormSettings> {
   @override
   Widget build(BuildContext context) {
     currentUser = Provider.of<User>(context);
+    print(currentUser.username);
     imageService = Provider.of<ImageService>(context);
-
     return Center(
       child: Form(
         key: InputFormSettings.baseAuth.key,
@@ -40,7 +39,6 @@ class InputFormSettingsState extends State<InputFormSettings> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              SizedBox(height: 15.0),
               UsernameInputField(onChanged: (value) => setState(() => currentUser.username = value), initialValue: currentUser.username),
               EmailInputField(onChanged: (value) => setState(() => currentUser.email = value), initialValue: currentUser.email),
               currentUser.isTeacher ? SizedBox() : GPAInputField(onChanged: (value) => setState(() => currentUser.GPA = double.tryParse(value)),

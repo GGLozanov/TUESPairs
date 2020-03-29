@@ -19,6 +19,13 @@ import 'package:tues_pairs/widgets/form/confim_password_input_field.dart';
 import 'package:tues_pairs/templates/error_notifier.dart';
 import 'package:tues_pairs/widgets/form/input_button.dart';
 
+import '../../services/auth.dart';
+import '../../services/auth.dart';
+import '../../services/auth.dart';
+import '../../services/database.dart';
+import '../../services/database.dart';
+import '../../services/image.dart';
+
 class Settings extends StatefulWidget {
 
   static int currentMatchedUserClears = 0;
@@ -40,8 +47,10 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     User currentUser = Provider.of<User>(context);
+    final users = Provider.of<List<User>>(context) ?? [];
     ImageService imageService = new ImageService();
     database = new Database(uid: currentUser.uid);
+
 
     return MultiProvider(
       providers: [
@@ -50,14 +59,15 @@ class _SettingsState extends State<Settings> {
       ],
       child: Container(
         color: Color.fromRGBO(59, 64, 78, 1),
-        child: Column(
+        child: ListView(
           children: <Widget>[
             SizedBox(height: 15.0),
             AvatarWrapper(),
             InputFormSettings(),
             Padding(
               padding: const EdgeInsets.only(left: 10.0, top: 15.0, right: 10.0, bottom: 20.0),
-              child: Row(
+              child: Wrap(
+                spacing: 20,
                 children: <Widget>[
                   InputButton(
                     minWidth: 100.0,
@@ -84,13 +94,6 @@ class _SettingsState extends State<Settings> {
                       await database.updateUserData(currentUser);
                     }
                   ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 70.0, top: 15.0, right: 60.0, bottom: 20.0),
-              child: Row(
-                children: <Widget>[
                   InputButton(
                     minWidth: 100.0,
                     height: 50.0,
@@ -108,15 +111,25 @@ class _SettingsState extends State<Settings> {
                   InputButton(
                     minWidth: 100.0,
                     height: 50.0,
-                    text: 'Clear',
-                    onPressed: () {
-                      setState(() {
-                        currentUser.email = null;
-                        currentUser.username = null;
-                        if(!currentUser.isTeacher) currentUser.GPA = null;
-                        currentUser.photoURL = null;
-                        imageService.profileImage = null;
-                      });
+                    text: 'Delete',
+                    onPressed: () async{
+                      Auth auth = new Auth();
+                      
+                      for(int i = 0; i < users.length; i++){
+                        Database userDatabase = new Database(uid: users[i].uid);
+                        if(users[i].skippedUserIDs.contains(currentUser.uid)){
+                          users[i].skippedUserIDs.remove(currentUser.uid);
+                          await userDatabase.updateUserData(users[i]);
+                        }
+                        if(users[i].matchedUserID == currentUser.uid){
+                          users[i].matchedUserID = null;
+                          await userDatabase.updateUserData(users[i]);
+                        }
+                      }
+                      await auth.deleteFirebaseUser();
+                      await ImageService().deleteImage(currentUser.photoURL);
+                      await database.deleteUser();
+                      await auth.logout();
                     },
                   ),
                 ],

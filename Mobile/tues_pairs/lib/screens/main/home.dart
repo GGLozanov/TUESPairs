@@ -45,92 +45,95 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromRGBO(33, 36, 44, 1),
-        title: Text(
-          _widgets[_selectedIndex].toString(),
-          // convert widget title to string
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 40.0,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
+    return StreamProvider<List<User>>.value(
+      value: Database().users,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color.fromRGBO(33, 36, 44, 1),
+          title: Text(
+            _widgets[_selectedIndex].toString(),
+            // convert widget title to string
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 40.0,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.5,
+            ),
           ),
+          actions: <Widget>[
+            FlatButton.icon(
+              onPressed: () => _auth.logout(),
+              icon: Icon(
+                Icons.exit_to_app,
+                color: Colors.orange,
+                size: 35.0,
+              ),
+              label: Text(
+                'Logout',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
+              ),
+            ),
+          ],
         ),
-        actions: <Widget>[
-          FlatButton.icon(
-            onPressed: () => _auth.logout(),
-            icon: Icon(
-              Icons.exit_to_app,
-              color: Colors.orange,
-              size: 35.0,
-            ),
-            label: Text(
-              'Logout',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 25.0,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.5,
-              ),
-            ),
-          ),
-        ],
-      ),
 
-      body: PageView(
-        scrollDirection: Axis.horizontal,
-        controller: _controller,
-        children: _widgets,
-        onPageChanged: onItemTap,
-        pageSnapping: true,
-      ),
+        body: PageView(
+          scrollDirection: Axis.horizontal,
+          controller: _controller,
+          children: _widgets,
+          onPageChanged: onItemTap,
+          pageSnapping: true,
+        ),
 
-      bottomNavigationBar: BottomNavigationBar(
-        fixedColor: Colors.orange,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat),
-            title: Text(
-              'Chat',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 10.0,
-                letterSpacing: 1.0,
-              ),
-            ),
-            backgroundColor: Colors.deepOrangeAccent,
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person),
+        bottomNavigationBar: BottomNavigationBar(
+          fixedColor: Colors.orange,
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.chat),
               title: Text(
-                'Match',
+                'Chat',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 10.0,
                   letterSpacing: 1.0,
                 ),
               ),
-              backgroundColor: Colors.deepOrangeAccent
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              title: Text(
-                'Settings',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10.0,
-                  letterSpacing: 1.0,
+              backgroundColor: Colors.deepOrangeAccent,
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                title: Text(
+                  'Match',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.0,
+                    letterSpacing: 1.0,
+                  ),
                 ),
-              ),
-              backgroundColor: Colors.deepOrangeAccent
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: onItemTap,
-        backgroundColor: Color.fromRGBO(33, 36, 44, 1),
-      ),
+                backgroundColor: Colors.deepOrangeAccent
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                title: Text(
+                  'Settings',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.0,
+                    letterSpacing: 1.0,
+                  ),
+                ),
+                backgroundColor: Colors.deepOrangeAccent
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: onItemTap,
+          backgroundColor: Color.fromRGBO(33, 36, 44, 1),
+        ),
+      )
     );
   }
 }

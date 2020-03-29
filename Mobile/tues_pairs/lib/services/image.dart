@@ -36,6 +36,17 @@ class ImageService {
     return await firebaseStorageReference.getDownloadURL();
   }
 
+  Future deleteImage(String photoURL) async{
+    if (photoURL == null) return null;
+    try{
+      StorageReference imageRef = await firebaseStorage.getReferenceFromUrl(photoURL);
+      return await imageRef.delete();
+    }catch(e){
+      print(e.toString());
+      return null;
+    }
+  }
+
   NetworkImage getImageByURL(String photoURL) {
     try{
       return NetworkImage(photoURL);
@@ -43,5 +54,7 @@ class ImageService {
       print(e.toString());
     }
   }
+
+
 
 }
