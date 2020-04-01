@@ -1,0 +1,16 @@
+.signuot-button {
+    font-size: 21px;
+    padding: 5px 20px;
+    border: 0;
+    background-color: rgb(252, 152, 0);
+    color: #fff;
+    border-radius: 3px;
+    transition: all 250ms ease-in-out;
+    cursor: pointer;
+    &:hover {
+      background-color: orange;
+    }
+    &:focus {
+      outline: none;
+    }
+}

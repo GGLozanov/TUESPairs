@@ -15,10 +15,9 @@ import ChangeHandler from '../Pages/Authentication/changeHandler';
 
 const App = () => (
     <Router>
+        <Navigation />
         <div className="main">
-
             <Route path={ROUTES.SIGN} component={ChangeHandler} />
-            <Navigation />
 
             <Route exact path={ROUTES.LANDING} component={LandingPage} />
             <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
