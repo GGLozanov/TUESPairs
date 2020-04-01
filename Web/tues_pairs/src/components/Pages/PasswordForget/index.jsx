@@ -6,9 +6,10 @@ import * as ROUTES from '../../../constants/routes';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 
+import './passwordforget.scss';
+
 const PasswordForgetPage = () => (
   <div>
-    <h1>PasswordForget</h1>
     <PasswordForgetForm />
   </div>
 );
@@ -21,16 +22,20 @@ const INITIAL_STATE = {
 class PasswordForgetFormBase extends Component {
   constructor(props) {
     super(props);
-    this.state = { ...INITIAL_STATE, email: this.props.authUser.email };
+    this.state = { ...INITIAL_STATE };
   }
 
   onSubmit = event => {
-    const { email } = this.state;
+    const currentUser = this.props.authUser
+    const { email } = currentUser != null ? currentUser.email : null;
     this.props.firebase
       .doPasswordReset(email)
       .then(() => {
         this.setState({ ...INITIAL_STATE });
-        this.props.history.push(ROUTES.ACCOUNT);
+        if(currentUser){
+          this.props.history.push(ROUTES.ACCOUNT);
+        }
+        this.props.history.push(ROUTES.SIGN);
       })
       .catch(error => {
         this.setState({ error });
@@ -46,13 +51,20 @@ class PasswordForgetFormBase extends Component {
     const { email, error } = this.state;
     const isInvalid = email === '';
     return (
-      <form onSubmit={this.onSubmit}>
-        <p>You have to approve the email confirmation</p>
-        <button disabled={isInvalid} type="submit">
-          Send email
-        </button>
-        {error && <p>{error.message}</p>}
-      </form>
+      <div className="email-confirmation">
+        <div className="hedaer">
+          <h1>Change my password</h1>
+        </div>
+        <div className="form">
+          <form onSubmit={this.onSubmit}>
+            <p>We will send you an email to change your password</p>
+              <button disabled={isInvalid} type="submit">
+                Send email
+              </button>
+            {error && <p>{error.message}</p>}
+          </form>
+        </div>
+      </div>
     );
   }
 }

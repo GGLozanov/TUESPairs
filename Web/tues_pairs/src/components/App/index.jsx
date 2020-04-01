@@ -4,7 +4,7 @@ import './app.scss';
 
 import Navigation from '../Pages/Navigation/navigation';
 import LandingPage from '../Pages/Landing/landing';
-import PasswordForgetPage from '../Pages/PasswordForget/passwordforget';
+import PasswordForgetPage from '../Pages/PasswordForget';
 import HomePage, { AlreadyMatchedPage } from '../Pages/Home/home';
 import AccountPage from '../Pages/Account/account';
 import ImageUploadPage from '../Pages/ImageUpload/imageUpload';
