@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 
-import { SignUpLink } from '../SignUp/register';
+import { SignUpLink } from './register';
 import { withFirebase } from '../../Firebase';
 import * as ROUTES from '../../../constants/routes';
 import { PasswordForgetLink } from '../PasswordForget/passwordforget'
+import './style.scss';
 
 const SignInPage = () => (
   <div>
@@ -51,7 +52,7 @@ class SignInFormBase extends Component {
     const isInvalid = password === '' || email === '';
 
     return (
-      <div className="base-container">
+      <div className="base-container" ref={this.props.containerRef}>
         <div className="header">Login</div>
         <div className="content">
           <div className="image">

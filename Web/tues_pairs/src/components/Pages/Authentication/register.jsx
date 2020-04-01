@@ -5,6 +5,8 @@ import { compose } from 'recompose';
 import { withFirebase } from '../../Firebase';
 import * as ROUTES from '../../../constants/routes';
 
+import './style.scss';
+
 const SingUpPage = () => (
     <div>
         <SignUpForm />
@@ -84,7 +86,7 @@ class SignUpFormBase extends Component {
             isTeacher === true;
 
         return(
-            <div className="base-container">
+            <div className="base-container" ref={this.props.contanerRef}>
                 <div className="header">Register</div>
                 <div className="content">
                     <div className="image">

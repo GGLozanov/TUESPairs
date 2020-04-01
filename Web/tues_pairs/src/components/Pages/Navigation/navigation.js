@@ -9,7 +9,7 @@ const Navigation = ({ authUser }) => (
   <div>
     <AuthUserContext.Consumer>
       {authUser =>
-        authUser ? <NavigationLogged /> : <NavigationNotLogged />
+        authUser ? <NavigationLogged /> : null
       }
     </AuthUserContext.Consumer>
   </div>
@@ -25,19 +25,6 @@ const NavigationLogged = () => (
       </li>
       <li>
         <SignOutButton />
-      </li>
-  </ul>
-);
-
-const NavigationNotLogged = () => (
-  <ul>
-      <li>
-        <Link to={ROUTES.LANDING}>Landing</Link>
-      </li>
-      <li>
-        <Link to={ROUTES.SIGN_IN}>Sign In</Link>
-        <p>or</p>
-        <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
       </li>
   </ul>
 );
