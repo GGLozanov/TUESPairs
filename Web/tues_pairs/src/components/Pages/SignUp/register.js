@@ -7,7 +7,6 @@ import * as ROUTES from '../../../constants/routes';
 
 const SingUpPage = () => (
     <div>
-        <h1>SignUp</h1>
         <SignUpForm />
     </div>
 );
@@ -85,79 +84,51 @@ class SignUpFormBase extends Component {
             isTeacher === true;
 
         return(
-
-            <form onSubmit={this.onSubmit}>
-                <input
-                    name="username"
-                    value={username}
-                    onChange={this.onChange}
-                    type="text"
-                    placeholder="Enter your username"
-                />
-                
-                <br/><br/>
-
-                <input
-                    name="email"
-                    value={email}
-                    onChange={this.onChange}
-                    type="email"
-                    placeholder="Enter your email address"
-                />
-
-                <br/><br/>
-                
-                <input
-                    name="passwordOne"
-                    value={passwordOne}
-                    onChange={this.onChange}
-                    type="password"
-                    placeholder="Enter your password"
-                    minLength="4"
-                    maxLength="8"
-                />
-
-                <br/><br/>
-
-                <input
-                    name="passwordTwo"
-                    value={passwordTwo}
-                    onChange={this.onChange}
-                    type="password"
-                    placeholder="Confirm your password"
-                    minLength="4"
-                    maxLength="8"
-                />
-
-                <br/><br/>
-
-                <select name="isTeacher" value={isTeacher} onChange={this.onChange}>
-                    <option value="true">Teacher</option>
-                    <option value="false">Student</option>    
-                </select>                
-
-                <br /><br/>
-
-                <input 
-                    name="GPA"
-                    value={GPA}
-                    onChange={this.onChange}
-                    disabled={checkTeacher}
-                    type="number"
-                    placeholder="Enter your GPA(from 8-12th grade)"
-                    min="2.01"
-                    step="0.01"
-                    max="6.00"
-                />
-
-                <br /><br/>
-
-                <button disabled={isInvalid} type="submit">
-                    Sign Up
-                </button>
-                
-                {error && <p>{error.message}</p>}
-            </form>
+            <div className="base-container">
+                <div className="header">Register</div>
+                <div className="content">
+                    <div className="image">
+                        <img src="" alt=""></img>
+                    </div>
+                    <div className="form">
+                        <form onSubmit={this.onSubmit}>
+                            <div className="form-group">
+                                <label htmlFor="username">Username</label>
+                                <input name="username" value={username} onChange={this.onChange} type="text" placeholder="Enter your username"/>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="email">Email</label>
+                                <input name="email" value={email} onChange={this.onChange} type="email" placeholder="Enter your email address"/>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="passwordOne">Password</label>
+                                <input name="passwordOne" value={passwordOne} onChange={this.onChange} type="password" placeholder="Enter your password" minLength="4" maxLength="8"/>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="passwordTwo">Confirm your password</label>
+                                <input name="passwordTwo" value={passwordTwo} onChange={this.onChange} type="password" placeholder="Confirm your password" minLength="4" maxLength="8"/>
+                            </div>
+                            <div className="form-group">
+                                <select name="isTeacher" value={isTeacher} onChange={this.onChange}>
+                                    <option value="true">Teacher</option>
+                                    <option value="false">Student</option>    
+                                </select> 
+                            </div>
+                            <div className="form-group">
+                                <input name="GPA" value={GPA} onChange={this.onChange} disabled={checkTeacher} type="number" placeholder="Enter your GPA(from 8-12th grade)" min="2.01" step="0.01" max="6.00"/>
+                            </div>
+                            <div className="error-message">
+                                {error && <p>{error.message}</p>}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div className="footer">
+                    <button type="button" className="btn" disabled={isInvalid} onClick={this.onSubmit}>
+                        Sign Up
+                    </button>
+                </div>
+            </div>
         );
     }
 }
