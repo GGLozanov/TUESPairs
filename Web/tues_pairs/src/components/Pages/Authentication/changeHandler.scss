@@ -2,7 +2,7 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
 
 .ChangeHandler {
-  margin-top: 6rem;
+  margin-top: 3rem;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -42,8 +42,8 @@
 
 //Login Main Container
 .login {
-  width: 20em;
-  height: 30em;
+  width: 24em;
+  height: 38em;
   //min-height: 44em;
   display: flex;
   justify-content: center;
@@ -104,22 +104,20 @@
       margin-left: 2em;
     }
   }
-}
-
-//Button
-.btn {
-  font-size: 21px;
-  padding: 5px 20px;
-  border: 0;
-  background-color: rgb(252, 152, 0);
-  color: #fff;
-  border-radius: 3px;
-  transition: all 250ms ease-in-out;
-  cursor: pointer;
-  &:hover {
-    background-color: orange;
-  }
-  &:focus {
-    outline: none;
+  .btn {
+    font-size: 21px;
+    padding: 5px 20px;
+    border: 0;
+    background-color: rgb(252, 152, 0);
+    color: #fff;
+    border-radius: 3px;
+    transition: all 250ms ease-in-out;
+    cursor: pointer;
+    &:hover {
+      background-color: orange;
+    }
+    &:focus {
+      outline: none;
+    }
   }
 }

@@ -110,7 +110,7 @@ class SignUpFormBase extends Component {
                                 <label htmlFor="passwordTwo">Confirm your password</label>
                                 <input name="passwordTwo" value={passwordTwo} onChange={this.onChange} type="password" placeholder="Confirm your password" minLength="4" maxLength="8"/>
                             </div>
-                            <div className="form-group">
+                            <div className="teacher-options">
                                 <select name="isTeacher" value={isTeacher} onChange={this.onChange}>
                                     <option value="true">Teacher</option>
                                     <option value="false">Student</option>    
@@ -122,13 +122,13 @@ class SignUpFormBase extends Component {
                             <div className="error-message">
                                 {error && <p>{error.message}</p>}
                             </div>
+                            <button type="button" className="btn" disabled={isInvalid} onClick={this.onSubmit}>
+                                Sign Up
+                            </button>
                         </form>
                     </div>
                 </div>
                 <div className="footer">
-                    <button type="button" className="btn" disabled={isInvalid} onClick={this.onSubmit}>
-                        Sign Up
-                    </button>
                 </div>
             </div>
         );
@@ -136,9 +136,11 @@ class SignUpFormBase extends Component {
 }
 
 const SignUpLink = () => (
-    <p>
-        Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-    </p>
+    <div className="sign-up-link">
+        <p>
+            Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
+        </p>
+    </div>
 )
 
 const SignUpForm = compose(
