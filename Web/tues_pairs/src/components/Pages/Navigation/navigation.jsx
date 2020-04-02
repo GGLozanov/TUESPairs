@@ -26,7 +26,7 @@ const NavigationLogged = () => (
   </Navbar.Brand>
   <Navbar.Toggle aria-controls="responsive-navbar-nav" />
     <Navbar.Collapse id="responsive-navbar-nav">
-      <Nav className="mr-auto" variant="tabs" defaultActiveKey="list-2">
+      <Nav variant="tabs" defaultActiveKey="list-2">
         <Nav.Item>
           <Nav.Link eventKey="list-3">
             <Link to={ROUTES.CHAT}>
@@ -49,8 +49,8 @@ const NavigationLogged = () => (
           </Nav.Link>
         </Nav.Item>
       </Nav>
-    </Navbar.Collapse>
     <SignOutButton />
+    </Navbar.Collapse>
   </Navbar>
 );
 
