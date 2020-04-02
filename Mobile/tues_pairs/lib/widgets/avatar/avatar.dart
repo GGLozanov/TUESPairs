@@ -39,6 +39,26 @@ class _AvatarState extends State<Avatar> {
     setImage(image);
   }
 
+  Widget displayImage(){
+    if (widget.userImage == null) {
+      if (widget.imageService.profileImage == null) {
+        return Icon(
+          Icons.person,
+          size: 100.0,
+          color: Colors.orange,
+        );
+      } 
+      return Image.file(
+        widget.imageService.profileImage,
+        fit: BoxFit.fill,
+      );
+    } 
+    return Image(
+      image: widget.userImage,
+      fit: BoxFit.fill,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -51,17 +71,7 @@ class _AvatarState extends State<Avatar> {
               child: SizedBox(
                 width: 180.0,
                 height: 180.0,
-                child: widget.userImage == null ? widget.imageService.profileImage == null ? Icon(
-                  Icons.person,
-                  size: 100.0,
-                  color: Colors.orange,
-                ) : Image.file(
-                  widget.imageService.profileImage,
-                  fit: BoxFit.fill,
-                ) : Image(
-                  image: widget.userImage,
-                  fit: BoxFit.fill,
-                )
+                child: displayImage(),
               ),
             ),
           ),

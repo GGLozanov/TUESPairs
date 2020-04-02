@@ -6,6 +6,8 @@ import 'package:tues_pairs/screens/loading/loading.dart';
 import 'package:tues_pairs/widgets/general/error.dart';
 import 'package:tues_pairs/screens/main/home.dart';
 
+import '../../shared/constants.dart';
+
 class AlreadyMatched extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -16,21 +18,11 @@ class AlreadyMatched extends StatelessWidget {
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.done) {
             final matchedUser = snapshot.data;
-            return Column(
-              children: <Widget>[
-                Center(
-                  child: Text(
-                  // TODO: mass clear in DB if condition for both matched is met (clear matchedUserIDs wherein it matches user ID)
-                  currentUser.matchedUserID == matchedUser.uid && matchedUser.matchedUserID == currentUser.uid ? 'You are matched with: ' + matchedUser.username + '. Go ahead and chat!':
-                'You have sent a match request to: ' + matchedUser.username + '. Why not go ahead and chat with them when they accept it?',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ]
-          );
+            return currentUser.matchedUserID == matchedUser.uid && matchedUser.matchedUserID == currentUser.uid 
+                ? centeredText('You are matched with: ' + matchedUser.username + '. Go ahead and chat!')
+                : centeredText('You have sent a match request to: ' + matchedUser.username + '. Why not go ahead and chat with them when they accept it?');
+            
+
         } else return Loading();
       }
     );

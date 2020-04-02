@@ -61,13 +61,15 @@ class _SettingsState extends State<Settings> {
         color: Color.fromRGBO(59, 64, 78, 1),
         child: ListView(
           children: <Widget>[
-            SizedBox(height: 15.0),
+            SizedBox(height: 5.0),
             AvatarWrapper(),
             InputFormSettings(),
             Padding(
-              padding: const EdgeInsets.only(left: 10.0, top: 15.0, right: 10.0, bottom: 20.0),
+              padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0, bottom: 20.0),
               child: Wrap(
-                spacing: 20,
+                alignment: WrapAlignment.center,
+                runSpacing: 5.0,
+                spacing: 5.0,
                 children: <Widget>[
                   InputButton(
                     minWidth: 100.0,

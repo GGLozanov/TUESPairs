@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tues_pairs/modules/message.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/teacher.dart';
@@ -14,6 +15,7 @@ class Database { // DB Class for all DB interactions
 
   final CollectionReference _userCollectionReference = Firestore.instance.collection('users');
   final CollectionReference _tagsCollectionReference = Firestore.instance.collection('tags');
+  final CollectionReference _messagesCollectionReference = Firestore.instance.collection('messages');
   // TODO: Remove tags field from user and put it as another document
   // keep the users' info in the DB? First collection?
   // every time the user registers, we will take the unique ID and create a new document (record/row) for the user in the Cloud Firestore DB
@@ -27,6 +29,10 @@ class Database { // DB Class for all DB interactions
 
   List<Tag> _listTagFromQuerySnapshot(QuerySnapshot querySnapshot) {
     return querySnapshot.documents.map((doc) => getTagBySnapshot(doc)).toList();
+  }
+
+  List<Message> _listMessageFromQuerySnapshot(QuerySnapshot querySnapshot){
+    return querySnapshot.documents.map((doc) => getMessageBySnapshot(doc)).toList();
   }
 
   // method to update user data by given information in custom registration fields
@@ -102,6 +108,37 @@ class Database { // DB Class for all DB interactions
 
   Future<User> getUserById() async {
     return getUserBySnapshot(await _userCollectionReference.document(uid).get());
+  }
+
+  Stream<List<Message>> get messages {
+    return _messagesCollectionReference.orderBy("sentTime").snapshots().map(
+      _listMessageFromQuerySnapshot
+    );
+  }
+
+  CollectionReference get messageCollectionReference {
+    return _messagesCollectionReference;
+  }
+
+  Message getMessageBySnapshot(DocumentSnapshot doc){
+    if(doc.data != null){
+      return Message(
+        uid: doc.documentID,
+        content: doc.data['content'] ?? null,
+        fromId: doc.data['fromId'] ?? null,
+        toId: doc.data['toId'] ?? null,
+        sentTime: doc.data['sentTime'] ?? null,
+      );
+    }
+  }
+
+  Future addMessage(Message message) async{
+    return await _messagesCollectionReference.add({
+      'content': message.content,
+      'fromId': message.fromId,
+      'toId': message.toId,
+      'sentTime': message.sentTime
+    });
   }
 
 

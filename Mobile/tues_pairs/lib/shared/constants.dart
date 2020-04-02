@@ -26,3 +26,21 @@ const textInputDecoration = InputDecoration(
 const textInputColor = TextStyle(
     color: Colors.white,
 );
+
+
+Widget centeredText(String text){
+  return Center(
+    child: Padding(
+      padding: EdgeInsets.only(left: 10.0, right: 10.0),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: Colors.orange,
+          fontSize: 30.0,
+          
+        ),
+        textAlign: TextAlign.center,
+      )
+    ),
+  );
+}
