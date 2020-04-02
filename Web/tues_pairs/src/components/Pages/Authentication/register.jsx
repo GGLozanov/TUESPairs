@@ -135,14 +135,6 @@ class SignUpFormBase extends Component {
     }
 }
 
-const SignUpLink = () => (
-    <div className="sign-up-link">
-        <p>
-            Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-        </p>
-    </div>
-)
-
 const SignUpForm = compose(
     withRouter,
     withFirebase,
@@ -151,4 +143,4 @@ const SignUpForm = compose(
 
 export default SingUpPage
 
-export { SignUpForm, SignUpLink };
+export { SignUpForm };

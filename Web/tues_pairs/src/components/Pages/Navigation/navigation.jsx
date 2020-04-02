@@ -19,6 +19,7 @@ const Navigation = ({ authUser }) => (
 const NavigationLogged = () => (
   <div className="links">
         <img src="https://bonitaselfdefense.com/wp-content/uploads/2017/04/default-image.jpg" alt="TUESPairs logo"></img>
+        <Link to={ROUTES.CHAT}>Chat</Link>
         <Link to={ROUTES.HOME}>Home</Link>
         <Link to={ROUTES.ACCOUNT}>Account</Link>
         <SignOutButton />

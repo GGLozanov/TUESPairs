@@ -24,6 +24,7 @@
   
       .form {
         margin-top: 2em;
+        margin-bottom: 1em;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -64,17 +65,3 @@
       }
     }
   }
-
-.sign-up-link{
-  color: white;
-
-  p a{
-    text-decoration: none;
-    color: rgb(252, 152, 0);
-
-    &:hover{
-      text-decoration: underline;
-      text-emphasis-color:rgb(252, 152, 0);
-    }
-  }
-}

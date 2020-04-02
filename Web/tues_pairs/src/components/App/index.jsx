@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, } from 'react-router-dom';
 import './app.scss';
 
 import Navigation from '../Pages/Navigation/navigation';
-import LandingPage from '../Pages/Landing/landing';
+import ChatPage from '../Pages/Chat/chat';
 import PasswordForgetPage from '../Pages/PasswordForget';
 import HomePage, { AlreadyMatchedPage } from '../Pages/Home/home';
 import AccountPage from '../Pages/Account/account';
@@ -19,7 +19,7 @@ const App = () => (
         <div className="main">
             <Route path={ROUTES.SIGN} component={ChangeHandler} />
 
-            <Route exact path={ROUTES.LANDING} component={LandingPage} />
+            <Route exact path={ROUTES.CHAT} component={ChatPage} />
             <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
             <Route path={ROUTES.HOME} component={HomePage} />
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
