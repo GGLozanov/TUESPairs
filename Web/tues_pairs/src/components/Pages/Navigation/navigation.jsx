@@ -7,38 +7,59 @@ import { AuthUserContext } from '../../Authentication';
 import PeopleIcon from '@material-ui/icons/People';
 import ChatIcon from '@material-ui/icons/Chat';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.scss';
+import { Navbar, Nav } from 'react-bootstrap';
 
 const Navigation = ({ authUser }) => (
-  <div className="navbar">
       <AuthUserContext.Consumer>
         {authUser =>
           authUser ? <NavigationLogged /> : <NavigationNotLogged />
         }
       </AuthUserContext.Consumer>
-  </div>
 );
 
 const NavigationLogged = () => (
-  <div className="links">
-        <img src="https://bonitaselfdefense.com/wp-content/uploads/2017/04/default-image.jpg" alt="TUESPairs logo"></img>
-        <Link to={ROUTES.CHAT}>
-          <ChatIcon fontSize="large"></ChatIcon>
-        </Link>
-        <Link to={ROUTES.HOME}>
-          <PeopleIcon fontSize="large"></PeopleIcon>
-        </Link>
-        <Link to={ROUTES.ACCOUNT}>
-        <AssignmentIndIcon fontSize="large"></AssignmentIndIcon>
-        </Link>
-        <SignOutButton />
-  </div>
+  <Navbar collapseOnSelect expand="lg" bg="dark">
+  <Navbar.Brand>
+    <img src="https://bonitaselfdefense.com/wp-content/uploads/2017/04/default-image.jpg" alt="TUESPairs logo"></img>
+  </Navbar.Brand>
+  <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+    <Navbar.Collapse id="responsive-navbar-nav">
+      <Nav className="mr-auto" variant="tabs" defaultActiveKey="list-2">
+        <Nav.Item>
+          <Nav.Link eventKey="list-3">
+            <Link to={ROUTES.CHAT}>
+              <ChatIcon fontSize="medium"></ChatIcon>
+            </Link>
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey="list-2">
+            <Link to={ROUTES.HOME}>
+              <PeopleIcon fontSize="medium"></PeopleIcon>
+            </Link>
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey="list-1">
+            <Link to={ROUTES.ACCOUNT}>
+              <AssignmentIndIcon fontSize="medium"></AssignmentIndIcon>
+            </Link>
+          </Nav.Link>
+        </Nav.Item>
+      </Nav>
+    </Navbar.Collapse>
+    <SignOutButton />
+  </Navbar>
 );
 
 const NavigationNotLogged = () => (
-  <div className="logo">
-    <img src="https://bonitaselfdefense.com/wp-content/uploads/2017/04/default-image.jpg" alt="TUESPairs logo"></img>
-  </div>
+  <Navbar collapseOnSelect expand="lg" bg="dark">
+    <Navbar.Brand>
+      <img src="https://bonitaselfdefense.com/wp-content/uploads/2017/04/default-image.jpg" alt="TUESPairs logo"></img>
+    </Navbar.Brand>
+  </Navbar>
 )
 
 export default Navigation;

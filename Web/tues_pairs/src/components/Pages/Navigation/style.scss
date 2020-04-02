@@ -1,59 +1,63 @@
+.bg-dark {
+    background-color: rgb(34, 34, 43)!important
+}
+
 .navbar{
-    background-color: rgb(34, 34, 43);
-    font-family: "Open Sans", sans-serif;
     width: 100%;
-    height: 50%;
+    display: flex;
+    justify-content: space-between;
 
-    .links{
-        display: flex;
-        justify-content: space-between;
-        
+    .navbar-brand{
         img{
-            width: 5%;
-            height: 5%;
-            border-radius: 50%;
-            align-self: center;
+            margin-right: 24em;
+            width: 50px;
+            height: 50px;
         }
-
-        a{
-            padding: 1em 2em;
-            text-decoration: none;
-            color: white;
-            align-self: center;
-
-            &:hover{
-                background-color: rgb(252, 152, 0);
-            }
-        }
-
-        button {
-            margin: 10px;
-            font-size: 21px;
-            padding: 5px 20px;
-            border: 0;
-            font-size: small;
-            background-color: rgb(252, 152, 0);
-            color: #fff;
-            border-radius: 3px;
-            transition: all 250ms ease-in-out;
-            cursor: pointer;
-            &:hover {
-              background-color: orange;
-            }
-            &:focus {
-              outline: none;
-            }
-        }
-
     }
 
-    .logo {
-        display: flex;
-        justify-content: center;
-        img{
-            width: 5%;
-            height: 5%;
+    a{
+        padding: 1em 2em;
+        text-decoration: none;
+        color: white;
+        align-self: center;
 
+        &:hover{
+            background-color: rgb(252, 152, 0);
+            color: black;
         }
+    }
+
+    button {
+        margin: 10px;
+        font-size: 21px;
+        padding: 5px 20px;
+        border: 0;
+        font-size: small;
+        background-color: rgb(252, 152, 0);
+        color: #fff;
+        border-radius: 3px;
+        transition: all 250ms ease-in-out;
+        cursor: pointer;
+        &:hover {
+          background-color: orange;
+          color: black;
+        }
+        &:focus {
+          outline: none;
+        }
+    }
+}
+
+.nav-tabs {
+
+    .nav-link{
+        &:hover{
+            background-color: rgb(252, 152, 0);
+            color: black;
+        }
+    }
+
+    .nav-link.active{
+        background-color: rgb(252,152,0);    
     }
 }
