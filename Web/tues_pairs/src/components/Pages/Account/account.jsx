@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { PasswordChangeLink } from '../PasswordForget/passwordforget';
+import { PasswordChangeLink } from '../PasswordForget';
 import { withAuthorization } from '../../Authentication';
 import * as ROUTES from '../../../constants/routes';
 import { Link } from 'react-router-dom';

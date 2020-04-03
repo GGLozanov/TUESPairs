@@ -1,28 +1,25 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, } from 'react-router-dom';
+import './app.scss';
 
 import Navigation from '../Pages/Navigation/navigation';
-import LandingPage from '../Pages/Landing/landing';
-import SignUpPage from '../Pages/SignUp/register';
-import SignInPage from '../Pages/SignIn/login';
-import PasswordForgetPage from '../Pages/PasswordForget/passwordforget';
+import ChatPage from '../Pages/Chat/chat';
+import PasswordForgetPage from '../Pages/PasswordForget';
 import HomePage, { AlreadyMatchedPage } from '../Pages/Home/home';
 import AccountPage from '../Pages/Account/account';
 import ImageUploadPage from '../Pages/ImageUpload/imageUpload';
 
 import * as ROUTES from '../../constants/routes';
 import { withAuthentication } from '../Authentication';
+import ChangeHandler from '../Pages/Authentication/changeHandler';
 
 const App = () => (
     <Router>
-        <div>
-            <Navigation />
+        <Navigation />
+        <div className="main">
+            <Route path={ROUTES.SIGN} component={ChangeHandler} />
 
-            <hr />
-
-            <Route exact path={ROUTES.LANDING} component={LandingPage} />
-            <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
-            <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+            <Route exact path={ROUTES.CHAT} component={ChatPage} />
             <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
             <Route path={ROUTES.HOME} component={HomePage} />
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />

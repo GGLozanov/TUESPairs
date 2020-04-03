@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 
 import { withFirebase } from '../../Firebase';
 import * as ROUTES from '../../../constants/routes';
+
+import './style.scss';
 
 const SingUpPage = () => (
     <div>
@@ -84,7 +86,7 @@ class SignUpFormBase extends Component {
             isTeacher === true;
 
         return(
-            <div className="base-container">
+            <div className="base-container" ref={this.props.contanerRef}>
                 <div className="header">Register</div>
                 <div className="content">
                     <div className="image">
@@ -108,7 +110,7 @@ class SignUpFormBase extends Component {
                                 <label htmlFor="passwordTwo">Confirm your password</label>
                                 <input name="passwordTwo" value={passwordTwo} onChange={this.onChange} type="password" placeholder="Confirm your password" minLength="4" maxLength="8"/>
                             </div>
-                            <div className="form-group">
+                            <div className="teacher-options">
                                 <select name="isTeacher" value={isTeacher} onChange={this.onChange}>
                                     <option value="true">Teacher</option>
                                     <option value="false">Student</option>    
@@ -120,24 +122,18 @@ class SignUpFormBase extends Component {
                             <div className="error-message">
                                 {error && <p>{error.message}</p>}
                             </div>
+                            <button type="button" className="btn" disabled={isInvalid} onClick={this.onSubmit}>
+                                Sign Up
+                            </button>
                         </form>
                     </div>
                 </div>
                 <div className="footer">
-                    <button type="button" className="btn" disabled={isInvalid} onClick={this.onSubmit}>
-                        Sign Up
-                    </button>
                 </div>
             </div>
         );
     }
 }
-
-const SignUpLink = () => (
-    <p>
-        Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-    </p>
-)
 
 const SignUpForm = compose(
     withRouter,
@@ -147,4 +143,4 @@ const SignUpForm = compose(
 
 export default SingUpPage
 
-export { SignUpForm, SignUpLink };
+export { SignUpForm };

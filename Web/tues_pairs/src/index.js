@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import App from './components/App';
+import App from './components/App/index';
 import Firebase, { FirebaseContext } from './components/Firebase';
 
 import * as serviceWorker from './serviceWorker';
