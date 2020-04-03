@@ -53,12 +53,12 @@ class ImageUploadBase extends Component {
         }, 
         (error) => {
             // error function ....
-            console.log(error);
+            
+            console.error(error);
         }, 
         () => {
             // complete function ....
             this.props.firebase.storage.ref('/').child(image.name).getDownloadURL().then(url => {
-                console.log(url);
                 if(currentUser.photoURL === null) {
                     hasImage = false;
                 } else {
@@ -71,11 +71,11 @@ class ImageUploadBase extends Component {
                     if(hasImage === false) {
                         this.props.history.push(ROUTES.HOME);
                     } else {
-                        this.props.history.push(ROUTES.ACCOUNT);
+                        this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    console.error(error);
                 });
             })
         });
@@ -97,7 +97,7 @@ class ImageUploadBase extends Component {
             <input type="file" onChange={this.handleChange}/>
             <button onClick={this.handleUpload}>Upload</button>
             <br/>
-            <img src={this.photoURL || 'http://via.placeholder.com/400x300'} alt="Uploaded images" height="300" width="400"/>
+            <img src={this.props.authUser.photoURL || 'http://via.placeholder.com/400x300'} alt="Uploaded images" height="300" width="400"/>
         </div>
         )
     }

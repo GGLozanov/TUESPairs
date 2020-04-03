@@ -6,11 +6,13 @@ import { Link } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import { withFirebase } from '../../Firebase';
+import { Card, Button } from 'react-bootstrap';
+import './style.scss';
 
 const AccountPage = () => (
-            <div>
-                <UserProfilePage />
-            </div>
+    <div>
+        <UserProfilePage />
+    </div>
 );
 
 class UserProfile extends Component {
@@ -44,7 +46,7 @@ class UserProfile extends Component {
           });
     
         event.preventDefault();
-      };
+    };
     
     onChange = event => {
         this.setState({ [event.target.name]: event.target.value });
@@ -87,23 +89,44 @@ class UserProfile extends Component {
     render() {
         const { username, email, photoURL, error, message, GPA} = this.state;
 
+        const isTeacher = this.props.authUser.isTeacher;
+
         const isInvalid =
             username === '' || GPA === '';
 
         return(
-            <div>
+            <div className="page-main">
+                <Card bg="dark" style={{ width: '18rem' }} className="profile-card">
+                    <Card.Img variant="top" src={photoURL} className="profile-image"/>
+                    <Card.Body className="profile-body">
+                        <Card.Title>{ username }</Card.Title>
+                        {isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
+                        {!isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
+                            <Card.Text>
+                                User description + tehcnologies he knows
+                            </Card.Text>
+                        <Button href="/edit_personal_info" variant="dark">Edit your personal info</Button>
+                    </Card.Body>
+                </Card>
+            </div>
+            /*
+            <div className="page-wrapper">
+                <hedaer className="page-header">
+                    <h1 className="page-title">Your profile</h1>
+                </hedaer>
                 <h1>Account: {username}</h1>
                 <img src={photoURL} alt="Your profile pricture" height="200" width="200"></img>
                 <h2>Email: {email}</h2>
                 <h3>GPA: {GPA}</h3>
 
                 <PasswordChangeLink />
+
                 <Link to={ROUTES.IMAGE_UPLOAD}>Update your profile picture</Link>
 
                 <br /><br />
 
-                <form onSubmit={this.onSubmit}>
-                    Username: 
+                <form>
+                    <label htmlFor="username">Username</label>
                     <input
                         name="username"
                         value={username}
@@ -113,7 +136,7 @@ class UserProfile extends Component {
                     />
                     <br /><br />
 
-                    GPA: 
+                    <label htmlFor="GPA">GPA</label>
                     <input 
                         name="GPA"
                         value={GPA}
@@ -137,6 +160,7 @@ class UserProfile extends Component {
                     {message && <p>{message}</p>}
                 </form>
             </div>
+        */
         )
     }
 }

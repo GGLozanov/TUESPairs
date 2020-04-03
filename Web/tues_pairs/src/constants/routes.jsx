@@ -7,3 +7,4 @@ export const IMAGE_UPLOAD = '/image_upload';
 export const ALREADY_MATCHED_PAGE = '/already_matched_page';
 export const SIGN = '/sign'
 export const CHAT = '/chat';
+export const EDIT_PERSONAL_INFO = '/edit_personal_info';

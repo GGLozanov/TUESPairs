@@ -22,29 +22,29 @@ const Navigation = ({ authUser }) => (
 const NavigationLogged = () => (
   <Navbar collapseOnSelect expand="lg" bg="dark">
   <Navbar.Brand>
-    <img src="https://bonitaselfdefense.com/wp-content/uploads/2017/04/default-image.jpg" alt="TUESPairs logo"></img>
+    <img src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/TP-logo-2.png?alt=media&token=8378bc71-6fc6-4373-ac38-5f86a8b3295b" alt="TUESPairs logo"></img>
   </Navbar.Brand>
   <Navbar.Toggle aria-controls="responsive-navbar-nav" />
     <Navbar.Collapse id="responsive-navbar-nav">
-      <Nav variant="tabs" defaultActiveKey="list-2">
+      <Nav variant="tabs" >
         <Nav.Item>
           <Nav.Link eventKey="list-3">
             <Link to={ROUTES.CHAT}>
-              <ChatIcon fontSize="medium"></ChatIcon>
+              <ChatIcon fontSize="default"></ChatIcon>
             </Link>
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link eventKey="list-2">
             <Link to={ROUTES.HOME}>
-              <PeopleIcon fontSize="medium"></PeopleIcon>
+              <PeopleIcon fontSize="default"></PeopleIcon>
             </Link>
-          </Nav.Link>
+            </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="list-1">
+          <Nav.Link eventKey="list1">
             <Link to={ROUTES.ACCOUNT}>
-              <AssignmentIndIcon fontSize="medium"></AssignmentIndIcon>
+              <AssignmentIndIcon fontSize="default"></AssignmentIndIcon>
             </Link>
           </Nav.Link>
         </Nav.Item>
@@ -57,7 +57,7 @@ const NavigationLogged = () => (
 const NavigationNotLogged = () => (
   <Navbar collapseOnSelect expand="lg" bg="dark">
     <Navbar.Brand>
-      <img src="https://bonitaselfdefense.com/wp-content/uploads/2017/04/default-image.jpg" alt="TUESPairs logo"></img>
+      <img src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/TP-logo-2.png?alt=media&token=8378bc71-6fc6-4373-ac38-5f86a8b3295b" alt="TUESPairs logo"></img>
     </Navbar.Brand>
   </Navbar>
 )

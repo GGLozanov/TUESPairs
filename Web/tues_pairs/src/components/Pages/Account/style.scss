@@ -1,0 +1,110 @@
+.bg-dark {
+    background-color: rgb(34, 34, 43)!important;
+    color: white;
+}
+
+.page-main{
+    display: flex;
+    justify-content: center;
+    margin-top: 5em;
+
+    .profile-card{
+
+        box-sizing: border-box;
+        box-shadow: 0px 0px 15px 0px black;
+
+        .profile-body{
+            
+            .card-title{
+                text-align: center;
+            }
+
+            .card-subtitle{
+                margin: 5px;
+                color: rgb(252, 152, 0);
+                text-align: center;
+            }
+
+            a{
+                display: block;
+                text-align: center;
+                background-color: rgb(252, 152, 0);
+
+                &:hover{
+                    background-color: rgb(211, 127, 0);
+                }
+            }
+        }
+    }
+}
+
+.edit-page-info{
+    .profile-picture{
+        img{
+            margin: 10px;
+        }
+
+        a{ 
+            border: none;
+            background-color: rgb(252, 152, 0);
+            margin: 10px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+            &:hover{
+                background-color: orange;
+                color: black;
+            }
+        }
+    }
+
+    .profile-info{
+
+        margin: 10px;
+
+        .form-group{
+
+            .form-label{
+                color: white;
+            }
+
+            input{
+                background-color: rgb(34, 34, 43);
+                width: 50%;
+
+                &:focus{
+                    outline: none;
+                    box-shadow: 0px 0px 12px 0.8px orange;
+                    border-color: black;
+                }
+            }
+        }
+
+        button{
+            border: none;
+            background-color: rgb(0, 214, 0);
+            color: white;
+
+            &:hover{
+                background-color: rgb(0, 150, 0);
+            }
+        }
+    }
+
+    .clear-buttons{
+        button{
+            margin: 10px;
+        }
+    }
+
+    .delete-profile{
+        text-align: center;
+        background-color: red;
+        border: none;
+        display: block;
+        margin: auto;
+
+        &:hover{
+            background-color: rgb(196, 0, 0);
+        }
+    }
+}
