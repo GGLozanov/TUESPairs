@@ -32,7 +32,9 @@ class EditPersonalInfo extends Component{
             error: '',
             message: '',
             users: null,
-            loading: null,
+            loading: false,
+            isMatched: true,
+            hasSkipped: true,
         };
     }
 
@@ -55,12 +57,8 @@ class EditPersonalInfo extends Component{
                 ...firebaseUser,
             };
 
-            this.setState({ photoURL: currentUser.photoURL });
+            this.setState({ photoURL: currentUser.photoURL, loading: false });
         });
-      }
-    
-    componentWillUnmount() {
-        this.unsubscribe();
     }
 
     onSubmit = event => {
@@ -74,7 +72,7 @@ class EditPersonalInfo extends Component{
             }, 
         {merge: true})
         .then(() => {
-            this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
+            this.props.history.push(ROUTES.ACCOUNT);
         })
         .catch(error => {
             this.setState({ error });
@@ -96,9 +94,26 @@ class EditPersonalInfo extends Component{
             }, 
         {merge: true})
         .then(() => {
-            
+            this.props.history.push(ROUTES.ACCOUNT);
         })
         .catch(error => {
+            console.error(error);
+            this.setState({ error });
+        });
+    }
+
+    handleSkippedUsers = () => {
+        const currentUser = this.props.authUser;
+
+        this.props.firebase.db.collection("users").doc(currentUser.uid).set({
+            skippedUserIDs: [],
+        }, 
+        {merge: true})
+        .then(() => {
+            this.props.history.push(ROUTES.ACCOUNT);
+        })
+        .catch(error => {
+            console.error(error);
             this.setState({ error });
         });
     }
@@ -111,53 +126,57 @@ class EditPersonalInfo extends Component{
 
         const isTeacher = this.props.authUser.isTeacher ? false : true;
 
-        const isMatched = this.props.authUser.matchedUserID ? true : false;
+        this.state.isMatched = this.props.authUser.matchedUserID ? true : false;
+
+        this.state.hasSkipped = this.props.authUser.skippedUserIDs.length > 0 ? true : false;
 
         return(
-            this.state.isLoading ? <div></div> :
+            this.state.loading ? <div></div> :
             <div className="edit-page-info">
-                <div className="profile-picture">
-                    <Col xs={14} md={14}>
-                        <Image src={photoURL} rounded width="200" height="250" />
-                        <Button href="/image_upload">Change avatar</Button>
-                    </Col>
-                </div>
-                <Form className="profile-info" onSubmit={this.onSubmit}>
-                    <Form.Group controlId="formBasicPassword">
-                        <Form.Label>Username</Form.Label>
-                        <FormControl
-                            onChange={this.onChange}
-                            aria-label="Recipient's username"
-                            aria-describedby="basic-addon2"
-                            placeholder={username}
-                            name="username"
-                        />
-                    </Form.Group>
+                <div className="profile-editor">
+                    <div className="profile-picture">
+                        <Col xs={14} md={14}>
+                            <Image src={photoURL} rounded width="200" height="250" />
+                            <Button href="/image_upload">Change avatar</Button>
+                        </Col>
+                    </div>
+                    <Form className="profile-info" onSubmit={this.onSubmit}>
+                        <Form.Group controlId="formBasicPassword">
+                            <Form.Label>Username</Form.Label>
+                            <FormControl
+                                onChange={this.onChange}
+                                aria-label="Recipient's username"
+                                aria-describedby="basic-addon2"
+                                placeholder={username}
+                                name="username"
+                            />
+                        </Form.Group>
 
-                    <Form.Group controlId="formBasicEmail">
-                        {isTeacher && 
-                        <Form.Label>GPA</Form.Label>}
-                        {isTeacher && <FormControl
-                            onChange={this.onChange}
-                            aria-label="Recipient's GPA"
-                            aria-describedby="basic-addon2"
-                            placeholder={GPA}
-                            type="number"
-                            name="GPA"
-                        />}
-                    </Form.Group>
+                        <Form.Group controlId="formBasicEmail">
+                            {isTeacher && 
+                            <Form.Label>GPA</Form.Label>}
+                            {isTeacher && <FormControl
+                                onChange={this.onChange}
+                                aria-label="Recipient's GPA"
+                                aria-describedby="basic-addon2"
+                                placeholder={GPA}
+                                type="number"
+                                name="GPA"
+                            />}
+                        </Form.Group>
 
-                    <Button variant="primary" type="submit" disabled={isInvalid}>
-                        Submit
+                        <Button variant="primary" type="submit" disabled={isInvalid}>
+                            Submit
+                        </Button>
+                    </Form>
+                    <div className="clear-buttons">
+                        {this.state.isMatched && <Button onClick={this.handleClearMatchedUser}>Clear Match</Button>}
+                        {this.state.hasSkipped && <Button onClick={this.handleSkippedUsers}>Clear Skipped</Button>}
+                    </div>
+                    <Button onClick={this.handleDeleteProfile} className="delete-profile">
+                            Delete profile
                     </Button>
-                </Form>
-                <div className="clear-buttons">
-                    {isMatched && <Button onClick={this.handleClearMatchedUser}>Clear Match</Button>}
-                    <Button onClick={this.handleSkippedUsers}>Clear Skipped</Button>
                 </div>
-                <Button onClick={this.handleDeleteProfile} className="delete-profile">
-                        Delete profile
-                </Button>
             </div>
         )
     }
