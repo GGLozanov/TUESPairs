@@ -27,6 +27,29 @@ class UserProfile extends Component {
         };
     }
 
+    componentDidMount(){
+        let currentUser = this.props.authUser;
+        this.setState({ loading: true });
+    
+        this.unsubscribe = this.props.firebase.user(currentUser.uid).get()
+        .then(snapshot => {
+            const firebaseUser = snapshot.data();
+
+            //default empty roles
+            if(!firebaseUser.roles) {
+                firebaseUser.roles = {};
+            }
+
+            currentUser = {
+                uid: currentUser.uid,
+                email: currentUser.email,
+                ...firebaseUser,
+            };
+
+            this.setState({ photoURL: currentUser.photoURL, username: currentUser.username, loading: false });
+        });
+    }
+
     render() {
         const { username, photoURL} = this.state;
 

@@ -49,19 +49,28 @@
 
         .profile-picture{
             text-align: center;
-            img{
-                margin: 10px;
-            }
 
-            a{ 
-                border: none;
-                background-color: rgb(252, 152, 0);
+            .edit-link{
                 margin: 10px;
-                font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+                .edit-image{
+                    width: 10px;
+                    height: 10px;
+                    display: none;
+                }
 
                 &:hover{
-                    background-color: orange;
-                    color: black;
+
+                    .profile-image{
+                        opacity: 0.6;
+                    }
+
+                    .edit-image{
+                        margin: 5px;
+                        display: inline-block;
+                        width: 40px;
+                        height: 40px;
+                    }
                 }
             }
         }

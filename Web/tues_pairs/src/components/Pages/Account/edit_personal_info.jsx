@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { FormControl, Button, Col, Image, Form } from 'react-bootstrap';
+import { FormControl, Button, Col, Image, Form, Row } from 'react-bootstrap';
 import { withCurrentUser } from '../../Authentication/context';
 import { compose } from 'recompose';
 import { withFirebase } from '../../Firebase';
 import { withAuthorization } from '../../Authentication';
 import { withRouter } from 'react-router-dom';
 import * as ROUTES from '../../../constants/routes';
+import { Link } from 'react-router-dom';
 
 const TeacherInfo = () => (
     <div>
@@ -29,6 +30,7 @@ class EditPersonalInfo extends Component{
             email: this.props.authUser.email,
             GPA: this.props.authUser.GPA,
             photoURL: this.props.authUser.photoURL,
+            email: this.props.authUser.email,
             error: '',
             message: '',
             users: null,
@@ -57,7 +59,7 @@ class EditPersonalInfo extends Component{
                 ...firebaseUser,
             };
 
-            this.setState({ photoURL: currentUser.photoURL, loading: false });
+            this.setState({ photoURL: currentUser.photoURL, email: currentUser.email, loading: false });
         });
     }
 
@@ -69,10 +71,11 @@ class EditPersonalInfo extends Component{
         this.props.firebase.db.collection("users").doc(currentUser.uid).set({
             username: username,
             GPA: parseFloat(GPA),
+            email: email,
             }, 
         {merge: true})
         .then(() => {
-            this.props.history.push(ROUTES.ACCOUNT);
+            this.props.firebase.doEmailUpdate(email).then(this.props.history.push(ROUTES.ACCOUNT));
         })
         .catch(error => {
             this.setState({ error });
@@ -136,8 +139,12 @@ class EditPersonalInfo extends Component{
                 <div className="profile-editor">
                     <div className="profile-picture">
                         <Col xs={14} md={14}>
-                            <Image src={photoURL} rounded width="200" height="250" />
-                            <Button href="/image_upload">Change avatar</Button>
+                            <Link to={ROUTES.IMAGE_UPLOAD} className="edit-link">
+                                <Image src={photoURL} rounded width="200" height="250" className="profile-image" />
+                                <Image src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/edit_image.png?alt=media&token=29df840d-e73e-49ba-843e-a51b8a693cc8" 
+                                    className="edit-image"   
+                                />
+                            </Link>
                         </Col>
                     </div>
                     <Form className="profile-info" onSubmit={this.onSubmit}>
@@ -163,6 +170,31 @@ class EditPersonalInfo extends Component{
                                 type="number"
                                 name="GPA"
                             />}
+                        </Form.Group>
+
+                        <Form.Group as={Row} controlId="formPlaintextEmail">
+                            <Form.Label column sm="2">
+                                Your current email
+                            </Form.Label>
+                            <Col sm="4">
+                                <Form.Control plaintext readOnly defaultValue={email} />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} controlId="formBasicEmail">
+                            {isTeacher && 
+                            <Form.Label column sm="2">
+                                New email
+                            </Form.Label>}
+                            <Col sm="4">
+                                {isTeacher && <FormControl
+                                    onChange={this.onChange}
+                                    aria-label="Recipient's email"
+                                    aria-describedby="basic-addon2"
+                                    placeholder="example@example.com"
+                                    type="text"
+                                    name="email"
+                                />}
+                            </Col>
                         </Form.Group>
 
                         <Button variant="primary" type="submit" disabled={isInvalid}>
