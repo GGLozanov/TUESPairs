@@ -1,3 +1,4 @@
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tues_pairs/modules/message.dart';
@@ -5,7 +6,6 @@ import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/teacher.dart';
 import 'package:tues_pairs/modules/student.dart';
-import 'package:tues_pairs/templates/baseauth.dart';
 
 // Firestore - new DB by Google designed to make it easier to store information with collections and documents inside collections
 
@@ -122,23 +122,32 @@ class Database { // DB Class for all DB interactions
 
   Message getMessageBySnapshot(DocumentSnapshot doc){
     if(doc.data != null){
-      return Message(
-        uid: doc.documentID,
+      
+      Message message = Message(
+        mid: doc.documentID,
         content: doc.data['content'] ?? null,
         fromId: doc.data['fromId'] ?? null,
         toId: doc.data['toId'] ?? null,
         sentTime: doc.data['sentTime'] ?? null,
       );
+      message.decryptMessage();
+      return message;
     }
   }
 
   Future addMessage(Message message) async{
+
+    message.encryptMessage();
     return await _messagesCollectionReference.add({
       'content': message.content,
       'fromId': message.fromId,
       'toId': message.toId,
       'sentTime': message.sentTime
     });
+  }
+
+  Future deleteMessage(String mid) async {
+    return await _messagesCollectionReference.document(mid).delete();
   }
 
 

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/services/database.dart';
+import 'package:tues_pairs/widgets/chat_display/message_option.dart';
 
 import '../../modules/user.dart';
 
-class MessageCard extends StatelessWidget {
-
+class MessageCard extends StatefulWidget {
+  String mid;
   String content;
   String fromId;
   String toId;
@@ -13,11 +15,27 @@ class MessageCard extends StatelessWidget {
   bool isMe;
   User matchedUser;
 
-  MessageCard({this.content, this.fromId, this.toId, this.sentTime, this.isMe, this.matchedUser});
+  MessageCard({this.mid, this.content, this.fromId, this.toId, this.sentTime, this.isMe, this.matchedUser});
+
+  @override
+  _MessageCardState createState() => _MessageCardState();
+}
+
+class _MessageCardState extends State<MessageCard> {
 
 
+
+  bool showOptions = false;
+
+  void deleteMessage() async{
+    setState(() {
+      showOptions = false;
+    });
+    await Database().deleteMessage(widget.mid);
+  }
 
   Widget displayImage(User user){
+
     return user.photoURL == null ? Icon(
       Icons.person,
       size: 33.5,
@@ -42,54 +60,76 @@ class MessageCard extends StatelessWidget {
     );
   }
 
+  
+  Widget displayTime(){
+    
+      return showOptions ? Padding(
+        padding: widget.isMe ? EdgeInsets.only(right: 10.0) : EdgeInsets.only(left: 10.0),
+        child: Text(
+          widget.sentTime,
+          style: TextStyle(
+            color: Colors.white24,
+          ),
+        ),
+      ): SizedBox();
+  }
+
   @override
   Widget build(BuildContext context) {
 
     final currentUser = Provider.of<User>(context);
-
+    
 
     final List<Widget> messageCard = [
       SizedBox(width: 5.0),
       Padding(
         padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-        child: displayAvatar(isMe ? currentUser : matchedUser)
+        child: displayAvatar(widget.isMe ? currentUser : widget.matchedUser)
       ),
       SizedBox(width: 5.0),
       Material(
-        color: isMe ? Colors.orange : Color.fromRGBO(34, 34, 43, 1),
+        color: widget.isMe ? Colors.orange : Color.fromRGBO(34, 34, 43, 1),
         borderRadius: BorderRadius.circular(10.0),
-        elevation: 6.0,
+        elevation: 2.0,
         child: Container(
           constraints: BoxConstraints(minWidth: 100, maxWidth: 200),
           padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
           child: Text(
-            content,
+            widget.content,
             style: TextStyle(
-              color: Colors.white
+              color: Colors.white,
             ),
-          textAlign: isMe ? TextAlign.end : TextAlign.start,
+          textAlign: widget.isMe ? TextAlign.end : TextAlign.start,
           ),
         ),
       ),
+      showOptions && widget.isMe ? MessageOptions(mid: widget.mid, showOptions: showOptions, callback: deleteMessage) : SizedBox(),
     ];
 
     return Padding(
       padding: const EdgeInsets.all(6.0),
-      child: Container(
-        child: Column(
-          crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-              children: !isMe ? messageCard : messageCard.reversed.toList() ,
-            ),
-            Text(
-              sentTime,
-              style: TextStyle(
-                color: Colors.white,
+      child: InkWell(
+        onLongPress: (){
+          setState(() {
+            showOptions = true;
+          });
+        },
+        onTap: () {
+          setState(() {
+            showOptions = false;
+          });
+        },
+        child: Container(
+          child: Column(
+            crossAxisAlignment: widget.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: widget.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                children: !widget.isMe ? messageCard : messageCard.reversed.toList() ,
               ),
-            ),
-          ]
+              displayTime(),
+            ]
+          ),
         ),
       ),
     );

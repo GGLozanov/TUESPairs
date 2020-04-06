@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/modules/message.dart';
@@ -22,20 +23,27 @@ class ChatDisplay extends StatefulWidget {
 }
 
 class _ChatDisplayState extends State<ChatDisplay> {
+
+
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if(widget.scrollController.hasClients){
+        scrollAnimation(widget.scrollController);
+      }
+    });
     List<Message> messages = Provider.of<List<Message>>(context) ?? [];
+
     User currentUser = Provider.of<User>(context);
     User matchedUser = widget.matchedUser;
-
     DateFormat formatter = new DateFormat().add_yMd().add_jm();
-    
-
+  
     List<Widget> messageCards = messages.map((message) {
       DateTime time = DateTime.parse(message.sentTime);
       if((message.fromId == currentUser.uid && message.toId == matchedUser.uid) || (message.fromId == matchedUser.uid && message.toId == currentUser.uid)){
         bool isMe = message.fromId == currentUser.uid ? true : false;
         return MessageCard(
+          mid: message.mid,
           content: message.content,
           fromId: message.fromId,
           toId: message.toId,
@@ -47,6 +55,7 @@ class _ChatDisplayState extends State<ChatDisplay> {
     }).toList();
 
     messageCards.removeWhere((messageCard) => messageCard == null);
+    
 
     return SafeArea(
       child: Column(
@@ -63,7 +72,7 @@ class _ChatDisplayState extends State<ChatDisplay> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: MessageInput(messageController: widget.messageController, callback: widget.callback),
+                  child: MessageInput(messageController: widget.messageController, callback: widget.callback, scrollController: widget.scrollController),
                 )
               ],
             ),

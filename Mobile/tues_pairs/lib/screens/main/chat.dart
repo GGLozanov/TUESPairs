@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/modules/message.dart';
 import 'package:tues_pairs/widgets/chat_display/chat_display.dart';
+import 'package:tues_pairs/widgets/chat_display/chat_input.dart';
 
 import '../../modules/user.dart';
 import '../../services/database.dart';
@@ -19,6 +21,7 @@ class Chat extends StatefulWidget {
 
 class _ChatState extends State<Chat> {
 
+  ScrollController scrollController = new ScrollController();
   @override
   Widget build(BuildContext context) {
     User matchedUser;
@@ -26,7 +29,6 @@ class _ChatState extends State<Chat> {
     Database database = new Database();
 
     TextEditingController messageController = new TextEditingController();
-    ScrollController scrollController = new ScrollController();
 
     Future<void> sendMessage() async{
       if(messageController.text.length > 0){
@@ -39,11 +41,7 @@ class _ChatState extends State<Chat> {
 
       }
       messageController.clear();
-      scrollController.animateTo(
-        scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeOut
-      );
+      scrollAnimation(scrollController);
 
     }
 
