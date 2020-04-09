@@ -5,13 +5,11 @@ import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
-
+import { Button, ProgressBar, Form, Col, Image } from 'react-bootstrap';
+import './style.scss';
 
 const ImageUploadPage = () => (
-    <div>
-        <h1>Upload your profile image</h1>
-        <ImageUploadForm />
-    </div>
+    <ImageUploadForm />
 );
 
 class ImageUploadBase extends Component {
@@ -82,22 +80,29 @@ class ImageUploadBase extends Component {
     }
     
     render() {
-        const style = {
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center'
-        };
+
+        const isDisabled = this.state.image ? false : true;
 
         return (
-        <div style={style}>
-        <progress value={this.state.progress} max="100"/>
-        <br/>
-            <input type="file" onChange={this.handleChange}/>
-            <button onClick={this.handleUpload}>Upload</button>
-            <br/>
-            <img src={this.props.authUser.photoURL || 'http://via.placeholder.com/400x300'} alt="Uploaded images" height="300" width="400"/>
+        <div className="image-upload">
+            <div className="hedaer">
+                <h1>Upload image</h1>
+            </div>
+            <div className="upload-handler">
+                <ProgressBar className="progress-bar" now={this.state.progress} label={`${this.state.progress}%`} />
+                <Form className="file-input">
+                    <Form.File 
+                        id="custom-file"
+                        label="Custom file input"
+                        onChange={this.handleChange}
+                        custom
+                    />
+                </Form>
+                <Col xs={14} md={14}>
+                    <Image src={this.props.authUser.photoURL} rounded/>
+                </Col>
+                <Button disabled={isDisabled} onClick={this.handleUpload}>Upload</Button>
+            </div>
         </div>
         )
     }
