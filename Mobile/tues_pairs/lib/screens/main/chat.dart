@@ -46,25 +46,22 @@ class _ChatState extends State<Chat> {
     }
 
 
-    return currentUser.matchedUserID == null ? Container(
+    return Container(
       color: Color.fromRGBO(59, 64, 78, 1),
-      child: centeredText("You are not matched with anyone!"),
-    ) : FutureBuilder<User>(
-      future: Database(uid: currentUser.matchedUserID).getUserById(),
-      builder: (context, snapshot){
-        if(snapshot.connectionState == ConnectionState.done){
-          matchedUser = snapshot.data;
-          return StreamProvider<List<Message>>.value(
-            value: Database().messages,
-            child: Container(
-              color: Color.fromRGBO(59, 64, 78, 1),
+      child: currentUser.matchedUserID == null ? centeredText("You are not matched with anyone!") : FutureBuilder<User>(
+        future: Database(uid: currentUser.matchedUserID).getUserById(),
+        builder: (context, snapshot){
+          if(snapshot.connectionState == ConnectionState.done){
+            matchedUser = snapshot.data;
+            return StreamProvider<List<Message>>.value(
+              value: Database().messages,
               child: currentUser.matchedUserID == matchedUser.uid && matchedUser.matchedUserID == currentUser.uid 
-              ? ChatDisplay(matchedUser: matchedUser, messageController: messageController, callback: sendMessage, scrollController: scrollController) 
-              : centeredText("Wait until your request is accepted!")
-            ),
-          );
-        }else return Loading();
-      },
+                ? ChatDisplay(matchedUser: matchedUser, messageController: messageController, callback: sendMessage, scrollController: scrollController) 
+                : centeredText("Wait until your request is accepted!")
+            );
+          }else return Loading();
+        },
+      )
     );
   }
 }

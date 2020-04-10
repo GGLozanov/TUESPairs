@@ -111,7 +111,7 @@ class Database { // DB Class for all DB interactions
   }
 
   Stream<List<Message>> get messages {
-    return _messagesCollectionReference.orderBy("sentTime").snapshots().map(
+    return _messagesCollectionReference.orderBy('sentTime').snapshots().map(
       _listMessageFromQuerySnapshot
     );
   }
