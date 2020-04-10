@@ -118,8 +118,8 @@ class UserList extends Component {
                   <Card.Img variant="top" src={user.photoURL} className="profile-image"/>
                   <Card.Body className="profile-body">
                       <Card.Title>{ user.username }</Card.Title>
-                      {isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
-                      {!isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
+                      {!isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
+                      {isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
                           <Card.Text>
                               User description + tehcnologies he knows
                           </Card.Text>
