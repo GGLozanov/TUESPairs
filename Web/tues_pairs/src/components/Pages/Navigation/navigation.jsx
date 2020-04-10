@@ -62,4 +62,16 @@ const NavigationNotLogged = () => (
   </Navbar>
 )
 
+const Footer = () => (
+  <footer className="site-footer">
+    <ul>
+        <li>Created with Firebase</li>
+        <li>______________________</li>
+    </ul>
+    <p className="copyright-mark">Copyright © 2020 all rights reserved</p>
+  </footer>
+)
+
+export { Footer };
+
 export default Navigation;

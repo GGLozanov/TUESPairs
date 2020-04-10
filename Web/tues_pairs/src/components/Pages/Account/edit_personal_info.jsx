@@ -89,7 +89,7 @@ class EditPersonalInfo extends Component{
             }, 
         {merge: true})
         .then(() => {
-            this.props.history.push(ROUTES.ACCOUNT);
+            this.props.history.push(ROUTES.HOME);
         })
         .catch(error => {
             console.error(error);
@@ -105,7 +105,7 @@ class EditPersonalInfo extends Component{
         }, 
         {merge: true})
         .then(() => {
-            this.props.history.push(ROUTES.ACCOUNT);
+            this.props.history.push(ROUTES.HOME);
         })
         .catch(error => {
             console.error(error);

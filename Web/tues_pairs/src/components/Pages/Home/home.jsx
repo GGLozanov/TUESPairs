@@ -12,13 +12,6 @@ const HomePage = () => (
     <MatchPage />
 );
 
-const AlreadyMatched = () => (
-  <div>
-    <h1>Match Page</h1>
-    <p>You have sent a match request!</p>
-  </div>
-);
-
 class UserList extends Component {
   constructor(props) {
     super(props);
@@ -61,11 +54,13 @@ class UserList extends Component {
     });
   }
 
-  componentDidMount(){
+  componentDidMount() {
     if(this.props.authUser.matchedUserID) {
-      this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE);
+      this.props.history.go(ROUTES.ALREADY_MATCHED_PAGE);
     }
     this.setState({ loading: true });
+
+    console.log(this.props.history);
 
     this.unsubscribe = this.props.firebase.users()
       .onSnapshot(snapshot => {
@@ -80,6 +75,14 @@ class UserList extends Component {
           loading: false,
         });
       });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  componentDidUpdate() {
+    console.log("red");
   }
 
   render() {
@@ -141,8 +144,6 @@ const MatchPage =  compose (
   withCurrentUser
 )(UserList);
 
-const AlreadyMatchedPage = withAuthorization(condition)(AlreadyMatched);
-
 export default withAuthorization(condition)(HomePage);
 
-export { MatchPage, AlreadyMatchedPage };
+export { MatchPage };
