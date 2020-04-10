@@ -1,25 +1,16 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tues_pairs/screens/authenticate/authenticate.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
-import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
-import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/widgets/avatar/avatar_wrapper.dart';
-import 'package:tues_pairs/modules/student.dart';
-import 'package:tues_pairs/modules/teacher.dart';
 import 'package:tues_pairs/widgets/form/GPA_input_field.dart';
 import 'package:tues_pairs/widgets/form/input_button.dart';
 import 'package:tues_pairs/widgets/form/username_input_field.dart';
 import 'package:tues_pairs/widgets/form/email_input_field.dart';
 import 'package:tues_pairs/widgets/form/password_input_field.dart';
 import 'package:tues_pairs/widgets/form/confim_password_input_field.dart';
-import 'package:path/path.dart';
-
-import '../authlistener.dart';
 
 class Register extends StatefulWidget {
   final Function toggleView;
@@ -81,6 +72,7 @@ class _RegisterState extends State<Register> {
 
         // TODO: narrow these final settings of values down in function
         if(registeredUser.isTeacher) registeredUser.GPA = null;
+
         if(imageService != null && imageService.profileImage != null) {
           registeredUser.photoURL = await imageService.uploadImage();
         }
