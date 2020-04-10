@@ -5,12 +5,11 @@ import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
+import { Button, Card, Row } from 'react-bootstrap';
+import './style.scss'
 
 const HomePage = () => (
-  <div>
-    <h1>Home Page</h1>
     <MatchPage />
-  </div>
 );
 
 const AlreadyMatched = () => (
@@ -91,6 +90,8 @@ class UserList extends Component {
     const { users, loading } = this.state;
 
     let mappedUsers = [];
+
+    const isTeacher = this.props.authUser.isTeacher;
     
     const currentUser = this.props.authUser;
 
@@ -107,30 +108,30 @@ class UserList extends Component {
     }
 
     return(
-      <div>
-        <h1>Users</h1>
+      <div className="match-page">
+        <h1>Find your match</h1>
         { loading && <div>Loading ...</div> }
         
-        <div>
-          <ul>
+        <div className="user-cards">
             {mappedUsers.map(user => (
-              <li key={user.uid}>
-                <span>
-                  <img src={user.photoURL} alt="Please wait" height="50" width="50"></img>
-                </span>
-                <span>
-                  <strong>Username:</strong> {user.username}
-                </span>
-                <span>
-                  <strong>Gpa:</strong> {user.GPA}
-                </span>
-                <button type="submit" value={user.uid} onClick={this.onMatch}>Match</button>
-                <button type="submit" value={user.uid} onClick={this.onSkip}>Skip</button>
-              </li>
+              <Row xs={14} md={14}>
+                <Card bg="dark" style={{ width: '18rem' }} className="profile-card">
+                  <Card.Img variant="top" src={user.photoURL} className="profile-image"/>
+                  <Card.Body className="profile-body">
+                      <Card.Title>{ user.username }</Card.Title>
+                      {isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
+                      {!isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
+                          <Card.Text>
+                              User description + tehcnologies he knows
+                          </Card.Text>
+                      <Button value={user.uid} onClick={this.onMatch} variant="dark">Match</Button>
+                      <Button value={user.uid} onClick={this.onSkip} variant="dark">Skip</Button>
+                  </Card.Body>
+                </Card>
+              </Row>
             ))}
-        </ul>
       </div>
-      </div>
+    </div>
     )
   }
 
