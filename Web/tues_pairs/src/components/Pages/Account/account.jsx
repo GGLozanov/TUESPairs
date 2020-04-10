@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import { PasswordChangeLink } from '../PasswordForget';
 import { withAuthorization } from '../../Authentication';
-import * as ROUTES from '../../../constants/routes';
-import { Link } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import { withFirebase } from '../../Firebase';
+import { Card, Button } from 'react-bootstrap';
+import './style.scss';
 
 const AccountPage = () => (
-            <div>
-                <UserProfilePage />
-            </div>
+    <div>
+        <UserProfilePage />
+    </div>
 );
 
 class UserProfile extends Component {
@@ -28,114 +27,47 @@ class UserProfile extends Component {
         };
     }
 
-    onSaveChanges = event => {
-        const { username, GPA } = this.state;
-        const currentUser = this.props.authUser;
+    componentDidMount(){
+        let currentUser = this.props.authUser;
+        this.setState({ loading: true });
     
-        this.props.firebase.db.collection("users").doc(currentUser.uid).set({
-            username: username,
-            GPA: parseFloat(GPA),
-          }, {merge: true})
-          .then(() => {
-              this.setState({ message: "You have successffuly updated your profile! "})
-          })
-          .catch(error => {
-            this.setState({ error });
-          });
-    
-        event.preventDefault();
-      };
-    
-    onChange = event => {
-        this.setState({ [event.target.name]: event.target.value });
-    };
+        this.unsubscribe = this.props.firebase.user(currentUser.uid).get()
+        .then(snapshot => {
+            const firebaseUser = snapshot.data();
 
-    onDelete = () => {
-        let users = [];
-
-        const currentUser = this.props.authUser;
-
-        this.props.firebase.users()
-            .onSnapshot(snapshot => {
-
-                snapshot.forEach(doc =>
-                    users.push({ ...doc.data(), uid: doc.id }),
-            );
-
-            for(let i = 0; i < users.length; i++) {
-                if(users[i].matchedUserID === currentUser.uid){
-                    this.props.firebase.db.collection("users").doc(users[i].uid).set({
-                        matchedUserID: null
-                    }, {merge: true});
-                }
-                if(users[i].skippedUserIDs.includes(currentUser.uid)){
-                    users[i].skippedUserIDs.splice(currentUser.uid, 1);
-                    this.props.firebase.db.collection("users").doc(users[i].uid).set({
-                        skippedUserIDs: users[i].skippedUserIDs
-                    }, {merge: true});
-                }
+            if(!firebaseUser.roles) {
+                firebaseUser.roles = {};
             }
-        });
 
-        this.props.firebase.db.collection("users").doc(currentUser.uid).delete()
-        .then(this.props.firebase.auth.currentUser.delete())
-        .catch(error => {
-            this.setState({ error });
+            currentUser = {
+                uid: currentUser.uid,
+                email: currentUser.email,
+                ...firebaseUser,
+            };
+
+            this.setState({ photoURL: currentUser.photoURL, username: currentUser.username, loading: false });
         });
     }
 
     render() {
-        const { username, email, photoURL, error, message, GPA} = this.state;
+        const { username, photoURL} = this.state;
 
-        const isInvalid =
-            username === '' || GPA === '';
+        const isTeacher = this.props.authUser.isTeacher;
 
         return(
-            <div>
-                <h1>Account: {username}</h1>
-                <img src={photoURL} alt="Your profile pricture" height="200" width="200"></img>
-                <h2>Email: {email}</h2>
-                <h3>GPA: {GPA}</h3>
-
-                <PasswordChangeLink />
-                <Link to={ROUTES.IMAGE_UPLOAD}>Update your profile picture</Link>
-
-                <br /><br />
-
-                <form onSubmit={this.onSubmit}>
-                    Username: 
-                    <input
-                        name="username"
-                        value={username}
-                        onChange={this.onChange}
-                        type="text"
-                        placeholder={this.props.authUser.username}
-                    />
-                    <br /><br />
-
-                    GPA: 
-                    <input 
-                        name="GPA"
-                        value={GPA}
-                        onChange={this.onChange}
-                        type="number"
-                        placeholder={this.props.authUser.GPA}
-                        min="2.01"
-                        step="0.01"
-                        max="6.00"
-                    />
-
-                    <br /><br /><br />
-
-                    <button disabled={isInvalid} onClick={this.onSaveChanges}>
-                        Save Changes
-                    </button>
-
-                    <button type="button" onClick={this.onDelete}>Delete</button>
-
-                    {error && <p>{error.message}</p>}
-                    {message && <p>{message}</p>}
-                </form>
+            <div className="page-main">
+                <Card bg="dark" style={{ width: '18rem' }} className="profile-card">
+                    <Card.Img variant="top" src={photoURL} className="profile-image"/>
+                    <Card.Body className="profile-body">
+                        <Card.Title>{ username }</Card.Title>
+                        {isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
+                        {!isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
+                            <Card.Text>
+                                User description + tehcnologies he knows
+                            </Card.Text>
+                        <Button href="/edit_personal_info" variant="dark">Edit your personal info</Button>
+                    </Card.Body>
+                </Card>
             </div>
         )
     }
