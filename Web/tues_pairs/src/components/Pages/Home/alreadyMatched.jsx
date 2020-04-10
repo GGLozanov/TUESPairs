@@ -8,10 +8,6 @@ import './style.scss';
 import { withCurrentUser } from '../../Authentication/context';
 
 class AlreadyMatched extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     handleCancelMatched = () => {
         const currentUser = this.props.authUser;
 

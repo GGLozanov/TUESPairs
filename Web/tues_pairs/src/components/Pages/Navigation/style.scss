@@ -83,28 +83,27 @@
 }
 
 .site-footer {
-    background-color: rgb(34, 34, 43);
     color: white;
     padding-top: 20px;
+    margin-top: 50px;
+
+    hr {
+        margin-left: 40px;
+        margin-right: 40px;
+        border: 0.4px solid white;
+    }
 
     ul {
         display: flex;
-        padding: 20px;
+        padding: 10px;
         list-style: none;
         flex-direction: column;
         justify-content: center;
-    }
-    li {
-        align-self: center;
-        font-size: large;
-        font-family: 'Courier New', Courier, monospace;
-    }
 
-    .copyright-mark{
-        padding: 10px;
-        margin: 0;
-        background: #1B1B1B;
-        text-align: center;
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        li {
+            align-self: center;
+            font-size: large;
+            font-family: 'Courier New', Courier, monospace;
+        }
     }
 }

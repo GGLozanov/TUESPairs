@@ -64,11 +64,10 @@ const NavigationNotLogged = () => (
 
 const Footer = () => (
   <footer className="site-footer">
+        <hr />
     <ul>
-        <li>Created with Firebase</li>
-        <li>______________________</li>
+        <li>Copyright © 2020 all rights reserved</li>
     </ul>
-    <p className="copyright-mark">Copyright © 2020 all rights reserved</p>
   </footer>
 )
 

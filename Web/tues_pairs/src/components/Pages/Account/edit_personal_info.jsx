@@ -155,9 +155,6 @@ class EditPersonalInfo extends Component{
     render() {
         const { username, email, photoURL, GPA} = this.state;
 
-        const isInvalid = username === '' ||
-        GPA < 2 || GPA > 6;
-
         const isTeacher = this.props.authUser.isTeacher ? false : true;
 
         const isMatched = this.props.authUser.matchedUserID ? true : false;
@@ -212,23 +209,22 @@ class EditPersonalInfo extends Component{
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} controlId="formBasicEmail">
-                            {isTeacher && 
                             <Form.Label column sm="2">
                                 New email
-                            </Form.Label>}
+                            </Form.Label>
                             <Col sm="4">
-                                {isTeacher && <FormControl
+                                <FormControl
                                     onChange={this.onChange}
                                     aria-label="Recipient's email"
                                     aria-describedby="basic-addon2"
                                     placeholder="example@example.com"
                                     type="text"
                                     name="email"
-                                />}
+                                />
                             </Col>
                         </Form.Group>
 
-                        <Button variant="primary" type="submit" disabled={isInvalid}>
+                        <Button variant="primary" type="submit">
                             Submit
                         </Button>
                     </Form>
