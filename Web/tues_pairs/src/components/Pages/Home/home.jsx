@@ -74,16 +74,12 @@ class UserList extends Component {
         snapshot.forEach(doc =>
           users.push({ ...doc.data(), uid: doc.id }),
         );
-
+        
         this.setState({
           users,
           loading: false,
         });
       });
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
   }
 
   render() {

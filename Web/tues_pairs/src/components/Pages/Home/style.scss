@@ -10,6 +10,7 @@
     .user-cards{
         display: flex;
         justify-content: center;
+        flex-wrap: wrap;
 
         .profile-card{
 
@@ -18,7 +19,9 @@
                 height: 382px;
             }
 
-            margin: 50px;
+            margin-top: 20px;
+            margin-left: 50px;
+            margin-right: 50px;
             box-sizing: border-box;
             box-shadow: 0px 0px 15px 0px black;
     
