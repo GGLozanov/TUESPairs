@@ -126,5 +126,41 @@
                 background-color: rgb(196, 0, 0);
             }
         }
+
+        .alert {
+            margin: 10px;
+            background-color: rgb(58, 64, 78);;
+
+            .alert-heading {
+                text-align: center;
+                color: rgb(252, 152, 0);
+            }
+
+            p {
+                text-align: center;
+                color: white;
+            }
+
+            button {
+                align-self: center;
+                margin: 10px;
+                font-size: 21px;
+                padding: 5px 20px;
+                border: 0;
+                font-size: small;
+                background-color: rgb(252, 152, 0);
+                color: #fff;
+                border-radius: 3px;
+                transition: all 250ms ease-in-out;
+                cursor: pointer;
+                &:hover {
+                  background-color: orange;
+                  color: black;
+                }
+                &:focus {
+                  outline: none;
+                }
+            }
+        }
     }
 }

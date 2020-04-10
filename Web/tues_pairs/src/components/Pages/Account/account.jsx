@@ -35,7 +35,6 @@ class UserProfile extends Component {
         .then(snapshot => {
             const firebaseUser = snapshot.data();
 
-            //default empty roles
             if(!firebaseUser.roles) {
                 firebaseUser.roles = {};
             }

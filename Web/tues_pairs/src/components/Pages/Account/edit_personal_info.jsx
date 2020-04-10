@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormControl, Button, Col, Image, Form, Row } from 'react-bootstrap';
+import { FormControl, Button, Col, Image, Form, Row, Alert } from 'react-bootstrap';
 import { withCurrentUser } from '../../Authentication/context';
 import { compose } from 'recompose';
 import { withFirebase } from '../../Firebase';
@@ -7,12 +7,6 @@ import { withAuthorization } from '../../Authentication';
 import { withRouter } from 'react-router-dom';
 import * as ROUTES from '../../../constants/routes';
 import { Link } from 'react-router-dom';
-
-const TeacherInfo = () => (
-    <div>
-
-    </div>
-);
 
 const StudentInfo = () => (
     <div>
@@ -35,8 +29,7 @@ class EditPersonalInfo extends Component{
             message: '',
             users: null,
             loading: false,
-            isMatched: true,
-            hasSkipped: true,
+            show: false,
         };
     }
 
@@ -48,7 +41,6 @@ class EditPersonalInfo extends Component{
         .then(snapshot => {
             const firebaseUser = snapshot.data();
 
-            //default empty roles
             if(!firebaseUser.roles) {
                 firebaseUser.roles = {};
             }
@@ -64,7 +56,7 @@ class EditPersonalInfo extends Component{
     }
 
     onSubmit = event => {
-        const { username, email, photoURL, error, message, GPA} = this.state;
+        const { username, email, GPA} = this.state;
 
         const currentUser = this.props.authUser;
 
@@ -121,17 +113,56 @@ class EditPersonalInfo extends Component{
         });
     }
 
+    handleDeleteProfileNotification = () => {
+        const show = !this.state.show;
+        this.setState({ show });
+    }
+
+    handleDeleteProfile = () => {
+        let users = [];
+
+        const currentUser = this.props.authUser;
+
+        this.props.firebase.users()
+            .onSnapshot(snapshot => {
+
+                snapshot.forEach(doc =>
+                    users.push({ ...doc.data(), uid: doc.id }),
+            );
+
+            for(let i = 0; i < users.length; i++) {
+                if(users[i].matchedUserID === currentUser.uid){
+                    this.props.firebase.db.collection("users").doc(users[i].uid).set({
+                        matchedUserID: null
+                    }, {merge: true});
+                }
+                if(users[i].skippedUserIDs.includes(currentUser.uid)){
+                    users[i].skippedUserIDs.splice(currentUser.uid, 1);
+                    this.props.firebase.db.collection("users").doc(users[i].uid).set({
+                        skippedUserIDs: users[i].skippedUserIDs
+                    }, {merge: true});
+                }
+            }
+        });
+
+        this.props.firebase.db.collection("users").doc(currentUser.uid).delete()
+        .then(this.props.firebase.auth.currentUser.delete())
+        .catch(error => {
+            this.setState({ error });
+        });
+    }
+
     render() {
-        const { username, email, photoURL, error, message, GPA} = this.state;
+        const { username, email, photoURL, GPA} = this.state;
 
         const isInvalid = username === '' ||
         GPA < 2 || GPA > 6;
 
         const isTeacher = this.props.authUser.isTeacher ? false : true;
 
-        this.state.isMatched = this.props.authUser.matchedUserID ? true : false;
-
-        this.state.hasSkipped = this.props.authUser.skippedUserIDs.length > 0 ? true : false;
+        const isMatched = this.props.authUser.matchedUserID ? true : false;
+        
+        const hasSkipped = this.props.authUser.skippedUserIDs.length > 0 ? true : false;
 
         return(
             this.state.loading ? <div></div> :
@@ -202,12 +233,27 @@ class EditPersonalInfo extends Component{
                         </Button>
                     </Form>
                     <div className="clear-buttons">
-                        {this.state.isMatched && <Button onClick={this.handleClearMatchedUser}>Clear Match</Button>}
-                        {this.state.hasSkipped && <Button onClick={this.handleSkippedUsers}>Clear Skipped</Button>}
+                        {isMatched && <Button onClick={this.handleClearMatchedUser}>Clear Match</Button>}
+                        {hasSkipped && <Button onClick={this.handleSkippedUsers}>Clear Skipped</Button>}
                     </div>
-                    <Button onClick={this.handleDeleteProfile} className="delete-profile">
+                    <Button onClick={this.handleDeleteProfileNotification} className="delete-profile">
                             Delete profile
                     </Button>
+
+                    <Alert show={this.state.show} variant="success" className="delete-alert">
+                        <Alert.Heading>Are you sure you want to delete your profile ?</Alert.Heading>
+                            <p>
+                            This changes are final, your account and all its personal data will be deleted permanently.
+                            Click the I'm sure button to procceed!
+                            </p>
+                            <hr />
+                        <div className="d-flex justify-content-end">
+                            <Button onClick={this.handleDeleteProfile} variant="outline-success">
+                                I'm sure
+                            </Button>
+                        </div>
+                        {!this.state.show && <Button >Show Alert</Button>}
+                    </Alert>
                 </div>
             </div>
         )
