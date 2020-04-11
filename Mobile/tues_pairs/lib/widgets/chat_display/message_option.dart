@@ -14,8 +14,6 @@ class MessageOptions extends StatefulWidget {
 }
 
 class _MessageOptionsState extends State<MessageOptions> {
-
-
   @override
   Widget build(BuildContext context) {
     return Container(

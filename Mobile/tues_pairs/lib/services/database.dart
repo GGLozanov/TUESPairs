@@ -1,38 +1,56 @@
-import 'package:encrypt/encrypt.dart' as encrypt;
-import 'package:flutter/material.dart';
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore_mocks/cloud_firestore_mocks.dart';
 import 'package:tues_pairs/modules/message.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/teacher.dart';
 import 'package:tues_pairs/modules/student.dart';
+import 'package:flutter/foundation.dart';
 
 // Firestore - new DB by Google designed to make it easier to store information with collections and documents inside collections
+// Collection reference - reference to a Firestore collection in the Firestore console (like a table in a relational DB)
+// DB Class for all DB interactions
 
-class Database { // DB Class for all DB interactions
+class Database {
 
-  // Collection reference - reference to a Firestore collection in the Firestore console (like a table in a relational DB)
+  // ------------------------------------------
+  // Class Properties
+  // ------------------------------------------
 
-  final CollectionReference _userCollectionReference = Firestore.instance.collection('users');
-  final CollectionReference _tagsCollectionReference = Firestore.instance.collection('tags');
-  final CollectionReference _messagesCollectionReference = Firestore.instance.collection('messages');
-  // TODO: Remove tags field from user and put it as another document
-  // keep the users' info in the DB? First collection?
+  MockFirestoreInstance mockInstance; // mock instance of Firestore used in Unit tests.
+  // Remains null unless DB is init with named constructor 'mock'
+
+  CollectionReference _userCollectionReference;
+  CollectionReference _tagsCollectionReference;
+  CollectionReference _messagesCollectionReference;
   // every time the user registers, we will take the unique ID and create a new document (record/row) for the user in the Cloud Firestore DB
 
   final String uid; // user id property
-  Database({this.uid});
+  Database({this.uid}) {
+    _userCollectionReference = Firestore.instance.collection('users');
+    _tagsCollectionReference = Firestore.instance.collection('tags');
+    _messagesCollectionReference = Firestore.instance.collection('messages');
+  }
+
+  Database.mock({this.uid}) { // named constructor for initializing a mock database
+    mockInstance = new MockFirestoreInstance();
+    _userCollectionReference = mockInstance.collection('users');
+    _tagsCollectionReference = mockInstance.collection('tags');
+    _messagesCollectionReference = mockInstance.collection('messages');
+  }
+
+  // ------------------------------------------
+  // User Database implementation
+  // ------------------------------------------
 
   List<User> _listUserFromQuerySnapshot(QuerySnapshot querySnapshot) {
     return querySnapshot.documents.map((doc) => getUserBySnapshot(doc)).toList();
   }
 
-  List<Tag> _listTagFromQuerySnapshot(QuerySnapshot querySnapshot) {
-    return querySnapshot.documents.map((doc) => getTagBySnapshot(doc)).toList();
-  }
-
-  List<Message> _listMessageFromQuerySnapshot(QuerySnapshot querySnapshot){
-    return querySnapshot.documents.map((doc) => getMessageBySnapshot(doc)).toList();
+  CollectionReference get userCollectionReference {
+    return _userCollectionReference;
   }
 
   // method to update user data by given information in custom registration fields
@@ -41,7 +59,7 @@ class Database { // DB Class for all DB interactions
     // TODO: Create field in users for id for matched user
     // TODO: Don't have tags be null here too
     // tags.forEach((tag) async => await updateTagData(tag.name, tag.color)); -> fix later
-    return await _userCollectionReference.document(uid).setData({
+    return user != null ? await _userCollectionReference.document(uid).setData({
       'GPA': user.GPA ?? 0.0,
       'isTeacher': user.isTeacher,
       'photoURL': user.photoURL,
@@ -49,33 +67,7 @@ class Database { // DB Class for all DB interactions
       'email': user.email,
       'matchedUserID': user.matchedUserID,
       'skippedUserIDs': user.skippedUserIDs ?? <String>[],
-    });
-  }
-
-  Future deleteUser() async {
-    return await _userCollectionReference.document(uid).delete();
-  }
-
-  Future updateTagData(Tag tag) async {
-    return await _tagsCollectionReference.document(tag.name).setData({
-      'name': tag.name,
-      'color': tag.color,
-    });
-  }
-
-  Stream<List<User>> get users {
-    return _userCollectionReference.snapshots().map(
-      _listUserFromQuerySnapshot
-    );
-  }
-
-  Tag getTagBySnapshot(DocumentSnapshot doc) {
-    if(doc.data != null) {
-      return Tag(
-        name: doc.data['name'],
-        color: doc.data['color'],
-      );
-    }
+    }) : null;
   }
 
   User getUserBySnapshot(DocumentSnapshot doc) {
@@ -93,21 +85,62 @@ class Database { // DB Class for all DB interactions
           uid: doc.documentID,
           email: doc.data['email'] ?? '',
           photoURL: doc.data['photoURL'] ?? null,
-          GPA: doc.data['GPA'],
+          GPA: double.parse(doc.data['GPA'].toString()),
           isTeacher: doc.data['isTeacher'] ?? false,
           username: doc.data['username'] ?? '',
           matchedUserID: doc.data['matchedUserID'] ?? null,
           skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : List<String>.from(doc.data['skippedUserIDs']),
       );
     }
+    return null;
   }
 
-  CollectionReference get userCollectionReference {
-    return _userCollectionReference;
-  }
-
+  // TODO: clean code to avoid all redundant checks
   Future<User> getUserById() async {
-    return getUserBySnapshot(await _userCollectionReference.document(uid).get());
+    return uid != null ? getUserBySnapshot(await _userCollectionReference.document(uid).get()) : null;
+  }
+
+  Future deleteUser() async {
+    return uid != null ? await _userCollectionReference.document(uid).delete() : null;
+  }
+
+  Stream<List<User>> get users {
+    return _userCollectionReference.snapshots().map(
+        _listUserFromQuerySnapshot
+    );
+  }
+
+  // ----------------------------------
+  // Tag Database Implementation
+  // ----------------------------------
+
+  List<Tag> _listTagFromQuerySnapshot(QuerySnapshot querySnapshot) {
+    return querySnapshot.documents.map((doc) => getTagBySnapshot(doc)).toList();
+  }
+
+  Future updateTagData(Tag tag) async {
+    return await _tagsCollectionReference.document(tag.tid).setData({
+      'name': tag.name,
+      'color': tag.color,
+    });
+  }
+
+  Tag getTagBySnapshot(DocumentSnapshot doc) {
+    if(doc.data != null) {
+      return Tag(
+        tid: doc.data['id'], // TODO: replace with auto-generated ID for tags
+        name: doc.data['name'],
+        color: doc.data['color'],
+      );
+    }
+  }
+
+  // ----------------------------------
+  // Message database implementation
+  // ----------------------------------
+
+  List<Message> _listMessageFromQuerySnapshot(QuerySnapshot querySnapshot){
+    return querySnapshot.documents.map((doc) => getMessageBySnapshot(doc)).toList();
   }
 
   Stream<List<Message>> get messages {
@@ -121,8 +154,7 @@ class Database { // DB Class for all DB interactions
   }
 
   Message getMessageBySnapshot(DocumentSnapshot doc){
-    if(doc.data != null){
-      
+    if(doc.data != null) {
       Message message = Message(
         mid: doc.documentID,
         content: doc.data['content'] ?? null,
@@ -133,10 +165,15 @@ class Database { // DB Class for all DB interactions
       message.decryptMessage();
       return message;
     }
+    return null;
   }
 
-  Future addMessage(Message message) async{
+  Future<Message> getMessageById(String mid) async {
+    return mid != null ? getMessageBySnapshot(await _messagesCollectionReference.document(mid).get()) : null;
+  }
 
+  Future addMessage(Message message) async {
+    if(message == null) return null;
     message.encryptMessage();
     return await _messagesCollectionReference.add({
       'content': message.content,
@@ -146,14 +183,13 @@ class Database { // DB Class for all DB interactions
     });
   }
 
+  // TODO: 'Many messages doesn't make it prudent to have one field for messages (argument is better)'. Maybe rework that philosophy?
   Future deleteMessage(String mid) async {
-    return await _messagesCollectionReference.document(mid).delete();
+    return mid != null ? await _messagesCollectionReference.document(mid).delete() : null;
   }
-
 
   // our uid is the document path
   // Firestore will create this document since it doesn't exist yet
   // and we use the setData method to create a new record for this unique user ID in the DB
   // for which we pass in a map with String-dynamic pairs (dynamic can be any type)
-
 }

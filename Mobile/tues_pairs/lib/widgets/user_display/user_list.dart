@@ -55,8 +55,12 @@ class _UserListState extends State<UserList> {
           return Future.delayed(Duration(milliseconds: 100), () {
             listItems.add(buildUserCard(
                 currentUser, i, users[i])); // add card item here
-            _animatedListKey.currentState.insertItem(
-                listItems.length - 1); // insert the latest item here
+            try {
+              _animatedListKey.currentState.insertItem(
+                  listItems.length - 1); // insert the latest item here
+            } catch(e) {
+              // TODO: log that user has navigated through the screens too fast
+            }
           });
         });
     }

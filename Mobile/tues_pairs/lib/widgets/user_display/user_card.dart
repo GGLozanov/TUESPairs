@@ -35,7 +35,7 @@ class _UserCardState extends State<UserCard> {
                 height: 100.0,
                 child: widget.userImage == null ? Icon(
                   Icons.person,
-                  size: 50.0,
+                  size: 55.0,
                   color: Colors.orange,
                 ) : Image(
                   image: widget.userImage,
@@ -45,6 +45,8 @@ class _UserCardState extends State<UserCard> {
             ),
           ),
           subtitle: ButtonBar(
+            alignment: MainAxisAlignment.spaceAround,
+            buttonPadding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
             children: <Widget>[
               FloatingActionButton(
                 onPressed: () {

@@ -22,15 +22,15 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
 
   ScrollController scrollController = new ScrollController();
+
   @override
   Widget build(BuildContext context) {
     User matchedUser;
     final currentUser = Provider.of<User>(context);
-    Database database = new Database();
-
     TextEditingController messageController = new TextEditingController();
+    final Database database = new Database(uid: currentUser.matchedUserID);
 
-    Future<void> sendMessage() async{
+    Future<void> sendMessage() async {
       if(messageController.text.length > 0){
         await database.addMessage(Message(
           content: messageController.text,
@@ -38,28 +38,25 @@ class _ChatState extends State<Chat> {
           toId: matchedUser.uid,
           sentTime: DateTime.now().toIso8601String().toString(),
         ));
-
       }
       messageController.clear();
       scrollAnimation(scrollController);
-
     }
-
 
     return Container(
       color: Color.fromRGBO(59, 64, 78, 1),
       child: currentUser.matchedUserID == null ? centeredText("You are not matched with anyone!") : FutureBuilder<User>(
-        future: Database(uid: currentUser.matchedUserID).getUserById(),
+        future: database.getUserById(),
         builder: (context, snapshot){
           if(snapshot.connectionState == ConnectionState.done){
             matchedUser = snapshot.data;
             return StreamProvider<List<Message>>.value(
-              value: Database().messages,
+              value: database.messages,
               child: currentUser.matchedUserID == matchedUser.uid && matchedUser.matchedUserID == currentUser.uid 
                 ? ChatDisplay(matchedUser: matchedUser, messageController: messageController, callback: sendMessage, scrollController: scrollController) 
                 : centeredText("Wait until your request is accepted!")
             );
-          }else return Loading();
+          } else return Loading();
         },
       )
     );
