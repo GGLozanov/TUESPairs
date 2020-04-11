@@ -19,12 +19,14 @@ class UserList extends Component {
     this.state = {
       loading: false,
       users: [],
+      currentUser: null,
     };
   }
 
   onMatch = event => {
-    const currentUser = this.props.authUser;
+    const currentUser = this.state.currentUser;
 
+    console.log("Here");
     if(currentUser.matchedUserID == null) {
       currentUser.matchedUserID = event.target.value;
 
@@ -55,9 +57,6 @@ class UserList extends Component {
   }
 
   componentDidMount() {
-    if(this.props.authUser.matchedUserID) {
-      this.props.history.go(ROUTES.ALREADY_MATCHED_PAGE);
-    }
     this.setState({ loading: true });
 
     console.log(this.props.history);
@@ -71,18 +70,41 @@ class UserList extends Component {
         );
         
         this.setState({
+          currentUser: this.props.authUser,
           users,
           loading: false,
         });
+      });
+
+  }
+
+  componentDidUpdate() {
+    let currentUser = this.props.authUser;
+
+    this.props.firebase.user(currentUser.uid).get()
+      .then(snapshot => {
+          const firebaseUser = snapshot.data();
+
+          if(!firebaseUser.roles) {
+              firebaseUser.roles = {};
+          }
+
+          currentUser = {
+              uid: currentUser.uid,
+              email: currentUser.email,
+              ...firebaseUser,
+          };
+
+          this.setState({ currentUser, loading: false });
+
+          if(currentUser.matchedUserID) {
+            this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE)
+          }
       });
   }
 
   componentWillUnmount() {
     this.unsubscribe();
-  }
-
-  componentDidUpdate() {
-    console.log("red");
   }
 
   render() {
@@ -92,7 +114,7 @@ class UserList extends Component {
 
     const isTeacher = this.props.authUser.isTeacher;
     
-    const currentUser = this.props.authUser;
+    const currentUser = this.state.currentUser;
 
     for(let i = 0; i < users.length; i++) {
       if(currentUser.isTeacher !== users[i].isTeacher && 
@@ -108,7 +130,6 @@ class UserList extends Component {
 
     return(
       <div className="match-page">
-        <h1>Find your match</h1>
         { loading && <div>Loading ...</div> }
         
         <div className="user-cards">
