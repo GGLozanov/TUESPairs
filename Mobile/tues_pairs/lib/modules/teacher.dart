@@ -9,6 +9,7 @@ class Teacher extends User {
     String uid, String email,
     String photoURL, bool isTeacher,
     String username, String matchedUserID, List<String> skippedUserIDs}) :
+        assert(isTeacher == true || isTeacher == null),
         super(
           uid: uid, email: email,
           photoURL: photoURL, isTeacher: isTeacher,

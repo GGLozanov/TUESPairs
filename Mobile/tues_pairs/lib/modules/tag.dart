@@ -9,4 +9,9 @@ class Tag {
 
   Tag({@required this.tid, this.name, this.color}) : assert(tid != null);
 
+  @override
+  bool operator ==(other) {
+    return other is Tag ? tid == other.tid : false;
+  }
+
 }

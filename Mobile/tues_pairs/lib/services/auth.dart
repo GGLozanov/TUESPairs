@@ -1,4 +1,3 @@
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
@@ -13,8 +12,8 @@ class Auth {
 
   Auth();
 
-  Auth.mock() {
-    _auth = MockFirebaseAuth();
+  Auth.mock({final auth}) {
+    _auth = auth;
   }
 
   User FirebaseUserToUser(FirebaseUser user) {
@@ -72,6 +71,7 @@ class Auth {
     try{
       FirebaseUser firebaseUser = await _auth.currentUser();
       await firebaseUser.delete();
+      return 1; // exit code for success
     } catch(exception){
       print(exception.toString());
       return null;
@@ -81,6 +81,7 @@ class Auth {
   Future deleteFirebaseUser(FirebaseUser firebaseUser) async {
     try{
       await firebaseUser.delete();
+      return 1;
     } catch(exception){
       print(exception.toString());
       return null;
@@ -90,6 +91,7 @@ class Auth {
   Future logout() async {
     try {
       await _auth.signOut();
+      return 1;
     } catch(exception) {
       print(exception.toString());
       return null;
