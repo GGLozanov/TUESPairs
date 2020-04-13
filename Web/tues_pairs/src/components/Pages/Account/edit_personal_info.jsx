@@ -105,6 +105,7 @@ class EditPersonalInfo extends Component{
         }, 
         {merge: true})
         .then(() => {
+            this.props.authUser.skippedUserIDs = [];
             this.props.history.push(ROUTES.HOME);
         })
         .catch(error => {
@@ -161,6 +162,8 @@ class EditPersonalInfo extends Component{
         
         const hasSkipped = this.props.authUser.skippedUserIDs.length > 0 ? true : false;
 
+        const hasImage = photoURL ? true : false;
+
         return(
             this.state.loading ? <div></div> :
             <div className="edit-page-info">
@@ -168,7 +171,13 @@ class EditPersonalInfo extends Component{
                     <div className="profile-picture">
                         <Col xs={14} md={14}>
                             <Link to={ROUTES.IMAGE_UPLOAD} className="edit-link">
-                                <Image src={photoURL} rounded width="200" height="250" className="profile-image" />
+                                {hasImage && <Image src={photoURL} rounded width="200" height="250" className="profile-image" />}
+                                {!hasImage && 
+                                    <Image src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png"  
+                                        rounded  
+                                        width="200"
+                                        height="250"    
+                                    />}
                                 <Image src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/edit_image.png?alt=media&token=29df840d-e73e-49ba-843e-a51b8a693cc8" 
                                     className="edit-image"   
                                 />
