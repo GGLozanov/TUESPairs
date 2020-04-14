@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
 import { withAuthorization } from '../../Authentication';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
@@ -8,6 +8,33 @@ import './style.scss';
 import { withCurrentUser } from '../../Authentication/context';
 
 class AlreadyMatched extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            matchedUser: null,
+        }
+    }
+
+    componentDidMount(){
+        const currentUser = this.props.authUser;
+    
+        this.unsubscribe = this.props.firebase.user(currentUser.matchedUserID).get()
+        .then(snapshot => {
+            const firebaseUser = snapshot.data();
+
+            if(!firebaseUser.roles) {
+                firebaseUser.roles = {};
+            }
+
+            const matchedUser = {
+                ...firebaseUser,
+            };
+
+            this.setState({ photoURL: matchedUser.photoURL, username: matchedUser.username, loading: false });
+        });
+    }   
+
     handleCancelMatched = () => {
         const currentUser = this.props.authUser;
 
@@ -25,9 +52,40 @@ class AlreadyMatched extends Component {
     }
 
     render() {
+        const matchedUser = this.state;
+
+        const username = matchedUser.username;
+
+        const photoURL = matchedUser.photoURL
+
+        const isTeacher = matchedUser.isTeacher;
+
+        const hasImage = photoURL ? true : false;
+
         return(
             <div className="already-matched-page">
-                <p>You have sent a match request!</p>
+                <div className="match-text">
+                    <p>You have sent a match request</p>
+                </div>
+                <div className="matched-user-card">
+                    <Card bg="dark" style={{ width: '18rem' }} className="profile-card">
+                        {hasImage && <Card.Img variant="top" src={photoURL} className="profile-image"/>}
+                        {!hasImage && 
+                            <Card.Img 
+                                variant="top" 
+                                src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png" 
+                                className="profile-image"
+                            />}                
+                        <Card.Body className="profile-body">
+                            <Card.Title>{ username }</Card.Title>
+                            {isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
+                            {!isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
+                                <Card.Text>
+                                    User description + tehcnologies he knows
+                                </Card.Text>
+                        </Card.Body>
+                    </Card>
+                </div>
                 <Button onClick={this.handleCancelMatched} variant="dark">Cancel</Button>
             </div>
         )

@@ -176,7 +176,8 @@ class EditPersonalInfo extends Component{
                                     <Image src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png"  
                                         rounded  
                                         width="200"
-                                        height="250"    
+                                        height="250"
+                                        className="profile-image"
                                     />}
                                 <Image src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/edit_image.png?alt=media&token=29df840d-e73e-49ba-843e-a51b8a693cc8" 
                                     className="edit-image"   

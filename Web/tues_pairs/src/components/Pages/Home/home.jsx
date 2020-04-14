@@ -51,14 +51,12 @@ class UserList extends Component {
       skippedUserIDs: currentUser.skippedUserIDs
     }, {merge: true})
     .catch(error => {
-      console.log(error);
+      console.error(error);
     });
   }
 
   componentDidMount() {
     this.setState({ loading: true });
-
-    console.log(this.props.history);
 
     this.unsubscribe = this.props.firebase.users()
       .onSnapshot(snapshot => {

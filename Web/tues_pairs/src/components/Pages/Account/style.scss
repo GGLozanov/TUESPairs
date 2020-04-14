@@ -3,34 +3,39 @@
     color: white;
 }
 
-.page-main{
+.page-main {
     display: flex;
     justify-content: center;
     margin-top: 5em;
 
-    .profile-card{
+    .profile-card {
 
         box-sizing: border-box;
         box-shadow: 0px 0px 15px 0px black;
 
-        .profile-body{
+        .profile-image {
+            height: 382px;
+            width: 286px;
+        }
+
+        .profile-body {
             
-            .card-title{
+            .card-title {
                 text-align: center;
             }
 
-            .card-subtitle{
+            .card-subtitle {
                 margin: 5px;
                 color: rgb(252, 152, 0);
                 text-align: center;
             }
 
-            a{
+            a {
                 display: block;
                 text-align: center;
                 background-color: rgb(252, 152, 0);
 
-                &:hover{
+                &:hover {
                     background-color: rgb(211, 127, 0);
                 }
             }
@@ -38,8 +43,8 @@
     }
 }
 
-.edit-page-info{
-    .profile-editor{
+.edit-page-info {
+    .profile-editor {
 
         margin: 50px;
         border: 1px solid black;
@@ -47,13 +52,13 @@
         box-shadow: 0px 0px 15px 0px black;
         padding: 40px;
 
-        .profile-picture{
+        .profile-picture {
             text-align: center;
 
-            .edit-link{
+            .edit-link {
                 margin: 10px;
 
-                .edit-image{
+                .edit-image {
                     width: 10px;
                     height: 10px;
                     display: none;
@@ -63,13 +68,13 @@
                     border: 5px solid rgb(58, 64, 78);
                 }
 
-                &:hover{
+                &:hover {
 
-                    .profile-image{
+                    .profile-image {
                         opacity: 0.6;
                     }
 
-                    .edit-image{
+                    .edit-image {
                         margin: 5px;
                         display: inline-block;
                         width: 40px;
@@ -79,22 +84,22 @@
             }
         }
 
-        .profile-info{
+        .profile-info {
 
             margin: 10px;
 
-            .form-group{
+            .form-group {
 
-                .form-label{
+                .form-label {
                     color: white;
                 }
                 
-                input{
+                input {
                     background-color: rgb(58, 64, 78);
                     width: 50%;
                     color: white;
 
-                    &:focus{
+                    &:focus {
                         outline: none;
                         box-shadow: 0px 0px 12px 0.8px orange;
                         border-color: black;
@@ -102,31 +107,31 @@
                 }
             }
 
-            button{
+            button {
                 border: none;
                 background-color: rgb(0, 214, 0);
                 color: white;
 
-                &:hover{
+                &:hover {
                     background-color: rgb(0, 150, 0);
                 }
             }
         }
 
-        .clear-buttons{
-            button{
+        .clear-buttons {
+            button {
                 margin: 10px;
             }
         }
 
-        .delete-profile{
+        .delete-profile {
             text-align: center;
             background-color: red;
             border: none;
             display: block;
             margin: auto;
 
-            &:hover{
+            &:hover {
                 background-color: rgb(196, 0, 0);
             }
         }

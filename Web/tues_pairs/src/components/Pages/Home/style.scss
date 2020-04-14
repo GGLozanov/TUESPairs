@@ -7,12 +7,12 @@
         font-family: Verdana, Geneva, Tahoma, sans-serif;
     }
 
-    .user-cards{
+    .user-cards {
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
 
-        .profile-card{
+        .profile-card {
 
             img {
                 width: 286px;
@@ -25,25 +25,25 @@
             box-sizing: border-box;
             box-shadow: 0px 0px 15px 0px black;
     
-            .profile-body{
+            .profile-body {
                 
-                .card-title{
+                .card-title {
                     text-align: center;
                 }
     
-                .card-subtitle{
+                .card-subtitle {
                     margin: 5px;
                     color: rgb(252, 152, 0);
                     text-align: center;
                 }
     
-                button{
+                button {
                     margin-left: 20px;
                     margin-right: 20px;
                     text-align: center;
                     background-color: rgb(252, 152, 0);
     
-                    &:hover{
+                    &:hover {
                         background-color: rgb(211, 127, 0);
                     }
                 }
@@ -54,19 +54,61 @@
 
 .already-matched-page {
     text-align: center;
-    
-    p {
-        color: rgb(252, 152, 0);
+
+    .match-text {
+        p {
+            color: rgb(252, 152, 0);
+        }
     }
 
-    button{
+    button {
         margin-left: 20px;
         margin-right: 20px;
         text-align: center;
         background-color: rgb(252, 152, 0);
 
-        &:hover{
+        &:hover {
             background-color: rgb(211, 127, 0);
         }
     }
+
+    .matched-user-card {
+        display: flex;
+        justify-content: center;
+        margin: 40px;
+
+        .profile-card {
+
+            box-sizing: border-box;
+            box-shadow: 0px 0px 15px 0px black;
+
+            .profile-image {
+                height: 382px;
+                width: 286px;
+            }
+
+            .profile-body {
+                
+                .card-title {
+                    text-align: center;
+                }
+
+                .card-subtitle {
+                    margin: 5px;
+                    color: rgb(252, 152, 0);
+                    text-align: center;
+                }
+
+                a {
+                    display: block;
+                    text-align: center;
+                    background-color: rgb(252, 152, 0);
+
+                    &:hover {
+                        background-color: rgb(211, 127, 0);
+                    }
+                }
+            }
+        }
+    }    
 }
