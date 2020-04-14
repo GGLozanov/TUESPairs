@@ -6,6 +6,12 @@ import 'package:tues_pairs/modules/user.dart';
 void main() {
 
   group('User', () {
+    test('Creates a user instance', () {
+      User user1 = new User(uid: 'sameId!');
+
+      expect(user1, isA<User>());
+    });
+
     test('Creates two user instances and compares their Ids', () {
       User user1 = new User(uid: 'sameId!');
       User user2 = new User(uid: 'sameId!');

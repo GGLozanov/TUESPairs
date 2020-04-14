@@ -79,7 +79,6 @@ class _UserListState extends State<UserList> {
         widget.reinitializeMatch();
       },
       onSkip: () async {
-        // TODO: append to array of skippedUserIDs here
         currentUser.skippedUserIDs.add(user.uid);
         await database.updateUserData(currentUser); // optimise later maybe
         // TODO: Add global bools for isUserAlreadySkipped to display error snack bars

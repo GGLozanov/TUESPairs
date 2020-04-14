@@ -13,5 +13,4 @@ class Student extends User {
           photoURL: photoURL, GPA: GPA,
           isTeacher: isTeacher, username: username,
           matchedUserID: matchedUserID, skippedUserIDs: skippedUserIDs);
-
 }

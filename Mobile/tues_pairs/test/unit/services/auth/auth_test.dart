@@ -18,11 +18,11 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('Auth', () {
-
     // mock setup here
     final FirebaseAuthMock firebaseAuthMock = new FirebaseAuthMock();
     final FirebaseUserMock firebaseUserMock = new FirebaseUserMock();
     final AuthResultMock authResultMock = new AuthResultMock();
+
     User user = new User(email: 'example@gmail.com', password: 'examplepass');
 
     when(firebaseUserMock.delete()).thenAnswer((_) => null);

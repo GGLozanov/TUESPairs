@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ErrorNotifier {
-  final String errorMessage;
+  String errorMessage;
   bool isError = false;
 
   ErrorNotifier({this.errorMessage});
@@ -11,17 +11,16 @@ class ErrorNotifier {
   }
 
   void setError(String errorMessage) {
-    errorMessage = errorMessage;
-    toggleError();
+    this.errorMessage = errorMessage;
+    isError = true;
   }
 
   SnackBar showError() { // Wrap in setState() always
-    toggleError();
+    isError = false;
     return SnackBar(
       content: Text(
         errorMessage,
       ),
     );
   }
-
 }

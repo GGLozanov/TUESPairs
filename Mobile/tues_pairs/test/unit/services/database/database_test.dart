@@ -92,22 +92,30 @@ void main() {
 
     test('updateTagDataPass', () {
       // TODO: update unit test when tag module is implemented
-      // cleanMock(database);
+      Database database = new Database.mock(uid: 'TestUserID');
+
+      cleanMock(database);
     });
 
     test('updateTagDataFail', () {
       // TODO: update unit test when tag module is implemented
-      // cleanMock(database);
+      Database database = new Database.mock(uid: 'TestUserID');
+
+      cleanMock(database);
     });
 
     test('getTagBySnapshotPass', () {
       // TODO: update unit test when tag module is implemented
-      // cleanMock(database);
+      Database database = new Database.mock(uid: 'TestUserID');
+
+      cleanMock(database);
     });
 
     test('getTagBySnapshotFail', () {
       // TODO: update unit test when tag module is implemented
-      // cleanMock(database);
+      Database database = new Database.mock(uid: 'TestUserID');
+
+      cleanMock(database);
     });
 
     // -------------------------------------
@@ -117,7 +125,7 @@ void main() {
     test('Add a message to the message collection', () async {
       Database database = new Database.mock(uid: 'TestUserID');
 
-      Message testMessage = new Message(mid: 'TestMessageId', content: 'Content', fromId: 'SenderId', toId: 'ReceiverId');
+      Message testMessage = new Message(mid: 'TestMessageId', content: 'Content', fromId: 'SenderId', toId: 'ReceiverId', sentTime: '01/12/2020');
 
       var result = await database.addMessage(testMessage);
 
@@ -134,40 +142,34 @@ void main() {
       cleanMock(database);
     });
 
-    test('Retrieve a message with a specified message Id argument', () async {
+    test('Retrieve a message with a specified message Id argument', () async { // DOESN'T WORK
       Database database = new Database.mock(uid: 'TestUserID');
 
-      Message testMessage = new Message(content: 'Content', fromId: 'SenderId', toId: 'ReceiverId');
+      Message testMessage = new Message(content: 'Content', fromId: 'SenderId', toId: 'ReceiverId', sentTime: '01/12/2020');
 
       await database.addMessage(testMessage);
 
       // TODO: Fix test by fixing message ID retrieval (have it recorded in instances, not random)!
 
-      // var result = await database.
-
-      // expect(result.mid, testMessage.mid);
       cleanMock(database);
     });
 
-    test('Returns null upon failed message retrieval (missing Id or nonexistant message)', () async {
+    test('Returns null upon failed message retrieval (missing Id or nonexistant message)', () async { // DOESN'T WORK
       Database database = new Database.mock(uid: 'TestUserID');
 
-      Message testMessage = new Message(mid: 'TestMessageId', content: 'Content', fromId: 'SenderId', toId: 'ReceiverId');
+      Message testMessage = new Message(mid: 'TestMessageId', content: 'Content', fromId: 'SenderId', toId: 'ReceiverId', sentTime: '01/12/2020');
 
       await database.addMessage(testMessage);
 
       // TODO: Fix test by fixing message ID retrieval (have it recorded in instances, not random)!
 
-      // var result = await database.getMessageById(testMessage.mid);
-
-      // expect(result.mid, testMessage.mid);
       cleanMock(database);
     });
 
     test('Deletes message with a given message Id', () async {
       Database database = new Database.mock(uid: 'TestUserID');
       
-      Message testMessage = new Message(mid: 'TestMessageId', content: 'Content', fromId: 'SenderId', toId: 'ReceiverId');
+      Message testMessage = new Message(mid: 'TestMessageId', content: 'Content', fromId: 'SenderId', toId: 'ReceiverId', sentTime: '01/12/2020');
       
       await database.addMessage(testMessage);
       
