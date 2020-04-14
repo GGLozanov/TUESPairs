@@ -62,4 +62,15 @@ const NavigationNotLogged = () => (
   </Navbar>
 )
 
+const Footer = () => (
+  <footer className="site-footer">
+        <hr />
+    <ul>
+        <li>Copyright © 2020 all rights reserved</li>
+    </ul>
+  </footer>
+)
+
+export { Footer };
+
 export default Navigation;

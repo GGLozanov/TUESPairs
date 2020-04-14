@@ -59,6 +59,10 @@
                     display: none;
                 }
 
+                .profile-image {
+                    border: 5px solid rgb(58, 64, 78);
+                }
+
                 &:hover{
 
                     .profile-image{
@@ -84,7 +88,7 @@
                 .form-label{
                     color: white;
                 }
-
+                
                 input{
                     background-color: rgb(58, 64, 78);
                     width: 50%;

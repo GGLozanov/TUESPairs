@@ -2,10 +2,11 @@ import React from 'react';
 import { BrowserRouter as Router, Route, } from 'react-router-dom';
 import './app.scss';
 
-import Navigation from '../Pages/Navigation/navigation';
+import Navigation, { Footer } from '../Pages/Navigation/navigation';
 import ChatPage from '../Pages/Chat/chat';
 import PasswordForgetPage from '../Pages/PasswordForget';
-import HomePage, { AlreadyMatchedPage } from '../Pages/Home/home';
+import HomePage from '../Pages/Home/home';
+import AlreadyMatchedPage from '../Pages/Home/alreadyMatched';
 import AccountPage from '../Pages/Account/account';
 import ImageUploadPage from '../Pages/ImageUpload/imageUpload';
 
@@ -28,6 +29,8 @@ const App = () => (
             <Route path={ROUTES.ALREADY_MATCHED_PAGE} component={AlreadyMatchedPage} />
             <Route path={ROUTES.EDIT_PERSONAL_INFO} component={StudentInfo} />
         </div>
+
+        <Footer />
     </Router>
 );
 

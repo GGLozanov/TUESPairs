@@ -30,6 +30,20 @@ class ImageUploadBase extends Component {
 
     }
 
+    handleClearImage = () => {
+        const currentUser = this.props.authUser;
+
+        this.props.firebase.db.collection("users").doc(currentUser.uid).set({
+            photoURL: null,
+        }, {merge: true})
+        .then(() => {
+            this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+
     handleChange = e => {
         if (e.target.files[0]) {
             const image = e.target.files[0];
@@ -81,7 +95,11 @@ class ImageUploadBase extends Component {
     
     render() {
 
+        const photoURL = this.props.authUser.photoURL;
+
         const isDisabled = this.state.image ? false : true;
+
+        const hasImage = photoURL ? false : true;
 
         return (
         <div className="image-upload">
@@ -99,9 +117,11 @@ class ImageUploadBase extends Component {
                     />
                 </Form>
                 <Col xs={14} md={14}>
-                    <Image src={this.props.authUser.photoURL} rounded/>
+                    {!hasImage && <Image src={this.props.authUser.photoURL} rounded/>}
+                    {hasImage && <Image src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png" rounded/>}
                 </Col>
                 <Button disabled={isDisabled} onClick={this.handleUpload}>Upload</Button>
+                <Button disabled={hasImage} onClick={this.handleClearImage}>Clear Image</Button>
             </div>
         </div>
         )

@@ -81,3 +81,29 @@
         }
     }
 }
+
+.site-footer {
+    color: white;
+    padding-top: 20px;
+    margin-top: 50px;
+
+    hr {
+        margin-left: 40px;
+        margin-right: 40px;
+        border: 0.4px solid white;
+    }
+
+    ul {
+        display: flex;
+        padding: 10px;
+        list-style: none;
+        flex-direction: column;
+        justify-content: center;
+
+        li {
+            align-self: center;
+            font-size: large;
+            font-family: 'Courier New', Courier, monospace;
+        }
+    }
+}

@@ -54,10 +54,18 @@ class UserProfile extends Component {
 
         const isTeacher = this.props.authUser.isTeacher;
 
+        const hasImage = photoURL ? true : false;
+
         return(
             <div className="page-main">
                 <Card bg="dark" style={{ width: '18rem' }} className="profile-card">
-                    <Card.Img variant="top" src={photoURL} className="profile-image"/>
+                    {hasImage && <Card.Img variant="top" src={photoURL} className="profile-image"/>}
+                    {!hasImage && 
+                        <Card.Img 
+                            variant="top" 
+                            src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png" 
+                            className="profile-image"
+                        />}                
                     <Card.Body className="profile-body">
                         <Card.Title>{ username }</Card.Title>
                         {isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
