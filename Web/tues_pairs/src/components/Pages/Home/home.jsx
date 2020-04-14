@@ -26,7 +26,6 @@ class UserList extends Component {
   onMatch = event => {
     const currentUser = this.state.currentUser;
 
-    console.log("Here");
     if(currentUser.matchedUserID == null) {
       currentUser.matchedUserID = event.target.value;
 
@@ -37,7 +36,7 @@ class UserList extends Component {
         this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE);
       })
       .catch(error => {
-        console.log(error);
+        console.error(error);
       });
     }
     event.preventDefault();
