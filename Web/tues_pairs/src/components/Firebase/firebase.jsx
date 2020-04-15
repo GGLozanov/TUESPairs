@@ -36,6 +36,8 @@ const config = {
     doPasswordUpdate = password =>
         this.auth.currentUser.updatePassword(password);
 
+    doEmailUpdate = email => this.auth.currentUser.updateEmail(email);
+
     // *** User API ***
 
     getCurrentUser = async () => this.auth.currentUser;

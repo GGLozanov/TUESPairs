@@ -2,16 +2,14 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 
-import { SignUpLink } from '../SignUp/register';
 import { withFirebase } from '../../Firebase';
 import * as ROUTES from '../../../constants/routes';
-import { PasswordForgetLink } from '../PasswordForget/passwordforget'
+import { PasswordForgetLink } from '../PasswordForget'
+import './style.scss';
 
 const SignInPage = () => (
   <div>
-    <h1>SignIn</h1>
     <SignInForm />
-    <SignUpLink />
     <PasswordForgetLink />
   </div>
 );
@@ -48,28 +46,38 @@ class SignInFormBase extends Component {
 
   render() {
     const { email, password, error } = this.state;
+
     const isInvalid = password === '' || email === '';
+
     return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          name="email"
-          value={email}
-          onChange={this.onChange}
-          type="text"
-          placeholder="Email Address"
-        />
-        <input
-          name="password"
-          value={password}
-          onChange={this.onChange}
-          type="password"
-          placeholder="Password"
-        />
-        <button disabled={isInvalid} type="submit">
-          Sign In
-        </button>
-        {error && <p>{error.message}</p>}
-      </form>
+      <div className="base-container" ref={this.props.containerRef}>
+        <div className="header">Login</div>
+        <div className="content">
+          <div className="image">
+            <img src="" alt=""></img>
+          </div>
+          <div className="form">
+            <form onSubmit={this.onSubmit}>
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input name="email" value={email} onChange={this.onChange} type="email" placeholder="Email Address" />
+              </div>
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input name="password" value={password} onChange={this.onChange} type="password" placeholder="Password"/>
+              </div>
+              <div className="error-message">
+                {error && <p>{error.message}</p>}
+              </div>
+            </form>
+          </div>
+        </div>
+        <div className="footer">
+          <button type="button" className="btn" disabled={isInvalid} onClick={this.onSubmit}>
+            Login
+          </button>
+        </div>
+      </div>
     );
   }
 }

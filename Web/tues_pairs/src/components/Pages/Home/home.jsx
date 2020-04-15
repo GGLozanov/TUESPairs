@@ -5,19 +5,11 @@ import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
+import { Button, Card, Row } from 'react-bootstrap';
+import './style.scss'
 
 const HomePage = () => (
-  <div>
-    <h1>Home Page</h1>
     <MatchPage />
-  </div>
-);
-
-const AlreadyMatched = () => (
-  <div>
-    <h1>Match Page</h1>
-    <p>You have sent a match request!</p>
-  </div>
 );
 
 class UserList extends Component {
@@ -27,11 +19,12 @@ class UserList extends Component {
     this.state = {
       loading: false,
       users: [],
+      currentUser: null,
     };
   }
 
   onMatch = event => {
-    const currentUser = this.props.authUser;
+    const currentUser = this.state.currentUser;
 
     if(currentUser.matchedUserID == null) {
       currentUser.matchedUserID = event.target.value;
@@ -43,7 +36,7 @@ class UserList extends Component {
         this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE);
       })
       .catch(error => {
-        console.log(error);
+        console.error(error);
       });
     }
     event.preventDefault();
@@ -58,14 +51,11 @@ class UserList extends Component {
       skippedUserIDs: currentUser.skippedUserIDs
     }, {merge: true})
     .catch(error => {
-      console.log(error);
+      console.error(error);
     });
   }
 
-  componentDidMount(){
-    if(this.props.authUser.matchedUserID) {
-      this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE);
-    }
+  componentDidMount() {
     this.setState({ loading: true });
 
     this.unsubscribe = this.props.firebase.users()
@@ -75,11 +65,38 @@ class UserList extends Component {
         snapshot.forEach(doc =>
           users.push({ ...doc.data(), uid: doc.id }),
         );
-
+        
         this.setState({
+          currentUser: this.props.authUser,
           users,
           loading: false,
         });
+      });
+
+  }
+
+  componentDidUpdate() {
+    let currentUser = this.props.authUser;
+
+    this.props.firebase.user(currentUser.uid).get()
+      .then(snapshot => {
+          const firebaseUser = snapshot.data();
+
+          if(!firebaseUser.roles) {
+              firebaseUser.roles = {};
+          }
+
+          currentUser = {
+              uid: currentUser.uid,
+              email: currentUser.email,
+              ...firebaseUser,
+          };
+
+          this.setState({ currentUser, loading: false });
+
+          if(currentUser.matchedUserID) {
+            this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE)
+          }
       });
   }
 
@@ -91,8 +108,10 @@ class UserList extends Component {
     const { users, loading } = this.state;
 
     let mappedUsers = [];
+
+    const isTeacher = this.props.authUser.isTeacher;
     
-    const currentUser = this.props.authUser;
+    const currentUser = this.state.currentUser;
 
     for(let i = 0; i < users.length; i++) {
       if(currentUser.isTeacher !== users[i].isTeacher && 
@@ -107,30 +126,29 @@ class UserList extends Component {
     }
 
     return(
-      <div>
-        <h1>Users</h1>
+      <div className="match-page">
         { loading && <div>Loading ...</div> }
         
-        <div>
-          <ul>
+        <div className="user-cards">
             {mappedUsers.map(user => (
-              <li key={user.uid}>
-                <span>
-                  <img src={user.photoURL} alt="Please wait" height="50" width="50"></img>
-                </span>
-                <span>
-                  <strong>Username:</strong> {user.username}
-                </span>
-                <span>
-                  <strong>Gpa:</strong> {user.GPA}
-                </span>
-                <button type="submit" value={user.uid} onClick={this.onMatch}>Match</button>
-                <button type="submit" value={user.uid} onClick={this.onSkip}>Skip</button>
-              </li>
+              <Row xs={14} md={14}>
+                <Card bg="dark" style={{ width: '18rem' }} className="profile-card">
+                  <Card.Img variant="top" src={user.photoURL} className="profile-image"/>
+                  <Card.Body className="profile-body">
+                      <Card.Title>{ user.username }</Card.Title>
+                      {!isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
+                      {isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
+                          <Card.Text>
+                              User description + tehcnologies he knows
+                          </Card.Text>
+                      <Button value={user.uid} onClick={this.onMatch} variant="dark">Match</Button>
+                      <Button value={user.uid} onClick={this.onSkip} variant="dark">Skip</Button>
+                  </Card.Body>
+                </Card>
+              </Row>
             ))}
-        </ul>
       </div>
-      </div>
+    </div>
     )
   }
 
@@ -144,8 +162,6 @@ const MatchPage =  compose (
   withCurrentUser
 )(UserList);
 
-const AlreadyMatchedPage = withAuthorization(condition)(AlreadyMatched);
-
 export default withAuthorization(condition)(HomePage);
 
-export { MatchPage, AlreadyMatchedPage };
+export { MatchPage };

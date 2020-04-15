@@ -5,13 +5,11 @@ import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
-
+import { Button, ProgressBar, Form, Col, Image } from 'react-bootstrap';
+import './style.scss';
 
 const ImageUploadPage = () => (
-    <div>
-        <h1>Upload your profile image</h1>
-        <ImageUploadForm />
-    </div>
+    <ImageUploadForm />
 );
 
 class ImageUploadBase extends Component {
@@ -30,6 +28,20 @@ class ImageUploadBase extends Component {
             .bind(this);
             this.handleUpload = this.handleUpload.bind(this);
 
+    }
+
+    handleClearImage = () => {
+        const currentUser = this.props.authUser;
+
+        this.props.firebase.db.collection("users").doc(currentUser.uid).set({
+            photoURL: null,
+        }, {merge: true})
+        .then(() => {
+            this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
+        })
+        .catch(error => {
+            console.error(error);
+        });
     }
 
     handleChange = e => {
@@ -53,12 +65,12 @@ class ImageUploadBase extends Component {
         }, 
         (error) => {
             // error function ....
-            console.log(error);
+            
+            console.error(error);
         }, 
         () => {
             // complete function ....
             this.props.firebase.storage.ref('/').child(image.name).getDownloadURL().then(url => {
-                console.log(url);
                 if(currentUser.photoURL === null) {
                     hasImage = false;
                 } else {
@@ -71,33 +83,46 @@ class ImageUploadBase extends Component {
                     if(hasImage === false) {
                         this.props.history.push(ROUTES.HOME);
                     } else {
-                        this.props.history.push(ROUTES.ACCOUNT);
+                        this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    console.error(error);
                 });
             })
         });
     }
     
     render() {
-        const style = {
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center'
-        };
+
+        const photoURL = this.props.authUser.photoURL;
+
+        const isDisabled = this.state.image ? false : true;
+
+        const hasImage = photoURL ? false : true;
 
         return (
-        <div style={style}>
-        <progress value={this.state.progress} max="100"/>
-        <br/>
-            <input type="file" onChange={this.handleChange}/>
-            <button onClick={this.handleUpload}>Upload</button>
-            <br/>
-            <img src={this.photoURL || 'http://via.placeholder.com/400x300'} alt="Uploaded images" height="300" width="400"/>
+        <div className="image-upload">
+            <div className="hedaer">
+                <h1>Upload image</h1>
+            </div>
+            <div className="upload-handler">
+                <ProgressBar className="progress-bar" now={this.state.progress} label={`${this.state.progress}%`} />
+                <Form className="file-input">
+                    <Form.File 
+                        id="custom-file"
+                        label="Custom file input"
+                        onChange={this.handleChange}
+                        custom
+                    />
+                </Form>
+                <Col xs={14} md={14}>
+                    {!hasImage && <Image src={this.props.authUser.photoURL} rounded/>}
+                    {hasImage && <Image src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png" rounded/>}
+                </Col>
+                <Button disabled={isDisabled} onClick={this.handleUpload}>Upload</Button>
+                <Button disabled={hasImage} onClick={this.handleClearImage}>Clear Image</Button>
+            </div>
         </div>
         )
     }
