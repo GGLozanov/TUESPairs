@@ -55,8 +55,12 @@ class _UserListState extends State<UserList> {
           return Future.delayed(Duration(milliseconds: 100), () {
             listItems.add(buildUserCard(
                 currentUser, i, users[i])); // add card item here
-            _animatedListKey.currentState.insertItem(
-                listItems.length - 1); // insert the latest item here
+            try {
+              _animatedListKey.currentState.insertItem(
+                  listItems.length - 1); // insert the latest item here
+            } catch(e) {
+              // TODO: log that user has navigated through the screens too fast
+            }
           });
         });
     }
@@ -75,7 +79,6 @@ class _UserListState extends State<UserList> {
         widget.reinitializeMatch();
       },
       onSkip: () async {
-        // TODO: append to array of skippedUserIDs here
         currentUser.skippedUserIDs.add(user.uid);
         await database.updateUserData(currentUser); // optimise later maybe
         // TODO: Add global bools for isUserAlreadySkipped to display error snack bars

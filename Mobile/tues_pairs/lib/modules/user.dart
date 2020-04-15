@@ -19,7 +19,13 @@ class User {
   String username; // derived from email
   String matchedUserID; // matched TUESPairs user
   List<String> skippedUserIDs; // skipped TUESPairs users
+
   User({this.uid, this.email, this.password, this.photoURL, this.GPA, this.matchedUserID,
     this.tags, this.isTeacher, this.username, this.skippedUserIDs});
+
+  @override
+  bool operator ==(other) {
+    return other is User ? uid == other.uid : false;
+  }
 
 }

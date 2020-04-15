@@ -24,14 +24,15 @@ class ChatDisplay extends StatefulWidget {
 
 class _ChatDisplayState extends State<ChatDisplay> {
 
-
   @override
   Widget build(BuildContext context) {
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if(widget.scrollController.hasClients){
         scrollAnimation(widget.scrollController);
       }
     });
+
     List<Message> messages = Provider.of<List<Message>>(context) ?? [];
 
     User currentUser = Provider.of<User>(context);
@@ -41,7 +42,7 @@ class _ChatDisplayState extends State<ChatDisplay> {
     List<Widget> messageCards = messages.map((message) {
       DateTime time = DateTime.parse(message.sentTime);
       if((message.fromId == currentUser.uid && message.toId == matchedUser.uid) || (message.fromId == matchedUser.uid && message.toId == currentUser.uid)){
-        bool isMe = message.fromId == currentUser.uid ? true : false;
+        bool isMe = message.fromId == currentUser.uid;
         return MessageCard(
           mid: message.mid,
           content: message.content,
@@ -52,10 +53,10 @@ class _ChatDisplayState extends State<ChatDisplay> {
           matchedUser: isMe ? null : matchedUser,
         );
       }
+      return null;
     }).toList();
 
     messageCards.removeWhere((messageCard) => messageCard == null);
-    
 
     return SafeArea(
       child: Column(
@@ -79,7 +80,6 @@ class _ChatDisplayState extends State<ChatDisplay> {
           ),
         ],
       ),
-      
     );
   }
 }

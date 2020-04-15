@@ -38,6 +38,7 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
 
   Database database;
+  final Auth auth = new Auth();
   ErrorNotifier errorNotifier = new ErrorNotifier();
 
   void setError(String errorMessage) {
@@ -50,7 +51,6 @@ class _SettingsState extends State<Settings> {
     final users = Provider.of<List<User>>(context) ?? [];
     ImageService imageService = new ImageService();
     database = new Database(uid: currentUser.uid);
-
 
     return MultiProvider(
       providers: [
@@ -79,7 +79,6 @@ class _SettingsState extends State<Settings> {
                       // TODO: Use updateUserData from Database here to update matchedUserID
                       // TODO: Safeguard this option when two people are matched (have the other user consent to it w/bool flag notification maybe?)
                       // TODO: if both users have pressed this button, then their matchedUserID becomes null; until then, it isn't null.
-                      print(Settings.currentMatchedUserClears);
                       if(Settings.currentMatchedUserClears++ < Settings.maxMatchedUserClears) {
                         currentUser.matchedUserID = null; // to be changed
                         await database.updateUserData(currentUser);
@@ -110,14 +109,13 @@ class _SettingsState extends State<Settings> {
                     },
                   ),
                   SizedBox(width: 15.0),
+                  // TODO: Implement alertDialog onPressed for Delete button
                   InputButton(
                     minWidth: 100.0,
                     height: 50.0,
                     text: 'Delete',
-                    onPressed: () async{
-                      Auth auth = new Auth();
-                      
-                      for(int i = 0; i < users.length; i++){
+                    onPressed: () async {
+                      for(int i = 0; i < users.length; i++) {
                         Database userDatabase = new Database(uid: users[i].uid);
                         if(users[i].skippedUserIDs.contains(currentUser.uid)){
                           users[i].skippedUserIDs.remove(currentUser.uid);
@@ -128,7 +126,8 @@ class _SettingsState extends State<Settings> {
                           await userDatabase.updateUserData(users[i]);
                         }
                       }
-                      await auth.deleteFirebaseUser();
+
+                      await auth.deleteCurrentFirebaseUser();
                       await ImageService().deleteImage(currentUser.photoURL);
                       await database.deleteUser();
                       await auth.logout();

@@ -23,19 +23,17 @@ class MessageCard extends StatefulWidget {
 
 class _MessageCardState extends State<MessageCard> {
 
-
-
   bool showOptions = false;
+  final Database database = new Database();
 
   void deleteMessage() async{
     setState(() {
       showOptions = false;
     });
-    await Database().deleteMessage(widget.mid);
+    await database.deleteMessage(widget.mid);
   }
 
   Widget displayImage(User user){
-
     return user.photoURL == null ? Icon(
       Icons.person,
       size: 33.5,
@@ -60,25 +58,22 @@ class _MessageCardState extends State<MessageCard> {
     );
   }
 
-  
   Widget displayTime(){
-    
-      return showOptions ? Padding(
-        padding: widget.isMe ? EdgeInsets.only(right: 10.0) : EdgeInsets.only(left: 10.0),
-        child: Text(
-          widget.sentTime,
-          style: TextStyle(
-            color: Colors.white24,
-          ),
+    return showOptions ? Padding(
+      padding: widget.isMe ? EdgeInsets.only(right: 10.0) : EdgeInsets.only(left: 10.0),
+      child: Text(
+        widget.sentTime,
+        style: TextStyle(
+          color: Colors.white24,
         ),
-      ): SizedBox();
+      ),
+    ) : SizedBox();
   }
 
   @override
   Widget build(BuildContext context) {
 
     final currentUser = Provider.of<User>(context);
-    
 
     final List<Widget> messageCard = [
       SizedBox(width: 5.0),

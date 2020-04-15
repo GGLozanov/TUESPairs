@@ -8,16 +8,16 @@ class SendButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-        onPressed: callback,
-        color: Color.fromRGBO(34, 34, 43, 1),
-        textColor: Colors.white,
-        child: Icon(
-          Icons.send,
-          size: 26,
-          color: Colors.orange,
-        ),
-        padding: EdgeInsets.all(14),
-        shape: CircleBorder(),
-      );
+      onPressed: callback,
+      color: Color.fromRGBO(34, 34, 43, 1),
+      textColor: Colors.white,
+      child: Icon(
+        Icons.send,
+        size: 26,
+        color: Colors.orange,
+      ),
+      padding: EdgeInsets.all(14),
+      shape: CircleBorder(),
+    );
   }
 }

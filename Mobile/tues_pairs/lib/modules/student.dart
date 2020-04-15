@@ -1,7 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:tues_pairs/modules/user.dart';
-import 'package:tues_pairs/modules/tag.dart';
 
 class Student extends User {
   Student({
@@ -10,10 +7,10 @@ class Student extends User {
     double GPA, bool isTeacher,
     String username, String matchedUserID,
     List<String> skippedUserIDs}) :
-        super(
+      assert(isTeacher == false || isTeacher == null),
+      super(
           uid: uid, email: email,
           photoURL: photoURL, GPA: GPA,
           isTeacher: isTeacher, username: username,
           matchedUserID: matchedUserID, skippedUserIDs: skippedUserIDs);
-
 }

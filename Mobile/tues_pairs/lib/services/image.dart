@@ -1,20 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tues_pairs/templates/baseauth.dart';
-import 'package:tues_pairs/modules/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
-import 'package:tues_pairs/services/database.dart';
+import 'package:firebase_storage_mocks/firebase_storage_mocks.dart';
 import 'dart:io';
 
 class ImageService {
 
-  File profileImage; // always null in the beginning
-  final Database database = new Database();
-  final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+  File profileImage; // always null in the beginning unless specified
+  FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
   ImageService({this.profileImage});
+
+  ImageService.mock({this.profileImage}) {
+    firebaseStorage = MockFirebaseStorage();
+  }
 
   Future<File> getImageByGallery() async {
     return await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -36,11 +37,12 @@ class ImageService {
     return await firebaseStorageReference.getDownloadURL();
   }
 
-  Future deleteImage(String photoURL) async{
-    if (photoURL == null) return null;
+  Future deleteImage(String photoURL) async {
+    if(photoURL == null) return null;
     try{
       StorageReference imageRef = await firebaseStorage.getReferenceFromUrl(photoURL);
-      return await imageRef.delete();
+      await imageRef.delete();
+      return 1; // code for successful pass
     }catch(e){
       print(e.toString());
       return null;
@@ -48,13 +50,12 @@ class ImageService {
   }
 
   NetworkImage getImageByURL(String photoURL) {
+    if(photoURL == null) return null;
     try{
       return NetworkImage(photoURL);
     } catch(e){
       print(e.toString());
     }
   }
-
-
 
 }
