@@ -4,7 +4,7 @@ import 'package:tues_pairs/widgets/form/input_field.dart';
 
 class ConfirmPasswordInputField extends InputField {
 
-  ConfirmPasswordInputField({Function onChanged}) : super(onChanged: onChanged);
+  ConfirmPasswordInputField({Key key, Function onChanged}) : super(key: key, onChanged: onChanged);
 
   @override
   Widget build(BuildContext context) {

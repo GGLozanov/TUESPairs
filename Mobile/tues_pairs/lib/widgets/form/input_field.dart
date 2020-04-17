@@ -5,12 +5,13 @@ import 'package:tues_pairs/shared/constants.dart';
 
 // TODO: Clear code duplication in derived widgets
 
-class InputField extends StatelessWidget {
+abstract class InputField extends StatelessWidget {
 
+  final Key key;
   final Function onChanged;
   String initialValue;
 
-  InputField({this.onChanged, this.initialValue});
+  InputField({this.key, this.onChanged, this.initialValue}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

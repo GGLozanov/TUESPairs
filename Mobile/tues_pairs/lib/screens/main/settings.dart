@@ -1,28 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/services/image.dart';
-import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/modules/user.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart';
 import 'package:tues_pairs/services/database.dart';
-import 'dart:io';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/widgets/avatar/avatar_wrapper.dart';
-import 'package:tues_pairs/widgets/form/GPA_input_field.dart';
-import 'package:tues_pairs/widgets/form/email_input_field.dart';
 import 'package:tues_pairs/widgets/form/input_form_settings.dart';
-import 'package:tues_pairs/widgets/form/username_input_field.dart';
-import 'package:tues_pairs/widgets/form/password_input_field.dart';
-import 'package:tues_pairs/widgets/form/confim_password_input_field.dart';
 import 'package:tues_pairs/templates/error_notifier.dart';
 import 'package:tues_pairs/widgets/form/input_button.dart';
 
 import '../../services/auth.dart';
-import '../../services/auth.dart';
-import '../../services/auth.dart';
-import '../../services/database.dart';
 import '../../services/database.dart';
 import '../../services/image.dart';
 
@@ -72,6 +60,7 @@ class _SettingsState extends State<Settings> {
                 spacing: 5.0,
                 children: <Widget>[
                   InputButton(
+                    key: Key(Keys.settingsClearMatchedUserButton),
                     minWidth: 100.0,
                     height: 50.0,
                     text: currentUser.isTeacher ? 'Clear Student' : 'Clear Teacher',
@@ -87,6 +76,7 @@ class _SettingsState extends State<Settings> {
                   ),
                   SizedBox(width: 15.0),
                   InputButton(
+                    key: Key(Keys.settingsClearSkippedUsersButton),
                     minWidth: 100.0,
                     height: 50.0,
                     text: 'Clear Skipped',
@@ -96,6 +86,7 @@ class _SettingsState extends State<Settings> {
                     }
                   ),
                   InputButton(
+                    key: Key(Keys.settingsSubmitButton),
                     minWidth: 100.0,
                     height: 50.0,
                     text: 'Submit',
@@ -111,6 +102,7 @@ class _SettingsState extends State<Settings> {
                   SizedBox(width: 15.0),
                   // TODO: Implement alertDialog onPressed for Delete button
                   InputButton(
+                    key: Key(Keys.settingsDeleteAccountButton),
                     minWidth: 100.0,
                     height: 50.0,
                     text: 'Delete',

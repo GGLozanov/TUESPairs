@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore_mocks/cloud_firestore_mocks.dart';
 import 'package:tues_pairs/modules/message.dart';
@@ -7,7 +5,6 @@ import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/teacher.dart';
 import 'package:tues_pairs/modules/student.dart';
-import 'package:flutter/foundation.dart';
 
 // Firestore - new DB by Google designed to make it easier to store information with collections and documents inside collections
 // Collection reference - reference to a Firestore collection in the Firestore console (like a table in a relational DB)
@@ -128,7 +125,7 @@ class Database {
   Tag getTagBySnapshot(DocumentSnapshot doc) {
     if(doc.data != null) {
       return Tag(
-        tid: doc.data['id'], // TODO: replace with auto-generated ID for tags
+        tid: doc.documentID,
         name: doc.data['name'],
         color: doc.data['color'],
       );

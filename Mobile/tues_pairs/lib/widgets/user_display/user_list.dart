@@ -8,6 +8,7 @@ import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/student.dart';
 import 'package:tues_pairs/services/image.dart';
+import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/widgets/user_display/user_card.dart';
 import 'package:tues_pairs/widgets/general/error.dart';
 
@@ -44,44 +45,59 @@ class _UserListState extends State<UserList> {
   }
 
   void loadListItems(User currentUser, List<User> users) {
-      // method that utilises a Future delay to simulate a smooth loading effect.
-      // Credit to user NearHuscarl from the thread https://stackoverflow.com/questions/57100219/how-to-animate-the-items-rendered-initially-using-animated-list-in-flutter
-      // for the solution
-      // users = fetchedUsers
-      listItems = <UserCard>[];
-      var future = Future(() {});
-      for(int i = 0; i < users.length; i++) {
-        future = future.then((_) { // reinitializing future with lvalue helps futures wait for one-another (+then)
+    // method that utilises a Future delay to simulate a smooth loading effect.
+    // Credit to user NearHuscarl from the thread https://stackoverflow.com/questions/57100219/how-to-animate-the-items-rendered-initially-using-animated-list-in-flutter
+    // for the solution
+    // users = fetchedUsers
+
+    // TODO: Optimise filtration of users with removeWhere()
+
+    listItems = <UserCard>[];
+    var future = Future(() {});
+    for(int idx = 0; idx < users.length; idx++) {
+      final user = users[idx];
+      if(currentUser.isTeacher != user.isTeacher
+          && !currentUser.skippedUserIDs.contains(user.uid) &&
+          (user.matchedUserID == null || user.matchedUserID == currentUser.uid) && !user.skippedUserIDs.contains(currentUser)) {
+        // reinitializing future with lvalue helps futures wait for one-another (+then)
+        future = future.then((_) {
           return Future.delayed(Duration(milliseconds: 100), () {
+            final lastItemIndex = listItems.length;
             listItems.add(buildUserCard(
-                currentUser, i, users[i])); // add card item here
+                currentUser,
+                idx,
+                users[idx],
+                listIndex: lastItemIndex,
+              )
+            ); // add card item here
             try {
               _animatedListKey.currentState.insertItem(
-                  listItems.length - 1); // insert the latest item here
-            } catch(e) {
+                  lastItemIndex); // insert the latest item here
+            } catch (e) {
               // TODO: log that user has navigated through the screens too fast
             }
           });
         });
+      }
     }
   }
 
-  UserCard buildUserCard(User currentUser, int index, User user) {
+  UserCard buildUserCard(User currentUser, int index, User user, {int listIndex}) {
     final Database database = new Database(uid: currentUser.uid);
     return UserCard(
+      key: Key(Keys.matchUserCard + index.toString()),
       user: user,
       userImage: images[index],
       onMatch: () async {
         if(currentUser.matchedUserID == null) {
           currentUser.matchedUserID = user.uid;
           await database.updateUserData(currentUser); // optimise late maybe
-        } // TODO: Add global bools for isUserAlreadyMatched to display error snack bars instead of Exception
+        }
         widget.reinitializeMatch();
       },
       onSkip: () async {
         currentUser.skippedUserIDs.add(user.uid);
         await database.updateUserData(currentUser); // optimise later maybe
-        // TODO: Add global bools for isUserAlreadySkipped to display error snack bars
         users.removeAt(index);
         listItems.removeAt(index);
         setState(() {
@@ -100,6 +116,7 @@ class _UserListState extends State<UserList> {
           );
         });
       },
+      listIndex: listIndex, // idx of element in the filtered list
     );
   }
 
@@ -124,21 +141,14 @@ class _UserListState extends State<UserList> {
         // TODO: get array of skipped users from database (user instance probably won't hold it) through FutureBuilder again maybe -> done
         // TODO: then use contains method to check rendering in if statement -> done
         // TODO: User NEVER enters this state if they have matchedUserID != null; do that check in match.dart -> done
-        final user = users[index];
 
-        if(currentUser.isTeacher != user.isTeacher
-            && !currentUser.skippedUserIDs.contains(user.uid) &&
-            (user.matchedUserID == null || user.matchedUserID == currentUser.uid) && !user.skippedUserIDs.contains(currentUser)) {
-          return SlideTransition(
-            position: animation.drive(Tween<Offset>(
-              begin: const Offset(1, 0), // represent a point in Cartesian (x-y coordinate) space; dx and dy are args for points
-              end: const Offset(0, 0), // points are between 1 and 0 (use that!)
-            ).chain(CurveTween(curve: Curves.decelerate))),
-            child: listItems[index], // get the generated user card from here
-          );
-        } else {
-          return SizedBox();
-        }
+        return SlideTransition(
+          position: animation.drive(Tween<Offset>(
+            begin: const Offset(1, 0), // represent a point in Cartesian (x-y coordinate) space; dx and dy are args for points
+            end: const Offset(0, 0), // points are between 1 and 0 (use that!)
+          ).chain(CurveTween(curve: Curves.decelerate))),
+          child: listItems[index], // get the generated user card from here
+        );
       },
     );// context & index of whichever item we're iterating through
   }

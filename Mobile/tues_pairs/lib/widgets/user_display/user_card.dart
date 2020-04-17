@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/modules/user.dart';
-import 'package:tues_pairs/modules/student.dart';
 import 'package:tues_pairs/services/database.dart';
+import 'package:tues_pairs/shared/keys.dart';
 
 class UserCard extends StatefulWidget {
 
+  final Key key;
   final User user;
   final Function onSkip;
   final Function onMatch;
   final NetworkImage userImage;
+  final int listIndex;
 
-  UserCard({this.user, this.onSkip, this.onMatch, this.userImage});
+  UserCard({this.key, this.user, this.onSkip, this.onMatch, this.userImage, this.listIndex}) : super(key: key);
 
   @override
   _UserCardState createState() => _UserCardState();
@@ -49,6 +51,7 @@ class _UserCardState extends State<UserCard> {
             buttonPadding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
             children: <Widget>[
               FloatingActionButton(
+                key: Key(Keys.matchMatchButton + widget.listIndex.toString()),
                 onPressed: () {
                   widget.onMatch();
                 },
@@ -58,6 +61,7 @@ class _UserCardState extends State<UserCard> {
                 backgroundColor: Colors.deepOrangeAccent
               ),
               FloatingActionButton(
+                key: Key(Keys.matchSkipButton + widget.listIndex.toString()),
                 onPressed: () {
                   widget.onSkip(); // destroy the widget
                 },
