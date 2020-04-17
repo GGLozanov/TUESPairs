@@ -23,9 +23,6 @@ class AlreadyMatched extends Component {
         .then(snapshot => {
             const firebaseUser = snapshot.data();
 
-            if(!firebaseUser.roles) {
-                firebaseUser.roles = {};
-            }
 
             const matchedUser = {
                 ...firebaseUser,
