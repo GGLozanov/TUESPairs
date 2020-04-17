@@ -5,12 +5,13 @@ import 'package:tues_pairs/modules/user.dart';
 
 void main() {
 
-  final String loginTestUserEmail = 'katapultman150@gmail.com';
-  final String loginTestUserPassword = 'popeye';
+  final String userCardIndex = '0';
 
-  // example user for registration
+  const int waitDuration = 2000;
+
+  // example user for auth
   final User registerUser = new User(
-    email: 'example@gmail.com', password: 'examplepass',
+    email: 'example123456@gmail.com', password: 'examplepass',
     username: 'example',
     GPA: 5.45, isTeacher: false,
     photoURL: null,
@@ -37,15 +38,39 @@ void main() {
 
     final logOutButtonFinder = find.byValueKey(Keys.logOutButton);
     final bottomNavigationBarFinder = find.byValueKey(Keys.bottomNavigationBar);
-    final settingsDeleteAccountButtonFinder = find.byValueKey(Keys.settingsDeleteAccountButton);
 
-    FlutterDriver driver;
+    final matchMatchButtonFinder = find.byValueKey(Keys.matchMatchButton + userCardIndex);
+    final matchSkipButtonFinder = find.byValueKey(Keys.matchSkipButton + userCardIndex);
+    final matchUserCard = find.byValueKey(Keys.matchUserCard + userCardIndex);
+    final matchAnimatedList = find.byType('AnimatedList');
+
+    final settingsDeleteAccountButtonFinder = find.byValueKey(Keys.settingsDeleteAccountButton);
+    final settingsClearMatchedUserButtonFinder = find.byValueKey(Keys.settingsClearMatchedUserButton);
+    final settingsClearSkippedUsersButtonFinder = find.byValueKey(Keys.settingsClearSkippedUsersButton);
+    final settingsSubmitButtonFinder = find.byValueKey(Keys.settingsSubmitButton);
+
+    FlutterDriver driver; // driver that simulates I/O (pointer/tap) operations and general device interation
+
+    // Run BEFORE all tests
+    setUpAll(() async {
+      driver = await FlutterDriver.connect();
+    });
+
+    // Run AFTER all tests
+    tearDownAll(() async {
+      if(driver != null) {
+        await driver.close();
+      }
+    });
+
+    // ------------------------
+    // helper functions
 
     Future<void> delay([int milliseconds = 250]) async { // function to simulate a delay in time
       await Future<void>.delayed(Duration(milliseconds: milliseconds));
     }
 
-    Future<void> enterTextInFieldWithDelay(SerializableFinder field, String text, {int duration = 2000}) async {
+    Future<void> enterTextInFieldWithDelay(SerializableFinder field, String text, {int duration = waitDuration}) async {
       await driver.tap(field);
 
       delay(duration);
@@ -55,51 +80,46 @@ void main() {
       delay(duration);
     }
 
-    setUpAll(() async {
-      driver = await FlutterDriver.connect();
-    });
-
-    tearDownAll(() async {
-      if(driver != null) {
-        await driver.close();
-      }
-    });
-
-    test('sign in, sign out', () async {
+    Future<void> waitLogin() async {
       // wait to ensure we're in the sign-in page and not already auth'd
       await driver.waitFor(logInButtonFinder);
       await driver.waitFor(loginEmailInputFieldFinder);
       await driver.waitFor(loginPasswordInputFieldFinder);
+    }
 
-      await enterTextInFieldWithDelay(loginEmailInputFieldFinder, loginTestUserEmail);
+    Future<void> logInWithLoginTestUser() async {
+      await waitLogin();
 
-      await enterTextInFieldWithDelay(loginPasswordInputFieldFinder, loginTestUserPassword);
+      delay(waitDuration);
+
+      await enterTextInFieldWithDelay(loginEmailInputFieldFinder, registerUser.email);
+
+      await enterTextInFieldWithDelay(loginPasswordInputFieldFinder, registerUser.password);
 
       await driver.tap(logInButtonFinder);
+    }
 
-      delay(2000);
+    Future<void> logOut() async {
+      delay(waitDuration);
 
       await driver.waitFor(logOutButtonFinder);
 
-      delay(2000);
+      delay(waitDuration*2);
 
       await driver.tap(logOutButtonFinder);
+    }
 
-    });
-
-    test('register, delete', () async {
-      await driver.waitFor(logInButtonFinder);
-      await driver.waitFor(loginEmailInputFieldFinder);
-      await driver.waitFor(loginPasswordInputFieldFinder);
+    Future<void> registerTestUser() async {
+      await waitLogin();
 
       await driver.waitFor(toggleToRegisterButtonFinder);
 
-      delay(2000);
+      delay(waitDuration);
 
       // switch to sign-up page
       await driver.tap(toggleToRegisterButtonFinder);
 
-      delay(2000);
+      delay(waitDuration);
 
       // wait for the rendering of all the necessary widgets
       await driver.waitFor(registerUsernameInputFieldFinder);
@@ -110,41 +130,128 @@ void main() {
       await driver.waitFor(isTeacherSwitchFinder);
       await driver.waitFor(registerButtonFinder);
 
-      delay(2000);
-
-      await enterTextInFieldWithDelay(registerEmailInputFieldFinder, registerUser.email);
+      delay(waitDuration);
 
       await enterTextInFieldWithDelay(registerUsernameInputFieldFinder, registerUser.username);
 
+      delay(waitDuration);
+
+      await enterTextInFieldWithDelay(registerEmailInputFieldFinder, registerUser.email);
+
+      delay(waitDuration);
+
       await enterTextInFieldWithDelay(registerPasswordInputFieldFinder, registerUser.password);
+
+      delay(waitDuration);
 
       await enterTextInFieldWithDelay(registerConfirmPasswordInputFieldFinder, registerUser.password);
 
+      delay(waitDuration);
+
       await enterTextInFieldWithDelay(registerGPAInputFieldFinder, registerUser.GPA.toString());
 
-      await driver.tap(registerButtonFinder);
+      delay(waitDuration);
 
-      delay(2000);
+      await driver.tap(registerButtonFinder);
+    }
+
+    Future<void> navigateToPage(String page) async {
+      delay(waitDuration);
 
       // wait for the rendering of navbar
       await driver.waitFor(bottomNavigationBarFinder);
 
-      delay(2000);
+      delay(waitDuration);
 
-      await driver.tap(find.text('Settings')); // botoomnavbar items don't have key properties, sadly
+      await driver.tap(find.text(page)); // botoomnavbar items don't have key properties, sadly
 
-      delay(2000);
+      delay(waitDuration);
+    }
 
-      await driver.waitFor(settingsDeleteAccountButtonFinder);
+    Future<void> findAndTapButton(SerializableFinder button) async {
+      await driver.waitFor(button);
 
-      delay(2000);
+      delay(waitDuration);
 
-      await driver.tap(settingsDeleteAccountButtonFinder);
+      await driver.tap(button);
+    }
 
-    });
+    Future<void> navigateToPageAndTapButton(SerializableFinder button, String page) async {
+      delay(waitDuration);
+
+      await navigateToPage(page);
+
+      delay(waitDuration);
+
+      await findAndTapButton(button);
+    }
+    // ------------------------
+
+    // tests
 
     test('Initial app boot test', () async {
       await driver.waitFor(appFinder);
+    });
+
+    test('register, sign out', () async {
+      await registerTestUser();
+
+      await logOut();
+
+    });
+
+    test('sign in, sign out', () async {
+      await logInWithLoginTestUser();
+
+      await logOut();
+
+    });
+
+    test('match with first user and clear match in settings', () async {
+      await logInWithLoginTestUser();
+
+      await navigateToPageAndTapButton(settingsClearMatchedUserButtonFinder, 'Settings');
+
+      await navigateToPage('Match');
+
+      delay(waitDuration);
+
+      await driver.waitFor(matchAnimatedList, timeout: Duration(milliseconds: waitDuration*5));
+
+      delay(waitDuration);
+
+      await findAndTapButton(matchMatchButtonFinder);
+
+      await navigateToPageAndTapButton(settingsClearMatchedUserButtonFinder, 'Settings');
+
+      await logOut();
+
+    });
+
+    test('skip first user and clear skipped users', () async {
+      await logInWithLoginTestUser();
+
+      await navigateToPageAndTapButton(settingsClearSkippedUsersButtonFinder, 'Settings');
+
+      await navigateToPage('Match');
+
+      await driver.waitFor(matchAnimatedList, timeout: Duration(milliseconds: waitDuration*5));
+
+      delay(waitDuration);
+
+      await findAndTapButton(matchSkipButtonFinder);
+
+      await navigateToPageAndTapButton(settingsClearSkippedUsersButtonFinder, 'Settings');
+
+      await logOut();
+
+    });
+
+    test('sign in, delete', () async {
+      await logInWithLoginTestUser();
+
+      await navigateToPageAndTapButton(settingsDeleteAccountButtonFinder, 'Settings');
+
     });
 
     test('Check flutter driver health', () async {

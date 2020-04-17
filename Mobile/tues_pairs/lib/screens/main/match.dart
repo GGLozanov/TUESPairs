@@ -24,7 +24,7 @@ class _MatchState extends State<Match> {
       child: Container(
         color: Color.fromRGBO(59, 64, 78, 1),
         child: currentUser.matchedUserID == null ? UserList(reinitializeMatch: () => setState(() {})) : AlreadyMatched(),
-        // TODO: find way to improve parent call to setState() instead of function
+        // TODO: find way to improve parent call to setState() instead of callback pass
       ),
     );
   }

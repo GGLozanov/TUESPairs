@@ -7,12 +7,6 @@ class Keys {
   // -------------------------
 
   // -------------------------
-  // home keys
-  static const String homeScaffold = 'homeScaffold';
-  static const String bottomNavigationBar = 'bottomNavigationBar';
-  // -------------------------
-
-  // -------------------------
   // loading keys
   static const String loadingContainer = 'loadingContainer';
   // -------------------------
@@ -45,8 +39,24 @@ class Keys {
   // -------------------------
 
   // -------------------------
-  // settings keys
-  static const String settingsDeleteAccountButton = 'settingsDeleteAccountButton';
+  // home keys
+  static const String homeScaffold = 'homeScaffold';
+  static const String bottomNavigationBar = 'bottomNavigationBar';
   // -------------------------
 
+  // -------------------------
+  // match keys
+  static const String matchMatchButton = 'matchMatchButton';
+  static const String matchSkipButton = 'matchSkipButton';
+  static const String matchUserCard = 'matchUserCard';
+  static int lastMatchedUserIndex = 0;
+  // -------------------------
+
+  // -------------------------
+  // settings keys
+  static const String settingsClearMatchedUserButton = 'settingsClearMatchedUserButton';
+  static const String settingsClearSkippedUsersButton = 'settingsClearSkippedUsersButton';
+  static const String settingsSubmitButton = 'settingsSubmitButton';
+  static const String settingsDeleteAccountButton = 'settingsDeleteAccountButton';
+  // -------------------------
 }

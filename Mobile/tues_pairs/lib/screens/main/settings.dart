@@ -60,6 +60,7 @@ class _SettingsState extends State<Settings> {
                 spacing: 5.0,
                 children: <Widget>[
                   InputButton(
+                    key: Key(Keys.settingsClearMatchedUserButton),
                     minWidth: 100.0,
                     height: 50.0,
                     text: currentUser.isTeacher ? 'Clear Student' : 'Clear Teacher',
@@ -75,6 +76,7 @@ class _SettingsState extends State<Settings> {
                   ),
                   SizedBox(width: 15.0),
                   InputButton(
+                    key: Key(Keys.settingsClearSkippedUsersButton),
                     minWidth: 100.0,
                     height: 50.0,
                     text: 'Clear Skipped',
@@ -84,6 +86,7 @@ class _SettingsState extends State<Settings> {
                     }
                   ),
                   InputButton(
+                    key: Key(Keys.settingsSubmitButton),
                     minWidth: 100.0,
                     height: 50.0,
                     text: 'Submit',
