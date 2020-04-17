@@ -5,8 +5,7 @@ import 'package:tues_pairs/widgets/form/input_field.dart';
 
 class PasswordInputField extends InputField {
 
-  PasswordInputField({Function onChanged}) : super(onChanged: onChanged);
-
+  PasswordInputField({Key key, Function onChanged}) : super(key: key, onChanged: onChanged);
 
   @override
   Widget build(BuildContext context) {

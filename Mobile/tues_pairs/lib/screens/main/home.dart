@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/screens/main/settings.dart';
@@ -7,8 +6,7 @@ import 'package:tues_pairs/screens/main/match.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:provider/provider.dart';
-import 'package:tues_pairs/screens/loading/loading.dart';
-import 'package:tues_pairs/widgets/general/error.dart';
+import 'package:tues_pairs/shared/keys.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -48,6 +46,7 @@ class _HomeState extends State<Home> {
     return StreamProvider<List<User>>.value(
       value: Database().users,
       child: Scaffold(
+        key: Key(Keys.homeScaffold),
         appBar: AppBar(
           backgroundColor: Color.fromRGBO(33, 36, 44, 1),
           title: Text(
@@ -62,6 +61,7 @@ class _HomeState extends State<Home> {
           ),
           actions: <Widget>[
             FlatButton.icon(
+              key: Key(Keys.logOutButton),
               onPressed: () => _auth.logout(),
               icon: Icon(
                 Icons.exit_to_app,
@@ -90,6 +90,7 @@ class _HomeState extends State<Home> {
         ),
 
         bottomNavigationBar: BottomNavigationBar(
+          key: Key(Keys.bottomNavigationBar),
           fixedColor: Colors.orange,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(

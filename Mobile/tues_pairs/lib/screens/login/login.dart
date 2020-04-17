@@ -1,10 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tues_pairs/screens/authlistener.dart';
-import 'package:tues_pairs/shared/constants.dart';
+import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
-import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/widgets/form/input_button.dart';
 import 'package:tues_pairs/widgets/form/email_input_field.dart';
@@ -28,6 +25,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return baseAuth.isLoading ? Loading() : Scaffold(
+      key: Key(Keys.loginScaffold),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(33, 36, 44, 1),
         title: Text(
@@ -41,6 +39,7 @@ class _LoginState extends State<Login> {
         ),
         actions: <Widget>[
           FlatButton.icon(
+            key: Key(Keys.toggleToRegisterButton),
             onPressed: () => widget.toggleView(), // since the toggleView() function is known in the context of the widget, we need to address the widget and then access it
             icon: Icon(
               Icons.person,
@@ -59,6 +58,8 @@ class _LoginState extends State<Login> {
           )
         ],
       ),
+
+      // TODO: Animate this segment w/implicit animations
 
       body: Container(
         color: Color.fromRGBO(59, 64, 78, 1),
@@ -81,11 +82,19 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 SizedBox(height: 15.0),
-                EmailInputField(onChanged: (value) => setState(() => baseAuth.user.email = value), initialValue: baseAuth.user.email),
+                EmailInputField(
+                  key: Key(Keys.loginEmailInputField),
+                  onChanged: (value) => setState(() => baseAuth.user.email = value),
+                  initialValue: baseAuth.user.email,
+                ),
                 SizedBox(height: 15.0), // SizedBox widget creates an invisible box with a height/width to help separate elements
-                PasswordInputField(onChanged: (value) => setState(() => baseAuth.user.password = value)),
+                PasswordInputField(
+                  key: Key(Keys.loginPasswordInputField),
+                  onChanged: (value) => setState(() => baseAuth.user.password = value),
+                ),
                 SizedBox(height: 25.0),
                 InputButton(
+                  key: Key(Keys.logInButton),
                   minWidth: 250.0,
                   height: 60.0,
                   text: 'Log in',

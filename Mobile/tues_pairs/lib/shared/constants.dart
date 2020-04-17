@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-
 const textInputDecoration = InputDecoration(
-  
   hintStyle: TextStyle(
     color: Colors.white24
   ),
@@ -13,22 +11,20 @@ const textInputDecoration = InputDecoration(
   enabledBorder: UnderlineInputBorder(      
     borderSide: BorderSide(
       color: Colors.orange
-    ),   
+    ),
   ),
   focusedBorder: UnderlineInputBorder(
     borderSide: BorderSide(
       color: Colors.orange,
     ),
-  ),  
-
+  ),
 );
 
 const textInputColor = TextStyle(
     color: Colors.white,
 );
 
-
-Widget centeredText(String text){
+Widget centeredText(String text) {
   return Center(
     child: Padding(
       padding: EdgeInsets.only(left: 10.0, right: 10.0),
@@ -37,7 +33,6 @@ Widget centeredText(String text){
         style: TextStyle(
           color: Colors.orange,
           fontSize: 30.0,
-          
         ),
         textAlign: TextAlign.center,
       )
@@ -45,8 +40,8 @@ Widget centeredText(String text){
   );
 }
 
-void scrollAnimation(ScrollController scrollController){
-  scrollController.animateTo (
+void scrollAnimation(ScrollController scrollController) {
+  scrollController.animateTo(
     scrollController.position.maxScrollExtent,
     duration: Duration(milliseconds: 300),
     curve: Curves.easeOut

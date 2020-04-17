@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/shared/constants.dart';
 
 class InputButton extends StatelessWidget {
 
@@ -6,8 +7,9 @@ class InputButton extends StatelessWidget {
   final double height;
   final Function onPressed;
   final String text;
+  final Key key;
 
-  InputButton({this.minWidth, this.height, this.onPressed, this.text});
+  InputButton({this.key, this.minWidth, this.height, this.onPressed, this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
+import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/image.dart';
@@ -91,9 +92,9 @@ class _RegisterState extends State<Register> {
       }
     }
     
-    return baseAuth.isLoading ? Loading() : Scaffold(
+    return baseAuth.isLoading ? Loading() : Scaffold( // Scaffold grants the material design palette and general layout of the app (properties like appBar)
+      key: Key(Keys.registerScaffold),
       backgroundColor: Color.fromRGBO(59, 64, 78, 1),
-      // Scaffold grants the material design palette and general layout of the app (properties like appBar)
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(33, 36, 44, 1),
         title: Text(
@@ -108,6 +109,7 @@ class _RegisterState extends State<Register> {
         // actions take a list of Widgets and are used to display available actions on the AppBar
         actions: <Widget>[
           FlatButton.icon(
+            key: Key(Keys.toggleToLoginButton),
             onPressed: () {widget.toggleView();}, // since the toggleView() function is known in the context of the widget, we need to address the widget and then access it
             icon: Icon(
               Icons.lock,
@@ -115,13 +117,13 @@ class _RegisterState extends State<Register> {
               size: 30.0,
             ),
             label: Text(
-                'Log in',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.0,
-                  fontSize: 25.0,
-                )
+              'Log in',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.0,
+                fontSize: 25.0,
+              )
             ),
           )
         ],
@@ -159,22 +161,27 @@ class _RegisterState extends State<Register> {
                     ),
                     SizedBox(height: 15.0),
                     UsernameInputField(
+                      key: Key(Keys.registerUsernameInputField),
                       onChanged: (value) => setState(() {baseAuth.user.username = value;}),
                     ),
                     SizedBox(height: 15.0),
                     EmailInputField(
+                      key: Key(Keys.registerEmailInputField),
                       onChanged: (value) => setState(() {baseAuth.user.email = value;}),
                     ),
                     SizedBox(height: 15.0),
                     PasswordInputField(
+                      key: Key(Keys.registerPasswordInputField),
                       onChanged: (value) => setState(() {baseAuth.user.password = value;}),
                     ),
                     SizedBox(height: 15.0),
                     ConfirmPasswordInputField(
+                      key: Key(Keys.registerConfirmPasswordInputField),
                       onChanged: (value) => setState(() {baseAuth.confirmPassword = value;}),
                     ),
                     SizedBox(height: 15.0),
                     baseAuth.user.isTeacher ? SizedBox() : GPAInputField(
+                      key: Key(Keys.registerGPAInputField),
                       onChanged: (value) => setState(() => baseAuth.user.GPA = double.tryParse(value)),
                     ),
                     SizedBox(height: 15.0),
@@ -191,6 +198,7 @@ class _RegisterState extends State<Register> {
                           )
                         ),
                         Switch(
+                          key: Key(Keys.isTeacherSwitch),
                           value: baseAuth.user.isTeacher, // has the current user selected the isTeacher property
                           onChanged: (value) => setState(() {baseAuth.user.isTeacher = value;}),  // Rerun the build method in order for the switch to actually change
                           activeColor: Colors.orange,
@@ -199,6 +207,7 @@ class _RegisterState extends State<Register> {
                     ),
                     SizedBox(height: 15.0),
                     InputButton(
+                      key: Key(Keys.registerButton),
                       minWidth: 250.0,
                       height: 60.0,
                       text: 'Create account',
