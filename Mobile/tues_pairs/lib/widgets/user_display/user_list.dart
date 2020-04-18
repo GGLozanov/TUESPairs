@@ -72,7 +72,8 @@ class _UserListState extends State<UserList> {
             ); // add card item here
             try {
               _animatedListKey.currentState.insertItem(
-                  lastItemIndex); // insert the latest item here
+                  lastItemIndex
+              ); // insert the latest item here
             } catch (e) {
               // TODO: log that user has navigated through the screens too fast
             }
@@ -99,10 +100,10 @@ class _UserListState extends State<UserList> {
         currentUser.skippedUserIDs.add(user.uid);
         await database.updateUserData(currentUser); // optimise later maybe
         users.removeAt(index);
-        listItems.removeAt(index);
+        listItems.removeAt(listIndex);
         setState(() {
           // remove from both lists
-          _animatedListKey.currentState.removeItem(index,
+          _animatedListKey.currentState.removeItem(listIndex,
                 (context, animation) => SlideTransition(
                   position: CurvedAnimation(
                   curve: Curves.easeOut,
