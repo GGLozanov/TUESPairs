@@ -17,6 +17,7 @@ class MessageInput extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
+                textCapitalization: TextCapitalization.sentences,
                 style: TextStyle(
                   color: Colors.white
                 ),

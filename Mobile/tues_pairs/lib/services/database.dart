@@ -236,7 +236,8 @@ class Database {
         toId: doc.data['toId'] ?? null,
         sentTime: doc.data['sentTime'] ?? null,
       );
-      message.decryptMessage();
+      // TODO: Uncomment after encryption/decryption has been fixed in WEB...
+      // message.decryptMessage();
       return message;
     }
 
@@ -265,6 +266,8 @@ class Database {
           message.toId ?? 'null' +
           '"');
 
+      message.encryptMessage();
+
       logger.i('Database: addMessage Adding passed message w/ ' +
           '(content: "' + message.content.toString() + '", ' +
           'fromId: "' + message.fromId.toString() + '", ' +
@@ -272,7 +275,6 @@ class Database {
           'sentTime: "' + message.sentTime.toString() + '").'
       );
 
-      message.encryptMessage();
       return await _messagesCollectionReference.add({
         'content': message.content,
         'fromId': message.fromId,

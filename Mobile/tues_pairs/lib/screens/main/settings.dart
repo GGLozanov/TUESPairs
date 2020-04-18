@@ -5,6 +5,7 @@ import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/shared/keys.dart';
+import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/avatar/avatar_wrapper.dart';
 import 'package:tues_pairs/widgets/form/input_form_settings.dart';
 import 'package:tues_pairs/templates/error_notifier.dart';
@@ -68,10 +69,21 @@ class _SettingsState extends State<Settings> {
                       // TODO: Use updateUserData from Database here to update matchedUserID
                       // TODO: Safeguard this option when two people are matched (have the other user consent to it w/bool flag notification maybe?)
                       // TODO: if both users have pressed this button, then their matchedUserID becomes null; until then, it isn't null.
-                      if(Settings.currentMatchedUserClears++ < Settings.maxMatchedUserClears) {
-                        currentUser.matchedUserID = null; // to be changed
-                        await database.updateUserData(currentUser);
-                      } else setError("Too many clears!");
+                      if(currentUser.matchedUserID != null) {
+                        if(Settings.currentMatchedUserClears++ < Settings.maxMatchedUserClears) {
+                          logger.i('Settings: User w/ id "' +
+                              currentUser.uid +
+                              '" has cleared matched user w/ id "' +
+                              currentUser.matchedUserID + '"');
+                          currentUser.matchedUserID = null; // to be changed
+                          await database.updateUserData(currentUser);
+                        } else {
+                          logger.w('Settings: User w/ id "' +
+                              currentUser.uid +
+                              '" has attempted too many clears of matched teacher/student!');
+                          setError("Too many clears!");
+                        }
+                      }
                     },
                   ),
                   SizedBox(width: 15.0),
@@ -81,8 +93,13 @@ class _SettingsState extends State<Settings> {
                     height: 50.0,
                     text: 'Clear Skipped',
                     onPressed: () async {
-                      currentUser.skippedUserIDs = [];
-                      await database.updateUserData(currentUser);
+                      if(currentUser.skippedUserIDs != []) {
+                        logger.i('Settings: User w/ id "' + currentUser.uid +
+                            '" has cleared skipped users w/ ids "' +
+                            currentUser.skippedUserIDs.join(' ') + '"');
+                        currentUser.skippedUserIDs = [];
+                        await database.updateUserData(currentUser);
+                      }
                     }
                   ),
                   InputButton(
@@ -95,8 +112,25 @@ class _SettingsState extends State<Settings> {
                       final FormState currentState = InputFormSettings.baseAuth.key.currentState;
                       if(currentState.validate() && currentUser.email != null && currentUser.username != null) {
                         currentUser.photoURL = await imageService.uploadImage();
+
+                        logger.i('Settings: User w/ id "' +
+                            currentUser.uid +
+                            '" has updated his settings w/ photoURL "' +
+                            currentUser.photoURL + '"');
+
                         await database.updateUserData(currentUser); // upload image + wait for update
-                      } else setError("Invalid info in fields!");
+                        // TODO: Update w/ more fields in the future
+
+                        logger.i('Settings: User w/ id "' + currentUser.uid +
+                            '" has updated his settings w/ params ' +
+                            '(username: "' + currentUser.username + '", ' +
+                            'GPA: "' + currentUser.GPA.toString() + '", ' + '")');
+                      } else {
+                        logger.w('Settings: User w/ id "' +
+                            currentUser.uid +
+                            '" has entered invalid information in Settings fields!');
+                        setError("Invalid info in fields!");
+                      }
                     },
                   ),
                   SizedBox(width: 15.0),
@@ -123,6 +157,9 @@ class _SettingsState extends State<Settings> {
                       await ImageService().deleteImage(currentUser.photoURL);
                       await database.deleteUser();
                       await auth.logout();
+                      logger.i('Settings: User w/ id "' +
+                          currentUser.uid +
+                          '" has been deleted.');
                     },
                   ),
                 ],

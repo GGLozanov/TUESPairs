@@ -56,7 +56,7 @@ class Auth {
       logger.i('Auth: Successfully registered Firebase user w/ id "' + firebaseUser.uid + '" to database & sent mail verification.');
 
       User user = FirebaseUserToUser(firebaseUser); // return the user property garnered by the authResult
-      logger.i('Auth: User w/ username ' + authUser.username + 'has been successfully registered');
+      logger.i('Auth: User w/ username ' + authUser.username + ' has been successfully registered');
       return user; // TODO: just return authUser instead of firebaseUser and have authUser passed down as currentUser (better architecture??)
     } catch(exception) {
       logger.e('Auth: ' + exception.toString());

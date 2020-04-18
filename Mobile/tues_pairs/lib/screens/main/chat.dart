@@ -31,13 +31,21 @@ class _ChatState extends State<Chat> {
     final Database database = new Database(uid: currentUser.matchedUserID);
 
     Future<void> sendMessage() async {
-      if(messageController.text.length > 0){
-        await database.addMessage(Message(
+      if(messageController.text.length > 0) {
+        final message = Message(
           content: messageController.text,
           fromId: currentUser.uid,
           toId: matchedUser.uid,
           sentTime: DateTime.now().toIso8601String().toString(),
-        ));
+        );
+
+        await database.addMessage(message); // adds the sent message to the DB
+
+        logger.i('Chat: sendMessage has successfully sent a message w/ ' +
+            '(fromId: "' + message.fromId.toString() + '", ' +
+            'toId: "' + message.toId.toString() + '", ' +
+            'sentTime: "' + message.sentTime.toString() + '").'
+        );
       }
       messageController.clear();
       scrollAnimation(scrollController);
