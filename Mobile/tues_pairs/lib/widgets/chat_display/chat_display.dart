@@ -7,7 +7,6 @@ import 'package:tues_pairs/widgets/chat_display/chat_input.dart';
 import 'package:tues_pairs/widgets/chat_display/message_card.dart';
 
 import '../../modules/user.dart';
-import '../../modules/user.dart';
 import '../../shared/constants.dart';
 
 class ChatDisplay extends StatefulWidget {
@@ -61,7 +60,6 @@ class _ChatDisplayState extends State<ChatDisplay> {
     return SafeArea(
       child: Column(
         children: <Widget>[
-          
           Expanded(
             child: ListView(
               controller: widget.scrollController,

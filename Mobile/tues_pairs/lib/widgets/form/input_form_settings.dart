@@ -29,7 +29,6 @@ class InputFormSettingsState extends State<InputFormSettings> {
   @override
   Widget build(BuildContext context) {
     currentUser = Provider.of<User>(context);
-    print(currentUser.username);
     imageService = Provider.of<ImageService>(context);
     return Center(
       child: Form(

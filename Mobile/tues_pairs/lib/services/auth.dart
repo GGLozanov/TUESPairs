@@ -77,9 +77,8 @@ class Auth {
   Future deleteCurrentFirebaseUser() async{
     try{
       FirebaseUser firebaseUser = await _auth.currentUser();
-      final id = firebaseUser.uid;
       await firebaseUser.delete();
-      logger.i('Auth: Successfully deleted Firebase user w/ id "' + id + '"');
+      logger.i('Auth: Successfully deleted current Firebase User');
       return 1; // exit code for success
     } catch(exception){
       logger.e('Auth: ' + exception.toString());

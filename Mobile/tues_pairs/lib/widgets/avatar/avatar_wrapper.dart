@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/modules/user.dart';
+import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/avatar/avatar.dart';
 import 'package:tues_pairs/widgets/general/error.dart';
 
@@ -23,10 +24,12 @@ class _AvatarWrapperState extends State<AvatarWrapper> {
     final currentUser = Provider.of<User>(context) ?? null;
 
     if(currentUser == null || currentUser.photoURL == null) { // if no currentUser is detected, go with just the layout
+      logger.i('AvatarWrapper: No current user detected or their photo URL is null => Rendering default/empty Avatar');
       return Avatar(imageService: imageService, userImage: null);
     }
 
     userImage = imageService.getImageByURL(currentUser.photoURL);
+    logger.i('AvatarWrapper: Current user detected or their photo URL isn\'t null => Rendering Avatar with user image w/ url "' + userImage.url + '"');
     return userImage != null ? Avatar(imageService: imageService, userImage: userImage) : Error();
 
   }

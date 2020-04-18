@@ -8,6 +8,7 @@ import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/student.dart';
 import 'package:tues_pairs/services/image.dart';
+import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/widgets/user_display/user_card.dart';
 import 'package:tues_pairs/widgets/general/error.dart';
@@ -75,7 +76,8 @@ class _UserListState extends State<UserList> {
                   lastItemIndex
               ); // insert the latest item here
             } catch (e) {
-              // TODO: log that user has navigated through the screens too fast
+              logger.w('User w/ id "' + currentUser.uid + '" has navigated through match too fast!');
+              // TODO: log that user has navigated through the screens too fast -> done
             }
           });
         });
@@ -85,14 +87,16 @@ class _UserListState extends State<UserList> {
 
   UserCard buildUserCard(User currentUser, int index, User user, {int listIndex}) {
     final Database database = new Database(uid: currentUser.uid);
+
     return UserCard(
       key: Key(Keys.matchUserCard + index.toString()),
       user: user,
       userImage: images[index],
       onMatch: () async {
         if(currentUser.matchedUserID == null) {
+          logger.i('UserList: Current user w/ id "' + currentUser.uid + '" is matched with user w/ id + "' + user.uid + '"');
           currentUser.matchedUserID = user.uid;
-          await database.updateUserData(currentUser); // optimise late maybe
+          await database.updateUserData(currentUser); // optimise later maybe
         }
         widget.reinitializeMatch();
       },
@@ -101,6 +105,7 @@ class _UserListState extends State<UserList> {
         await database.updateUserData(currentUser); // optimise later maybe
         users.removeAt(index);
         listItems.removeAt(listIndex);
+        logger.i('UserList: Current user w/ id "' + currentUser.uid + '" skipped user w/ id + "' + user.uid + '"');
         setState(() {
           // remove from both lists
           _animatedListKey.currentState.removeItem(listIndex,
