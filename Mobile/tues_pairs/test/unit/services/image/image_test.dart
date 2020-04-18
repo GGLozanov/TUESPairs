@@ -48,7 +48,6 @@ void main() {
     test('Converts a photo URL to a Network image (photo URL is received from Firebase Storage)', () async { // Doesn't work
       ImageService imageService = new ImageService.mock(profileImage: new File('picture.jpg'));
 
-      debugPrint(basename(imageService.profileImage.path));
       // upload and retrieve photo here for conversion
       expect(imageService.getImageByURL(await imageService.uploadImage()), isNull);
     });
