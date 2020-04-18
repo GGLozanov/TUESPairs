@@ -7,6 +7,7 @@ import { withAuthorization } from '../../Authentication';
 import { withRouter } from 'react-router-dom';
 import * as ROUTES from '../../../constants/routes';
 import { Link } from 'react-router-dom';
+import { PasswordChangeLink } from '../PasswordForget/passwordchange';
 
 const StudentInfo = () => (
     <div>
@@ -234,6 +235,7 @@ class EditPersonalInfo extends Component{
                             </Col>
                         </Form.Group>
 
+                        <PasswordChangeLink />
                         <Button variant="primary" type="submit">
                             Submit
                         </Button>

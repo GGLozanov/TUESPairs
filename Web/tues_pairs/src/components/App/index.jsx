@@ -14,6 +14,7 @@ import * as ROUTES from '../../constants/routes.jsx';
 import { withAuthentication } from '../Authentication';
 import ChangeHandler from '../Pages/Authentication/changeHandler';
 import StudentInfo from '../Pages/Account/edit_personal_info';
+import PasswordChangePage from '../Pages/PasswordForget/passwordchange';
 
 const App = () => (
     <Router>
@@ -23,6 +24,7 @@ const App = () => (
 
             <Route exact path={ROUTES.CHAT} component={ChatPage} />
             <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
+            <Route path={ROUTES.PASSWORD_CHANGE} component={PasswordChangePage} />
             <Route path={ROUTES.HOME} component={HomePage} />
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
             <Route path={ROUTES.IMAGE_UPLOAD} component={ImageUploadPage} />

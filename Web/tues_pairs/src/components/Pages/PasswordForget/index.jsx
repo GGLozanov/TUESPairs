@@ -9,9 +9,7 @@ import { withCurrentUser } from '../../Authentication/context';
 import './passwordforget.scss';
 
 const PasswordForgetPage = () => (
-  <div>
     <PasswordForgetForm />
-  </div>
 );
 
 const INITIAL_STATE = {
@@ -27,7 +25,7 @@ class PasswordForgetFormBase extends Component {
 
   onSubmit = event => {
     const currentUser = this.props.authUser
-    const { email } = currentUser != null ? currentUser.email : null;
+    const email  = this.state.email;
     this.props.firebase
       .doPasswordReset(email)
       .then(() => {
@@ -53,11 +51,11 @@ class PasswordForgetFormBase extends Component {
     return (
       <div className="email-confirmation">
         <div className="hedaer">
-          <h1>Change my password</h1>
+          <h1>I forgot my password</h1>
         </div>
         <div className="form">
           <form onSubmit={this.onSubmit}>
-            <p>We will send you an email to change your password</p>
+            <input name="email" value={email} onChange={this.onChange} placeholder="Enter your email address"/>
               <button disabled={isInvalid} type="submit">
                 Send email
               </button>
@@ -71,17 +69,12 @@ class PasswordForgetFormBase extends Component {
 
 const PasswordForgetLink = () => (
   <div className="password-forget-link">
-  <p>
-    <Link to={ROUTES.PASSWORD_FORGET}>Forgot Password?</Link>
-  </p>
+    <p>
+      <Link to={ROUTES.PASSWORD_FORGET}>Forgot Password?</Link>
+    </p>
   </div>
 );
 
-const PasswordChangeLink = () => (
-  <p>
-    <Link to={ROUTES.PASSWORD_FORGET}>Change my password</Link>
-  </p>
-)
 export default PasswordForgetPage;
 
 const PasswordForgetForm = compose (
@@ -90,4 +83,4 @@ const PasswordForgetForm = compose (
   withCurrentUser
 )(PasswordForgetFormBase);
 
-export { PasswordForgetForm, PasswordForgetLink, PasswordChangeLink };
+export { PasswordForgetForm, PasswordForgetLink };

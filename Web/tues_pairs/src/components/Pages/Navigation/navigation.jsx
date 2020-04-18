@@ -21,12 +21,12 @@ const Navigation = ({ authUser }) => (
 
 const NavigationLogged = () => (
   <Navbar collapseOnSelect expand="lg" bg="dark">
-  <Navbar.Brand>
+  <Navbar.Brand href="/home">
     <img src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/TP-logo-2.png?alt=media&token=8378bc71-6fc6-4373-ac38-5f86a8b3295b" alt="TUESPairs logo"></img>
   </Navbar.Brand>
   <Navbar.Toggle aria-controls="responsive-navbar-nav" />
     <Navbar.Collapse id="responsive-navbar-nav">
-      <Nav variant="tabs" >
+      <Nav variant="tabs" defaultActiveKey="list-2">
         <Nav.Item>
           <Nav.Link eventKey="list-3">
             <Link to={ROUTES.CHAT}>
@@ -56,7 +56,7 @@ const NavigationLogged = () => (
 
 const NavigationNotLogged = () => (
   <Navbar collapseOnSelect expand="lg" bg="dark">
-    <Navbar.Brand>
+    <Navbar.Brand href="/sign">
       <img src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/TP-logo-2.png?alt=media&token=8378bc71-6fc6-4373-ac38-5f86a8b3295b" alt="TUESPairs logo"></img>
     </Navbar.Brand>
   </Navbar>
