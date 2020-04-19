@@ -120,7 +120,7 @@ class EditPersonalInfo extends Component{
         this.setState({ show });
     }
 
-    handleDeleteProfile = () => {
+    handleDeleteProfile = event => {
         let users = [];
 
         const currentUser = this.props.authUser;
@@ -152,6 +152,8 @@ class EditPersonalInfo extends Component{
         .catch(error => {
             this.setState({ error });
         });
+
+        event.preventDefault();
     }
 
     render() {

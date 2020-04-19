@@ -57,7 +57,7 @@ class PasswordForgetFormBase extends Component {
           <form onSubmit={this.onSubmit}>
             <input name="email" value={email} onChange={this.onChange} placeholder="Enter your email address"/>
               <button disabled={isInvalid} type="submit">
-                Send email
+                Send
               </button>
             {error && <p>{error.message}</p>}
           </form>

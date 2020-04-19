@@ -11,10 +11,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.scss';
 import { Navbar, Nav } from 'react-bootstrap';
 
-const Navigation = ({ authUser }) => (
+const Navigation = () => (
       <AuthUserContext.Consumer>
-        {authUser =>
-          authUser ? <NavigationLogged /> : <NavigationNotLogged />
+        {authUser => {
+          if(!authUser) {
+            return <NavigationNotLogged />
+          } else if(authUser.photoURL) {
+            return <NavigationLogged />
+          } else {
+            return <NavigationNotLogged />
+          }
+        }
+          
         }
       </AuthUserContext.Consumer>
 );

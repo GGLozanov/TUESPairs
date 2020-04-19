@@ -81,7 +81,7 @@ class ImageUploadBase extends Component {
                 }, {merge: true})
                 .then(() => {
                     if(hasImage === false) {
-                        this.props.history.push(ROUTES.HOME);
+                        this.props.history.go(ROUTES.HOME);
                     } else {
                         this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
                     }

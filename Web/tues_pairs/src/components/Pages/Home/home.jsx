@@ -5,7 +5,7 @@ import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
-import { Button, Card, Row } from 'react-bootstrap';
+import { Button, Card, Row, Spinner } from 'react-bootstrap';
 import './style.scss'
 
 const HomePage = () => (
@@ -127,7 +127,10 @@ class UserList extends Component {
 
     return(
       <div className="match-page">
-        { loading && <div>Loading ...</div> }
+        { loading && 
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner> }
         
         <div className="user-cards">
             {mappedUsers.map(user => (

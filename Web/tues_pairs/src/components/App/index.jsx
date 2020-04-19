@@ -15,6 +15,7 @@ import { withAuthentication } from '../Authentication';
 import ChangeHandler from '../Pages/Authentication/changeHandler';
 import StudentInfo from '../Pages/Account/edit_personal_info';
 import PasswordChangePage from '../Pages/PasswordForget/passwordchange';
+import UserInfoPage from '../Pages/Authentication/userInfo';
 
 const App = () => (
     <Router>
@@ -30,9 +31,9 @@ const App = () => (
             <Route path={ROUTES.IMAGE_UPLOAD} component={ImageUploadPage} />
             <Route path={ROUTES.ALREADY_MATCHED_PAGE} component={AlreadyMatchedPage} />
             <Route path={ROUTES.EDIT_PERSONAL_INFO} component={StudentInfo} />
+            <Route path={ROUTES.USER_INFO} component={UserInfoPage} />
         </div>
 
-        <Footer />
     </Router>
 );
 
