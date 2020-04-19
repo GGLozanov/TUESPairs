@@ -7,6 +7,9 @@ import moment from 'moment';
 import { MDBCard, MDBCardBody, MDBRow, MDBCol, MDBListGroup} from "mdbreact";
 import "./style.scss";
 import { Button, Image, Container } from 'react-bootstrap';
+import Aes from 'aes-js';
+
+
 
 class Chat extends Component{
 
@@ -17,11 +20,30 @@ class Chat extends Component{
             currentUser: this.props.authUser,
             matchedUser: null,
             content: "",
-        } 
+            key: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        }
     }
 
-      
+    encryptMessage = (message) => {
+        
+        const textBytes = Aes.utils.utf8.toBytes(message);
+        const keyBytes = Aes.utils.utf8.toBytes(this.state.key);
+        const aesCtr = new Aes.ModeOfOperation.ctr(keyBytes);
+        const encrpytedBytes = aesCtr.encrypt(textBytes);
+        return Aes.utils.hex.fromBytes(encrpytedBytes);
+
+    }
     
+    decryptMessage = (encryptedHex) => {
+        
+        const encrpytedBytes = Aes.utils.hex.toBytes(encryptedHex);
+        const keyBytes = Aes.utils.utf8.toBytes(this.state.key);
+        const aesCtr = new Aes.ModeOfOperation.ctr(keyBytes);
+        const decryptedBytes = aesCtr.decrypt(encrpytedBytes);
+        return Aes.utils.utf8.fromBytes(decryptedBytes);
+        
+    } 
+
     componentDidMount() {
         const currentUser = this.state.currentUser;
         let matchedUser = null;
@@ -52,6 +74,7 @@ class Chat extends Component{
                     let message = { ...doc.data(), mid: doc.id}
                     message.sentTime = moment(message.sentTime).format('LLL');
                     if(filterMessage(message)){
+                        message.content = this.decryptMessage(message.content);
                         messages.push(message);
                     }
                 });
@@ -71,7 +94,7 @@ class Chat extends Component{
         const message = {
             toId: matchedUser.uid,
             fromId: currentUser.uid,
-            content: content,
+            content: this.encryptMessage(content),
             sentTime: moment().format()
         }
         this.props.firebase.db.collection("messages").add({
@@ -104,26 +127,28 @@ class Chat extends Component{
                     <MDBRow className="px-lg-2 px-2 chat-area">
                         <MDBCol xl="6" className="col">
                             <MDBRow>
+                                <MDBListGroup className="list-unstyled">
 
-                                {messages.map((message, index) => {
-                                    if(message.fromId == currentUser.uid){
-                                        return <ChatMessage 
-                                            key={message.mid + message.sentTime}
-                                            message={message}
-                                            avatar={currentUser.photoURL}
-                                            username={currentUser.username}
-                                            uid={currentUser.uid}
-                                            />
-                                    }else{
-                                        return <ChatMessage
-                                            key={message.mid + message.sentTime}
-                                            message={message}
-                                            avatar={matchedUser.photoURL}
-                                            username={matchedUser.username}
-                                            uid={currentUser.uid}
-                                            />
-                                    }
-                                })}
+                                    {messages.map((message, index) => {
+                                        if(message.fromId == currentUser.uid){
+                                            return <ChatMessage 
+                                                key={message.mid + message.sentTime}
+                                                message={message}
+                                                avatar={currentUser.photoURL}
+                                                username={currentUser.username}
+                                                uid={currentUser.uid}
+                                                />
+                                        }else{
+                                            return <ChatMessage
+                                                key={message.mid + message.sentTime}
+                                                message={message}
+                                                avatar={matchedUser.photoURL}
+                                                username={matchedUser.username}
+                                                uid={currentUser.uid}
+                                                />
+                                        }
+                                    })}
+                                </MDBListGroup>
                                 <div className="form-group basic-textarea">
                                         <textarea className="form-control pl-2 my-0" id="exampleFormControlTextarea2" rows="3"
                                         placeholder="Type your message here..." name="content" value={content} onChange={this.onChange}/>
