@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { withAuthorization } from '../../Authentication';
-import { render } from '@testing-library/react';
 import { compose } from 'recompose';
 import { withFirebase } from '../../Firebase';
 import { withCurrentUser } from '../../Authentication/context';
 import moment from 'moment';
-
-
+import { MDBCard, MDBCardBody, MDBRow, MDBCol, MDBListGroup} from "mdbreact";
+import "./style.scss";
+import { Button, Image, Container } from 'react-bootstrap';
 
 class Chat extends Component{
 
@@ -20,6 +20,8 @@ class Chat extends Component{
         } 
     }
 
+      
+    
     componentDidMount() {
         const currentUser = this.state.currentUser;
         let matchedUser = null;
@@ -48,8 +50,9 @@ class Chat extends Component{
                 let messages = [];
                 snapshot.forEach(doc => {
                     let message = { ...doc.data(), mid: doc.id}
+                    message.sentTime = moment(message.sentTime).format('LLL');
                     if(filterMessage(message)){
-                        messages.push(message)
+                        messages.push(message);
                     }
                 });
                 this.setState({
@@ -57,7 +60,6 @@ class Chat extends Component{
                 })
             });
         });
-
     }
 
     onChange = event => {
@@ -89,25 +91,54 @@ class Chat extends Component{
         const {
             messages,
             content,
+            matchedUser,
+            currentUser
         } = this.state;
 
         const isInvalid = content == "";
         
         return (
-            <div>
-                <h1>Chat Page</h1>
-                <p>The chat page is accsessible when user is successfully matched.</p>
-                <ul>
-                    {messages.map( message => (
-                        <li key={message.mid}>{message.content}</li>
-                    ))}
-                </ul>
+            
+            <MDBCard className="chat-room">
+                <MDBCardBody>
+                    <MDBRow className="px-lg-2 px-2 chat-area">
+                        <MDBCol xl="6" className="col">
+                            <MDBRow>
 
-                <input type="text" name="content" value={content} onChange={this.onChange}/>
-                <button type="button" className="btn" disabled={isInvalid} onClick={this.onSubmit}>
-                    Send
-                </button>
-            </div>
+                                {messages.map((message, index) => {
+                                    if(message.fromId == currentUser.uid){
+                                        return <ChatMessage 
+                                            key={message.mid + message.sentTime}
+                                            message={message}
+                                            avatar={currentUser.photoURL}
+                                            username={currentUser.username}
+                                            uid={currentUser.uid}
+                                            />
+                                    }else{
+                                        return <ChatMessage
+                                            key={message.mid + message.sentTime}
+                                            message={message}
+                                            avatar={matchedUser.photoURL}
+                                            username={matchedUser.username}
+                                            uid={currentUser.uid}
+                                            />
+                                    }
+                                })}
+                                <div className="form-group basic-textarea">
+                                        <textarea className="form-control pl-2 my-0" id="exampleFormControlTextarea2" rows="3"
+                                        placeholder="Type your message here..." name="content" value={content} onChange={this.onChange}/>
+                                        <Button
+                                            disabled={isInvalid}
+                                            onClick={this.onSubmit}
+                                            >
+                                            Send
+                                        </Button>
+                                </div>
+                            </MDBRow>
+                        </MDBCol>
+                    </MDBRow>
+                </MDBCardBody>
+            </MDBCard>
         );
     }
 
@@ -120,6 +151,67 @@ const ChatPage = compose (
     withFirebase,
     withCurrentUser
 )(Chat)
-
+const ChatMessage = ({ message: {fromId, sentTime, content }, avatar, username, uid}) => {
+    if(uid == fromId){
+        return (
+                <li className="chat-message mb-4 message-align-right">
+                    <MDBCard className="out-box">
+                        <MDBCardBody>
+                            <MDBCol sm={8} className="p-0">
+                                <MDBRow>
+                                    <MDBCol sm={4}>
+                                        <Image src={avatar} roundedCircle height={50} width={50}/>
+                                    </MDBCol>
+                                    <MDBCol>
+                                        <MDBRow>
+                                            <strong className="primary-font">{username}</strong>
+                                        </MDBRow>
+                                        <MDBRow>
+                                            <small className="pull-right text-muted">
+                                                {sentTime}
+                                            </small>
+                                        </MDBRow>
+                                    </MDBCol>
+                                </MDBRow>
+                            </MDBCol>
+                            <hr/>
+                            <p className="mb-0">{content}</p>
+                        </MDBCardBody>
+                    </MDBCard>
+                </li>
+        )
+    }else{
+        return (
+                <li className="chat-message mb-4 message-align-left">
+                    <MDBCard className="in-box">
+                        <MDBCardBody>
+                            <MDBCol sm={8} className="p-0">
+                                <MDBRow>
+                                    <MDBCol sm={4}>
+                                        <Image src={avatar} roundedCircle height={50} width={50}/>
+                                    </MDBCol>
+                                    <MDBCol>
+                                        <MDBRow>
+                                            <strong className="primary-font">{username}</strong>
+                                        </MDBRow>
+                                        <MDBRow>
+                                            <small className="pull-right text-muted">
+                                                {sentTime}
+                                            </small>
+                                        </MDBRow>
+                                    </MDBCol>
+                                </MDBRow>
+                            </MDBCol>
+                            <hr/>
+                            <p className="mb-0">{content}</p>
+                        </MDBCardBody>
+                    </MDBCard>
+                </li>
+            
+        )
+    }
+    
+      
+};
 
 export default ChatPage;
