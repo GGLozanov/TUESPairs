@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormControl, Button, Col, Image, Form, Row, Alert } from 'react-bootstrap';
+import { FormControl, Button, Col, Image, Form, Row, Alert, Spinner } from 'react-bootstrap';
 import { withCurrentUser } from '../../Authentication/context';
 import { compose } from 'recompose';
 import { withFirebase } from '../../Firebase';
@@ -121,6 +121,7 @@ class EditPersonalInfo extends Component{
     }
 
     handleDeleteProfile = event => {
+        event.preventDefault();
         let users = [];
 
         const currentUser = this.props.authUser;
@@ -153,11 +154,10 @@ class EditPersonalInfo extends Component{
             this.setState({ error });
         });
 
-        event.preventDefault();
     }
 
     render() {
-        const { username, email, photoURL, GPA} = this.state;
+        const { username, email, photoURL, GPA, loading, error} = this.state;
 
         const isTeacher = this.props.authUser.isTeacher ? false : true;
 
@@ -168,8 +168,11 @@ class EditPersonalInfo extends Component{
         const hasImage = photoURL ? true : false;
 
         return(
-            this.state.loading ? <div></div> :
             <div className="edit-page-info">
+            { loading && 
+                <Spinner animation="border" role="status">
+                    <span className="sr-only">Loading...</span>
+                </Spinner> }
                 <div className="profile-editor">
                     <div className="profile-picture">
                         <Col xs={14} md={14}>
@@ -238,6 +241,9 @@ class EditPersonalInfo extends Component{
                         </Form.Group>
 
                         <PasswordChangeLink />
+                        <div className="error-message">
+                            {error && <p>{error.message}</p>}
+                        </div>
                         <Button variant="primary" type="submit">
                             Submit
                         </Button>

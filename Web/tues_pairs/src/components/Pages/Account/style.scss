@@ -43,7 +43,7 @@
     }
 }
 
-.edit-page-info {
+.edit-page-info {    
     .profile-editor {
 
         margin: 50px;
@@ -107,6 +107,12 @@
                 }
             }
 
+            .error-message {
+                margin: 1rem;
+                color: rgb(252, 152, 0);
+                font-weight: bold;
+            }
+
             button {
                 border: none;
                 background-color: rgb(0, 214, 0);
@@ -151,6 +157,7 @@
             }
 
             button {
+                box-shadow: none;
                 align-self: center;
                 margin: 10px;
                 font-size: 21px;

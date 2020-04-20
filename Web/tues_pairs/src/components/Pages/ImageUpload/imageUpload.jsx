@@ -71,6 +71,7 @@ class ImageUploadBase extends Component {
         () => {
             // complete function ....
             this.props.firebase.storage.ref('/').child(image.name).getDownloadURL().then(url => {
+                this.setState({ url });
                 if(currentUser.photoURL === null) {
                     hasImage = false;
                 } else {
@@ -81,7 +82,7 @@ class ImageUploadBase extends Component {
                 }, {merge: true})
                 .then(() => {
                     if(hasImage === false) {
-                        this.props.history.go(ROUTES.HOME);
+                        this.props.history.push(ROUTES.HOME);
                     } else {
                         this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
                     }
@@ -95,7 +96,7 @@ class ImageUploadBase extends Component {
     
     render() {
 
-        const photoURL = this.props.authUser.photoURL;
+        const photoURL = this.state.url;
 
         const isDisabled = this.state.image ? false : true;
 
@@ -117,7 +118,7 @@ class ImageUploadBase extends Component {
                     />
                 </Form>
                 <Col xs={14} md={14}>
-                    {!hasImage && <Image src={this.props.authUser.photoURL} rounded/>}
+                    {!hasImage && <Image src={photoURL} rounded/>}
                     {hasImage && <Image src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png" rounded/>}
                 </Col>
                 <Button disabled={isDisabled} onClick={this.handleUpload}>Upload</Button>

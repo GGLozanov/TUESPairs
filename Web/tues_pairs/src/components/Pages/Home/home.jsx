@@ -94,6 +94,10 @@ class UserList extends Component {
 
           this.setState({ currentUser, loading: false });
 
+          if(!this.props.authUser.username) {
+            this.props.history.push(ROUTES.USER_INFO);
+          }
+
           if(currentUser.matchedUserID) {
             this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE)
           }

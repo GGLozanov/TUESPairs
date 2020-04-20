@@ -13,16 +13,8 @@ import { Navbar, Nav } from 'react-bootstrap';
 
 const Navigation = () => (
       <AuthUserContext.Consumer>
-        {authUser => {
-          if(!authUser) {
-            return <NavigationNotLogged />
-          } else if(authUser.photoURL) {
-            return <NavigationLogged />
-          } else {
-            return <NavigationNotLogged />
-          }
-        }
-          
+        {authUser => 
+          authUser ? <NavigationLogged /> : <NavigationNotLogged />
         }
       </AuthUserContext.Consumer>
 );
@@ -34,7 +26,7 @@ const NavigationLogged = () => (
   </Navbar.Brand>
   <Navbar.Toggle aria-controls="responsive-navbar-nav" />
     <Navbar.Collapse id="responsive-navbar-nav">
-      <Nav variant="tabs" defaultActiveKey="list-2">
+      <Nav variant="tabs">
         <Nav.Item>
           <Nav.Link eventKey="list-3">
             <Link to={ROUTES.CHAT}>

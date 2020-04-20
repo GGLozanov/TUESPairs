@@ -106,13 +106,11 @@ class UserInfo extends Component {
     }
 }
 
-const condition = authuser => !!authuser;
 
 const UserInfoPage = compose (
     withRouter,
     withFirebase,
-    withCurrentUser,
-    withAuthorization(condition)
+    withCurrentUser
 )(UserInfo);
 
 export default UserInfoPage;
