@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tues_pairs/modules/message.dart';
-import 'package:tues_pairs/services/database.dart';
 
 class MessageOptions extends StatefulWidget {
 

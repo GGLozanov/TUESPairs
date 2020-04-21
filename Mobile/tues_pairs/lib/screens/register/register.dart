@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
 import 'package:tues_pairs/shared/keys.dart';
+import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/image.dart';
@@ -35,9 +36,11 @@ class _RegisterState extends State<Register> {
     bool usernameExists() {
       for(User data in users ?? []) {
         if(baseAuth.user.username == data.username) {
+          logger.i('Register: username already exists');
           return true;
         }
       }
+      logger.i('Register: username doesn\'t exist');
       return false;
     }
 
@@ -48,17 +51,22 @@ class _RegisterState extends State<Register> {
       baseAuth.errorMessages = [''];
       if(!formState.validate()) {
         isValid = false;
+        logger.w('Register: User is invalid (incorrect data entered)');
         baseAuth.errorMessages.add('Please enter correct data');
       }
       if(usernameExists()) {
         isValid = false;
+        logger.w('Register: User is invalid (username already exists)');
         baseAuth.errorMessages.add('Username exists');
       }
       if(baseAuth.user.password != baseAuth.confirmPassword) {
         isValid = false;
+        logger.w('Register: User is invalid (passwords do not match)');
         baseAuth.errorMessages.add('Passwords do not match');
 
       }
+
+      logger.i('Register: User is valid');
       return isValid;
     }
 
@@ -78,9 +86,10 @@ class _RegisterState extends State<Register> {
           registeredUser.photoURL = await imageService.uploadImage();
         }
 
-        User userResult = await baseAuth.authInstance.registerUserByEmailAndPassword(registeredUser);
+        User user = await baseAuth.authInstance.registerUserByEmailAndPassword(registeredUser);
 
-        if(userResult == null) {
+        if(user == null) {
+          logger.w('Register: User hasn\'t been registered (failed)');
           setState(() {
             baseAuth.errorMessages = [''];
             baseAuth.errorMessages.add('There was an error. Please try again.');

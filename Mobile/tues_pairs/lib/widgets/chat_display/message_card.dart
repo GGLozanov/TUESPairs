@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/services/database.dart';
+import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/chat_display/message_option.dart';
 
 import '../../modules/user.dart';
@@ -23,28 +24,51 @@ class MessageCard extends StatefulWidget {
 
 class _MessageCardState extends State<MessageCard> {
 
+  bool showTime = false;
   bool showOptions = false;
   final Database database = new Database();
+  User currentUser;
 
   void deleteMessage() async{
     setState(() {
       showOptions = false;
     });
     await database.deleteMessage(widget.mid);
-  }
-
-  Widget displayImage(User user){
-    return user.photoURL == null ? Icon(
-      Icons.person,
-      size: 33.5,
-      color: Colors.orange,
-    ) : Image.network(
-      user.photoURL,
-      fit: BoxFit.fill,
+    logger.i('MessageCard: Deleting MessageCard w/ mid "' +
+        widget.mid + '" and sent time "' +
+        widget.sentTime + '" sent from current user w/ uid "' +
+        currentUser.uid + '"'
     );
   }
 
-  Widget displayAvatar(User user){
+  Widget displayImage(User user){
+    if(user.photoURL != null) {
+      logger.i('MessageCard: Displaying photo of MessageCard w/ mid "' +
+          widget.mid + '" sent during "' +
+          widget.sentTime + '" sent from user w/ uid "' +
+          user.uid + '" and photo URL "' + user.photoURL + '"'
+      );
+
+      return Image.network(
+        user.photoURL,
+        fit: BoxFit.fill,
+      );
+    }
+
+    logger.i('MessageCard: Displaying photo of MessageCard w/ mid "' +
+        widget.mid + '" sent during "' +
+        widget.sentTime + '" sent from user w/ uid "' +
+        user.uid + '" and an empty photo URL'
+    );
+
+    return Icon(
+      Icons.person,
+      size: 33.5,
+      color: Colors.orange,
+    );
+  }
+
+  Widget displayAvatar(User user) {
     return CircleAvatar(
       radius: 22.5,
       backgroundColor: Color.fromRGBO(33, 36, 44, 1),
@@ -58,22 +82,32 @@ class _MessageCardState extends State<MessageCard> {
     );
   }
 
-  Widget displayTime(){
-    return showOptions ? Padding(
-      padding: widget.isMe ? EdgeInsets.only(right: 10.0) : EdgeInsets.only(left: 10.0),
-      child: Text(
-        widget.sentTime,
-        style: TextStyle(
-          color: Colors.white24,
+  Widget displayTime() {
+    if(showTime) {
+      logger.i('MessageCard: Displaying MessageCard w/ mid "' +
+          widget.mid + '" sent time "' +
+          widget.sentTime + '" sent from current user w/ uid "' +
+          currentUser.uid + '"'
+      );
+
+      return Padding(
+        padding: widget.isMe ? EdgeInsets.only(right: 10.0) : EdgeInsets.only(left: 10.0),
+        child: Text(
+          widget.sentTime,
+          style: TextStyle(
+            color: Colors.white24,
+          ),
         ),
-      ),
-    ) : SizedBox();
+      );
+    }
+
+    return SizedBox();
   }
 
   @override
   Widget build(BuildContext context) {
 
-    final currentUser = Provider.of<User>(context);
+    currentUser = Provider.of<User>(context);
 
     final List<Widget> messageCard = [
       SizedBox(width: 5.0),
@@ -94,7 +128,7 @@ class _MessageCardState extends State<MessageCard> {
             style: TextStyle(
               color: Colors.white,
             ),
-          textAlign: widget.isMe ? TextAlign.end : TextAlign.start,
+            textAlign: widget.isMe ? TextAlign.end : TextAlign.start,
           ),
         ),
       ),
@@ -106,11 +140,14 @@ class _MessageCardState extends State<MessageCard> {
       child: InkWell(
         onLongPress: (){
           setState(() {
+            logger.i('MessageCard: User w/ uid "' + currentUser.uid + '" has long-pressed on the inkwell (showOptions = true)');
             showOptions = true;
           });
         },
         onTap: () {
           setState(() {
+            logger.i('MessageCard: User w/ uid "' + currentUser.uid + '" has tapped on the inkwell (showOptions = false)');
+            showTime = !showTime;
             showOptions = false;
           });
         },
@@ -120,7 +157,7 @@ class _MessageCardState extends State<MessageCard> {
             children: <Widget>[
               Row(
                 mainAxisAlignment: widget.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-                children: !widget.isMe ? messageCard : messageCard.reversed.toList() ,
+                children: !widget.isMe ? messageCard : messageCard.reversed.toList(),
               ),
               displayTime(),
             ]

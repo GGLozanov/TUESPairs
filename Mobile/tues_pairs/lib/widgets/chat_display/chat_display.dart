@@ -7,7 +7,6 @@ import 'package:tues_pairs/widgets/chat_display/chat_input.dart';
 import 'package:tues_pairs/widgets/chat_display/message_card.dart';
 
 import '../../modules/user.dart';
-import '../../modules/user.dart';
 import '../../shared/constants.dart';
 
 class ChatDisplay extends StatefulWidget {
@@ -28,12 +27,13 @@ class _ChatDisplayState extends State<ChatDisplay> {
   Widget build(BuildContext context) {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if(widget.scrollController.hasClients){
+      if(widget.scrollController.hasClients) {
         scrollAnimation(widget.scrollController);
       }
     });
 
     List<Message> messages = Provider.of<List<Message>>(context) ?? [];
+    logger.i('ChatDisplay: Rendering ChatDisplay and receiving all Messages');
 
     User currentUser = Provider.of<User>(context);
     User matchedUser = widget.matchedUser;
@@ -41,8 +41,15 @@ class _ChatDisplayState extends State<ChatDisplay> {
   
     List<Widget> messageCards = messages.map((message) {
       DateTime time = DateTime.parse(message.sentTime);
-      if((message.fromId == currentUser.uid && message.toId == matchedUser.uid) || (message.fromId == matchedUser.uid && message.toId == currentUser.uid)){
+      if((message.fromId == currentUser.uid && message.toId == matchedUser.uid) || (message.fromId == matchedUser.uid && message.toId == currentUser.uid)) {
         bool isMe = message.fromId == currentUser.uid;
+
+        logger.i('ChatDisplay: Rendering MessageCard w/ mid "' +
+            message.mid + '" and sent time "' +
+            message.sentTime + '" between current user w/ uid "' +
+            currentUser.uid + '" and matched user w/ uid "' + matchedUser.uid + '"'
+        );
+
         return MessageCard(
           mid: message.mid,
           content: message.content,
@@ -61,7 +68,6 @@ class _ChatDisplayState extends State<ChatDisplay> {
     return SafeArea(
       child: Column(
         children: <Widget>[
-          
           Expanded(
             child: ListView(
               controller: widget.scrollController,

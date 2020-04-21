@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
+import 'package:tues_pairs/shared/constants.dart';
 
 class Auth {
 
@@ -41,18 +42,24 @@ class Auth {
 
   Future registerUserByEmailAndPassword(User authUser) async { // async function returns Future (placeholder variable until callback from other thread is received)
     try {
-      FirebaseUser user = await getFirebaseUserFromAuth(authUser);
+      FirebaseUser firebaseUser = await getFirebaseUserFromAuth(authUser);
+
+      logger.i('Auth: Successfully registered Firebase user w/ id "' + firebaseUser.uid + '" to auth.');
 
       // -----------------------------------
       // User has successfully auth'd at this point
       // -----------------------------------
 
-      await Database(uid: user.uid).updateUserData(authUser); // create the document when the user registers
-      await user.sendEmailVerification();
+      await Database(uid: firebaseUser.uid).updateUserData(authUser); // create the document when the user registers
+      await firebaseUser.sendEmailVerification();
 
-      return FirebaseUserToUser(user); // return the user property garnered by the authResult
+      logger.i('Auth: Successfully registered Firebase user w/ id "' + firebaseUser.uid + '" to database & sent mail verification.');
+
+      User user = FirebaseUserToUser(firebaseUser); // return the user property garnered by the authResult
+      logger.i('Auth: User w/ username ' + authUser.username + ' has been successfully registered');
+      return user; // TODO: just return authUser instead of firebaseUser and have authUser passed down as currentUser (better architecture??)
     } catch(exception) {
-      print(exception.toString());
+      logger.e('Auth: ' + exception.toString());
       return null;
     }
   }
@@ -62,7 +69,7 @@ class Auth {
       AuthResult authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
       return FirebaseUserToUser(authResult.user);
     } catch(exception) {
-      print(exception.toString());
+      logger.e('Auth: ' + exception.toString());
       return null;
     }
   }
@@ -71,19 +78,22 @@ class Auth {
     try{
       FirebaseUser firebaseUser = await _auth.currentUser();
       await firebaseUser.delete();
+      logger.i('Auth: Successfully deleted current Firebase User');
       return 1; // exit code for success
     } catch(exception){
-      print(exception.toString());
+      logger.e('Auth: ' + exception.toString());
       return null;
     }
   }
 
   Future deleteFirebaseUser(FirebaseUser firebaseUser) async {
     try{
+      final id = firebaseUser.uid;
       await firebaseUser.delete();
+      logger.i('Auth: Successfully deleted Firebase user w/ id "' + id + '"');
       return 1;
     } catch(exception){
-      print(exception.toString());
+      logger.e('Auth: ' + exception.toString());
       return null;
     }
   }
@@ -91,9 +101,10 @@ class Auth {
   Future logout() async {
     try {
       await _auth.signOut();
+      logger.i('Auth: Successfully logged out current Firebase user');
       return 1;
     } catch(exception) {
-      print(exception.toString());
+      logger.e('Auth: ' + exception.toString());
       return null;
     }
   }

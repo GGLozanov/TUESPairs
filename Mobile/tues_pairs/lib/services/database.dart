@@ -5,6 +5,7 @@ import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/teacher.dart';
 import 'package:tues_pairs/modules/student.dart';
+import 'package:tues_pairs/shared/constants.dart';
 
 // Firestore - new DB by Google designed to make it easier to store information with collections and documents inside collections
 // Collection reference - reference to a Firestore collection in the Firestore console (like a table in a relational DB)
@@ -26,12 +27,16 @@ class Database {
 
   final String uid; // user id property
   Database({this.uid}) {
+    final idMsg = this.uid != null ? uid : 'null';
+    logger.i('Database: Created real Database instance w/ user id property "' + idMsg + '"; ' + toString());
     _userCollectionReference = Firestore.instance.collection('users');
     _tagsCollectionReference = Firestore.instance.collection('tags');
     _messagesCollectionReference = Firestore.instance.collection('messages');
   }
 
   Database.mock({this.uid}) { // named constructor for initializing a mock database
+    final idMsg = this.uid != null ? uid : 'null';
+    logger.i('Database: Created mock Database instance w/ user id property "' + idMsg + '"; ' + toString());
     mockInstance = new MockFirestoreInstance();
     _userCollectionReference = mockInstance.collection('users');
     _tagsCollectionReference = mockInstance.collection('tags');
@@ -54,21 +59,47 @@ class Database {
   Future updateUserData(User user) async {
     // TODO: Fix tags method
     // TODO: Create field in users for id for matched user
-    // TODO: Don't have tags be null here too
-    // tags.forEach((tag) async => await updateTagData(tag.name, tag.color)); -> fix later
-    return user != null ? await _userCollectionReference.document(uid).setData({
-      'GPA': user.GPA ?? 0.0,
-      'isTeacher': user.isTeacher,
-      'photoURL': user.photoURL,
-      'username': user.username,
-      'email': user.email,
-      'matchedUserID': user.matchedUserID,
-      'skippedUserIDs': user.skippedUserIDs ?? <String>[],
-    }) : null;
+    // TODO: Don't have tags be null here too; tags.forEach((tag) async => await updateTagData(tag.name, tag.color)); -> fix later
+
+    if(user != null && uid != null) {
+      logger.i('Database: UpdateUserData Received user for update w/ id "' + uid + '"');
+
+      logger.i('Database: UpdateUserData Updating passed user w/ ' +
+          '(GPA: "' + user.GPA.toString() + '", ' +
+          'isTeacher: "' + user.isTeacher.toString() + '", ' +
+          'photoURL: "' + user.photoURL.toString() + '", ' +
+          'matchedUserID: "' + user.matchedUserID.toString() + '", ' +
+          'skippedUserIDs: "' + user.skippedUserIDs.toString() + '").'
+      );
+
+      return await _userCollectionReference.document(uid).setData({
+        'GPA': user.GPA ?? 0.0,
+        'isTeacher': user.isTeacher,
+        'photoURL': user.photoURL,
+        'username': user.username,
+        'email': user.email,
+        'matchedUserID': user.matchedUserID,
+        'skippedUserIDs': user.skippedUserIDs ?? <String>[],
+      });
+    }
+
+    logger.w('Database: UpdateUserData passed user/uid is null => returning null');
+
+    return null;
   }
 
   User getUserBySnapshot(DocumentSnapshot doc) {
     if(doc.data != null) {
+      logger.i('Database: Received document snapshot of user with information w/ uid "' + doc.documentID + '"');
+
+      logger.i('Database: Receiving user w/ ' +
+          '(GPA: "' + doc.data['GPA'].toString() + '", ' +
+          'isTeacher: "' + doc.data['isTeacher'].toString()  + '", ' +
+          'photoURL: "' + doc.data['photoURL'].toString() + '", ' +
+          'matchedUserID: "' + doc.data['matchedUserID'].toString() + '", ' +
+          'skippedUserIDs: "' + (doc.data['skippedUserIDs'].toString() ?? <String>[].toString()) + '").'
+      );
+
       return doc.data['isTeacher'] ?
         Teacher(
           uid: doc.documentID,
@@ -89,16 +120,33 @@ class Database {
           skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : List<String>.from(doc.data['skippedUserIDs']),
       );
     }
+
+    logger.w('Database: getUserBySnapshot passed documentSnapshot data is null => returning null');
+
     return null;
   }
 
   // TODO: clean code to avoid all redundant checks
   Future<User> getUserById() async {
-    return uid != null ? getUserBySnapshot(await _userCollectionReference.document(uid).get()) : null;
+    if(uid != null) {
+      logger.i('Database: getUserById called with passed in uid for Database');
+      return getUserBySnapshot(await _userCollectionReference.document(uid).get());
+    }
+
+    logger.w('Database: getUserById called without passed in uid for Database => returning null');
+
+    return null;
   }
 
   Future deleteUser() async {
-    return uid != null ? await _userCollectionReference.document(uid).delete() : null;
+    if(uid != null) {
+      logger.i('Database: deleteUser called with passed in uid "' + uid + '" for Database');
+      return await _userCollectionReference.document(uid).delete();
+    }
+
+    logger.w('Database: deleteUser called without passed in uid for Database => returning null');
+
+    return null;
   }
 
   Stream<List<User>> get users {
@@ -116,20 +164,39 @@ class Database {
   }
 
   Future updateTagData(Tag tag) async {
-    return await _tagsCollectionReference.document(tag.tid).setData({
-      'name': tag.name,
-      'color': tag.color,
-    });
+    if(tag != null && tag.tid != null) {
+      logger.i('Database: updateTagData called with passed in tag and tagId');
+
+      return await _tagsCollectionReference.document(tag.tid).setData({
+        'name': tag.name,
+        'color': tag.color,
+      });
+    }
+
+    logger.w('Database: updateTagData called with null tag/tagId passed => returning null');
+
+    return null;
   }
 
   Tag getTagBySnapshot(DocumentSnapshot doc) {
     if(doc.data != null) {
+      logger.i('Database: getTagBySnapshot Received document snapshot of tag with information w/ tid "' + doc.documentID + '"');
+
+      logger.i('Database: Receiving tag w/ ' +
+          '(Name: "' + doc.data['name'].toString() + '", ' +
+          'color: "' + doc.data['color'].toString() + '", ' + '").'
+      );
+
       return Tag(
         tid: doc.documentID,
         name: doc.data['name'],
         color: doc.data['color'],
       );
     }
+
+    logger.w('Database: getTagBySnapshot passed documentSnapshot data is null => returning null');
+
+    return null;
   }
 
   // ----------------------------------
@@ -152,6 +219,16 @@ class Database {
 
   Message getMessageBySnapshot(DocumentSnapshot doc){
     if(doc.data != null) {
+      logger.i('Database: getMessageBySnapshot Received document snapshot of message with information w/ mid "' + doc.documentID + '"');
+
+      logger.i('Database: Receiving message w/ '
+          '(mid: "' + doc.documentID + '", ' +
+          'content: "' + doc.data['content'].toString() + '", ' +
+          'fromId: "' + doc.data['fromId'].toString() + '", ' +
+          'toId: "' + doc.data['toId'].toString() + '", ' +
+          'sentTime: "' + doc.data['sentTime'].toString() + '").'
+      );
+
       Message message = Message(
         mid: doc.documentID,
         content: doc.data['content'] ?? null,
@@ -159,30 +236,65 @@ class Database {
         toId: doc.data['toId'] ?? null,
         sentTime: doc.data['sentTime'] ?? null,
       );
-      message.decryptMessage();
+
       return message;
     }
+
+    logger.w('Database: getMessageBySnapshot passed documentSnapshot data is null => returning null');
+
     return null;
   }
 
   Future<Message> getMessageById(String mid) async {
-    return mid != null ? getMessageBySnapshot(await _messagesCollectionReference.document(mid).get()) : null;
+    if(mid != null) {
+      logger.i('Database: getMessageById called with passed in mid for getMessageById');
+      return getMessageBySnapshot(await _messagesCollectionReference.document(mid).get());
+    }
+
+    logger.w('Database: getMessageById called without passed in mid for getMessageById => returning null');
+
+    return null;
   }
 
   Future addMessage(Message message) async {
-    if(message == null) return null;
-    message.encryptMessage();
-    return await _messagesCollectionReference.add({
-      'content': message.content,
-      'fromId': message.fromId,
-      'toId': message.toId,
-      'sentTime': message.sentTime
-    });
+    if(message != null) {
+
+      logger.i('Database: addMessage Received message for addition w/ fromId "' +
+          message.fromId.toString() +
+          '" and toId "' +
+          message.toId.toString() +
+          '"');
+
+      logger.i('Database: addMessage Adding passed message w/ ' +
+          '(content: "' + message.content.toString() + '", ' +
+          'fromId: "' + message.fromId.toString() + '", ' +
+          'toId: "' + message.toId.toString() + '", ' +
+          'sentTime: "' + message.sentTime.toString() + '").'
+      );
+
+      return await _messagesCollectionReference.add({
+        'content': message.content,
+        'fromId': message.fromId,
+        'toId': message.toId,
+        'sentTime': message.sentTime
+      });
+    }
+
+    logger.w('Database: addMessage passed messaage is null => returning null');
+
+    return null;
   }
 
   // TODO: 'Many messages doesn't make it prudent to have one field for messages (argument is better)'. Maybe rework that philosophy?
   Future deleteMessage(String mid) async {
-    return mid != null ? await _messagesCollectionReference.document(mid).delete() : null;
+    if(mid != null) {
+      logger.i('Database: deleteMessage called with passed in mid "' + mid + '" for deleteMessage');
+      return await _messagesCollectionReference.document(mid).delete();
+    }
+
+    logger.w('Database: deleteMessage called without passed in mid for deleteMessage => returning null');
+
+    return null;
   }
 
   // our uid is the document path

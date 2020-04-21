@@ -23,10 +23,11 @@ void main() {
     final FirebaseUserMock firebaseUserMock = new FirebaseUserMock();
     final AuthResultMock authResultMock = new AuthResultMock();
 
-    User user = new User(email: 'example@gmail.com', password: 'examplepass');
+    User user = new User(uid: 'randomUid', email: 'example@gmail.com', password: 'examplepass');
 
     when(firebaseUserMock.delete()).thenAnswer((_) => null);
     when(firebaseUserMock.email).thenReturn(user.email);
+    when(firebaseUserMock.uid).thenReturn(user.uid);
     when(authResultMock.user).thenReturn(firebaseUserMock);
     when(firebaseAuthMock.signInWithEmailAndPassword(email: user.email, password: user.password)).thenAnswer((_) => Future<AuthResultMock>.value(authResultMock));
     when(firebaseAuthMock.createUserWithEmailAndPassword(email: user.email, password: user.password)).thenAnswer((_) => Future<AuthResultMock>.value(authResultMock));

@@ -9,6 +9,7 @@ import 'package:tues_pairs/screens/authenticate/authenticate.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
+import 'package:tues_pairs/shared/constants.dart';
 
 class AuthListener extends StatelessWidget {
 
@@ -27,17 +28,23 @@ class AuthListener extends StatelessWidget {
     User authUser = Provider.of<User>(context);
 
     if(authUser != null) {
+      logger.i('AuthListener: Auth user w/ id "' + authUser.uid + '" received');
       return FutureBuilder<User>( // Get current user here for use down the entire widget tree
         future: Database(uid: authUser.uid).getUserById(), // the Provider.of() generic method takes context,
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.done) {
+            final user = snapshot.data;
+            logger.i('AuthListener: Current user w/ username "' + user.username + '" received and authenticated');
             return Provider<User>.value(
-              value: snapshot.data,
+              value: user,
               child: Home(),
             );
           } else return Loading();
         }
       );
-    } else return Authenticate();
+    } else {
+      logger.i('AuthListener: Current user not authenticated and going to authenticate');
+      return Authenticate();
+    }
   }
 }

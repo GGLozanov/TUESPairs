@@ -17,6 +17,7 @@ class MessageInput extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
+                textCapitalization: TextCapitalization.sentences,
                 style: TextStyle(
                   color: Colors.white
                 ),
@@ -25,8 +26,8 @@ class MessageInput extends StatelessWidget {
                   hintStyle: TextStyle(
                     color: Colors.white,
                   ),
-                  hintText: "Enter a Message...",
-                  enabledBorder:  OutlineInputBorder(
+                  hintText: 'Enter a Message...',
+                  enabledBorder: OutlineInputBorder(
                     borderRadius: new BorderRadius.circular(25.0),
                     borderSide: BorderSide(color: Color.fromRGBO(34, 34, 43, 1), width: 2.0),
                   ),
@@ -40,7 +41,7 @@ class MessageInput extends StatelessWidget {
             ),
           ),
           SendButton(
-            label: "Send",
+            label: 'Send',
             callback: callback,
           )
         ],

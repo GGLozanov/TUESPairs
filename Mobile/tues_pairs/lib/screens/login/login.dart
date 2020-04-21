@@ -6,6 +6,7 @@ import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/widgets/form/input_button.dart';
 import 'package:tues_pairs/widgets/form/email_input_field.dart';
 import 'package:tues_pairs/widgets/form/password_input_field.dart';
+import 'package:tues_pairs/shared/constants.dart';
 
 import '../../templates/baseauth.dart';
 
@@ -101,14 +102,17 @@ class _LoginState extends State<Login> {
                   onPressed: () async {
                     if(baseAuth.key.currentState.validate()) {
                       setState(() => baseAuth.toggleLoading());
+
                       User user = await baseAuth.authInstance.loginUserByEmailAndPassword(baseAuth.user.email, baseAuth.user.password); // call the login method
+
                       if(user == null) {
+                        logger.w('Login: Failed user login (invalid credentials)');
                         setState(() {
                           baseAuth.errorMessages = [];
                           baseAuth.errorMessages.add('Invalid login credentials');
                           baseAuth.toggleLoading();
                         });
-                      }
+                      } else logger.i('Login: User w/ id "' + user.uid + '" has successfully logged in');
                     }
                   },
                 ),

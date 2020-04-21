@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/shared/keys.dart';
+import 'package:tues_pairs/shared/constants.dart';
 
 class UserCard extends StatefulWidget {
 
@@ -20,9 +21,12 @@ class UserCard extends StatefulWidget {
 
 class _UserCardState extends State<UserCard> {
   final Database database = new Database();
-
+  
   @override
   Widget build(BuildContext context) {
+
+    logger.i('UserCard: Rendering user card for user w/ id "' + widget.user.uid + '"');
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.0),
       child: Card(

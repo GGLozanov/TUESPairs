@@ -33,7 +33,7 @@ void main() {
       cleanMock(database);
     });
 
-    test('returns null if user retrieval is attempted when uid is null or not present', () async {
+    test('Returns null if user retrieval is attempted when uid is null or not present', () async {
       Database database = new Database.mock();
 
       var result = await database.getUserById();
