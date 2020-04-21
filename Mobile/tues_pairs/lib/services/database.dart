@@ -236,8 +236,7 @@ class Database {
         toId: doc.data['toId'] ?? null,
         sentTime: doc.data['sentTime'] ?? null,
       );
-      // TODO: Uncomment after encryption/decryption has been fixed in WEB...
-      // message.decryptMessage();
+
       return message;
     }
 
@@ -261,12 +260,10 @@ class Database {
     if(message != null) {
 
       logger.i('Database: addMessage Received message for addition w/ fromId "' +
-          message.fromId ?? 'null' +
+          message.fromId.toString() +
           '" and toId "' +
-          message.toId ?? 'null' +
+          message.toId.toString() +
           '"');
-
-      message.encryptMessage();
 
       logger.i('Database: addMessage Adding passed message w/ ' +
           '(content: "' + message.content.toString() + '", ' +
