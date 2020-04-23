@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import SignOutButton from '../SignOut/signout.jsx';
 import * as ROUTES from '../../../constants/routes';
 import { AuthUserContext } from '../../Authentication';
-import PeopleIcon from '@material-ui/icons/People';
+import HomeIcon from '@material-ui/icons/Home';
 import ChatIcon from '@material-ui/icons/Chat';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -37,7 +37,7 @@ const NavigationLogged = () => (
         <Nav.Item>
           <Nav.Link eventKey="list-2">
             <Link to={ROUTES.HOME}>
-              <PeopleIcon fontSize="default"></PeopleIcon>
+              <HomeIcon fontSize="default"></HomeIcon>
             </Link>
             </Nav.Link>
         </Nav.Item>

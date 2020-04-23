@@ -6,6 +6,10 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import { Button, ProgressBar, Form, Col, Image } from 'react-bootstrap';
+import HomeIcon from '@material-ui/icons/Home';
+import CancelIcon from '@material-ui/icons/Cancel';
+import PublishIcon from '@material-ui/icons/Publish';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import './style.scss';
 
 const ImageUploadPage = () => (
@@ -22,6 +26,8 @@ class ImageUploadBase extends Component {
             progress: 0,
             url: this.props.authUser.photoURL,
             currentUser: this.props.authUser,
+            show: null,
+            upload: false,
         }
         
         this.handleChange = this
@@ -38,7 +44,7 @@ class ImageUploadBase extends Component {
         .then(snapshot => {
             currentUser = this.props.firebase.currentUser(snapshot);
 
-            this.setState({ currentUser, url: currentUser.photoURL });
+            this.setState({ currentUser, url: currentUser.photoURL, show: currentUser.photoURL ? true : false });
         }).catch(error => {
             console.error(error);
         })
@@ -51,7 +57,7 @@ class ImageUploadBase extends Component {
             photoURL: null,
         }, {merge: true})
         .then(() => {
-            this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
+            this.setState({ url: null, show: !this.state.show });
         })
         .catch(error => {
             console.error(error);
@@ -61,7 +67,7 @@ class ImageUploadBase extends Component {
     handleChange = e => {
         if (e.target.files[0]) {
             const image = e.target.files[0];
-            this.setState(() => ({image}));
+            this.setState({ image, upload: !this.state.upload });
         }
     }
 
@@ -89,7 +95,7 @@ class ImageUploadBase extends Component {
                     photoURL: url,
                 }, {merge: true})
                 .then(() => {
-                    this.props.history.push(ROUTES.HOME);
+                    this.setState({ progress: 0, image: null, upload: !this.state.upload, show: url ? true : false });
                 })
                 .catch(error => {
                     console.error(error);
@@ -108,14 +114,14 @@ class ImageUploadBase extends Component {
         return (
         <div className="image-upload">
             <div className="hedaer">
-                <h1>Upload image</h1>
+                <h1>Upload your image</h1>
             </div>
             <div className="upload-handler">
                 <ProgressBar className="progress-bar" now={this.state.progress} label={`${this.state.progress}%`} />
                 <Form className="file-input">
                     <Form.File 
                         id="custom-file"
-                        label="Custom file input"
+                        label="Uploader"
                         onChange={this.handleChange}
                         custom
                     />
@@ -124,9 +130,22 @@ class ImageUploadBase extends Component {
                     {hasImage && <Image src={photoURL} rounded/>}
                     {!hasImage && <Image src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png" rounded/>}
                 </Col>
-                <Button disabled={isDisabled} onClick={this.handleUpload}>Upload</Button>
-                <Button disabled={!hasImage} onClick={this.handleClearImage}>Clear Image</Button>
-                
+                {this.state.upload && <Button disabled={isDisabled} className="upload" onClick={this.handleUpload}>
+                    <PublishIcon fontSize="large" />
+                </Button>}
+                {this.state.show && <Button disabled={!hasImage} className="clear" onClick={this.handleClearImage}>
+                    <CancelIcon fontSize="large" />
+                </Button>}
+            </div>
+            <div>
+                <Button href="/home">
+                    Go to
+                    <HomeIcon fontSize="large" />
+                </Button>
+                <Button href="/edit_personal_info">
+                    Go to
+                    <AssignmentIndIcon fontSize="large" />
+                </Button>
             </div>
         </div>
         )
