@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
-
+import firebase from 'firebase';
 import { withFirebase } from '../../Firebase';
 import * as ROUTES from '../../../constants/routes';
 import { PasswordForgetLink } from '../PasswordForget'
 import './style.scss';
+import { withCurrentUser } from '../../Authentication/context';
 
 const SignInPage = () => (
   <div>
@@ -24,6 +25,30 @@ class SignInFormBase extends Component {
   constructor(props) {
     super(props);
     this.state = { ...INITIAL_STATE };
+  }
+
+  handleGoogleSignIn = () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+    .then(result => {
+      this.props.firebase.user(result.user.uid).get()
+      .then(snapshot => {
+        if(snapshot.exists) {
+          this.props.history.push(ROUTES.HOME);
+        } else {
+          this.props.firebase.db.collection("users").doc(result.user.uid).set({
+            username: null,
+            email: result.user.email,
+            isTeacher: null,
+            GPA: null,
+            photoURL: result.user.photoURL,
+            matchedUserID: null,
+            skippedUserIDs: []
+          })
+          .then(() => this.props.history.push(ROUTES.USER_INFO));
+        }
+      })
+    });
   }
 
   onSubmit = event => {
@@ -77,12 +102,16 @@ class SignInFormBase extends Component {
             Login
           </button>
         </div>
+        <button type="button" className="btn" onClick={this.handleGoogleSignIn}>
+            Login with google
+        </button>
       </div>
     );
   }
 }
 
 const SignInForm = compose(
+  withCurrentUser,
   withRouter,
   withFirebase,
 )(SignInFormBase);

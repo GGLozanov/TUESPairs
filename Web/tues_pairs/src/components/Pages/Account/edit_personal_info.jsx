@@ -129,8 +129,11 @@ class EditPersonalInfo extends Component{
         this.props.firebase.users()
             .onSnapshot(snapshot => {
 
-                snapshot.forEach(doc =>
-                    users.push({ ...doc.data(), uid: doc.id }),
+                snapshot.forEach(doc => {
+                    if(doc.id !== currentUser.uid){
+                        users.push({ ...doc.data(), uid: doc.id });
+                    }
+                }
             );
 
             for(let i = 0; i < users.length; i++) {

@@ -45,6 +45,16 @@ const config = {
     user = uid => this.db.doc(`users/${uid}`);
 
     users = () => this.db.collection(`users`);
+
+    currentUser = snapshot => {
+        const firebaseUser = snapshot.data();
+    
+        return {
+            uid: this.auth.currentUser.uid,
+            email: this.auth.currentUser.email,
+            ...firebaseUser,
+        };
+    }
     
   }
 

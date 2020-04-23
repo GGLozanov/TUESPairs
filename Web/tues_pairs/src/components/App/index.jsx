@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, } from 'react-router-dom';
 import './app.scss';
 
-import Navigation, { Footer } from '../Pages/Navigation/navigation';
+import Navigation from '../Pages/Navigation/navigation';
 import ChatPage from '../Pages/Chat/chat';
 import PasswordForgetPage from '../Pages/PasswordForget';
 import HomePage from '../Pages/Home/home';

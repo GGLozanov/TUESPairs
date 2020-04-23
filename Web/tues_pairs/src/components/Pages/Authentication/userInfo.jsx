@@ -44,11 +44,7 @@ class UserInfo extends Component {
     }
 
     handleChange = () => {
-        if(this.state.isTeacher === false) {
-            this.setState({ isTeacher: true });
-        } else {
-            this.setState({ isTeacher: false });
-        }
+        this.setState({ isTeacher: !this.state.isTeacher })
     }
 
     render() {

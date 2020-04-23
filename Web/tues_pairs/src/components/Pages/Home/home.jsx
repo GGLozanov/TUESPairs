@@ -19,7 +19,7 @@ class UserList extends Component {
     this.state = {
       loading: false,
       users: [],
-      currentUser: null,
+      currentUser: this.props.authUser,
     };
   }
 
@@ -67,11 +67,14 @@ class UserList extends Component {
         );
         
         this.setState({
-          currentUser: this.props.authUser,
           users,
           loading: false,
         });
       });
+
+      if(this.state.currentUser.username == null) {
+        this.props.history.push(ROUTES.USER_INFO);
+      }
 
   }
 
@@ -82,10 +85,6 @@ class UserList extends Component {
       .then(snapshot => {
           const firebaseUser = snapshot.data();
 
-          if(!firebaseUser.roles) {
-              firebaseUser.roles = {};
-          }
-
           currentUser = {
               uid: currentUser.uid,
               email: currentUser.email,
@@ -93,10 +92,6 @@ class UserList extends Component {
           };
 
           this.setState({ currentUser, loading: false });
-
-          if(!this.props.authUser.username) {
-            this.props.history.push(ROUTES.USER_INFO);
-          }
 
           if(currentUser.matchedUserID) {
             this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE)
@@ -121,7 +116,7 @@ class UserList extends Component {
       if(currentUser.isTeacher !== users[i].isTeacher && 
         !currentUser.skippedUserIDs.includes(users[i].uid) &&
         (users[i].matchedUserID === null || users[i].matchedUserID === currentUser.uid) &&
-        !users[i].skippedUserIDs.includes(currentUser)){
+        !users[i].skippedUserIDs.includes(currentUser.uid)){
         if(users[i].photoURL === null) {
           users[i].photoURL = "https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png";
         }

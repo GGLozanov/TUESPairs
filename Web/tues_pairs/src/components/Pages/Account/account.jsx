@@ -35,10 +35,6 @@ class UserProfile extends Component {
         .then(snapshot => {
             const firebaseUser = snapshot.data();
 
-            if(!firebaseUser.roles) {
-                firebaseUser.roles = {};
-            }
-
             currentUser = {
                 uid: currentUser.uid,
                 email: currentUser.email,
