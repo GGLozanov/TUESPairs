@@ -24,7 +24,6 @@
 
     .form {
       margin-top: 2em;
-      margin-bottom: 1em;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -106,7 +105,7 @@
     .btn {
       display: block;
       margin: auto;
-      margin-top: 2rem;
+      margin-top: 1rem;
       font-size: 21px;
       padding: 5px 20px;
       border: 0;
@@ -191,4 +190,39 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.external-sign-in{
+  width: 80%;
+  hr {
+    border-top: 1px solid white;
+  }
+
+  button {
+    margin: 10px 0;
+    border: 0;
+    background-color: transparent;
+    color: white;
+
+    .google-image {
+      width: 24px;
+      height: 24px;
+      margin-right: 5px;
+    }
+
+    .facebook-icon {
+      color: rgb(17, 82, 147);
+      margin-right: 5px;
+    }
+
+    .github-icon {
+      color: white;
+      margin-right: 5px;
+    }
+
+  }
+
+  .btn {
+    margin: 10px;
+  }
 }

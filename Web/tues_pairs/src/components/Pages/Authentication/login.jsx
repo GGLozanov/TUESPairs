@@ -7,6 +7,8 @@ import * as ROUTES from '../../../constants/routes';
 import { PasswordForgetLink } from '../PasswordForget'
 import './style.scss';
 import { withCurrentUser } from '../../Authentication/context';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import GitHubIcon from '@material-ui/icons/GitHub';
 
 const SignInPage = () => (
   <div>
@@ -27,8 +29,7 @@ class SignInFormBase extends Component {
     this.state = { ...INITIAL_STATE };
   }
 
-  handleGoogleSignIn = () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
+  handleExternalSignIn = provider => {
     firebase.auth().signInWithPopup(provider)
     .then(result => {
       this.props.firebase.user(result.user.uid).get()
@@ -102,9 +103,21 @@ class SignInFormBase extends Component {
             Login
           </button>
         </div>
-        <button type="button" className="btn" onClick={this.handleGoogleSignIn}>
-            Login with google
-        </button>
+        <div className="external-sign-in">
+          <hr></hr>
+          <button type="button" onClick={this.handleExternalSignIn.bind(this, new firebase.auth.GoogleAuthProvider())}>
+              <img className="google-image" src="https://maxcdn.icons8.com/Share/icon/Logos/google_logo1600.png" alt="googleimage"></img>
+              <span className="google-text">Log in with Google</span>
+          </button>
+          <button type="button" onClick={this.handleExternalSignIn.bind(this, new firebase.auth.FacebookAuthProvider())}>
+              <span className="facebook-icon"><FacebookIcon/></span>
+              <span>Log in with Facebook</span>
+          </button>
+          <button type="button" onClick={this.handleExternalSignIn.bind(this, new firebase.auth.GithubAuthProvider())}>
+              <span className="github-icon"><GitHubIcon/></span>
+              <span className="github-text">Log in with Github</span>
+          </button>
+        </div>
       </div>
     );
   }
