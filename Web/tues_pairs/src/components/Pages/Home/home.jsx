@@ -96,6 +96,10 @@ class UserList extends Component {
           if(currentUser.matchedUserID) {
             this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE)
           }
+
+          if(currentUser.username == null) {
+            this.props.history.push(ROUTES.USER_INFO);
+          }
       });
   }
 

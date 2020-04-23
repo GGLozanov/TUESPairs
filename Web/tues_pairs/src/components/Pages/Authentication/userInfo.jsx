@@ -30,6 +30,9 @@ class UserInfo extends Component {
             GPA: parseFloat(GPA),
         }, {merge: true})
         .then(() => {
+            this.props.authUser.username = username;
+            this.props.authUser.GPA = GPA;
+            this.props.authUser.isTeacher = isTeacher; 
             this.props.history.push(ROUTES.IMAGE_UPLOAD);
         })
         .catch(error => {

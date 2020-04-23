@@ -21,6 +21,7 @@ class ImageUploadBase extends Component {
             image: null,
             progress: 0,
             url: this.props.authUser.photoURL,
+            currentUser: this.props.authUser,
         }
         
         this.handleChange = this
@@ -28,6 +29,19 @@ class ImageUploadBase extends Component {
             .bind(this);
             this.handleUpload = this.handleUpload.bind(this);
 
+    }
+
+    componentDidMount() {
+        let currentUser = this.state.currentUser;
+
+        this.props.firebase.user(currentUser.uid).get()
+        .then(snapshot => {
+            currentUser = this.props.firebase.currentUser(snapshot);
+
+            this.setState({ currentUser, url: currentUser.photoURL });
+        }).catch(error => {
+            console.error(error);
+        })
     }
 
     handleClearImage = () => {
@@ -54,7 +68,7 @@ class ImageUploadBase extends Component {
     handleUpload = () => {
         const {image} = this.state;
         const uploadTask = this.props.firebase.storage.ref(`/${image.name}`).put(image);
-        const currentUser = this.props.authUser;
+        const currentUser = this.state.currentUser;
 
         uploadTask.on('state_changed', 
         (snapshot) => {
