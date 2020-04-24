@@ -22,7 +22,6 @@ class EditPersonalInfo extends Component{
 
         this.state = {
             username: this.props.authUser.username,
-            email: this.props.authUser.email,
             GPA: this.props.authUser.GPA,
             photoURL: this.props.authUser.photoURL,
             email: this.props.authUser.email,
@@ -40,17 +39,7 @@ class EditPersonalInfo extends Component{
     
         this.unsubscribe = this.props.firebase.user(currentUser.uid).get()
         .then(snapshot => {
-            const firebaseUser = snapshot.data();
-
-            if(!firebaseUser.roles) {
-                firebaseUser.roles = {};
-            }
-
-            currentUser = {
-                uid: currentUser.uid,
-                email: currentUser.email,
-                ...firebaseUser,
-            };
+            const currentUser = this.props.firebase.currentUser(snapshot);
 
             this.setState({ photoURL: currentUser.photoURL, email: currentUser.email, loading: false });
         });
@@ -206,7 +195,7 @@ class EditPersonalInfo extends Component{
                             />
                         </Form.Group>
 
-                        <Form.Group controlId="formBasicEmail">
+                        <Form.Group controlId="formBasicGPA">
                             {isTeacher && 
                             <Form.Label>GPA</Form.Label>}
                             {isTeacher && <FormControl
@@ -216,6 +205,8 @@ class EditPersonalInfo extends Component{
                                 placeholder={GPA}
                                 type="number"
                                 name="GPA"
+                                min="2"
+                                max="6"
                             />}
                         </Form.Group>
 

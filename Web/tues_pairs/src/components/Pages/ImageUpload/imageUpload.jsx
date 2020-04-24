@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import { withAuthorization } from '../../Authentication';
 
-import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
@@ -65,9 +64,12 @@ class ImageUploadBase extends Component {
     }
 
     handleChange = e => {
+        if(!this.state.image) {
+            this.setState({ upload: !this.state.upload });
+        }
         if (e.target.files[0]) {
             const image = e.target.files[0];
-            this.setState({ image, upload: !this.state.upload });
+            this.setState({ image });
         }
     }
 
@@ -130,12 +132,12 @@ class ImageUploadBase extends Component {
                     {hasImage && <Image src={photoURL} rounded/>}
                     {!hasImage && <Image src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png" rounded/>}
                 </Col>
-                {this.state.upload && <Button disabled={isDisabled} className="upload" onClick={this.handleUpload}>
+                {this.state.upload && <button disabled={isDisabled} className="upload" onClick={this.handleUpload}>
                     <PublishIcon fontSize="large" />
-                </Button>}
-                {this.state.show && <Button disabled={!hasImage} className="clear" onClick={this.handleClearImage}>
+                </button>}
+                {this.state.show && <button disabled={!hasImage} className="clear" onClick={this.handleClearImage}>
                     <CancelIcon fontSize="large" />
-                </Button>}
+                </button>}
             </div>
             <div>
                 <Button href="/home">

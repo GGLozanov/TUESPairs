@@ -54,7 +54,8 @@ class UserInfo extends Component {
         const {username, isTeacher, GPA, error } = this.state;
 
         const isInvalid = 
-            username === '';
+            username === '' ||
+            GPA >= 6 || GPA <= 2; 
 
         return (
             <div className="register-page">
@@ -105,11 +106,13 @@ class UserInfo extends Component {
     }
 }
 
+const condition = authUser => !!authUser;
 
 const UserInfoPage = compose (
     withRouter,
     withFirebase,
-    withCurrentUser
+    withCurrentUser,
+    withAuthorization(condition)
 )(UserInfo);
 
 export default UserInfoPage;

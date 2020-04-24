@@ -33,6 +33,7 @@ class UserList extends Component {
         matchedUserID: currentUser.matchedUserID
       }, {merge: true})
       .then(() => {
+        this.props.authUser.matchedUserID = currentUser.matchedUserID;
         this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE);
       })
       .catch(error => {
@@ -83,13 +84,7 @@ class UserList extends Component {
 
     this.props.firebase.user(currentUser.uid).get()
       .then(snapshot => {
-          const firebaseUser = snapshot.data();
-
-          currentUser = {
-              uid: currentUser.uid,
-              email: currentUser.email,
-              ...firebaseUser,
-          };
+          const currentUser = this.props.firebase.currentUser(snapshot);
 
           this.setState({ currentUser, loading: false });
 
