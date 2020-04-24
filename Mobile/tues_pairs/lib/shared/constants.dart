@@ -42,14 +42,36 @@ var logger = Logger(
   ),
 );
 
-List<TagCard> renderTagCards(List<Tag> tags) { // TBA for settings page function
+enum TagCardType {
+  SELECTION,
+  ALREADY_CHOSEN_SELECTION,
+  VIEW,
+}
+
+List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardType.VIEW}) { // TBA for settings page function
   return tags.map((tag) {
     int tagIndex = tags.indexOf(tag);
-    return TagCard(
-      key: Key(Keys.tagCard + tagIndex.toString()),
-      tag: tag,
-      listIndex: tagIndex,
-      );
+    switch(cardType) {
+      case TagCardType.SELECTION:
+        return TagCard.selection(
+          key: Key(Keys.tagCard + tagIndex.toString()),
+          tag: tag,
+          listIndex: tagIndex,
+        );
+      case TagCardType.ALREADY_CHOSEN_SELECTION:
+        return TagCard.alreadyChosenSelection(
+          key: Key(Keys.tagCard + tagIndex.toString()),
+          tag: tag,
+          listIndex: tagIndex,
+        );
+      case TagCardType.VIEW:
+      default:
+        return TagCard.view(
+          key: Key(Keys.tagCard + tagIndex.toString()),
+          tag: tag,
+          listIndex: tagIndex,
+        );
+      }
     }
   ).toList();
 }

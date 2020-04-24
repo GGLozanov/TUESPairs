@@ -184,23 +184,24 @@ class _RegisterFormState extends State<RegisterForm> {
                   ),
                 ],
               ),
-              SizedBox(height: 15.0),
+              SizedBox(height: 10.0),
               InputButton(
-                  key: Key(Keys.chooseTagsButton),
-                  minWidth: 250.0,
-                  height: 60.0,
-                  text: 'Choose tags',
-                  onPressed: () {
-                    switchToNextPage();
-                  }
+                key: Key(Keys.chooseTagsButton),
+                minWidth: 250.0,
+                height: 60.0,
+                text: 'Choose tags',
+                onPressed: () {
+                  switchToNextPage();
+                },
               ),
-              Divider(thickness: 5.0, height: 20.0),
+              Divider(height: 30.0, thickness: 5.0,),
               InputButton(
                 key: Key(Keys.registerButton),
                 minWidth: 250.0,
                 height: 60.0,
                 text: 'Create account',
                 onPressed: registerUser,
+                color: Colors.deepOrange[500],
               ),
             ],
           ),

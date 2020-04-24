@@ -33,52 +33,48 @@ class _TagSelectionState extends State<TagSelection> {
   Widget build(BuildContext context) {
     final baseAuth = Provider.of<BaseAuth>(context);
     final tags = Provider.of<List<Tag>>(context) ?? [];
-    final tagCards = renderTagCards(tags);
+    final tagCards = mapTagsToTagCards(tags, cardType: TagCardType.SELECTION);
 
     final tagSelection = Container(
       color: greyColor,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 90.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            SizedBox(
-              height: 400.0,
-              child: Provider<User>.value(
-                value: baseAuth.user,
-                child: ListView(
-                  children: tagCards,
-                ),
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 500.0,
+            child: Provider<User>.value(
+              value: baseAuth.user,
+              child: ListView(
+                children: tagCards,
               ),
             ),
-            SizedBox(height: 30.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                InputButton(
-                  key: Key(Keys.backButton),
-                  minWidth: 150.0,
-                  height: 60.0,
-                  text: 'Back',
-                  onPressed: () {
-                    baseAuth.user.tagIDs = [];
-                    switchToNextPage();
-                  },
-                ),
-                InputButton(
-                  key: Key(Keys.nextButton),
-                  minWidth: 150.0,
-                  height: 60.0,
-                  text: 'Confirm tags',
-                  onPressed: () {
-                    switchToNextPage();
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-      )
+          ),
+          SizedBox(height: 50.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              InputButton(
+                key: Key(Keys.backButton),
+                minWidth: 150.0,
+                height: 60.0,
+                text: 'Back',
+                onPressed: () {
+                  baseAuth.user.tagIDs = [];
+                  switchToNextPage();
+                },
+              ),
+              InputButton(
+                key: Key(Keys.nextButton),
+                minWidth: 150.0,
+                height: 60.0,
+                text: 'Confirm tags',
+                onPressed: () {
+                  switchToNextPage();
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
     );
 
     return AnimatedBuilder(

@@ -14,12 +14,51 @@ class TagCard extends StatefulWidget {
   final int listIndex;
   final Database database = new Database();
 
-  final unchosenColor = greyColor; // TODO: export into constants -> done
+  bool isChosen;
+  bool isViewTag = false;
 
-  bool isChosen = false;
+  final unchosenColor = darkGreyColor; // TODO: export into constants -> done
 
-  TagCard({this.key, @required this.tag, this.listIndex}) :
-        assert(tag != null), super(key: key);
+  double tagHeight;
+  double tagWidth;
+
+  Function onTap;
+
+  TagCard.selection({this.key, @required this.tag, this.listIndex}) :
+        assert(tag != null), super(key: key) {
+
+    isChosen = false;
+    tagWidth = 215.0;
+    tagHeight = 100.0;
+    onTap = (user) {
+      isChosen ? user.tagIDs.remove(tag.tid) : user.tagIDs.add(tag.tid);
+      logger.i('User has ' + (isChosen ? 'removed' : 'chosen') + ' tag w/ list index ' + listIndex.toString());
+      isChosen = !isChosen;
+    };
+  }
+
+  TagCard.alreadyChosenSelection({this.key, @required this.tag, this.listIndex}) :
+        assert(tag != null), super(key: key) {
+
+    isChosen = true;
+    tagWidth = 215.0;
+    tagHeight = 100.0;
+    onTap = (user) {
+      isChosen ? user.tagIDs.remove(tag.tid) : user.tagIDs.add(tag.tid);
+      logger.i('User has ' + (isChosen ? 'removed' : 'chosen') + ' tag w/ list index ' + listIndex.toString());
+      isChosen = !isChosen;
+    };
+  }
+
+  TagCard.view({this.key, @required this.tag, this.listIndex}) :
+        assert(tag != null), super(key: key) {
+
+    isChosen = true;
+    tagWidth = 155.0;
+    tagHeight = 55.0;
+    isViewTag = true;
+    onTap = (user) => {}; // literally does nothing :o
+  }
 
   @override
   _TagCardState createState() => _TagCardState();
@@ -33,31 +72,42 @@ class _TagCardState extends State<TagCard> {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
 
+    final tagName = Text(
+      widget.tag.name,
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 20,
+        fontFamily: 'BebasNeue',
+      ),
+    );
+
+    final tagCard = Container(
+      height: widget.tagHeight,
+      width: widget.tagWidth,
+      child: Card(
+          elevation: 5.0,
+          color: widget.isChosen ? HexColor(widget.tag.color) : widget.unchosenColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: ListTile(
+              leading: widget.isViewTag ? tagName : Icon(
+                widget.isChosen ? Icons.remove_circle : Icons.add_circle,
+              ),
+              title: widget.isViewTag ? SizedBox() : tagName,
+              onTap: () {
+                widget.onTap(user);
+                setState(() => {});
+                // re-render because onTap(); there are some useless re-renders with this but oh well
+              }
+          )
+      ),
+    );
+
     if(user.tagIDs.contains(widget.tag.tid)) widget.isChosen = true;
 
-    return Card(
-      color: widget.isChosen ? HexColor(widget.tag.color) : widget.unchosenColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: ListTile(
-        leading: Icon(
-          widget.isChosen ? Icons.remove_circle : Icons.add_circle,
-        ),
-        title: Text(
-          widget.tag.name,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-            fontFamily: 'BebasNeue',
-          ),
-        ),
-        onTap: () {
-          widget.isChosen ? user.tagIDs.remove(widget.tag.tid) : user.tagIDs.add(widget.tag.tid);
-          logger.i('User has ' + (widget.isChosen ? 'removed' : 'chosen') + ' tag w/ list index ' + widget.listIndex.toString());
-          setState(() => widget.isChosen = !widget.isChosen);
-        },
-      )
-    );
+    return widget.isViewTag ?
+      IgnorePointer(child: tagCard,)
+        : tagCard;
   }
 }

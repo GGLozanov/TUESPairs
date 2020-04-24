@@ -77,6 +77,8 @@ flutter:
     - family: BebasNeue
       fonts:
          - asset: fonts/BebasNeue-Regular.ttf
+         - asset: fonts/Nilam.ttf
+         - asset: fonts/Wandery.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -210,6 +210,17 @@ class Database {
     return null;
   }
 
+  Future<Tag> getTagByID(String tid) async {
+    if(tid != null) {
+      logger.i('Database: getTagByID called with passed in tid for getTagByID');
+      return getTagBySnapshot(await _tagsCollectionReference.document(tid).get());
+    }
+
+    logger.w('Database: getTagByID passed w/ tid null => returning null');
+
+    return null;
+  }
+
   // ----------------------------------
   // Message database implementation
   // ----------------------------------
