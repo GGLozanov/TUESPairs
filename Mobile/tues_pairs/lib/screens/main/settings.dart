@@ -111,20 +111,26 @@ class _SettingsState extends State<Settings> {
                       // TODO: Use updateUserData from Database here -> done
                       final FormState currentState = InputFormSettings.baseAuth.key.currentState;
                       if(currentState.validate() && currentUser.email != null && currentUser.username != null) {
-                        currentUser.photoURL = await imageService.uploadImage();
+                        currentUser.photoURL = await imageService.uploadImage()
+                            ?? currentUser.photoURL; // check if pfp changed
 
                         logger.i('Settings: User w/ id "' +
-                            currentUser.uid +
+                            currentUser.uid.toString() +
                             '" has updated his settings w/ photoURL "' +
-                            currentUser.photoURL + '"');
+                            currentUser.photoURL.toString() + '"');
 
+                        await auth.currentUser.then((firebaseUser) async {
+                          await firebaseUser.updateEmail(currentUser.email);
+                        });
                         await database.updateUserData(currentUser); // upload image + wait for update
                         // TODO: Update w/ more fields in the future
 
-                        logger.i('Settings: User w/ id "' + currentUser.uid +
+                        logger.i('Settings: User w/ id "' + currentUser.uid.toString() +
                             '" has updated his settings w/ params ' +
-                            '(username: "' + currentUser.username + '", ' +
+                            '(username: "' + currentUser.username.toString() + '", ' +
                             'GPA: "' + currentUser.GPA.toString() + '", ' + '")');
+
+                        setState(() {});
                       } else {
                         logger.w('Settings: User w/ id "' +
                             currentUser.uid +

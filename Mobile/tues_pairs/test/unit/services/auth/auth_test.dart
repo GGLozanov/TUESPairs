@@ -23,19 +23,20 @@ void main() {
     final FirebaseUserMock firebaseUserMock = new FirebaseUserMock();
     final AuthResultMock authResultMock = new AuthResultMock();
 
-    User user = new User(uid: 'randomUid', email: 'example@gmail.com', password: 'examplepass');
+    User user = new User(uid: 'randomUid', email: 'example@gmail.com');
+    String userPassword = 'examplepass';
 
     when(firebaseUserMock.delete()).thenAnswer((_) => null);
     when(firebaseUserMock.email).thenReturn(user.email);
     when(firebaseUserMock.uid).thenReturn(user.uid);
     when(authResultMock.user).thenReturn(firebaseUserMock);
-    when(firebaseAuthMock.signInWithEmailAndPassword(email: user.email, password: user.password)).thenAnswer((_) => Future<AuthResultMock>.value(authResultMock));
-    when(firebaseAuthMock.createUserWithEmailAndPassword(email: user.email, password: user.password)).thenAnswer((_) => Future<AuthResultMock>.value(authResultMock));
+    when(firebaseAuthMock.signInWithEmailAndPassword(email: user.email, password: userPassword)).thenAnswer((_) => Future<AuthResultMock>.value(authResultMock));
+    when(firebaseAuthMock.createUserWithEmailAndPassword(email: user.email, password: userPassword)).thenAnswer((_) => Future<AuthResultMock>.value(authResultMock));
 
     test('Deletion of Firebase user', () async { // first methods to be tested due to being used as cleanup in later methods
       Auth auth = new Auth.mock(auth: firebaseAuthMock);
 
-      FirebaseUser firebaseUserResult = await auth.getFirebaseUserFromAuth(user);
+      FirebaseUser firebaseUserResult = await auth.getFirebaseUserFromAuth(user, userPassword);
 
       var result;
       try {
@@ -49,7 +50,7 @@ void main() {
       when(firebaseUserMock.delete()).thenThrow(new Exception('ERROR_USER_NOT_FOUND'));
       Auth auth = new Auth.mock(auth: firebaseAuthMock);
 
-      FirebaseUser firebaseUserResult = await auth.getFirebaseUserFromAuth(user);
+      FirebaseUser firebaseUserResult = await auth.getFirebaseUserFromAuth(user, userPassword);
 
       var result = await auth.deleteFirebaseUser(firebaseUserResult);
 
@@ -60,7 +61,7 @@ void main() {
     test('Conversion of FirebaseUser to custom User model', () async {
       Auth auth = new Auth.mock(auth: firebaseAuthMock);
 
-      FirebaseUser firebaseResult = await auth.getFirebaseUserFromAuth(user);
+      FirebaseUser firebaseResult = await auth.getFirebaseUserFromAuth(user, userPassword);
       User result = auth.FirebaseUserToUser(firebaseResult);
 
       expect(result.email, equals(user.email));
@@ -69,7 +70,7 @@ void main() {
     test('Receival of Firebase user from authentication', () async {
       Auth auth = new Auth.mock(auth: firebaseAuthMock);
 
-      FirebaseUser firebaseUserResult = await auth.getFirebaseUserFromAuth(user);
+      FirebaseUser firebaseUserResult = await auth.getFirebaseUserFromAuth(user, userPassword);
 
       expect(firebaseUserResult.email, equals(user.email)); // compare by such margin
     }); // no need to test for invalid input due to app never reaching such a state wherein it receives invalid credentials for auth
@@ -77,19 +78,19 @@ void main() {
     test('Login of existing user through e-mail and password', () async {
       Auth auth = new Auth.mock(auth: firebaseAuthMock);
 
-      FirebaseUser firebaseUserResult = await auth.getFirebaseUserFromAuth(user);
+      FirebaseUser firebaseUserResult = await auth.getFirebaseUserFromAuth(user, userPassword);
 
-      User result = await auth.loginUserByEmailAndPassword(user.email, user.password);
+      User result = await auth.loginUserByEmailAndPassword(user.email, userPassword);
 
       expect(result.email, user.email);
     });
 
     test('Throws exception and returns null upon login with invalid or inexisting credentialls', () async {
-      User user = new User(email: 'nonexistentuser@gmail.com', password: 'nonexistent');
-      when(firebaseAuthMock.signInWithEmailAndPassword(email: user.email, password: user.password)).thenAnswer((_) => null);
+      User user = new User(email: 'nonexistentuser@gmail.com');
+      when(firebaseAuthMock.signInWithEmailAndPassword(email: user.email, password: 'nonexistent')).thenAnswer((_) => null);
       Auth auth = new Auth.mock(auth: firebaseAuthMock);
 
-      var result = await auth.loginUserByEmailAndPassword(user.email, user.password);
+      var result = await auth.loginUserByEmailAndPassword(user.email, userPassword);
 
       expect(result, isNull); // throws exception
     });

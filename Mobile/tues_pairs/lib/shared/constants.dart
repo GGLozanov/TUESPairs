@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:tues_pairs/modules/tag.dart';
+import 'package:tues_pairs/shared/keys.dart';
+import 'package:tues_pairs/widgets/tag_display/tag_card.dart';
 
 const textInputDecoration = InputDecoration(
   hintStyle: TextStyle(
@@ -25,6 +28,9 @@ const textInputColor = TextStyle(
     color: Colors.white,
 );
 
+const greyColor = Color.fromRGBO(59, 64, 78, 1);
+const darkGreyColor = Color.fromRGBO(33, 36, 44, 1);
+
 var logger = Logger(
   printer: PrettyPrinter(
     methodCount: 4, // number of method calls to be displayed
@@ -35,6 +41,18 @@ var logger = Logger(
     printTime: false, // Should each log print contain a timestamp
   ),
 );
+
+List<TagCard> renderTagCards(List<Tag> tags) { // TBA for settings page function
+  return tags.map((tag) {
+    int tagIndex = tags.indexOf(tag);
+    return TagCard(
+      key: Key(Keys.tagCard + tagIndex.toString()),
+      tag: tag,
+      listIndex: tagIndex,
+      );
+    }
+  ).toList();
+}
 
 Widget centeredText(String text) {
   return Center(

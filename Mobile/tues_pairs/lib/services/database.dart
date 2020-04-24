@@ -69,7 +69,8 @@ class Database {
           'isTeacher: "' + user.isTeacher.toString() + '", ' +
           'photoURL: "' + user.photoURL.toString() + '", ' +
           'matchedUserID: "' + user.matchedUserID.toString() + '", ' +
-          'skippedUserIDs: "' + user.skippedUserIDs.toString() + '").'
+          'skippedUserIDs: "' + user.skippedUserIDs.toString() + '",'
+          'tagIDs: "' + user.tagIDs.toString() + '").'
       );
 
       return await _userCollectionReference.document(uid).setData({
@@ -80,6 +81,7 @@ class Database {
         'email': user.email,
         'matchedUserID': user.matchedUserID,
         'skippedUserIDs': user.skippedUserIDs ?? <String>[],
+        'tagIDs': user.tagIDs ?? <String>[],
       });
     }
 
@@ -97,7 +99,8 @@ class Database {
           'isTeacher: "' + doc.data['isTeacher'].toString()  + '", ' +
           'photoURL: "' + doc.data['photoURL'].toString() + '", ' +
           'matchedUserID: "' + doc.data['matchedUserID'].toString() + '", ' +
-          'skippedUserIDs: "' + (doc.data['skippedUserIDs'].toString() ?? <String>[].toString()) + '").'
+          'skippedUserIDs: "' + (doc.data['skippedUserIDs'].toString() ?? <String>[].toString()) + '", ' +
+          'tagIDs: "' + doc.data['tagIDs'].toString() + '").'
       );
 
       return doc.data['isTeacher'] ?
@@ -109,6 +112,7 @@ class Database {
           username: doc.data['username'] ?? '',
           matchedUserID: doc.data['matchedUserID'] ?? null,
           skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : List<String>.from(doc.data['skippedUserIDs']),
+          tagIDs: doc.data['tagIDs'] == null ? <String>[] : List<String>.from(doc.data['tagIDs'])
         ) : Student(
           uid: doc.documentID,
           email: doc.data['email'] ?? '',
@@ -118,6 +122,7 @@ class Database {
           username: doc.data['username'] ?? '',
           matchedUserID: doc.data['matchedUserID'] ?? null,
           skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : List<String>.from(doc.data['skippedUserIDs']),
+          tagIDs: doc.data['tagIDs'] == null ? <String>[] : List<String>.from(doc.data['tagIDs'])
       );
     }
 
@@ -158,6 +163,12 @@ class Database {
   // ----------------------------------
   // Tag Database Implementation
   // ----------------------------------
+
+  Stream<List<Tag>> get tags {
+    return _tagsCollectionReference.snapshots().map(
+      _listTagFromQuerySnapshot
+    );
+  }
 
   List<Tag> _listTagFromQuerySnapshot(QuerySnapshot querySnapshot) {
     return querySnapshot.documents.map((doc) => getTagBySnapshot(doc)).toList();
@@ -203,7 +214,7 @@ class Database {
   // Message database implementation
   // ----------------------------------
 
-  List<Message> _listMessageFromQuerySnapshot(QuerySnapshot querySnapshot){
+  List<Message> _listMessageFromQuerySnapshot(QuerySnapshot querySnapshot) {
     return querySnapshot.documents.map((doc) => getMessageBySnapshot(doc)).toList();
   }
 

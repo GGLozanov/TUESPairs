@@ -8,12 +8,13 @@ class Teacher extends User {
   Teacher({
     String uid, String email,
     String photoURL, bool isTeacher,
-    String username, String matchedUserID, List<String> skippedUserIDs}) :
+    String username, String matchedUserID,
+    List<String> skippedUserIDs, List<String> tagIDs}) :
         assert(isTeacher == true || isTeacher == null),
         super(
           uid: uid, email: email,
           photoURL: photoURL, isTeacher: isTeacher,
           username: username, matchedUserID: matchedUserID,
-          skippedUserIDs: skippedUserIDs);
+          skippedUserIDs: skippedUserIDs, tagIDs: tagIDs);
 
 }

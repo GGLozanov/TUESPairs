@@ -33,8 +33,6 @@ class _UserListState extends State<UserList> {
   List<NetworkImage> images;
   List<UserCard> listItems;
 
-  bool isFirstBuild = true;
-
   final _animatedListKey = GlobalKey<AnimatedListState>(); // key used to follow our animated list through its states
 
   void getUserImages() {

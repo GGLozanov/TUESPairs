@@ -5,17 +5,22 @@ import 'package:tues_pairs/modules/user.dart';
 
 void main() {
 
+
+  // TODO: FIX FROM AFTER REGISTRATION PAGE OVERHAUL
+
   final String userCardIndex = '0';
 
   const int waitDuration = 2000;
 
   // example user for auth
   final User registerUser = new User(
-    email: 'example123456@gmail.com', password: 'examplepass',
+    email: 'example123456@gmail.com',
     username: 'example',
     GPA: 5.45, isTeacher: false,
     photoURL: null,
   );
+
+  String registeredUserPassword = 'examplepass';
 
   group('App', () {
 
@@ -94,7 +99,7 @@ void main() {
 
       await enterTextInFieldWithDelay(loginEmailInputFieldFinder, registerUser.email);
 
-      await enterTextInFieldWithDelay(loginPasswordInputFieldFinder, registerUser.password);
+      await enterTextInFieldWithDelay(loginPasswordInputFieldFinder, registeredUserPassword);
 
       await driver.tap(logInButtonFinder);
     }
@@ -140,11 +145,11 @@ void main() {
 
       delay(waitDuration);
 
-      await enterTextInFieldWithDelay(registerPasswordInputFieldFinder, registerUser.password);
+      await enterTextInFieldWithDelay(registerPasswordInputFieldFinder, registeredUserPassword);
 
       delay(waitDuration);
 
-      await enterTextInFieldWithDelay(registerConfirmPasswordInputFieldFinder, registerUser.password);
+      await enterTextInFieldWithDelay(registerConfirmPasswordInputFieldFinder, registeredUserPassword);
 
       delay(waitDuration);
 
