@@ -6,9 +6,9 @@ import { withCurrentUser } from '../../Authentication/context';
 import moment from 'moment';
 import { MDBCard, MDBCardBody, MDBRow, MDBCol, MDBListGroup, MDBContainer} from "mdbreact";
 import "./style.scss";
-import { Button, Image, Container } from 'react-bootstrap';
+import { Button, Image, Media, Col} from 'react-bootstrap';
 import ScrollableFeed from 'react-scrollable-feed';
-
+import {FaPaperPlane, FaTrash} from 'react-icons/fa';
 
 
 class Chat extends Component{
@@ -90,6 +90,14 @@ class Chat extends Component{
 
     }
 
+    onDelete = mid => event => {
+
+        this.props.firebase.db.collection("messages").doc(mid).delete()
+        event.preventDefault();
+        
+    
+    }
+
 
     render(){
         const {
@@ -100,57 +108,66 @@ class Chat extends Component{
         } = this.state;
 
         const isInvalid = content == "";
-        
-        return (
-            <MDBCard className="chat-room">
-                <MDBCardBody className="scrollable-wrapper">
-                    <MDBRow className="px-lg-2 px-2 chat-area">
-                        <MDBCol xl="6" className="col">
-                            <MDBRow>
-                                <div className="chat-container scrollable-wrapper">
-                                    <ScrollableFeed forceScroll={true}>
-                                        <MDBListGroup className="list-unstyled" >
-                                            {messages.map((message, index) => {
-                                                if(message.fromId == currentUser.uid){
-                                                    return <ChatMessage 
-                                                        key={message.mid + message.sentTime}
-                                                        message={message}
-                                                        avatar={currentUser.photoURL}
-                                                        username={currentUser.username}
-                                                        uid={currentUser.uid}
-                                                        />
-                                                }else{
-                                                    return <ChatMessage
-                                                        key={message.mid + message.sentTime}
-                                                        message={message}
-                                                        avatar={matchedUser.photoURL}
-                                                        username={matchedUser.username}
-                                                        uid={currentUser.uid}
-                                                        />
-                                                }
-                                            })}
-                                        </MDBListGroup>
-                                    </ScrollableFeed>
-                                    {matchedUser != null &&
-                                        <div className="form-group basic-textarea">
-        
-                                            <textarea className="form-control pl-2 my-0" id="exampleFormControlTextarea2" rows="3"
-                                            placeholder="Type your message here..." name="content" value={content} onChange={this.onChange}/>
-                                            <Button
-                                                disabled={isInvalid}
-                                                onClick={this.onSubmit}
-                                                >
-                                                Send
-                                            </Button>
-                                        </div>
-                                    }
+        if(matchedUser != null){
+            return (
+                <div class="col-5 px-0 chat-container">
+                    <div class="px-4 py-5 chat-box">
+                        <div className="scrollable-wrapper">
+                            <ScrollableFeed forceScroll={true}>
+                                <MDBListGroup>
+                                    {messages.map((message, index) => {
+                                        if(message.fromId == currentUser.uid){
+                                            return <ChatMessage 
+                                                key={message.mid + message.sentTime}
+                                                message={message}
+                                                avatar={currentUser.photoURL}
+                                                username={currentUser.username}
+                                                uid={currentUser.uid}
+                                                onDelete={this.onDelete}
+                                                />
+                                        }else{
+                                            return <ChatMessage
+                                                key={message.mid + message.sentTime}
+                                                message={message}
+                                                avatar={matchedUser.photoURL}
+                                                username={matchedUser.username}
+                                                uid={currentUser.uid}
+                                                onDelete={this.onDelete}
+                                                />
+                                        }
+                                    })}
+                                </MDBListGroup>
+                            </ScrollableFeed>
+                        </div>
+                        <div className="bg-light">
+                            <div className="input-group">
+                                <input type="text" placeholder="Type a message" name="content" value={content} onChange={this.onChange} aria-describedby="button-addon2" className="form-control rounded-0 border-0 py-4 bg-light" />
+                                <div className="input-groyp-append">
+                                    <button id="button-addon2" type="submit" class="btn btn-link"
+                                        disabled={isInvalid}
+                                        onClick={this.onSubmit}
+                                    > 
+                                        <FaPaperPlane/>
+                                    </button>
                                 </div>
-                            </MDBRow>
-                        </MDBCol>
-                    </MDBRow>
-                </MDBCardBody>
-            </MDBCard>
-        );
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }else if(currentUser.matchedUserID != null){
+            return(
+                <div className="hint-container">
+                    <p>Please wait until your request is approved!</p>
+                </div>
+            )
+        }else{
+            return(
+                <div className="hint-container">
+                    <p>Please send a request and wait for it to be approved so you can chat!</p>
+                </div>
+            )
+        }
     }
 
 
@@ -162,63 +179,53 @@ const ChatPage = compose (
     withFirebase,
     withCurrentUser
 )(Chat)
-const ChatMessage = ({ message: {fromId, sentTime, content }, avatar, username, uid}) => {
+const ChatMessage = ({ message: {mid, fromId, sentTime, content }, avatar, username, uid, onDelete}) => {
+
     if(uid == fromId){
         return (
-                <li className="chat-message mb-4 message-align-right">
-                    <MDBCard className="out-box">
-                        <MDBCardBody>
-                            <MDBCol sm={8} className="p-0">
-                                <MDBRow>
-                                    <MDBCol sm={4}>
-                                        <Image src={avatar} roundedCircle height={50} width={50}/>
-                                    </MDBCol>
-                                    <MDBCol>
-                                        <MDBRow>
-                                            <strong className="primary-font">{username}</strong>
-                                        </MDBRow>
-                                        <MDBRow>
-                                            <small className="pull-right text-muted">
-                                                {sentTime}
-                                            </small>
-                                        </MDBRow>
-                                    </MDBCol>
-                                </MDBRow>
-                            </MDBCol>
-                            <hr/>
-                            <p className="mb-0">{content}</p>
-                        </MDBCardBody>
-                    </MDBCard>
-                </li>
+            <li>
+                <Media className="w-50 ml-auto mb-3 container-reciever">
+                    <button class="btn"
+                        onClick={onDelete(mid)}
+                    >
+                        <FaTrash/>
+                    </button>
+                    <Media.Body className="mr-3 container-content-reciever">
+                        <div className="bubble-container-reciever rounded py-2 px-3 mb-2">
+                            <p className="text-small mb-0 text-white">{content}</p>
+                        </div>
+                        <p className="small text-muted">{sentTime}</p>
+                    </Media.Body>
+                    <Image
+                            src={avatar}
+                            alt="Reciever profile picture"
+                            width={50}
+                            height={50}
+                            className="rounded-circle"
+                            
+                    />
+                </Media>
+            </li>
         )
     }else{
         return (
-                <li className="chat-message mb-4 message-align-left">
-                    <MDBCard className="in-box">
-                        <MDBCardBody>
-                            <MDBCol sm={8} className="p-0">
-                                <MDBRow>
-                                    <MDBCol sm={4}>
-                                        <Image src={avatar} roundedCircle height={50} width={50}/>
-                                    </MDBCol>
-                                    <MDBCol>
-                                        <MDBRow>
-                                            <strong className="primary-font">{username}</strong>
-                                        </MDBRow>
-                                        <MDBRow>
-                                            <small className="pull-right text-muted">
-                                                {sentTime}
-                                            </small>
-                                        </MDBRow>
-                                    </MDBCol>
-                                </MDBRow>
-                            </MDBCol>
-                            <hr/>
-                            <p className="mb-0">{content}</p>
-                        </MDBCardBody>
-                    </MDBCard>
-                </li>
-            
+            <li>
+                <Media className="w-50 mb-3 container-sender">
+                    <Image
+                            src={avatar}
+                            alt="Sender profile picture"
+                            width={50}
+                            height={50}
+                            className="rounded-circle"
+                    />
+                    <Media.Body className="ml-3">
+                        <div class="bubble-container-sender rounded py-2 px-3 mb-2">
+                            <p class="text-small mb-0">{content}</p>
+                        </div>
+                        <p class="small text-muted">{sentTime}</p>
+                    </Media.Body>
+                </Media>
+            </li>
         )
     }
     
