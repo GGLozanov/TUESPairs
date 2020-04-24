@@ -25,56 +25,37 @@
     flex-direction: row-reverse;
   }
   
-  .chat-room .scrollable-friends-list {
-    height: 570px;
-  }
-  
-  .chat-room .scrollable-chat {
-    height: 510px;
-    padding-bottom: 15px;
-  }
 .chat-area{
     display: flex;
     justify-content: center;
-    .col {
+
         
-        ::-webkit-scrollbar {
-            width: 20px;
-        }
+      ::-webkit-scrollbar {
+          width: 20px;
+      }
+  
+      ::-webkit-scrollbar-track {
+          background-color: rgb(34, 34, 43);
+          box-shadow: inset 0 0 5px rgb(34, 34, 43); 
+          border-radius: 10px;
+      }
+  
+      ::-webkit-scrollbar-thumb {
+          background: rgb(252, 152, 0); 
+          border-radius: 10px;
+      }
+      ul {
+          width: 100%;
+          display: flex;
+          align-self: center;
+          li {
+              max-width: 45%;
+              min-width: 45%;
+          }
+      }
     
-        ::-webkit-scrollbar-track {
-            background-color: rgb(34, 34, 43);
-            box-shadow: inset 0 0 5px rgb(34, 34, 43); 
-            border-radius: 10px;
-        }
-    
-        ::-webkit-scrollbar-thumb {
-            background: rgb(252, 152, 0); 
-            border-radius: 10px;
-        }
-        ul {
-            width: 100%;
-            display: flex;
-            align-self: center;
-            height: 22.5rem;
-            overflow-y: scroll;
-            li {
-                max-width: 45%;
-                min-width: 45%;
-            }
-        }
-    }
 }
-ul {
-  width: 100%;
-  align-self: center;
-  height: 22.5rem;
-  overflow: auto;
-  li {
-      max-width: 45%;
-      min-width: 45%;
-  }
-}
+
 
 .in-box {
   background-color: rgb(34, 34, 43);
@@ -100,7 +81,11 @@ ul {
     min-width: 100%;
 }
 
-ul {
-  overflow: auto;
+.scrollable-wrapper {
   height: 22.5rem;
+  width: 100%;
+}
+.chat-container {
+  width: 100%;
+  display: inline-block;
 }

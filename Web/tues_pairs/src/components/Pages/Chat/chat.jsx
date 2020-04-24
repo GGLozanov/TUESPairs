@@ -4,10 +4,10 @@ import { compose } from 'recompose';
 import { withFirebase } from '../../Firebase';
 import { withCurrentUser } from '../../Authentication/context';
 import moment from 'moment';
-import { MDBCard, MDBCardBody, MDBRow, MDBCol, MDBListGroup} from "mdbreact";
+import { MDBCard, MDBCardBody, MDBRow, MDBCol, MDBListGroup, MDBContainer} from "mdbreact";
 import "./style.scss";
 import { Button, Image, Container } from 'react-bootstrap';
-import Aes from 'aes-js';
+import ScrollableFeed from 'react-scrollable-feed';
 
 
 
@@ -20,29 +20,9 @@ class Chat extends Component{
             currentUser: this.props.authUser,
             matchedUser: null,
             content: "",
-            key: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+            lastElement: React.createRef()
         }
     }
-
-    encryptMessage = (message) => {
-        
-        const textBytes = Aes.utils.utf8.toBytes(message);
-        const keyBytes = Aes.utils.utf8.toBytes(this.state.key);
-        const aesCtr = new Aes.ModeOfOperation.ctr(keyBytes);
-        const encrpytedBytes = aesCtr.encrypt(textBytes);
-        return Aes.utils.hex.fromBytes(encrpytedBytes);
-
-    }
-    
-    decryptMessage = (encryptedHex) => {
-        
-        const encrpytedBytes = Aes.utils.hex.toBytes(encryptedHex);
-        const keyBytes = Aes.utils.utf8.toBytes(this.state.key);
-        const aesCtr = new Aes.ModeOfOperation.ctr(keyBytes);
-        const decryptedBytes = aesCtr.decrypt(encrpytedBytes);
-        return Aes.utils.utf8.fromBytes(decryptedBytes);
-        
-    } 
 
     componentDidMount() {
         const currentUser = this.state.currentUser;
@@ -51,38 +31,39 @@ class Chat extends Component{
         function filterMessage(message){
             return ((message.fromId == currentUser.uid && message.toId == matchedUser.uid) || (message.fromId == matchedUser.uid && message.toId == currentUser.uid))
         }
-
         this.getMatchedUser = this.props.firebase.user(currentUser.matchedUserID).get()
         .then(snapshot => {
-            
             const firebaseUser = snapshot.data();
-            firebaseUser.uid = snapshot.id;
-            if(firebaseUser.matchedUserID == currentUser.uid){
-                matchedUser = {
-                    ...firebaseUser,
-                };
-            }
-            this.setState({
-                matchedUser: matchedUser,
-            });
-        }).then( () => {
-
-            this.getMessages = this.props.firebase.messages()
-              .orderBy("sentTime").onSnapshot(snapshot => {
-                let messages = [];
-                snapshot.forEach(doc => {
-                    let message = { ...doc.data(), mid: doc.id}
-                    message.sentTime = moment(message.sentTime).format('LLL');
-                    if(filterMessage(message)){
-                        message.content = this.decryptMessage(message.content);
-                        messages.push(message);
-                    }
-                });
+            if(firebaseUser != undefined){
+                firebaseUser.uid = snapshot.id;
+                if(firebaseUser.matchedUserID == currentUser.uid){
+                    matchedUser = {
+                        ...firebaseUser,
+                    };
+                }
                 this.setState({
-                    messages
-                })
-            });
+                    matchedUser: matchedUser,
+                });
+            }
+        }).then( () => {
+            if(matchedUser != null){
+                this.getMessages = this.props.firebase.messages()
+                    .orderBy("sentTime").onSnapshot(snapshot => {
+                    let messages = [];
+                    snapshot.forEach(doc => {
+                        let message = { ...doc.data(), mid: doc.id}
+                        message.sentTime = moment(message.sentTime).format('LLL');
+                        if(filterMessage(message)){
+                            messages.push(message);
+                        }
+                    });
+                    this.setState({
+                        messages
+                    })
+                });
+            }
         });
+        
     }
 
     onChange = event => {
@@ -94,7 +75,7 @@ class Chat extends Component{
         const message = {
             toId: matchedUser.uid,
             fromId: currentUser.uid,
-            content: this.encryptMessage(content),
+            content: content,
             sentTime: moment().format()
         }
         this.props.firebase.db.collection("messages").add({
@@ -121,43 +102,48 @@ class Chat extends Component{
         const isInvalid = content == "";
         
         return (
-            
             <MDBCard className="chat-room">
-                <MDBCardBody>
+                <MDBCardBody className="scrollable-wrapper">
                     <MDBRow className="px-lg-2 px-2 chat-area">
                         <MDBCol xl="6" className="col">
                             <MDBRow>
-                                <MDBListGroup className="list-unstyled">
-
-                                    {messages.map((message, index) => {
-                                        if(message.fromId == currentUser.uid){
-                                            return <ChatMessage 
-                                                key={message.mid + message.sentTime}
-                                                message={message}
-                                                avatar={currentUser.photoURL}
-                                                username={currentUser.username}
-                                                uid={currentUser.uid}
-                                                />
-                                        }else{
-                                            return <ChatMessage
-                                                key={message.mid + message.sentTime}
-                                                message={message}
-                                                avatar={matchedUser.photoURL}
-                                                username={matchedUser.username}
-                                                uid={currentUser.uid}
-                                                />
-                                        }
-                                    })}
-                                </MDBListGroup>
-                                <div className="form-group basic-textarea">
-                                        <textarea className="form-control pl-2 my-0" id="exampleFormControlTextarea2" rows="3"
-                                        placeholder="Type your message here..." name="content" value={content} onChange={this.onChange}/>
-                                        <Button
-                                            disabled={isInvalid}
-                                            onClick={this.onSubmit}
-                                            >
-                                            Send
-                                        </Button>
+                                <div className="chat-container scrollable-wrapper">
+                                    <ScrollableFeed forceScroll={true}>
+                                        <MDBListGroup className="list-unstyled" >
+                                            {messages.map((message, index) => {
+                                                if(message.fromId == currentUser.uid){
+                                                    return <ChatMessage 
+                                                        key={message.mid + message.sentTime}
+                                                        message={message}
+                                                        avatar={currentUser.photoURL}
+                                                        username={currentUser.username}
+                                                        uid={currentUser.uid}
+                                                        />
+                                                }else{
+                                                    return <ChatMessage
+                                                        key={message.mid + message.sentTime}
+                                                        message={message}
+                                                        avatar={matchedUser.photoURL}
+                                                        username={matchedUser.username}
+                                                        uid={currentUser.uid}
+                                                        />
+                                                }
+                                            })}
+                                        </MDBListGroup>
+                                    </ScrollableFeed>
+                                    {matchedUser != null &&
+                                        <div className="form-group basic-textarea">
+        
+                                            <textarea className="form-control pl-2 my-0" id="exampleFormControlTextarea2" rows="3"
+                                            placeholder="Type your message here..." name="content" value={content} onChange={this.onChange}/>
+                                            <Button
+                                                disabled={isInvalid}
+                                                onClick={this.onSubmit}
+                                                >
+                                                Send
+                                            </Button>
+                                        </div>
+                                    }
                                 </div>
                             </MDBRow>
                         </MDBCol>
