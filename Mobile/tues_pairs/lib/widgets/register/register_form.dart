@@ -17,8 +17,9 @@ import 'package:tues_pairs/widgets/form/confim_password_input_field.dart';
 class RegisterForm extends StatefulWidget {
 
   final Function switchPage;
+  final AnimationController animationController;
 
-  RegisterForm({@required this.switchPage}) : assert(switchPage != null);
+  RegisterForm({@required this.switchPage, this.animationController}) : assert(switchPage != null);
 
   @override
   _RegisterFormState createState() => _RegisterFormState();
@@ -212,11 +213,11 @@ class _RegisterFormState extends State<RegisterForm> {
     return ListView(
       children: <Widget>[
         AnimatedBuilder(
-          animation: Register.controller,
+          animation: widget.animationController,
           child: registerForm,
           builder: (context, child) => Transform.translate(
-            offset: Offset(Register.currentPage == Register.registerPageIndex
-                ? 0.0 : Register.controller.value * -345.0, 0.0),
+            offset: Offset(Register.currentPage == Register.topPageIndex
+                ? 0.0 : widget.animationController.value * -345.0, 0.0),
             child: child,
           ),
         ),

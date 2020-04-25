@@ -13,8 +13,8 @@ class Register extends StatefulWidget {
   final Function toggleView;
 
   static AnimationController controller;
-  static int registerPageIndex = 1; // TODO: Change if add more pages (keep track of pages)
-  static int currentPage = registerPageIndex;
+  static int topPageIndex = 1; // TODO: Change if add more pages (keep track of pages)
+  static int currentPage = topPageIndex;
 
   Register({this.toggleView}); // create a constructor which inits this property toggleView
 
@@ -88,11 +88,9 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
         children: [
           Align(
             alignment: Alignment.center,
-            child: MultiProvider(
-                providers: [
-                  Provider<BaseAuth>.value(value: baseAuth),
-                ],
-                child: TagSelection(switchPage: switchPage)
+            child: Provider<BaseAuth>.value(
+              value: baseAuth,
+              child: TagSelection(switchPage: switchPage, animationController: Register.controller,),
             ),
           ),
           Align(
@@ -102,7 +100,7 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
                 Provider<BaseAuth>.value(value: baseAuth),
                 Provider<ImageService>.value(value: imageService),
               ],
-              child: RegisterForm(switchPage: switchPage),
+              child: RegisterForm(switchPage: switchPage, animationController: Register.controller,),
             ),
           ),
         ],

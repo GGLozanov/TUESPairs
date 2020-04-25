@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:tues_pairs/modules/tag.dart';
+import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_card.dart';
 
@@ -48,7 +49,7 @@ enum TagCardType {
   VIEW,
 }
 
-List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardType.VIEW}) { // TBA for settings page function
+List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardType.VIEW}) {
   return tags.map((tag) {
     int tagIndex = tags.indexOf(tag);
     switch(cardType) {

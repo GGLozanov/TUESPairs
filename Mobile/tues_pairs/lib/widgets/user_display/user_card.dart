@@ -45,6 +45,8 @@ class _UserCardState extends State<UserCard> {
         elevation: 5.0,
         color: darkGreyColor,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             ListTile(
@@ -60,7 +62,7 @@ class _UserCardState extends State<UserCard> {
                 ),
                 SizedBox(height: 5.0),
                 !widget.user.isTeacher ? Text(
-                  'GPA ' + widget.user.GPA.toString(),
+                  'GPA: ' + widget.user.GPA.toString(),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -70,7 +72,6 @@ class _UserCardState extends State<UserCard> {
               ]
             ),
             subtitle: Column(
-              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 ButtonBar(
                   alignment: MainAxisAlignment.spaceEvenly,
@@ -119,8 +120,10 @@ class _UserCardState extends State<UserCard> {
               ),
             ),
           ),
-          Wrap(
-            children: widget.tagCards,
+          IgnorePointer(
+            child: Wrap(
+              children: widget.tagCards,
+            )
           ),
           SizedBox(height: 10.0),
           ]

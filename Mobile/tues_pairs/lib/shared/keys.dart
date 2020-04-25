@@ -61,6 +61,7 @@ class Keys {
   static const String settingsClearSkippedUsersButton = 'settingsClearSkippedUsersButton';
   static const String settingsSubmitButton = 'settingsSubmitButton';
   static const String settingsDeleteAccountButton = 'settingsDeleteAccountButton';
+  static const String settingsEditTagsButton = 'settingsEditTagsButton';
   // -------------------------
 
   // -------------------------

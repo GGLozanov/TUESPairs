@@ -12,7 +12,6 @@ class TagCard extends StatefulWidget {
   final Key key;
   final Tag tag;
   final int listIndex;
-  final Database database = new Database();
 
   bool isChosen;
   bool isViewTag = false;
@@ -72,16 +71,19 @@ class _TagCardState extends State<TagCard> {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
 
+    // TODO: For future reference, UI errors with tags can be caused due to fontsize (decrease)
     final tagName = Text(
       widget.tag.name,
       style: TextStyle(
         color: Colors.white,
-        fontSize: 20,
+        fontSize: 16,
         fontFamily: 'BebasNeue',
       ),
     );
 
-    final tagCard = Container(
+    if(user.tagIDs.contains(widget.tag.tid)) widget.isChosen = true;
+
+    return Container(
       height: widget.tagHeight,
       width: widget.tagWidth,
       child: Card(
@@ -103,11 +105,5 @@ class _TagCardState extends State<TagCard> {
           )
       ),
     );
-
-    if(user.tagIDs.contains(widget.tag.tid)) widget.isChosen = true;
-
-    return widget.isViewTag ?
-      IgnorePointer(child: tagCard,)
-        : tagCard;
   }
 }

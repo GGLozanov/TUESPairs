@@ -20,7 +20,7 @@ class _AuthenticateState extends State<Authenticate> { // state
 
   bool isLoginView = true;
   void toggleView() {
-    Register.currentPage = Register.registerPageIndex;
+    Register.currentPage = Register.topPageIndex;
     setState(() => isLoginView = !isLoginView); // setState() method reruns the build method and the function it's been given
     logger.i('Authenticate: Switched to ' + (isLoginView ? 'Login' : 'Register') + ' screen.');
   }
