@@ -45,6 +45,8 @@ const config = {
     user = uid => this.db.doc(`users/${uid}`);
 
     users = () => this.db.collection(`users`);
+
+    messages = () => this.db.collection(`messages`);
     
   }
 
