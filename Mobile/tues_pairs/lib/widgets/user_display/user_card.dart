@@ -46,38 +46,60 @@ class _UserCardState extends State<UserCard> {
         color: darkGreyColor,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            ListTile(
-            title: Column(
+            SizedBox(height: 15.0),
+            CircleAvatar(
+              radius: 70.0,
+              backgroundColor: darkGreyColor, // TODO: Use user photoURL here
+              child: ClipOval(
+                  child: SizedBox(
+                    width: 175.0,
+                    height: 400.0,
+                    child: widget.userImage == null ? Icon(
+                      Icons.person,
+                      size: 75.0,
+                      color: Colors.orange,
+                    ) : Image(
+                      image: widget.userImage,
+                      fit: BoxFit.fill,
+                    ),
+                  )
+              ),
+            ),
+            SizedBox(height: 10.0),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
                   widget.user.username,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 24,
+                    fontSize: 36,
                     fontWeight: FontWeight.bold
                   ),
                 ),
-                SizedBox(height: 5.0),
+                SizedBox(height: 10.0),
                 !widget.user.isTeacher ? Text(
                   'GPA: ' + widget.user.GPA.toString(),
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 24,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold
                   ),
                 ) : SizedBox(),
               ]
             ),
-            subtitle: Column(
+            SizedBox(height: 10.0),
+            ButtonBar(
+              alignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                ButtonBar(
-                  alignment: MainAxisAlignment.spaceEvenly,
-                  buttonPadding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-                  children: <Widget>[
-                    FloatingActionButton(
+                Container(
+                  width: 150.0,
+                  height: 75.0,
+                  padding: EdgeInsets.only(left: 20.0),
+                  child: FittedBox(
+                    child: FloatingActionButton(
                       key: Key(Keys.matchMatchButton + widget.listIndex.toString()),
                       onPressed: () {
                         widget.onMatch();
@@ -87,7 +109,14 @@ class _UserCardState extends State<UserCard> {
                       ),
                       backgroundColor: Colors.deepOrangeAccent
                     ),
-                    FloatingActionButton(
+                  ),
+                ),
+                Container(
+                  width: 150.0,
+                  height: 75.0,
+                  padding: EdgeInsets.only(right: 20.0),
+                  child: FittedBox(
+                    child: FloatingActionButton(
                       key: Key(Keys.matchSkipButton + widget.listIndex.toString()),
                       onPressed: () {
                         widget.onSkip(); // destroy the widget
@@ -97,35 +126,18 @@ class _UserCardState extends State<UserCard> {
                       ),
                       backgroundColor: Colors.deepOrangeAccent
                     ),
-                  ],
+                  ),
                 ),
-              ]
+              ],
             ),
-            leading: CircleAvatar(
-              radius: 32.0,
-              backgroundColor: darkGreyColor, // TODO: Use user photoURL here
-              child: ClipOval(
-                  child: SizedBox(
-                    width: 175.0,
-                    height: 300.0,
-                    child: widget.userImage == null ? Icon(
-                      Icons.person,
-                      size: 55.0,
-                      color: Colors.orange,
-                    ) : Image(
-                      image: widget.userImage,
-                      fit: BoxFit.fill,
-                    ),
-                  )
-              ),
+            SizedBox(height: 10.0),
+            IgnorePointer(
+              child: Wrap(
+                alignment: WrapAlignment.spaceEvenly,
+                children: widget.tagCards,
+              )
             ),
-          ),
-          IgnorePointer(
-            child: Wrap(
-              children: widget.tagCards,
-            )
-          ),
-          SizedBox(height: 10.0),
+            SizedBox(height: 10.0),
           ]
         ),
       )

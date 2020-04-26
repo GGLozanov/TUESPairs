@@ -28,6 +28,7 @@ class Keys {
 
   // -------------------------
   // register keys
+  static const String registerListView = 'registerListView';
   static const String registerScaffold = 'registerScaffold';
   static const String registerButton = 'registerButton';
   static const String nextButton = 'nextButton';

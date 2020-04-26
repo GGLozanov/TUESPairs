@@ -211,6 +211,7 @@ class _RegisterFormState extends State<RegisterForm> {
     );
 
     return ListView(
+      key: Key(Keys.registerListView),
       children: <Widget>[
         AnimatedBuilder(
           animation: widget.animationController,

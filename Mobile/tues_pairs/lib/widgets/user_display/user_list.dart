@@ -7,13 +7,11 @@ import 'package:tues_pairs/services/auth.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/modules/user.dart';
-import 'package:tues_pairs/modules/student.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_card.dart';
 import 'package:tues_pairs/widgets/user_display/user_card.dart';
-import 'package:tues_pairs/widgets/general/error.dart';
 
 class UserList extends StatefulWidget {
 
@@ -36,8 +34,7 @@ class _UserListState extends State<UserList> {
   List<List<TagCard>> tagCards;
   List<UserCard> userCards;
 
-  final _animatedListKey = GlobalKey<
-      AnimatedListState>(); // key used to follow our animated list through its states
+  final _animatedListKey = GlobalKey<AnimatedListState>(); // key used to follow our animated list through its states
 
   bool isUserRenderableForCurrent(User currentUser, User user) {
     return currentUser.isTeacher != user.isTeacher
@@ -90,6 +87,38 @@ class _UserListState extends State<UserList> {
     throw new Exception('Invalid user skip!');
   }
 
+  Future<void> _removeUserFromList(User user, User currentUser, {bool wasUserSkipped = true}) async {
+    int listIndex = getListIndex(user, currentUser: currentUser);
+
+    final removedCard = userCards.removeAt(listIndex);
+
+    logger.i('UserList: Current user w/ id "' + currentUser.uid +
+        '" ' +
+        (wasUserSkipped ? 'skipped ' : 'has matched w/ ') +
+        'user w/ id + "' +
+        user.uid + '"');
+
+    await Future.delayed(Duration(milliseconds: 100), () {
+      _animatedListKey.currentState.removeItem(listIndex,
+        (context, animation) =>
+          SlideTransition(
+            position: CurvedAnimation(
+              curve: Curves.easeOut,
+              parent: animation,
+            ).drive(Tween<Offset>(
+              begin: Offset(
+                  wasUserSkipped ? 1 : -1, // x (negative -> left; positive -> right)
+                  0  // y
+              ),
+              end: const Offset(0, 0),
+              )
+            ),
+            child: removedCard,
+          )
+        );
+    });
+  }
+
   UserCard buildUserCard(User currentUser, int userIndex, User user, {int initialListIndex}) {
     final Database database = new Database(uid: currentUser.uid);
 
@@ -105,34 +134,19 @@ class _UserListState extends State<UserList> {
           currentUser.matchedUserID = user.uid;
           await database.updateUserData(currentUser); // optimise later maybe
         }
+
+        await _removeUserFromList(user, currentUser, wasUserSkipped: false);
+
+        await Future.delayed(Duration(milliseconds: 350), () {}); // Crude fix; fix later
+
         widget.reinitializeMatch();
       },
       onSkip: () async {
         currentUser.skippedUserIDs.add(user.uid);
         await database.updateUserData(currentUser); // optimise later maybe
-
-        int listIndex = getListIndex(user, currentUser: currentUser);
-
-        userCards.removeAt(listIndex);
         users.remove(user);
-        logger.i('UserList: Current user w/ id "' + currentUser.uid +
-            '" skipped user w/ id + "' + user.uid + '"');
-        setState(() {
-          // remove from both lists
-          _animatedListKey.currentState.removeItem(listIndex,
-            (context, animation) =>
-            SlideTransition(
-                position: CurvedAnimation(
-                  curve: Curves.easeOut,
-                  parent: animation,
-                ).drive(Tween<Offset>(
-                  begin: const Offset(1, 0),
-                  end: const Offset(0, 0),
-                )
-              )
-            )
-          );
-        });
+
+        await _removeUserFromList(user, currentUser);
       },
       listIndex: initialListIndex, // idx of element in the filtered list
     );
@@ -152,16 +166,17 @@ class _UserListState extends State<UserList> {
         // reinitializing future with lvalue helps futures wait for one-another (+then)
         future = future.then((_) {
           return Future.delayed(Duration(milliseconds: 100), () {
+            final lastItemIndex = userCards.length;
             userCards.add(buildUserCard(
                 currentUser,
                 idx,
                 users[idx],
-                initialListIndex: userCards.length,
+                initialListIndex: lastItemIndex,
               )
             ); // add card item here
             try {
               _animatedListKey.currentState.insertItem(
-                  userCards.length - 1
+                  lastItemIndex - 1
               ); // insert the latest item here
             } catch (e) {
               logger.w('User w/ id "' + currentUser.uid +
@@ -173,8 +188,6 @@ class _UserListState extends State<UserList> {
       }
     }
   }
-  // TODO: add method that checks skipped ID array with a user ID
-
 
   Widget userList;
 
@@ -200,35 +213,37 @@ class _UserListState extends State<UserList> {
 
           return SlideTransition(
             position: animation.drive(Tween<Offset>(
-              begin: const Offset(1, 0),
-              // represent a point in Cartesian (x-y coordinate) space; dx and dy are args for points
-              end: const Offset(
-                  0, 0), // points are between 1 and 0 (use that!)
-            ).chain(CurveTween(curve: Curves.decelerate))),
+              begin: const Offset(1, 0), // represent a point in Cartesian (x-y coordinate) space; dx and dy are args for points
+              end: const Offset(0, 0), // points are between 1 and 0 (use that!)
+            ).chain(
+                CurveTween(
+                  curve: Curves.decelerate
+                )
+              )
+            ),
             child: userCards[index], // get the generated user card from here
           );
         },
       );
 
       return FutureBuilder<List<List<TagCard>>>(
-          future: getUserTags(currentUser),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              tagCards = snapshot.data;
-              // -------------------
-              // users
-              loadListItems(currentUser, users);
-              // -------------------
+        future: getUserTags(currentUser),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            tagCards = snapshot.data;
+            // -------------------
+            // users
+            loadListItems(currentUser, users);
+            // -------------------
 
-              // --------------------
-              // user images
-              images = getUserImages(currentUser);
-              // --------------------
+            // --------------------
+            // user images
+            images = getUserImages(currentUser);
+            // --------------------
 
-              return userList;
-            } else
-              return Loading();
-          }
+            return userList;
+          } else return Loading();
+        }
       ); // context & index of whichever item we're iterating through
     } // get the info from the stream
 

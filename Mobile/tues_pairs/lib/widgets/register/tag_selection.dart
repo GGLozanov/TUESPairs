@@ -56,7 +56,7 @@ class _TagSelectionState extends State<TagSelection> {
       child: Column(
         children: <Widget>[
           SizedBox(
-            height: 500.0,
+            height: 550.0,
             child: Provider<User>.value(
               value: user,
               child: ListView(

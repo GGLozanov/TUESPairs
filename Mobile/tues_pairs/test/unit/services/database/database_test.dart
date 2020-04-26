@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tues_pairs/modules/message.dart';
+import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
 
@@ -90,30 +91,47 @@ void main() {
     // Tag tests
     // -------------------------------------
 
-    test('updateTagDataPass', () {
-      // TODO: update unit test when tag module is implemented
+    test('Updates the tag data at the specified tag Id', () async {
       Database database = new Database.mock(uid: 'TestUserID');
+
+      final String tid = 'exampleId';
+      Tag testTag = new Tag(tid: tid, name: 'RandomTech', color: '#db2828');
+
+      expect(database.updateTagData(testTag), isA<Future<dynamic>>());
 
       cleanMock(database);
     });
 
-    test('updateTagDataFail', () {
-      // TODO: update unit test when tag module is implemented
+    test('Returns null upon failed tag data update (no tag Id)', () async {
       Database database = new Database.mock(uid: 'TestUserID');
 
+      var result = await database.updateTagData(null);
+
+      expect(result, isNull);
       cleanMock(database);
     });
 
-    test('getTagBySnapshotPass', () {
-      // TODO: update unit test when tag module is implemented
+    test('Retrieves a tag by a given snapshot with a given tag Id', () async {
       Database database = new Database.mock(uid: 'TestUserID');
 
+      // example unit test tag - Flask. Do not delete
+      final String tid = 'exampleId';
+      Tag testTag = new Tag(tid: tid, name: 'RandomTech', color: '#db2828');
+
+      await database.updateTagData(testTag);
+
+      var result = await database.getTagByID(tid);
+
+      expect(testTag, equals(result));
       cleanMock(database);
     });
 
-    test('getTagBySnapshotFail', () {
-      // TODO: update unit test when tag module is implemented
+    test('Returns null upon attempted retrieval of a tag with a null tag Id', () async {
       Database database = new Database.mock(uid: 'TestUserID');
+
+      var result = await database.getTagByID(null);
+
+      expect(result, isNull);
 
       cleanMock(database);
     });

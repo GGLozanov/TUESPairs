@@ -84,9 +84,23 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
             color: greyColor,
             child: ListView(
               children: <Widget>[
-                SizedBox(height: 5.0),
+                SizedBox(height: 25.0),
                 AvatarWrapper(),
                 InputFormSettings(),
+                SizedBox(height: 15.0),
+                Padding(
+                  padding: const EdgeInsets.only(left: 40.0, right: 40.0),
+                  child: InputButton(
+                    key: Key(Keys.settingsEditTagsButton),
+                    minWidth: 100.0,
+                    height: 50.0,
+                    text: 'Edit tags',
+                    onPressed: () {
+                      switchToNextPage(0);
+                    },
+                  ),
+                ),
+                SizedBox(height: 15.0),
                 Padding(
                   padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0, bottom: 20.0),
                   child: Wrap(
@@ -94,15 +108,6 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                     runSpacing: 5.0,
                     spacing: 5.0,
                     children: <Widget>[
-                      InputButton(
-                        key: Key(Keys.settingsEditTagsButton),
-                        minWidth: 200.0,
-                        height: 50.0,
-                        text: 'Edit tags',
-                        onPressed: () {
-                          switchToNextPage(0);
-                        },
-                      ),
                       SizedBox(height: 15.0),
                       InputButton(
                         key: Key(Keys.settingsClearMatchedUserButton),
