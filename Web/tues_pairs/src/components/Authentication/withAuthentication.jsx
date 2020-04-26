@@ -19,15 +19,7 @@ const withAuthentication = Component => {
                     if(authUser) {
                         this.props.firebase.user(authUser.uid).get()
                         .then(snapshot => {
-                            const firebaseUser = snapshot.data();
-
-                            authUser = {
-                                uid: authUser.uid,
-                                email: authUser.email,
-                                ...firebaseUser,
-                            };
-                                                    
-                            console.log(authUser);
+                            authUser = this.props.firebase.currentUser(snapshot);
 
                             this.setState({ authUser });
                         });
