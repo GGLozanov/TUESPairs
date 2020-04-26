@@ -73,12 +73,12 @@ class _AvatarState extends State<Avatar> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
           CircleAvatar(
-            radius: 65.0,
+            radius: 70.0,
             backgroundColor: Color.fromRGBO(33, 36, 44, 1),
             child: ClipOval(
               child: SizedBox(
-                width: 180.0,
-                height: 180.0,
+                width: 190.0,
+                height: 190.0,
                 child: displayImage(),
               ),
             ),

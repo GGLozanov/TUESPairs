@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/screens/main/settings.dart';
 import 'package:tues_pairs/screens/main/chat.dart';
@@ -17,11 +18,14 @@ class _HomeState extends State<Home> {
 
   int _selectedIndex = 1; // selected index for page (first is the middle one
 
+  final Database database = Database();
+
   // ---------------
   // NavigationBar properties:
   // ---------------
 
   final Auth _auth = new Auth();
+
   PageController _controller = PageController(
     initialPage: 1,
     keepPage: true,
@@ -43,8 +47,15 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<List<User>>.value(
-      value: Database().users,
+    return MultiProvider(
+      providers: [
+        StreamProvider<List<User>>.value(
+          value: database.users,
+        ),
+        StreamProvider<List<Tag>>.value(
+          value: database.tags,
+        )
+      ],
       child: Scaffold(
         key: Key(Keys.homeScaffold),
         appBar: AppBar(
@@ -134,7 +145,7 @@ class _HomeState extends State<Home> {
           onTap: onItemTap,
           backgroundColor: Color.fromRGBO(33, 36, 44, 1),
         ),
-      )
+      ),
     );
   }
 }

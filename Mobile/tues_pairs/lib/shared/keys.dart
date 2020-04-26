@@ -28,8 +28,12 @@ class Keys {
 
   // -------------------------
   // register keys
+  static const String registerListView = 'registerListView';
   static const String registerScaffold = 'registerScaffold';
   static const String registerButton = 'registerButton';
+  static const String nextButton = 'nextButton';
+  static const String backButton = 'backButton';
+  static const String chooseTagsButton = 'chooseTagsButton';
   static const String registerUsernameInputField = 'registerUsernameInputField';
   static const String registerEmailInputField = 'registerEmailInputField';
   static const String registerPasswordInputField = 'registerPasswordInputField';
@@ -58,5 +62,11 @@ class Keys {
   static const String settingsClearSkippedUsersButton = 'settingsClearSkippedUsersButton';
   static const String settingsSubmitButton = 'settingsSubmitButton';
   static const String settingsDeleteAccountButton = 'settingsDeleteAccountButton';
+  static const String settingsEditTagsButton = 'settingsEditTagsButton';
+  // -------------------------
+
+  // -------------------------
+  // tag keys
+  static const String tagCard = 'tagCard';
   // -------------------------
 }

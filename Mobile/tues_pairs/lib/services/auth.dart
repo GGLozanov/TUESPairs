@@ -35,14 +35,14 @@ class Auth {
     return await _auth.currentUser();
   }
 
-  Future<FirebaseUser> getFirebaseUserFromAuth(User authUser) async {
-    AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: authUser.email, password: authUser.password);
+  Future<FirebaseUser> getFirebaseUserFromAuth(User authUser, String password) async {
+    AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: authUser.email, password: password);
     return authResult.user;
   }
 
-  Future registerUserByEmailAndPassword(User authUser) async { // async function returns Future (placeholder variable until callback from other thread is received)
+  Future registerUserByEmailAndPassword(User authUser, String password) async { // async function returns Future (placeholder variable until callback from other thread is received)
     try {
-      FirebaseUser firebaseUser = await getFirebaseUserFromAuth(authUser);
+      FirebaseUser firebaseUser = await getFirebaseUserFromAuth(authUser, password);
 
       logger.i('Auth: Successfully registered Firebase user w/ id "' + firebaseUser.uid + '" to auth.');
 

@@ -8,8 +8,15 @@ class InputButton extends StatelessWidget {
   final Function onPressed;
   final String text;
   final Key key;
+  final Color color;
 
-  InputButton({this.key, this.minWidth, this.height, this.onPressed, this.text}) : super(key: key);
+  InputButton({this.key, @required this.minWidth, @required this.height,
+    @required this.onPressed, @required this.text, this.color = darkGreyColor}) :
+      assert(minWidth != null),
+      assert(height != null),
+      assert(onPressed != null),
+      assert(text != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +31,7 @@ class InputButton extends StatelessWidget {
           ),
         ),
         textColor: Colors.white,
-        color: Color.fromRGBO(33, 36, 44, 1),
+        color: color,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
         onPressed: () => onPressed(),
       ),

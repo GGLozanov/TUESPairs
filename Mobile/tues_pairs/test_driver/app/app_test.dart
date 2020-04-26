@@ -5,17 +5,22 @@ import 'package:tues_pairs/modules/user.dart';
 
 void main() {
 
+
+  // TODO: FIX FROM AFTER REGISTRATION PAGE OVERHAUL
+
   final String userCardIndex = '0';
 
-  const int waitDuration = 2000;
+  const int waitDuration = 2000; // milliseconds
 
   // example user for auth
   final User registerUser = new User(
-    email: 'example123456@gmail.com', password: 'examplepass',
+    email: 'example123456@gmail.com',
     username: 'example',
     GPA: 5.45, isTeacher: false,
     photoURL: null,
   );
+
+  String registeredUserPassword = 'examplepass';
 
   group('App', () {
 
@@ -35,6 +40,7 @@ void main() {
     final registerGPAInputFieldFinder = find.byValueKey(Keys.registerGPAInputField);
     final isTeacherSwitchFinder = find.byValueKey(Keys.isTeacherSwitch);
     final registerButtonFinder = find.byValueKey(Keys.registerButton);
+    final registerListView = find.byValueKey(Keys.registerListView);
 
     final logOutButtonFinder = find.byValueKey(Keys.logOutButton);
     final bottomNavigationBarFinder = find.byValueKey(Keys.bottomNavigationBar);
@@ -94,7 +100,7 @@ void main() {
 
       await enterTextInFieldWithDelay(loginEmailInputFieldFinder, registerUser.email);
 
-      await enterTextInFieldWithDelay(loginPasswordInputFieldFinder, registerUser.password);
+      await enterTextInFieldWithDelay(loginPasswordInputFieldFinder, registeredUserPassword);
 
       await driver.tap(logInButtonFinder);
     }
@@ -128,7 +134,6 @@ void main() {
       await driver.waitFor(registerConfirmPasswordInputFieldFinder);
       await driver.waitFor(registerGPAInputFieldFinder);
       await driver.waitFor(isTeacherSwitchFinder);
-      await driver.waitFor(registerButtonFinder);
 
       delay(waitDuration);
 
@@ -140,17 +145,21 @@ void main() {
 
       delay(waitDuration);
 
-      await enterTextInFieldWithDelay(registerPasswordInputFieldFinder, registerUser.password);
+      await enterTextInFieldWithDelay(registerPasswordInputFieldFinder, registeredUserPassword);
 
       delay(waitDuration);
 
-      await enterTextInFieldWithDelay(registerConfirmPasswordInputFieldFinder, registerUser.password);
+      await enterTextInFieldWithDelay(registerConfirmPasswordInputFieldFinder, registeredUserPassword);
 
       delay(waitDuration);
 
       await enterTextInFieldWithDelay(registerGPAInputFieldFinder, registerUser.GPA.toString());
 
       delay(waitDuration);
+
+      await driver.scrollUntilVisible(registerListView, registerButtonFinder);
+
+      await driver.waitFor(registerButtonFinder);
 
       await driver.tap(registerButtonFinder);
     }
@@ -163,7 +172,7 @@ void main() {
 
       delay(waitDuration);
 
-      await driver.tap(find.text(page)); // botoomnavbar items don't have key properties, sadly
+      await driver.tap(find.text(page)); // bottomnavbar items don't have key properties, sadly
 
       delay(waitDuration);
     }
@@ -171,7 +180,7 @@ void main() {
     Future<void> findAndTapButton(SerializableFinder button) async {
       await driver.waitFor(button);
 
-      delay(waitDuration);
+      delay(waitDuration*2);
 
       await driver.tap(button);
     }
@@ -214,13 +223,13 @@ void main() {
 
       await navigateToPage('Match');
 
-      delay(waitDuration);
+      await driver.waitFor(matchAnimatedList, timeout: Duration(milliseconds: waitDuration*10));
 
-      await driver.waitFor(matchAnimatedList, timeout: Duration(milliseconds: waitDuration*5));
-
-      delay(waitDuration);
+      delay(waitDuration*5);
 
       await findAndTapButton(matchMatchButtonFinder);
+
+      delay(waitDuration*3);
 
       await navigateToPageAndTapButton(settingsClearMatchedUserButtonFinder, 'Settings');
 
@@ -235,11 +244,13 @@ void main() {
 
       await navigateToPage('Match');
 
-      await driver.waitFor(matchAnimatedList, timeout: Duration(milliseconds: waitDuration*5));
+      await driver.waitFor(matchAnimatedList, timeout: Duration(milliseconds: waitDuration*10));
 
       delay(waitDuration);
 
       await findAndTapButton(matchSkipButtonFinder);
+
+      delay(waitDuration*5);
 
       await navigateToPageAndTapButton(settingsClearSkippedUsersButtonFinder, 'Settings');
 

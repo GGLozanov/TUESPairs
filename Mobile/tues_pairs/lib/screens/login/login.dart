@@ -91,7 +91,7 @@ class _LoginState extends State<Login> {
                 SizedBox(height: 15.0), // SizedBox widget creates an invisible box with a height/width to help separate elements
                 PasswordInputField(
                   key: Key(Keys.loginPasswordInputField),
-                  onChanged: (value) => setState(() => baseAuth.user.password = value),
+                  onChanged: (value) => setState(() => baseAuth.password = value),
                 ),
                 SizedBox(height: 25.0),
                 InputButton(
@@ -103,7 +103,7 @@ class _LoginState extends State<Login> {
                     if(baseAuth.key.currentState.validate()) {
                       setState(() => baseAuth.toggleLoading());
 
-                      User user = await baseAuth.authInstance.loginUserByEmailAndPassword(baseAuth.user.email, baseAuth.user.password); // call the login method
+                      User user = await baseAuth.authInstance.loginUserByEmailAndPassword(baseAuth.user.email, baseAuth.password); // call the login method
 
                       if(user == null) {
                         logger.w('Login: Failed user login (invalid credentials)');
