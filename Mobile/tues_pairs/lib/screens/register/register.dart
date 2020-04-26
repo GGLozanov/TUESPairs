@@ -7,7 +7,7 @@ import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/widgets/register/register_form.dart';
-import 'package:tues_pairs/widgets/register/tag_selection.dart';
+import 'package:tues_pairs/widgets/tag_display/tag_selection.dart';
 
 class Register extends StatefulWidget {
   final Function toggleView;

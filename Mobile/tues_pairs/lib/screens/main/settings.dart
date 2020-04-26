@@ -12,7 +12,7 @@ import 'package:tues_pairs/widgets/avatar/avatar_wrapper.dart';
 import 'package:tues_pairs/widgets/form/input_form_settings.dart';
 import 'package:tues_pairs/templates/error_notifier.dart';
 import 'package:tues_pairs/widgets/form/input_button.dart';
-import 'package:tues_pairs/widgets/register/tag_selection.dart';
+import 'package:tues_pairs/widgets/tag_display/tag_selection.dart';
 
 import '../../services/auth.dart';
 import '../../services/database.dart';

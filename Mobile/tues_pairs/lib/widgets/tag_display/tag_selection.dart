@@ -78,7 +78,6 @@ class _TagSelectionState extends State<TagSelection> {
                   user.tagIDs = widget.isCurrentUserAvailable ?
                    await database.getUserById().then((usr) => usr.tagIDs)
                      : [];
-                  print('User tids: ${user.tagIDs}');
                   switchToNextPage();
                 },
               ),
