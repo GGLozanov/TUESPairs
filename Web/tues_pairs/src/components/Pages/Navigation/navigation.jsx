@@ -22,7 +22,7 @@ const Navigation = () => (
 const NavigationLogged = () => (
   <Navbar collapseOnSelect expand="lg" bg="dark">
   <Navbar.Brand href="/home">
-    <img src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/TP-logo-2.png?alt=media&token=8378bc71-6fc6-4373-ac38-5f86a8b3295b" alt="TUESPairs logo"></img>
+    <img src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/Logo_Text.png?alt=media&token=d787193b-09ef-468a-b6c8-034c1497e8c8" alt="TUESPairs logo"></img>
   </Navbar.Brand>
   <Navbar.Toggle aria-controls="responsive-navbar-nav" />
     <Navbar.Collapse id="responsive-navbar-nav">
@@ -57,7 +57,7 @@ const NavigationLogged = () => (
 const NavigationNotLogged = () => (
   <Navbar collapseOnSelect expand="lg" bg="dark">
     <Navbar.Brand href="/sign">
-      <img src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/TP-logo-2.png?alt=media&token=8378bc71-6fc6-4373-ac38-5f86a8b3295b" alt="TUESPairs logo"></img>
+      <img src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/Logo_Text.png?alt=media&token=d787193b-09ef-468a-b6c8-034c1497e8c8" alt="TUESPairs logo"></img>
     </Navbar.Brand>
   </Navbar>
 )

@@ -3,7 +3,7 @@ import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import { withAuthorization } from '../../Authentication';
 import { withFirebase } from '../../Firebase';
-import { FormControl, Form, Button } from 'react-bootstrap';
+import { FormControl, Form, Button, Spinner, ButtonGroup, Col, Row } from 'react-bootstrap';
 import './style.scss';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
@@ -17,7 +17,32 @@ class UserInfo extends Component {
             isTeacher: false,
             GPA: 0,
             error: '',
+            tags: [],
+            loading: false,
         }
+    }
+
+    componentDidMount() {
+        this.setState({ loading: true });
+    
+        this.tagProvider = this.props.firebase.tags()
+        .onSnapshot(snapshot => {
+            let tags = [];
+
+            snapshot.forEach(doc => 
+                tags.push({ ...doc.data(), tid: doc.id }),
+            );
+
+            this.setState({ tags, loading: false });
+        });
+    }
+
+    componentWillUnmount() {
+        this.tagProvider();
+    }
+
+    setChecked = event => {
+        
     }
 
     onSubmit = event => {
@@ -51,13 +76,18 @@ class UserInfo extends Component {
     }
 
     render() {
-        const {username, isTeacher, GPA, error } = this.state;
+        const {username, isTeacher, GPA, error, tags, loading } = this.state;
 
         const isInvalid = 
             username === '';
 
         return (
             <div className="register-page">
+                { loading && 
+                <Spinner animation="border" role="status">
+                    <span className="sr-only">Loading...</span>
+                </Spinner> }
+
                 <Form className="user-info" onSubmit={this.onSubmit}>
                     <Form.Group controlId="formBasicPassword">
                         <Form.Label>Username</Form.Label>
@@ -91,6 +121,16 @@ class UserInfo extends Component {
                             min="2"
                         />}
                     </Form.Group>
+
+                    <div className="tag-list">
+                        <ButtonGroup as={Row}>
+                            {this.state.tags.map(tag => (
+                                <Button value={tag.color} onClick={this.setChecked}>
+                                    {tag.name}
+                                </Button>
+                            ))}
+                        </ButtonGroup>
+                    </div>
 
                     <Button disabled={isInvalid} variant="primary" type="submit">
                         Submit
