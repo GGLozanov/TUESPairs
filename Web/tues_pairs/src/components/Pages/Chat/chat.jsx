@@ -4,9 +4,9 @@ import { compose } from 'recompose';
 import { withFirebase } from '../../Firebase';
 import { withCurrentUser } from '../../Authentication/context';
 import moment from 'moment';
-import { MDBCard, MDBCardBody, MDBRow, MDBCol, MDBListGroup, MDBContainer} from "mdbreact";
+import { MDBListGroup } from "mdbreact";
 import "./style.scss";
-import { Button, Image, Media, Col} from 'react-bootstrap';
+import { Image, Media} from 'react-bootstrap';
 import ScrollableFeed from 'react-scrollable-feed';
 import {FaPaperPlane, FaTrash} from 'react-icons/fa';
 
@@ -29,14 +29,14 @@ class Chat extends Component{
         let matchedUser = null;
                
         function filterMessage(message){
-            return ((message.fromId == currentUser.uid && message.toId == matchedUser.uid) || (message.fromId == matchedUser.uid && message.toId == currentUser.uid))
+            return ((message.fromId === currentUser.uid && message.toId === matchedUser.uid) || (message.fromId === matchedUser.uid && message.toId === currentUser.uid))
         }
         this.getMatchedUser = this.props.firebase.user(currentUser.matchedUserID).get()
         .then(snapshot => {
             const firebaseUser = snapshot.data();
-            if(firebaseUser != undefined){
+            if(firebaseUser !== undefined){
                 firebaseUser.uid = snapshot.id;
-                if(firebaseUser.matchedUserID == currentUser.uid){
+                if(firebaseUser.matchedUserID === currentUser.uid){
                     matchedUser = {
                         ...firebaseUser,
                     };
@@ -46,7 +46,7 @@ class Chat extends Component{
                 });
             }
         }).then( () => {
-            if(matchedUser != null){
+            if(matchedUser !== null){
                 this.getMessages = this.props.firebase.messages()
                     .orderBy("sentTime").onSnapshot(snapshot => {
                     let messages = [];
@@ -70,7 +70,7 @@ class Chat extends Component{
         this.setState({ [event.target.name]: event.target.value });
     };    
     onSubmit = event => {
-        const { currentUser, matchedUser, content, filteredMessages } = this.state;
+        const { currentUser, matchedUser, content } = this.state;
 
         const message = {
             toId: matchedUser.uid,
@@ -107,8 +107,8 @@ class Chat extends Component{
             currentUser
         } = this.state;
 
-        const isInvalid = content == "";
-        if(matchedUser != null){
+        const isInvalid = content === "";
+        if(matchedUser !== null){
             return (
                 <div class="col-5 px-0 chat-container">
                     <div class="px-4 py-5 chat-box">
@@ -116,7 +116,7 @@ class Chat extends Component{
                             <ScrollableFeed forceScroll={true}>
                                 <MDBListGroup>
                                     {messages.map((message, index) => {
-                                        if(message.fromId == currentUser.uid){
+                                        if(message.fromId === currentUser.uid){
                                             return <ChatMessage 
                                                 key={message.mid + message.sentTime}
                                                 message={message}
@@ -181,7 +181,7 @@ const ChatPage = compose (
 )(Chat)
 const ChatMessage = ({ message: {mid, fromId, sentTime, content }, avatar, username, uid, onDelete}) => {
 
-    if(uid == fromId){
+    if(uid === fromId){
         return (
             <li>
                 <Media className="w-50 ml-auto mb-3 container-reciever">
@@ -196,14 +196,22 @@ const ChatMessage = ({ message: {mid, fromId, sentTime, content }, avatar, usern
                         </div>
                         <p className="small text-muted">{sentTime}</p>
                     </Media.Body>
-                    <Image
+                    {avatar &&<Image
                             src={avatar}
                             alt="Reciever profile picture"
                             width={50}
                             height={50}
                             className="rounded-circle"
                             
-                    />
+                    />}
+                    {!avatar &&<Image
+                            src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png"
+                            alt="Reciever profile picture"
+                            width={50}
+                            height={50}
+                            className="rounded-circle"
+                            
+                    />}
                 </Media>
             </li>
         )
@@ -211,13 +219,22 @@ const ChatMessage = ({ message: {mid, fromId, sentTime, content }, avatar, usern
         return (
             <li>
                 <Media className="w-50 mb-3 container-sender">
-                    <Image
-                            src={avatar}
-                            alt="Sender profile picture"
+                    {avatar &&<Image
+                                src={avatar}
+                                alt="Reciever profile picture"
+                                width={50}
+                                height={50}
+                                className="rounded-circle"
+                                
+                    />}
+                    {!avatar &&<Image
+                            src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png"
+                            alt="Reciever profile picture"
                             width={50}
                             height={50}
                             className="rounded-circle"
-                    />
+                            
+                    />}
                     <Media.Body className="ml-3">
                         <div class="bubble-container-sender rounded py-2 px-3 mb-2">
                             <p class="text-small mb-0">{content}</p>
