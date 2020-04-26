@@ -12,6 +12,7 @@ class AlreadyMatched extends Component {
         super(props);
 
         this.state = {
+            currentUser: this.props.authUser,
             matchedUser: this.props.authUser,
             loading: '',
             tags: [],
@@ -19,29 +20,36 @@ class AlreadyMatched extends Component {
 
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.setState({ loading: true });
 
-        const currentUser = this.props.authUser;
-    
-        this.unsubscribe = this.props.firebase.user(currentUser.matchedUserID).get()
+        this.props.firebase.user(this.props.authUser.uid).get()
         .then(snapshot => {
-            const matchedUser = this.props.firebase.currentUser(snapshot);
+            const currentUser = this.props.firebase.currentUser(snapshot);
 
-            this.setState({ matchedUser });
+            this.setState({ currentUser });
         }).then(() => {
-            let tags = [];
-             
-            this.state.matchedUser.tagIDs.forEach(tid => {
-                this.props.firebase.tag(tid).get()
-                .then(tag => {
-                    tags.push(tag.data());
+            this.props.firebase.user(this.state.currentUser.matchedUserID).get()
+            .then(snapshot => {
+                if(snapshot.exists) {
+                    const matchedUser = this.props.firebase.currentUser(snapshot);
                     
-                    this.setState({ tags, loading: false });
-                })
+                    this.setState({ matchedUser, loading: false });
+                }
+            }).then(() => {
+                let tags = [];
+                
+                this.state.matchedUser.tagIDs.forEach(tid => {
+                    this.props.firebase.tag(tid).get()
+                    .then(tag => {
+                        tags.push(tag.data());
+                        
+                        this.setState({ tags, loading: false });
+                    });
+                });
             });
-        })
-    }   
+        });
+    }
 
     handleCancelMatched = () => {
         const currentUser = this.props.authUser;

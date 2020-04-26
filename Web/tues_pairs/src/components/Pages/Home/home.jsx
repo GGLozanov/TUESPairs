@@ -63,18 +63,20 @@ class UserList extends Component {
     .onSnapshot(snapshot => {
       let users = [];
 
-      snapshot.forEach(doc => {
-        let tags = [];
-        doc.data().tagIDs.forEach(tag => {
-          if(tag) {
-            this.props.firebase.tag(tag).get()
-              .then(inforamtion => {
-                tags.push(inforamtion.data());
-              })
-          }
+      if(!snapshot.exists) {
+        snapshot.forEach(doc => {
+          let tags = [];
+          doc.data().tagIDs.forEach(tag => {
+            if(tag) {
+              this.props.firebase.tag(tag).get()
+                .then(inforamtion => {
+                  tags.push(inforamtion.data());
+                })
+            }
+          });
+          users.push({ ...doc.data(), uid: doc.id, tags: tags });
         });
-        users.push({ ...doc.data(), uid: doc.id, tags: tags });
-      });
+      }
 
       this.setState({
         users,
