@@ -37,12 +37,11 @@ class UserProfile extends Component {
         this.unsubscribe = this.props.firebase.user(currentUser.uid).get()
         .then(snapshot => {
             const currentUser = this.props.firebase.currentUser(snapshot);
-
             this.setState({ photoURL: currentUser.photoURL, username: currentUser.username, tagIDs: currentUser.tagIDs });
         }).then(() => {
             let tags = [];
-             
-            currentUser.tagIDs.forEach(tid => {
+            
+            this.state.tagIDs.forEach(tid => {
                 this.props.firebase.tag(tid).get()
                 .then(tag => {
                     tags.push(tag.data());

@@ -117,6 +117,19 @@
                 }
             }
 
+            .tag-list {
+                .btn-group {
+                    margin-top: 1rem;
+                    margin-bottom: 1rem;
+                    button {
+                        background-color: rgb(252, 152, 0);
+                        margin: 5px;
+                        outline: none;
+                        border: none;
+                    }
+                }
+            }
+
             .error-message {
                 margin: 1rem;
                 color: rgb(252, 152, 0);
