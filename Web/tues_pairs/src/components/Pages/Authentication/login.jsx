@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
-
+import firebase from 'firebase';
 import { withFirebase } from '../../Firebase';
 import * as ROUTES from '../../../constants/routes';
 import { PasswordForgetLink } from '../PasswordForget'
 import './style.scss';
+import { withCurrentUser } from '../../Authentication/context';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import GitHubIcon from '@material-ui/icons/GitHub';
 
 const SignInPage = () => (
   <div>
@@ -24,6 +27,29 @@ class SignInFormBase extends Component {
   constructor(props) {
     super(props);
     this.state = { ...INITIAL_STATE };
+  }
+
+  handleExternalSignIn = provider => {
+    firebase.auth().signInWithPopup(provider)
+    .then(result => {
+      this.props.firebase.user(result.user.uid).get()
+      .then(snapshot => {
+        if(snapshot.exists) {
+          this.props.history.push(ROUTES.HOME);
+        } else {
+          this.props.firebase.db.collection("users").doc(result.user.uid).set({
+            username: null,
+            email: result.user.email,
+            isTeacher: null,
+            GPA: null,
+            photoURL: result.user.photoURL,
+            matchedUserID: null,
+            skippedUserIDs: []
+          })
+          .then(() => this.props.history.push(ROUTES.USER_INFO));
+        }
+      })
+    });
   }
 
   onSubmit = event => {
@@ -77,12 +103,28 @@ class SignInFormBase extends Component {
             Login
           </button>
         </div>
+        <div className="external-sign-in">
+          <hr></hr>
+          <button type="button" onClick={this.handleExternalSignIn.bind(this, new firebase.auth.GoogleAuthProvider())}>
+              <img className="google-image" src="https://maxcdn.icons8.com/Share/icon/Logos/google_logo1600.png" alt="googleimage"></img>
+              <span className="google-text">Log in with Google</span>
+          </button>
+          <button type="button" onClick={this.handleExternalSignIn.bind(this, new firebase.auth.FacebookAuthProvider())}>
+              <span className="facebook-icon"><FacebookIcon/></span>
+              <span>Log in with Facebook</span>
+          </button>
+          <button type="button" onClick={this.handleExternalSignIn.bind(this, new firebase.auth.GithubAuthProvider())}>
+              <span className="github-icon"><GitHubIcon/></span>
+              <span className="github-text">Log in with Github</span>
+          </button>
+        </div>
       </div>
     );
   }
 }
 
 const SignInForm = compose(
+  withCurrentUser,
   withRouter,
   withFirebase,
 )(SignInFormBase);

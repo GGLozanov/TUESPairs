@@ -19,18 +19,7 @@ const withAuthentication = Component => {
                     if(authUser) {
                         this.props.firebase.user(authUser.uid).get()
                         .then(snapshot => {
-                            const firebaseUser = snapshot.data();
-
-                            //default empty roles
-                            if(!firebaseUser.roles) {
-                                firebaseUser.roles = {};
-                            }
-
-                            authUser = {
-                                uid: authUser.uid,
-                                email: authUser.email,
-                                ...firebaseUser,
-                            };
+                            authUser = this.props.firebase.currentUser(snapshot);
 
                             this.setState({ authUser });
                         });

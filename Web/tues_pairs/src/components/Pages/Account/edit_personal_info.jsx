@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormControl, Button, Col, Image, Form, Row, Alert } from 'react-bootstrap';
+import { FormControl, Button, Col, Image, Form, Row, Alert, Spinner, InputGroup } from 'react-bootstrap';
 import { withCurrentUser } from '../../Authentication/context';
 import { compose } from 'recompose';
 import { withFirebase } from '../../Firebase';
@@ -22,7 +22,6 @@ class EditPersonalInfo extends Component{
 
         this.state = {
             username: this.props.authUser.username,
-            email: this.props.authUser.email,
             GPA: this.props.authUser.GPA,
             photoURL: this.props.authUser.photoURL,
             email: this.props.authUser.email,
@@ -40,17 +39,7 @@ class EditPersonalInfo extends Component{
     
         this.unsubscribe = this.props.firebase.user(currentUser.uid).get()
         .then(snapshot => {
-            const firebaseUser = snapshot.data();
-
-            if(!firebaseUser.roles) {
-                firebaseUser.roles = {};
-            }
-
-            currentUser = {
-                uid: currentUser.uid,
-                email: currentUser.email,
-                ...firebaseUser,
-            };
+            const currentUser = this.props.firebase.currentUser(snapshot);
 
             this.setState({ photoURL: currentUser.photoURL, email: currentUser.email, loading: false });
         });
@@ -120,7 +109,8 @@ class EditPersonalInfo extends Component{
         this.setState({ show });
     }
 
-    handleDeleteProfile = () => {
+    handleDeleteProfile = event => {
+        event.preventDefault();
         let users = [];
 
         const currentUser = this.props.authUser;
@@ -128,8 +118,11 @@ class EditPersonalInfo extends Component{
         this.props.firebase.users()
             .onSnapshot(snapshot => {
 
-                snapshot.forEach(doc =>
-                    users.push({ ...doc.data(), uid: doc.id }),
+                snapshot.forEach(doc => {
+                    if(doc.id !== currentUser.uid){
+                        users.push({ ...doc.data(), uid: doc.id });
+                    }
+                }
             );
 
             for(let i = 0; i < users.length; i++) {
@@ -152,10 +145,11 @@ class EditPersonalInfo extends Component{
         .catch(error => {
             this.setState({ error });
         });
+
     }
 
     render() {
-        const { username, email, photoURL, GPA} = this.state;
+        const { username, email, photoURL, GPA, loading, error} = this.state;
 
         const isTeacher = this.props.authUser.isTeacher ? false : true;
 
@@ -166,8 +160,11 @@ class EditPersonalInfo extends Component{
         const hasImage = photoURL ? true : false;
 
         return(
-            this.state.loading ? <div></div> :
             <div className="edit-page-info">
+            { loading && 
+                <Spinner animation="border" role="status">
+                    <span className="sr-only">Loading...</span>
+                </Spinner> }
                 <div className="profile-editor">
                     <div className="profile-picture">
                         <Col xs={14} md={14}>
@@ -189,16 +186,21 @@ class EditPersonalInfo extends Component{
                     <Form className="profile-info" onSubmit={this.onSubmit}>
                         <Form.Group controlId="formBasicPassword">
                             <Form.Label>Username</Form.Label>
-                            <FormControl
-                                onChange={this.onChange}
-                                aria-label="Recipient's username"
-                                aria-describedby="basic-addon2"
-                                placeholder={username}
-                                name="username"
-                            />
+                            <InputGroup>
+                                <FormControl
+                                    onChange={this.onChange}
+                                    aria-label="Recipient's username"
+                                    aria-describedby="basic-addon2"
+                                    placeholder={username}
+                                    name="username"
+                                />
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="inputGroupPrepend">{username}</InputGroup.Text>
+                                </InputGroup.Prepend>
+                            </InputGroup>
                         </Form.Group>
 
-                        <Form.Group controlId="formBasicEmail">
+                        <Form.Group controlId="formBasicGPA">
                             {isTeacher && 
                             <Form.Label>GPA</Form.Label>}
                             {isTeacher && <FormControl
@@ -208,6 +210,8 @@ class EditPersonalInfo extends Component{
                                 placeholder={GPA}
                                 type="number"
                                 name="GPA"
+                                min="2"
+                                max="6"
                             />}
                         </Form.Group>
 
@@ -236,6 +240,9 @@ class EditPersonalInfo extends Component{
                         </Form.Group>
 
                         <PasswordChangeLink />
+                        <div className="error-message">
+                            {error && <p>{error.message}</p>}
+                        </div>
                         <Button variant="primary" type="submit">
                             Submit
                         </Button>

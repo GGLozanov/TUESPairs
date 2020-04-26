@@ -4,16 +4,16 @@ import { Link } from 'react-router-dom';
 import SignOutButton from '../SignOut/signout.jsx';
 import * as ROUTES from '../../../constants/routes';
 import { AuthUserContext } from '../../Authentication';
-import PeopleIcon from '@material-ui/icons/People';
+import HomeIcon from '@material-ui/icons/Home';
 import ChatIcon from '@material-ui/icons/Chat';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.scss';
 import { Navbar, Nav } from 'react-bootstrap';
 
-const Navigation = ({ authUser }) => (
+const Navigation = () => (
       <AuthUserContext.Consumer>
-        {authUser =>
+        {authUser => 
           authUser ? <NavigationLogged /> : <NavigationNotLogged />
         }
       </AuthUserContext.Consumer>
@@ -26,7 +26,7 @@ const NavigationLogged = () => (
   </Navbar.Brand>
   <Navbar.Toggle aria-controls="responsive-navbar-nav" />
     <Navbar.Collapse id="responsive-navbar-nav">
-      <Nav variant="tabs" defaultActiveKey="list-2">
+      <Nav variant="tabs">
         <Nav.Item>
           <Nav.Link eventKey="list-3">
             <Link to={ROUTES.CHAT}>
@@ -37,7 +37,7 @@ const NavigationLogged = () => (
         <Nav.Item>
           <Nav.Link eventKey="list-2">
             <Link to={ROUTES.HOME}>
-              <PeopleIcon fontSize="default"></PeopleIcon>
+              <HomeIcon fontSize="default"></HomeIcon>
             </Link>
             </Nav.Link>
         </Nav.Item>

@@ -42,7 +42,7 @@ class PasswordChange extends Component {
                 <div className="form">
                 <form onSubmit={this.onSubmit}>
                     <button disabled={isInvalid} type="submit">
-                        Send email
+                        Send
                     </button>
                     {error && <p>{error.message}</p>}
                 </form>

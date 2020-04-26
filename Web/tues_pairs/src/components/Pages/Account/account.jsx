@@ -33,17 +33,7 @@ class UserProfile extends Component {
     
         this.unsubscribe = this.props.firebase.user(currentUser.uid).get()
         .then(snapshot => {
-            const firebaseUser = snapshot.data();
-
-            if(!firebaseUser.roles) {
-                firebaseUser.roles = {};
-            }
-
-            currentUser = {
-                uid: currentUser.uid,
-                email: currentUser.email,
-                ...firebaseUser,
-            };
+            const currentUser = this.props.firebase.currentUser(snapshot);
 
             this.setState({ photoURL: currentUser.photoURL, username: currentUser.username, loading: false });
         });

@@ -5,7 +5,7 @@ import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
-import { Button, Card, Row } from 'react-bootstrap';
+import { Button, Card, Row, Spinner } from 'react-bootstrap';
 import './style.scss'
 
 const HomePage = () => (
@@ -19,7 +19,7 @@ class UserList extends Component {
     this.state = {
       loading: false,
       users: [],
-      currentUser: null,
+      currentUser: this.props.authUser,
     };
   }
 
@@ -33,6 +33,7 @@ class UserList extends Component {
         matchedUserID: currentUser.matchedUserID
       }, {merge: true})
       .then(() => {
+        this.props.authUser.matchedUserID = currentUser.matchedUserID;
         this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE);
       })
       .catch(error => {
@@ -67,11 +68,14 @@ class UserList extends Component {
         );
         
         this.setState({
-          currentUser: this.props.authUser,
           users,
           loading: false,
         });
       });
+
+      if(this.state.currentUser.username == null) {
+        this.props.history.push(ROUTES.USER_INFO);
+      }
 
   }
 
@@ -80,22 +84,16 @@ class UserList extends Component {
 
     this.props.firebase.user(currentUser.uid).get()
       .then(snapshot => {
-          const firebaseUser = snapshot.data();
-
-          if(!firebaseUser.roles) {
-              firebaseUser.roles = {};
-          }
-
-          currentUser = {
-              uid: currentUser.uid,
-              email: currentUser.email,
-              ...firebaseUser,
-          };
+          const currentUser = this.props.firebase.currentUser(snapshot);
 
           this.setState({ currentUser, loading: false });
 
           if(currentUser.matchedUserID) {
             this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE)
+          }
+
+          if(currentUser.username == null) {
+            this.props.history.push(ROUTES.USER_INFO);
           }
       });
   }
@@ -117,7 +115,7 @@ class UserList extends Component {
       if(currentUser.isTeacher !== users[i].isTeacher && 
         !currentUser.skippedUserIDs.includes(users[i].uid) &&
         (users[i].matchedUserID === null || users[i].matchedUserID === currentUser.uid) &&
-        !users[i].skippedUserIDs.includes(currentUser)){
+        !users[i].skippedUserIDs.includes(currentUser.uid)){
         if(users[i].photoURL === null) {
           users[i].photoURL = "https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png";
         }
@@ -127,7 +125,10 @@ class UserList extends Component {
 
     return(
       <div className="match-page">
-        { loading && <div>Loading ...</div> }
+        { loading && 
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner> }
         
         <div className="user-cards">
             {mappedUsers.map(user => (

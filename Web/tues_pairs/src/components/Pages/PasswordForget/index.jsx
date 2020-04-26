@@ -7,6 +7,7 @@ import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 
 import './passwordforget.scss';
+import { Card, Form, FormControl, Button } from 'react-bootstrap';
 
 const PasswordForgetPage = () => (
     <PasswordForgetForm />
@@ -50,19 +51,46 @@ class PasswordForgetFormBase extends Component {
     const isInvalid = email === '';
     return (
       <div className="email-confirmation">
-        <div className="hedaer">
-          <h1>I forgot my password</h1>
-        </div>
-        <div className="form">
-          <form onSubmit={this.onSubmit}>
-            <input name="email" value={email} onChange={this.onChange} placeholder="Enter your email address"/>
-              <button disabled={isInvalid} type="submit">
-                Send email
-              </button>
-            {error && <p>{error.message}</p>}
-          </form>
-        </div>
-      </div>
+          <div className="password-card">
+            <Card bg="dark">
+              <Card.Img 
+                variant="top" 
+                src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/tues_pairs_lock.png?alt=media&token=9231df01-cb4c-4c8a-8ada-b8eaf7fdc040"            
+              />
+              <Card.Body>
+                <Card.Title>Trouble Logging In?</Card.Title>
+                <Card.Text>
+                  Enter your email and we'll send you a link to get back into your account.
+                </Card.Text>
+                <Form onSubmit={this.onSubmit} className="email-handler">
+                  <Form.Group controlId="formBasicEmail">
+                    <FormControl
+                        onChange={this.onChange}
+                        aria-describedby="basic-addon2"
+                        placeholder="Enter Your Email"
+                        name="email"
+                    />
+                  </Form.Group>
+                  <Button disabled={isInvalid} type="submit">
+                    Send Link To Email
+                  </Button>
+              </Form>
+              {error && <p>{error.message}</p>}
+              <div className="or-text">
+                <hr></hr>
+                  <p>OR</p>
+                <hr></hr>
+              </div>
+              <Link className="create-account" to={ROUTES.SIGN}>Create a new account</Link>
+              </Card.Body>
+            </Card>
+            <div className="back-link">
+              <Link to={ROUTES.SIGN}>
+                Back
+              </Link>
+            </div>
+          </div>
+      </div>      
     );
   }
 }
