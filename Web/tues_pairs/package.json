@@ -29,7 +29,8 @@
     "react-scrollable-feed": "^1.1.2",
     "react-select": "^3.0.8",
     "react-to-target-auto-scroll": "^1.0.5",
-    "recompose": "^0.30.0"
+    "recompose": "^0.30.0",
+    "rgb-hex": "^3.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
