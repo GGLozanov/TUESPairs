@@ -22,7 +22,7 @@ class AlreadyMatched extends Component {
         this.unsubscribe = this.props.firebase.user(currentUser.matchedUserID).get()
         .then(snapshot => {
             const matchedUser = this.props.firebase.currentUser(snapshot);
-
+            
             this.setState({ photoURL: matchedUser.photoURL, username: matchedUser.username, loading: false });
         });
     }   

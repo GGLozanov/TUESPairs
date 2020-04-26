@@ -46,6 +46,8 @@ const config = {
 
     users = () => this.db.collection(`users`);
 
+     messages = () => this.db.collection(`messages`);
+
     currentUser = snapshot => {
         const firebaseUser = snapshot.data();
     

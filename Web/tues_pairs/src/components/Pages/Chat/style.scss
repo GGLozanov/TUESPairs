@@ -1,0 +1,68 @@
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  width: 2.5px;
+}
+
+::-webkit-scrollbar-thumb {
+  width: 1em;
+  background-color: #ddd;
+  outline: 1px solid slategrey;
+  border-radius: 1rem;
+}
+
+.text-small {
+  font-size: 0.9rem;
+}
+
+.messages-box{
+  .chat-box {
+    height: 510px;
+    overflow-y: scroll;
+  }
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+input::placeholder {
+  font-size: 0.9rem;
+  color: #999;
+}
+
+.scrollable-wrapper {
+  height: 35rem;
+  width: 100%;
+}
+.chat-container {
+  margin: auto;
+}
+.container-reciever {
+  max-width: 50%;
+}
+.container-sender {
+  max-width: 44%;
+}
+.container-content-reciever {
+  text-align: right;
+}
+.bubble-container-reciever {
+  background-color: rgb(252, 152, 0);
+  color: white;
+}
+
+.bubble-container-sender {
+  background-color: rgb(34, 34, 43);
+  color: white;
+}
+
+.hint-container {
+  margin: 5%;
+  text-align: center;
+  p {
+    color: rgb(252, 152, 0);
+  }
+}
