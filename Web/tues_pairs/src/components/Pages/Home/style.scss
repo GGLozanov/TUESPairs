@@ -38,6 +38,20 @@
                     text-align: center;
                 }
     
+                .btn-group {
+                    margin: 1rem 0;
+                    button {
+                        margin: 3px;
+                        outline: none;
+                        border: none;
+                    
+                        &:focus {
+                            outline: none;
+                            border: none;
+                        }
+                    }
+                }
+
                 button {
                     margin-left: 20px;
                     margin-right: 20px;
@@ -90,6 +104,16 @@
 
             .profile-body {
                 
+                .tag-list {
+                    .btn-group {
+                        button {
+                            margin: 5px;
+                            outline: none;
+                            border: none;
+                        }
+                    }
+                }
+
                 .card-title {
                     text-align: center;
                 }

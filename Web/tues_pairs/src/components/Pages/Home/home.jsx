@@ -5,7 +5,7 @@ import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
-import { Button, Card, Row, Spinner } from 'react-bootstrap';
+import { Button, Card, Row, Spinner, ButtonGroup } from 'react-bootstrap';
 import './style.scss'
 
 const HomePage = () => (
@@ -60,22 +60,31 @@ class UserList extends Component {
     this.setState({ loading: true });
 
     this.unsubscribe = this.props.firebase.users()
-      .onSnapshot(snapshot => {
-        let users = [];
+    .onSnapshot(snapshot => {
+      let users = [];
 
-        snapshot.forEach(doc =>
-          users.push({ ...doc.data(), uid: doc.id }),
-        );
-        
-        this.setState({
-          users,
-          loading: false,
+      snapshot.forEach(doc => {
+        let tags = [];
+        doc.data().tagIDs.forEach(tag => {
+          if(tag) {
+            this.props.firebase.tag(tag).get()
+              .then(inforamtion => {
+                tags.push(inforamtion.data());
+              })
+          }
         });
+        users.push({ ...doc.data(), uid: doc.id, tags: tags });
       });
 
-      if(this.state.currentUser.username == null) {
-        this.props.history.push(ROUTES.USER_INFO);
-      }
+      this.setState({
+        users,
+        loading: false,
+      });
+    });
+
+    if(this.state.currentUser.username == null) {
+      this.props.history.push(ROUTES.USER_INFO);
+    }
 
   }
 
@@ -120,9 +129,12 @@ class UserList extends Component {
           users[i].photoURL = "https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png";
         }
         mappedUsers.push(users[i]);
+        console.log(users[i]);
       }
     }
+    
 
+    
     return(
       <div className="match-page">
         { loading && 
@@ -139,9 +151,21 @@ class UserList extends Component {
                       <Card.Title>{ user.username }</Card.Title>
                       {!isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
                       {isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
-                          <Card.Text>
-                              User description + tehcnologies he knows
-                          </Card.Text>
+                      <div className="tag-list">
+                            <ButtonGroup as={Row}>
+                                {user.tags.map(tag => {
+                                    if(tag) {  
+                                      return (
+                                      <Button value={tag.color} style={{backgroundColor: tag.color}} name={tag.tid} onClick={this.setChecked}>
+                                          {tag.name}
+                                      </Button>
+                                      )
+                                    } else {
+
+                                    }
+                                })}
+                            </ButtonGroup>
+                      </div>
                       <Button value={user.uid} onClick={this.onMatch} variant="dark">Match</Button>
                       <Button value={user.uid} onClick={this.onSkip} variant="dark">Skip</Button>
                   </Card.Body>
