@@ -52,12 +52,13 @@
           margin-bottom: 15px;
           transition: all 250ms ease-in-out;
           &:hover {
-            box-shadow: 0px 0px 14px 0.3px orange;
+            border: 1px solid rgb(252, 152, 0);
+            box-shadow: none;
           }
 
           &:focus {
-            outline: none;
-            box-shadow: 0px 0px 12px 0.8px orange;
+            border: 1px solid rgb(252, 152, 0);
+            box-shadow: none;
           }
         }
       }
@@ -88,9 +89,8 @@
         color: white;
 
         &:focus {
-            outline: none;
-            box-shadow: 0px 0px 12px 0.8px orange;
-            border-color: black;
+            border: 1px solid rgb(252, 152, 0);
+            box-shadow: none;
         }
       }
     }

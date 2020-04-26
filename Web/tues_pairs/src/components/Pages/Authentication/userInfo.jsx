@@ -54,8 +54,7 @@ class UserInfo extends Component {
         const {username, isTeacher, GPA, error } = this.state;
 
         const isInvalid = 
-            username === '' ||
-            GPA >= 6 || GPA <= 2; 
+            username === '';
 
         return (
             <div className="register-page">

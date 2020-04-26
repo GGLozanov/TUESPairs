@@ -94,15 +94,16 @@
                     color: white;
                 }
                 
+                .input-group {
+                    width: 50%;
+                }
                 input {
                     background-color: rgb(58, 64, 78);
-                    width: 50%;
                     color: white;
 
                     &:focus {
-                        outline: none;
-                        box-shadow: 0px 0px 12px 0.8px orange;
-                        border-color: black;
+                        border: 1px solid rgb(252, 152, 0);
+                        box-shadow: none;
                     }
                 }
             }

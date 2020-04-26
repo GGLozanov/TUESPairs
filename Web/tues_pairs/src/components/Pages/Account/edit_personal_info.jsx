@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormControl, Button, Col, Image, Form, Row, Alert, Spinner } from 'react-bootstrap';
+import { FormControl, Button, Col, Image, Form, Row, Alert, Spinner, InputGroup } from 'react-bootstrap';
 import { withCurrentUser } from '../../Authentication/context';
 import { compose } from 'recompose';
 import { withFirebase } from '../../Firebase';
@@ -186,13 +186,18 @@ class EditPersonalInfo extends Component{
                     <Form className="profile-info" onSubmit={this.onSubmit}>
                         <Form.Group controlId="formBasicPassword">
                             <Form.Label>Username</Form.Label>
-                            <FormControl
-                                onChange={this.onChange}
-                                aria-label="Recipient's username"
-                                aria-describedby="basic-addon2"
-                                placeholder={username}
-                                name="username"
-                            />
+                            <InputGroup>
+                                <FormControl
+                                    onChange={this.onChange}
+                                    aria-label="Recipient's username"
+                                    aria-describedby="basic-addon2"
+                                    placeholder={username}
+                                    name="username"
+                                />
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="inputGroupPrepend">{username}</InputGroup.Text>
+                                </InputGroup.Prepend>
+                            </InputGroup>
                         </Form.Group>
 
                         <Form.Group controlId="formBasicGPA">
