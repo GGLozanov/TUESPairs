@@ -20,7 +20,7 @@ import '../authlistener.dart';
 
 class Login extends StatefulWidget {
   final Function toggleView;
-  static bool isExternalCreated = false;
+  static bool isExternalCreated = false; // check if the user has successfully created an external account (used for authlistener)
 
   Login({this.toggleView});
 
@@ -33,8 +33,15 @@ class _LoginState extends State<Login> {
   final BaseAuth baseAuth = new BaseAuth();
   final GlobalKey _scaffold = GlobalKey();
 
-  Future<bool> doesUserExist(User authUser) async {
-    return await Database(uid: authUser.uid).getUserById() == null ? false : true;
+
+  void _configureExternalSignIn(User authUser, List<Tag> tags, List<User> users) {
+    baseAuth.user = authUser;
+    baseAuth.user.isTeacher = false;
+    baseAuth.user.tagIDs = <String>[];
+    AuthListener.externRegister.baseAuth = baseAuth;
+    AuthListener.externRegister.tags = tags;
+    AuthListener.externRegister.users = users;
+    Login.isExternalCreated = true;
   }
 
   Future<void> _handleExternalSignIn(BuildContext context,
@@ -45,7 +52,9 @@ class _LoginState extends State<Login> {
       case ExternalSignInType.FACEBOOK:
         // handle faceboook sign-in w/ auth here...
         try {
-          // baseAuth.authInstance.loginWithFacebook().then((authUser) async => await _handleFirestoreInfoInput(context, authUser));
+          baseAuth.authInstance.loginWithFacebook().then((authUser) {
+            _configureExternalSignIn(authUser, tags, users);
+          });
         } catch(e) {
           logger.w('Login: User has cancelled/failed Facebook Sign-In. Rerendering login page');
         }
@@ -61,13 +70,7 @@ class _LoginState extends State<Login> {
        // TODO: Handle incorrect user entry exceptions; setState(() => {}) ?
         try {
           baseAuth.authInstance.signInWithGoogle().then((authUser) {
-            baseAuth.user = authUser;
-            baseAuth.user.isTeacher = false;
-            baseAuth.user.tagIDs = <String>[];
-            AuthListener.externRegister.baseAuth = baseAuth;
-            AuthListener.externRegister.tags = tags;
-            AuthListener.externRegister.users = users;
-            Login.isExternalCreated = true;
+            _configureExternalSignIn(authUser, tags, users);
           });
         } catch(e) {
           logger.w('Login: User has cancelled/failed Google Sign-In. Rerendering login page');
@@ -190,7 +193,7 @@ class _LoginState extends State<Login> {
                       SizedBox(height: 15.0),
                       SignInButton(
                         Buttons.Google,
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),

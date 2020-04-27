@@ -47,13 +47,16 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final users = database.users;
+    final tags = database.tags;
+
     return MultiProvider(
       providers: [
         StreamProvider<List<User>>.value(
-          value: database.users,
+          value: users,
         ),
         StreamProvider<List<Tag>>.value(
-          value: database.tags,
+          value: tags,
         )
       ],
       child: Scaffold(

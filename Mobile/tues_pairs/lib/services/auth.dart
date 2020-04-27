@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
-// import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
@@ -10,7 +10,7 @@ class Auth {
 
   FirebaseAuth _auth = FirebaseAuth.instance; // property to receive a default FirebaseAuth instance
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  // final FacebookLogin facebookLogin = FacebookLogin();
+  final FacebookLogin facebookLogin = FacebookLogin();
 
   // auth changes are listened by streams which are a generic class returning an instance of the stream of what we want
   // streams send their data one by one, allowing for listening in changes
@@ -45,6 +45,7 @@ class Auth {
           switch(userInfo.providerId) {
             case 'google.com':
             case 'facebook.com':
+            case 'github.com':
               isExternPlatform = true;
               break;
             default: break;
@@ -140,11 +141,11 @@ class Auth {
 
   }
   
-  /* Future loginWithFacebook() async {
+  Future loginWithFacebook() async {
     facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly; // set to only the webView UI
 
     final FacebookLoginResult facebookLoginResult =
-      await facebookLogin.logIn(<String>['public_profile']);
+      await facebookLogin.logIn(<String>['email', 'public_profile']);
 
     if(facebookLoginResult.accessToken != null) {
       final authResult = await _auth.signInWithCredential(
@@ -160,7 +161,7 @@ class Auth {
         code: 'ERROR_FACEBOOK_CANCELLED_BY_USER', message: 'User has cancelled Facebook sign-in; revert to login UI'
       );
     }
-  } */
+  }
   
   // -----------------------
 

@@ -12,7 +12,7 @@ class ExternRegister extends StatelessWidget {
   List<User> users;
   List<Tag> tags;
   BaseAuth baseAuth;
-  Function callback;
+  Function callback; // callback passed down all the way to register_form that calls AuthListener rerender
 
   ExternRegister({this.users, this.tags, this.baseAuth, this.callback});
 

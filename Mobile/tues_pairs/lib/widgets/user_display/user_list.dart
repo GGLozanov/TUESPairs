@@ -29,8 +29,8 @@ class _UserListState extends State<UserList> {
 
   NetworkImage currentUserImage;
 
-  List<User> users = <User>[];
-  List<NetworkImage> images;
+  List<User> users;
+  List<NetworkImage> images = <NetworkImage>[];
   List<List<TagCard>> tagCards;
   List<UserCard> userCards;
 
@@ -196,10 +196,12 @@ class _UserListState extends State<UserList> {
     // access StreamProvider of QuerySnapshots info here
     final currentUser = Provider.of<User>(context);
     final tags = Provider.of<List<Tag>>(context);
-    bool isFirstBuild = users.isEmpty;
+    users = Provider.of<List<User>>(context) ?? [];
+    bool isFirstBuild = images.isEmpty;
+
+    print('Users: ${users.toString()}');
 
     if (isFirstBuild) { // if list is just initialized (first build run)
-      users = Provider.of<List<User>>(context) ?? [];
       userCards = <UserCard>[];
 
       userList = AnimatedList( // list of users widget
@@ -232,6 +234,7 @@ class _UserListState extends State<UserList> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             tagCards = snapshot.data;
+
             // -------------------
             // users
             loadListItems(currentUser, users);

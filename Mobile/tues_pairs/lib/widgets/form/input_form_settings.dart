@@ -38,8 +38,18 @@ class InputFormSettingsState extends State<InputFormSettings> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              UsernameInputField(onChanged: (value) => setState(() => currentUser.username = value), initialValue: currentUser.username),
-              EmailInputField(onChanged: (value) => setState(() => currentUser.email = value), initialValue: currentUser.email),
+              currentUser.username != '' &&
+                  currentUser.username != null ?
+                UsernameInputField(
+                    onChanged: (value) => setState(() => currentUser.username = value),
+                    initialValue: currentUser.username
+                ) : SizedBox(),
+              currentUser.email != '' &&
+                  currentUser.email != null ?
+                EmailInputField(
+                    onChanged: (value) => setState(() => currentUser.email = value),
+                    initialValue: currentUser.email
+                ) : SizedBox(),
               currentUser.isTeacher ? SizedBox() : GPAInputField(onChanged: (value) => setState(() => currentUser.GPA = double.tryParse(value)),
                   initialValue: currentUser.GPA.toString()),
             ],
