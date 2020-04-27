@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tues_pairs/modules/tag.dart';
-import 'package:tues_pairs/screens/register/register.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
@@ -40,7 +38,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
   }
 
   void switchToNextPage(int pageidx) {
-    setState(() => Register.currentPage = pageidx);
+    setState(() => StackPageHandler.currentPage = pageidx);
   }
 
   @override
@@ -53,11 +51,10 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
     _controller.forward();
   }
 
-
   @override
   void deactivate() {
     super.deactivate();
-    Register.currentPage = Register.topPageIndex; // reset page back to settings page if user leaves
+    StackPageHandler.currentPage = StackPageHandler.topPageIndex; // reset page back to settings page if user leaves
   }
 
   @override
@@ -74,10 +71,10 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
         Provider<ImageService>.value(value: imageService),
       ],
       child: IndexedStack(
-        index: Register.currentPage, // always 0 at the start of any new widget (duh)
+        index: StackPageHandler.currentPage, // always 0 at the start of any new widget (duh)
         children: <Widget>[
           TagSelection.settings(
-            switchPage: () => switchToNextPage(Register.topPageIndex),
+            switchPage: () => switchToNextPage(StackPageHandler.topPageIndex),
             animationController: _controller,
           ),
           Container(

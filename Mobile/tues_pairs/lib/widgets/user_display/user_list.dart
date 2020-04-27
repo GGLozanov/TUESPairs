@@ -54,14 +54,14 @@ class _UserListState extends State<UserList> {
     return images;
   }
 
-  Future<List<List<TagCard>>> getUserTags(User currentUser) async {
+  Future<List<List<TagCard>>> getUserTags(List<Tag> tags, User currentUser) async {
     List<List<Tag>> userTags = new List<List<Tag>>(users.length);
 
     for (int useridx = 0; useridx < users.length; useridx++) {
       userTags[useridx] = <Tag>[];
       if (isUserRenderableForCurrent(currentUser, users[useridx])) {
-        for (var tag in users[useridx].tagIDs) {
-          userTags[useridx].add(await database.getTagByID(tag));
+        for (var tid in users[useridx].tagIDs) {
+          userTags[useridx].add(tags.firstWhere((tag) => tag.tid == tid));
         }
         // get the Tag instance for each tag ID
       }
@@ -195,6 +195,7 @@ class _UserListState extends State<UserList> {
   Widget build(BuildContext context) {
     // access StreamProvider of QuerySnapshots info here
     final currentUser = Provider.of<User>(context);
+    final tags = Provider.of<List<Tag>>(context);
     bool isFirstBuild = users.isEmpty;
 
     if (isFirstBuild) { // if list is just initialized (first build run)
@@ -206,7 +207,7 @@ class _UserListState extends State<UserList> {
         key: _animatedListKey,
         initialItemCount: userCards.length,
         // ignore: missing_return
-        itemBuilder: (context, index, animation) {
+        itemBuilder: (context, index, animation) { // context & index of whichever item we're iterating through
           // TODO: get array of skipped users from database (user instance probably won't hold it) through FutureBuilder again maybe -> done
           // TODO: then use contains method to check rendering in if statement -> done
           // TODO: User NEVER enters this state if they have matchedUserID != null; do that check in match.dart -> done
@@ -227,7 +228,7 @@ class _UserListState extends State<UserList> {
       );
 
       return FutureBuilder<List<List<TagCard>>>(
-        future: getUserTags(currentUser),
+        future: getUserTags(tags, currentUser),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             tagCards = snapshot.data;
@@ -244,7 +245,7 @@ class _UserListState extends State<UserList> {
             return userList;
           } else return Loading();
         }
-      ); // context & index of whichever item we're iterating through
+      );
     } // get the info from the stream
 
     return userList;

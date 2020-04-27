@@ -12,18 +12,22 @@ class TagCard extends StatefulWidget {
   final Key key;
   final Tag tag;
   final int listIndex;
+  User user;
+  final unchosenColor = darkGreyColor; // TODO: export into constants -> done
 
   bool isChosen;
   bool isViewTag = false;
-
-  final unchosenColor = darkGreyColor; // TODO: export into constants -> done
 
   double tagHeight;
   double tagWidth;
 
   Function onTap;
 
-  TagCard.selection({this.key, @required this.tag, this.listIndex}) :
+  TagCard.selection({
+    this.key,
+    @required this.tag,
+    this.listIndex,
+    this.user}) :
         assert(tag != null), super(key: key) {
 
     isChosen = false;
@@ -36,7 +40,11 @@ class TagCard extends StatefulWidget {
     };
   }
 
-  TagCard.alreadyChosenSelection({this.key, @required this.tag, this.listIndex}) :
+  TagCard.alreadyChosenSelection({
+    this.key,
+    @required this.tag,
+    this.listIndex,
+    this.user}) :
         assert(tag != null), super(key: key) {
 
     isChosen = true;
@@ -49,7 +57,11 @@ class TagCard extends StatefulWidget {
     };
   }
 
-  TagCard.view({this.key, @required this.tag, this.listIndex}) :
+  TagCard.view({
+    this.key,
+    @required this.tag,
+    this.listIndex,
+    this.user}) :
         assert(tag != null), super(key: key) {
 
     isChosen = true;
@@ -69,7 +81,7 @@ class _TagCardState extends State<TagCard> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
+    if(widget.user == null) widget.user = Provider.of<User>(context);
 
     // TODO: For future reference, UI errors with tags can be caused due to fontsize (decrease)
     final tagName = Text(
@@ -81,7 +93,7 @@ class _TagCardState extends State<TagCard> {
       ),
     );
 
-    if(user.tagIDs.contains(widget.tag.tid)) widget.isChosen = true;
+    if(widget.user.tagIDs.contains(widget.tag.tid)) widget.isChosen = true;
 
     return Container(
       height: widget.tagHeight,
@@ -98,7 +110,7 @@ class _TagCardState extends State<TagCard> {
               ),
               title: widget.isViewTag ? SizedBox() : tagName,
               onTap: () {
-                widget.onTap(user);
+                widget.onTap(widget.user);
                 setState(() => {});
                 // re-render because onTap(); there are some useless re-renders with this but oh well
               }

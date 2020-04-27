@@ -33,6 +33,7 @@ class Keys {
   static const String registerButton = 'registerButton';
   static const String nextButton = 'nextButton';
   static const String backButton = 'backButton';
+  static const String externBackButton = 'externBackButton';
   static const String chooseTagsButton = 'chooseTagsButton';
   static const String registerUsernameInputField = 'registerUsernameInputField';
   static const String registerEmailInputField = 'registerEmailInputField';

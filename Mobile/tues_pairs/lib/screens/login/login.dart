@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:provider/provider.dart';
+import 'package:tues_pairs/modules/tag.dart';
+import 'package:tues_pairs/services/database.dart';
+import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
@@ -7,11 +12,15 @@ import 'package:tues_pairs/widgets/form/input_button.dart';
 import 'package:tues_pairs/widgets/form/email_input_field.dart';
 import 'package:tues_pairs/widgets/form/password_input_field.dart';
 import 'package:tues_pairs/shared/constants.dart';
+import 'package:tues_pairs/widgets/register/register_form.dart';
+import 'package:tues_pairs/widgets/register/register_wrapper.dart';
 
 import '../../templates/baseauth.dart';
+import '../authlistener.dart';
 
 class Login extends StatefulWidget {
   final Function toggleView;
+  static bool isExternalCreated = false;
 
   Login({this.toggleView});
 
@@ -22,13 +31,61 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   final BaseAuth baseAuth = new BaseAuth();
+  final GlobalKey _scaffold = GlobalKey();
+
+  Future<bool> doesUserExist(User authUser) async {
+    return await Database(uid: authUser.uid).getUserById() == null ? false : true;
+  }
+
+  Future<void> _handleExternalSignIn(BuildContext context,
+      List<User> users, List<Tag> tags,
+      {ExternalSignInType signInType = ExternalSignInType.GOOGLE}) async {
+
+    switch(signInType) {
+      case ExternalSignInType.FACEBOOK:
+        // handle faceboook sign-in w/ auth here...
+        try {
+          // baseAuth.authInstance.loginWithFacebook().then((authUser) async => await _handleFirestoreInfoInput(context, authUser));
+        } catch(e) {
+          logger.w('Login: User has cancelled/failed Facebook Sign-In. Rerendering login page');
+        }
+        break;
+      case ExternalSignInType.GITHUB:
+        // handle github sign-in w/ auth here...
+        // baseAuth.authInstance.signInWithGitHub();
+        break;
+      case ExternalSignInType.GOOGLE:
+      default:
+        // handle Google sign-in w/ auth here...
+        // check if user is already registered (return value of signin method)
+       // TODO: Handle incorrect user entry exceptions; setState(() => {}) ?
+        try {
+          baseAuth.authInstance.signInWithGoogle().then((authUser) {
+            baseAuth.user = authUser;
+            baseAuth.user.isTeacher = false;
+            baseAuth.user.tagIDs = <String>[];
+            AuthListener.externRegister.baseAuth = baseAuth;
+            AuthListener.externRegister.tags = tags;
+            AuthListener.externRegister.users = users;
+            Login.isExternalCreated = true;
+          });
+        } catch(e) {
+          logger.w('Login: User has cancelled/failed Google Sign-In. Rerendering login page');
+        }
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    final users = Provider.of<List<User>>(context);
+    final tags = Provider.of<List<Tag>>(context);
+
     return baseAuth.isLoading ? Loading() : Scaffold(
-      key: Key(Keys.loginScaffold),
+      key: _scaffold,
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(33, 36, 44, 1),
+        backgroundColor: darkGreyColor,
         title: Text(
           'Login',
           style: TextStyle(
@@ -63,15 +120,15 @@ class _LoginState extends State<Login> {
       // TODO: Animate this segment w/implicit animations
 
       body: Container(
-        color: Color.fromRGBO(59, 64, 78, 1),
+        color: greyColor,
         child: Form(
           key: baseAuth.key,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0), // Padding accessed by EdgeInsets
+            padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 25.0), // Padding accessed by EdgeInsets
             child: Column(
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 0.0),
+                  padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                   child: Text(
                     'Welcome to TUESPairs',
                     style: TextStyle(
@@ -115,6 +172,40 @@ class _LoginState extends State<Login> {
                       } else logger.i('Login: User w/ id "' + user.uid + '" has successfully logged in');
                     }
                   },
+                ),
+                SizedBox(height: 25.0),
+                Divider(height: 15.0, thickness: 10.0),
+                SizedBox(height: 25.0),
+                Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      SignInButton(
+                        Buttons.Facebook,
+                        padding: EdgeInsets.symmetric(vertical: 15.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext, users, tags, signInType: ExternalSignInType.FACEBOOK),
+                      ),
+                      SizedBox(height: 15.0),
+                      SignInButton(
+                        Buttons.Google,
+                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext, users, tags),
+                      ),
+                      SizedBox(height: 15.0),
+                      SignInButton(
+                        Buttons.GitHub,
+                        padding: EdgeInsets.symmetric(vertical: 15.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext, users, tags, signInType: ExternalSignInType.GITHUB),
+                      ),
+                    ]
                 ),
                 SizedBox(height: 15.0),
                 Column(

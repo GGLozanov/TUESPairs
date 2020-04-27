@@ -20,7 +20,7 @@ class _AuthenticateState extends State<Authenticate> { // state
 
   bool isLoginView = true;
   void toggleView() {
-    Register.currentPage = Register.topPageIndex;
+    StackPageHandler.currentPage = StackPageHandler.topPageIndex;
     setState(() => isLoginView = !isLoginView); // setState() method reruns the build method and the function it's been given
     logger.i('Authenticate: Switched to ' + (isLoginView ? 'Login' : 'Register') + ' screen.');
   }
@@ -29,19 +29,19 @@ class _AuthenticateState extends State<Authenticate> { // state
 
   @override
   Widget build(BuildContext context) {
-
     final tags = database.tags;
+    final users = database.users;
 
-    return isLoginView ? Login(toggleView: toggleView) : MultiProvider(
+    return MultiProvider(
       providers: [
         StreamProvider<List<User>>.value(
-          value: database.users,
-         ),
-         StreamProvider<List<Tag>>.value(
-           value: tags,
-         ),
-        ],
-       child: Register(toggleView: toggleView),
+          value: users,
+        ),
+        StreamProvider<List<Tag>>.value(
+          value: tags,
+        ),
+      ],
+      child: isLoginView ? Login(toggleView: toggleView) : Register(toggleView: toggleView),
     );
     // give the toggleView function to the Register and Login widgets for usage in their own contexts
   }

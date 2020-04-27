@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/screens/register/register.dart';
+import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/shared/keys.dart';
@@ -18,8 +19,130 @@ class RegisterForm extends StatefulWidget {
 
   final Function switchPage;
   final AnimationController animationController;
+  Function callback;
 
-  RegisterForm({@required this.switchPage, this.animationController}) : assert(switchPage != null);
+  bool isExternalAuth = false;
+
+  Function formIsValid;
+  Function usernameExists = (BaseAuth baseAuth, List<User> users) {
+    for(User data in users ?? []) {
+      if(baseAuth.user.username == data.username) {
+        logger.i('Register: username already exists');
+        return true;
+      }
+    }
+    logger.i('Register: username doesn\'t exist');
+    return false;
+  };
+  Function registerUser;
+
+  RegisterForm({@required this.switchPage, this.animationController}) : assert(switchPage != null) {
+
+    formIsValid = (BaseAuth baseAuth, List<User> users) {
+      final FormState formState = baseAuth.key.currentState;
+      bool isValid = true;
+
+      baseAuth.errorMessages = [''];
+      if(!formState.validate()) {
+        isValid = false;
+        logger.w('Register: User is invalid (incorrect data entered)');
+        baseAuth.errorMessages.add('Please enter correct data');
+      }
+      if(usernameExists(baseAuth, users)) {
+        isValid = false;
+        logger.w('Register: User is invalid (username already exists)');
+        baseAuth.errorMessages.add('Username exists');
+      }
+      if(baseAuth.password != baseAuth.confirmPassword) {
+        isValid = false;
+        logger.w('Register: User is invalid (passwords do not match)');
+        baseAuth.errorMessages.add('Passwords do not match');
+      }
+
+      logger.i('Register: User is valid');
+      return isValid;
+    };
+
+    registerUser = (BaseAuth baseAuth,
+        ImageService imageService, List<User> users) async {
+      final User registeredUser = baseAuth.user;
+
+      if(formIsValid(baseAuth, users)) {
+        final FormState formState = baseAuth.key.currentState;
+        formState.save();
+
+        switchPage(isLoading: true);
+
+        // TODO: narrow these final settings of values down in function
+        if(registeredUser.isTeacher) registeredUser.GPA = null;
+
+        if(imageService != null && imageService.profileImage != null) {
+          registeredUser.photoURL = await imageService.uploadImage();
+        }
+
+        User user = await baseAuth.authInstance.registerUserByEmailAndPassword(registeredUser, baseAuth.password);
+
+        if(user == null) {
+          logger.w('Register: User hasn\'t been registered (failed)');
+          return null;
+        }
+      } else {
+        switchPage();
+      }
+    };
+  }
+
+  RegisterForm.externalSignIn({
+    @required this.switchPage,
+    this.animationController,
+    @required this.callback}) :
+  assert(switchPage != null) {
+    isExternalAuth = true;
+
+    formIsValid = (BaseAuth baseAuth, List<User> users) {
+      final FormState formState = baseAuth.key.currentState;
+      bool isValid = true;
+
+      baseAuth.errorMessages = [''];
+      if(!formState.validate()) {
+        isValid = false;
+        logger.w('Register: User is invalid (incorrect data entered)');
+        baseAuth.errorMessages.add('Please enter correct data');
+      }
+      if(usernameExists(baseAuth, users)) {
+        isValid = false;
+        logger.w('Register: User is invalid (username already exists)');
+        baseAuth.errorMessages.add('Username exists');
+      }
+
+      logger.i('Register: User is valid');
+      return isValid;
+    };
+
+    registerUser = (BaseAuth baseAuth,
+        ImageService imageService, List<User> users) async {
+      final User registeredUser = baseAuth.user;
+
+      if(formIsValid(baseAuth, users)) {
+        final FormState formState = baseAuth.key.currentState;
+        formState.save();
+
+        switchPage(isLoading: true);
+
+        // TODO: narrow these final settings of values down in function
+        if(registeredUser.isTeacher) registeredUser.GPA = null;
+
+        if(baseAuth.user.photoURL == null && imageService != null && imageService.profileImage != null) {
+          registeredUser.photoURL = await imageService.uploadImage();
+        } // TODO: Potential bug here if user continues with default image?
+
+        await Database(uid: registeredUser.uid).updateUserData(registeredUser); // update external auth user DB
+        callback();
+      } else {
+        switchPage();
+      }
+    };
+  }
 
   @override
   _RegisterFormState createState() => _RegisterFormState();
@@ -29,7 +152,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
   void triggerAnimation() {
     // switch to next page index here
-    Register.currentPage = 0;
+    StackPageHandler.currentPage = 0;
   }
 
   void switchToNextPage() {
@@ -44,72 +167,24 @@ class _RegisterFormState extends State<RegisterForm> {
     final baseAuth = Provider.of<BaseAuth>(context);
     final imageService = Provider.of<ImageService>(context);
 
-    bool usernameExists() {
-      for(User data in users ?? []) {
-        if(baseAuth.user.username == data.username) {
-          logger.i('Register: username already exists');
-          return true;
-        }
-      }
-      logger.i('Register: username doesn\'t exist');
-      return false;
-    }
-
-    bool formIsValid() {
-      final FormState formState = baseAuth.key.currentState;
-      bool isValid = true;
-
-      baseAuth.errorMessages = [''];
-      if(!formState.validate()) {
-        isValid = false;
-        logger.w('Register: User is invalid (incorrect data entered)');
-        baseAuth.errorMessages.add('Please enter correct data');
-      }
-      if(usernameExists()) {
-        isValid = false;
-        logger.w('Register: User is invalid (username already exists)');
-        baseAuth.errorMessages.add('Username exists');
-      }
-      if(baseAuth.password != baseAuth.confirmPassword) {
-        isValid = false;
-        logger.w('Register: User is invalid (passwords do not match)');
-        baseAuth.errorMessages.add('Passwords do not match');
-      }
-
-      logger.i('Register: User is valid');
-      return isValid;
-    }
-
-    Future registerUser() async {
-      final User registeredUser = baseAuth.user;
-
-      if(formIsValid()) {
-        final FormState formState = baseAuth.key.currentState;
-        formState.save();
-
-        widget.switchPage(isLoading: true);
-
-        // TODO: narrow these final settings of values down in function
-        if(registeredUser.isTeacher) registeredUser.GPA = null;
-
-        if(imageService != null && imageService.profileImage != null) {
-          registeredUser.photoURL = await imageService.uploadImage();
-        }
-
-        User user = await baseAuth.authInstance.registerUserByEmailAndPassword(registeredUser, baseAuth.password);
-
-        if(user == null) {
-          logger.w('Register: User hasn\'t been registered (failed)');
-          setState(() {
-            baseAuth.errorMessages = [''];
-            baseAuth.errorMessages.add('There was an error. Please try again.');
-            baseAuth.toggleLoading();
-          });
-        }
-      } else {
-        widget.switchPage();
-      }
-    }
+    final baseAuthInputFields = Column(
+      children: <Widget>[
+        EmailInputField(
+          key: Key(Keys.registerEmailInputField),
+          onChanged: (value) => setState(() {baseAuth.user.email = value;}),
+        ),
+        SizedBox(height: 15.0),
+        PasswordInputField(
+        key: Key(Keys.registerPasswordInputField),
+        onChanged: (value) => setState(() {baseAuth.password = value;}),
+        ),
+        SizedBox(height: 15.0),
+        ConfirmPasswordInputField(
+        key: Key(Keys.registerConfirmPasswordInputField),
+        onChanged: (value) => setState(() {baseAuth.confirmPassword = value;}),
+        ),
+      ],
+    );
 
     final registerForm = Container( // Container grants access to basic layout principles and properties
       color: greyColor,
@@ -123,8 +198,15 @@ class _RegisterFormState extends State<RegisterForm> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Provider<ImageService>.value(
-                      value: imageService,
+                    MultiProvider(
+                      providers: [
+                        Provider<ImageService>.value(
+                          value: imageService,
+                        ),
+                        Provider<User>.value(
+                          value: baseAuth.user,
+                        ),
+                      ],
                       child: AvatarWrapper(),
                     ),
                     Column(
@@ -145,20 +227,8 @@ class _RegisterFormState extends State<RegisterForm> {
                 onChanged: (value) => setState(() {baseAuth.user.username = value;}),
               ),
               SizedBox(height: 15.0),
-              EmailInputField(
-                key: Key(Keys.registerEmailInputField),
-                onChanged: (value) => setState(() {baseAuth.user.email = value;}),
-              ),
-              SizedBox(height: 15.0),
-              PasswordInputField(
-                key: Key(Keys.registerPasswordInputField),
-                onChanged: (value) => setState(() {baseAuth.password = value;}),
-              ),
-              SizedBox(height: 15.0),
-              ConfirmPasswordInputField(
-                key: Key(Keys.registerConfirmPasswordInputField),
-                onChanged: (value) => setState(() {baseAuth.confirmPassword = value;}),
-              ),
+              widget.isExternalAuth ? SizedBox() :
+                baseAuthInputFields,
               SizedBox(height: 15.0),
               baseAuth.user.isTeacher ? SizedBox() : GPAInputField(
                 key: Key(Keys.registerGPAInputField),
@@ -200,10 +270,30 @@ class _RegisterFormState extends State<RegisterForm> {
                 key: Key(Keys.registerButton),
                 minWidth: 250.0,
                 height: 60.0,
-                text: 'Create account',
-                onPressed: registerUser,
+                text: widget.isExternalAuth ? 'Finish Account' : 'Create account',
+                onPressed: () async {
+                  var result = await widget.registerUser(baseAuth, imageService, users);
+                  if(result == null && !widget.isExternalAuth) {
+                    setState(() {
+                      baseAuth.errorMessages = [''];
+                      baseAuth.errorMessages.add('There was an error. Please try again.');
+                      baseAuth.toggleLoading();
+                    });
+                  }
+                },
                 color: Colors.deepOrange[500],
               ),
+              SizedBox(height: 35.0),
+              widget.isExternalAuth ? InputButton(
+                key: Key(Keys.externBackButton),
+                minWidth: 300.0,
+                height: 60.0,
+                text: 'Back',
+                onPressed: () {
+                  baseAuth.authInstance.deleteCurrentFirebaseUser();
+                  widget.switchPage();
+                },
+              ) : SizedBox(),
             ],
           ),
         ),
@@ -217,7 +307,7 @@ class _RegisterFormState extends State<RegisterForm> {
           animation: widget.animationController,
           child: registerForm,
           builder: (context, child) => Transform.translate(
-            offset: Offset(Register.currentPage == Register.topPageIndex
+            offset: Offset(StackPageHandler.currentPage == StackPageHandler.topPageIndex
                 ? 0.0 : widget.animationController.value * -345.0, 0.0),
             child: child,
           ),
