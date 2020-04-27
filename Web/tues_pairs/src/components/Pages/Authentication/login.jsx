@@ -44,7 +44,8 @@ class SignInFormBase extends Component {
             GPA: null,
             photoURL: result.user.photoURL,
             matchedUserID: null,
-            skippedUserIDs: []
+            skippedUserIDs: [],
+            tagIDs: [],
           })
           .then(() => this.props.history.push(ROUTES.USER_INFO));
         }

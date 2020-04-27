@@ -39,7 +39,8 @@ class SignUpFormBase extends Component {
                         GPA: null,
                         photoURL: null,
                         matchedUserID: null,
-                        skippedUserIDs: []
+                        skippedUserIDs: [],
+                        tagIDs: [],
                     });
                 })
             })

@@ -93,6 +93,7 @@ class UserList extends Component {
   componentDidUpdate() {
     let currentUser = this.props.authUser;
 
+    if(currentUser.uid) {
     this.props.firebase.user(currentUser.uid).get()
       .then(snapshot => {
           const currentUser = this.props.firebase.currentUser(snapshot);
@@ -107,6 +108,7 @@ class UserList extends Component {
             this.props.history.push(ROUTES.USER_INFO);
           }
       });
+    }
   }
 
   componentWillUnmount() {
