@@ -33,7 +33,7 @@ class InputButton extends StatelessWidget {
         textColor: Colors.white,
         color: color,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-        onPressed: () => onPressed(),
+        onPressed: onPressed,
       ),
     );
   }

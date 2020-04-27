@@ -19,6 +19,12 @@ class AuthListener extends StatefulWidget {
 
   static ExternRegister externRegister = ExternRegister();
 
+  AuthListener.callback({ExternRegister externRegister}) {
+    AuthListener.externRegister = externRegister;
+  }
+
+  AuthListener();
+
   @override
   _AuthListenerState createState() => _AuthListenerState();
 }

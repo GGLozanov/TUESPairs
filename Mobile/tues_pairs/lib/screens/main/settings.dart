@@ -197,7 +197,6 @@ class _SettingsState extends State<Settings> {
                           await auth.deleteCurrentFirebaseUser();
                           await ImageService().deleteImage(currentUser.photoURL);
                           await database.deleteUser();
-                          await auth.logout();
                           logger.i('Settings: User w/ id "' +
                               currentUser.uid +
                               '" has been deleted.');

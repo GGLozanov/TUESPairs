@@ -125,7 +125,7 @@ class _UserListState extends State<UserList> {
     return UserCard(
       key: Key(Keys.matchUserCard + userIndex.toString()),
       user: user,
-      userImage: images[userIndex],
+      userImage: images[userIndex] ?? [],
       tagCards: tagCards[userIndex] ?? [],
       onMatch: () async {
         if (currentUser.matchedUserID == null) {
@@ -149,6 +149,7 @@ class _UserListState extends State<UserList> {
         await _removeUserFromList(user, currentUser);
       },
       listIndex: initialListIndex, // idx of element in the filtered list
+      currentUser: currentUser,
     );
   }
 
@@ -176,7 +177,7 @@ class _UserListState extends State<UserList> {
             ); // add card item here
             try {
               _animatedListKey.currentState.insertItem(
-                  lastItemIndex - 1
+                  lastItemIndex,
               ); // insert the latest item here
             } catch (e) {
               logger.w('User w/ id "' + currentUser.uid +
@@ -198,8 +199,6 @@ class _UserListState extends State<UserList> {
     final tags = Provider.of<List<Tag>>(context);
     users = Provider.of<List<User>>(context) ?? [];
     bool isFirstBuild = images.isEmpty;
-
-    print('Users: ${users.toString()}');
 
     if (isFirstBuild) { // if list is just initialized (first build run)
       userCards = <UserCard>[];
@@ -224,7 +223,7 @@ class _UserListState extends State<UserList> {
                 )
               )
             ),
-            child: userCards[index], // get the generated user card from here
+            child: userCards?.elementAt(index) ?? SizedBox(), // get the generated user card from here
           );
         },
       );

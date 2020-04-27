@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -5,12 +7,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/shared/constants.dart';
+import 'package:tues_pairs/shared/github_models.dart';
 
 class Auth {
 
   FirebaseAuth _auth = FirebaseAuth.instance; // property to receive a default FirebaseAuth instance
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  final FacebookLogin facebookLogin = FacebookLogin();
+  final FacebookLogin facebookLogIn = FacebookLogin();
 
   // auth changes are listened by streams which are a generic class returning an instance of the stream of what we want
   // streams send their data one by one, allowing for listening in changes
@@ -137,15 +140,13 @@ class Auth {
         code: 'ERROR_GOOGLE_CANCELLED_BY_USER', message: 'User has cancelled Google sign-in; revert to login UI'
       );
     }
-
-
   }
   
-  Future loginWithFacebook() async {
-    facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly; // set to only the webView UI
+  Future<User> loginWithFacebook() async {
+    facebookLogIn.loginBehavior = FacebookLoginBehavior.webViewOnly; // set to only the webView UI
 
     final FacebookLoginResult facebookLoginResult =
-      await facebookLogin.logIn(<String>['email', 'public_profile']);
+      await facebookLogIn.logIn(<String>['email', 'public_profile']);
 
     if(facebookLoginResult.accessToken != null) {
       final authResult = await _auth.signInWithCredential(
@@ -162,9 +163,35 @@ class Auth {
       );
     }
   }
+
+  Future<User> signInWithGitHub(String code) async {
+    //ACCESS TOKEN REQUEST
+
+    final response = await http.post(
+      "https://github.com/login/oauth/access_token",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: jsonEncode(GitHubLoginRequest(
+        clientId: GITHUB_CLIENT_ID,
+        clientSecret: GITHUB_CLIENT_SECRET_ID,
+        code: code,
+      )),
+    );
+
+    GitHubLoginResponse loginResponse =
+      GitHubLoginResponse.fromJson(json.decode(response.body));
+
+    final AuthCredential credential = GithubAuthProvider.getCredential(
+      token: loginResponse.accessToken,
+    );
+
+    final FirebaseUser firebaseUser = await FirebaseAuth.instance.signInWithCredential(credential).then((authResult) => authResult.user);
+    return firebaseUserToUser(firebaseUser);
+  }
   
   // -----------------------
-
 
   Future deleteCurrentFirebaseUser() async {
     try{
@@ -194,7 +221,7 @@ class Auth {
   Future logout() async {
     try {
       await googleSignIn.signOut();
-      // await facebookLogin.logOut();
+      await facebookLogIn.logOut();
       await _auth.signOut();
       logger.i('Auth: Successfully logged out current Firebase user');
       return 1;
