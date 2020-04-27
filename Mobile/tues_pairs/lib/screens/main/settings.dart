@@ -26,12 +26,11 @@ class Settings extends StatefulWidget {
   _SettingsState createState() => _SettingsState();
 }
 
-class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin {
+class _SettingsState extends State<Settings> {
 
   Database database;
   final Auth auth = new Auth();
   ErrorNotifier errorNotifier = new ErrorNotifier();
-  AnimationController _controller;
 
   void setError(String errorMessage) {
     setState(() => errorNotifier.setError(errorMessage));
@@ -39,16 +38,6 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
 
   void switchToNextPage(int pageidx) {
     setState(() => StackPageHandler.currentPage = pageidx);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = new AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 2),
-    );
-    _controller.forward();
   }
 
   @override
@@ -75,7 +64,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
         children: <Widget>[
           TagSelection.settings(
             switchPage: () => switchToNextPage(StackPageHandler.topPageIndex),
-            animationController: _controller,
+            animationController: StackPageHandler.controller,
           ),
           Container(
             color: greyColor,

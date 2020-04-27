@@ -26,7 +26,6 @@ class App extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]); // limit the orientation to portrait up and portrait down
 
-    _auth.deleteCurrentFirebaseUser();
     logger.i('App: App started.');
 
     return StreamProvider<User>.value( // StreamProvider package allows us to send data through a stream to see whether the auth state has changed here. This data can travel through the widget tree.

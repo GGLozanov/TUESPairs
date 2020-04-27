@@ -132,7 +132,7 @@ class RegisterForm extends StatefulWidget {
         // TODO: narrow these final settings of values down in function
         if(registeredUser.isTeacher) registeredUser.GPA = null;
 
-        if(baseAuth.user.photoURL == null && imageService != null && imageService.profileImage != null) {
+        if(baseAuth.user.photoURL == null || (imageService != null && imageService.profileImage != null)) {
           registeredUser.photoURL = await imageService.uploadImage();
         } // TODO: Potential bug here if user continues with default image?
 
@@ -204,7 +204,8 @@ class _RegisterFormState extends State<RegisterForm> {
                           value: imageService,
                         ),
                         Provider<User>.value(
-                          value: baseAuth.user,
+                          value: imageService.profileImage == null ?
+                            baseAuth.user : null,
                         ),
                       ],
                       child: AvatarWrapper(),
