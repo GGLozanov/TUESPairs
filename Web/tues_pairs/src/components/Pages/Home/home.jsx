@@ -133,7 +133,6 @@ class UserList extends Component {
           users[i].photoURL = "https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png";
         }
         mappedUsers.push(users[i]);
-        console.log(users[i]);
       }
     }
     
