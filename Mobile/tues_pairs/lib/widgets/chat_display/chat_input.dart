@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/chat_display/send_button.dart';
 
 class MessageInput extends StatelessWidget {
@@ -29,7 +30,7 @@ class MessageInput extends StatelessWidget {
                   hintText: 'Enter a Message...',
                   enabledBorder: OutlineInputBorder(
                     borderRadius: new BorderRadius.circular(25.0),
-                    borderSide: BorderSide(color: Color.fromRGBO(34, 34, 43, 1), width: 2.0),
+                    borderSide: BorderSide(color: darkGreyColor, width: 2.0),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: new BorderRadius.circular(25.0),

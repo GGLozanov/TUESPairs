@@ -52,7 +52,7 @@ class _ChatState extends State<Chat> {
     }
 
     return Container(
-      color: Color.fromRGBO(59, 64, 78, 1),
+      color: greyColor,
       child: currentUser.matchedUserID == null ? centeredText("You are not matched with anyone!") : FutureBuilder<User>(
         future: database.getUserById(),
         builder: (context, snapshot){

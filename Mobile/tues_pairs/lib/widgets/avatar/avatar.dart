@@ -74,7 +74,7 @@ class _AvatarState extends State<Avatar> {
       children: <Widget>[
           CircleAvatar(
             radius: 70.0,
-            backgroundColor: Color.fromRGBO(33, 36, 44, 1),
+            backgroundColor: darkGreyColor,
             child: ClipOval(
               child: SizedBox(
                 width: 190.0,

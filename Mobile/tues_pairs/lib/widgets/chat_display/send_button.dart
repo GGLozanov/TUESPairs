@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/shared/constants.dart';
 
 class SendButton extends StatelessWidget {
   final String label;
@@ -9,7 +10,7 @@ class SendButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialButton(
       onPressed: callback,
-      color: Color.fromRGBO(34, 34, 43, 1),
+      color: darkGreyColor,
       textColor: Colors.white,
       child: Icon(
         Icons.send,

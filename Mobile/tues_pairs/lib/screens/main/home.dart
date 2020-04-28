@@ -7,6 +7,7 @@ import 'package:tues_pairs/screens/main/match.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/shared/keys.dart';
 
 class Home extends StatefulWidget {
@@ -62,7 +63,7 @@ class _HomeState extends State<Home> {
       child: Scaffold(
         key: Key(Keys.homeScaffold),
         appBar: AppBar(
-          backgroundColor: Color.fromRGBO(33, 36, 44, 1),
+          backgroundColor: darkGreyColor,
           title: Text(
             _widgets[_selectedIndex].toString(),
             // convert widget title to string
@@ -146,7 +147,7 @@ class _HomeState extends State<Home> {
           ],
           currentIndex: _selectedIndex,
           onTap: onItemTap,
-          backgroundColor: Color.fromRGBO(33, 36, 44, 1),
+          backgroundColor: darkGreyColor,
         ),
       ),
     );

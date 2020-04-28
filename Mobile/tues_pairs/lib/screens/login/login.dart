@@ -61,10 +61,8 @@ class _LoginState extends State<Login> {
             logger.w('Login: User has cancelled/failed Facebook Sign-In. Rerendering login page')
         );
         break;
-      case ExternalSignInType.TWITTER:
+      case ExternalSignInType.GITHUB:
         // handle github sign-in w/ auth here...
-        // await baseAuth.authInstance.signInWithTwitter().then((authUser) =>
-        // ).catchError((e) => logger.w('Login: User has cancelled/failed Twitter Sign-In. Rerendering login page'));
         break;
       case ExternalSignInType.GOOGLE:
       default:
@@ -175,30 +173,50 @@ class _LoginState extends State<Login> {
                     }
                   },
                 ),
-                SizedBox(height: 25.0),
-                Divider(height: 15.0, thickness: 10.0),
-                SizedBox(height: 25.0),
+                SizedBox(height: 30.0),
+                Divider(height: 15.0, thickness: 10.0, color: darkGreyColor),
+                SizedBox(height: 30.0),
                 Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      SignInButton(
-                        Buttons.Facebook,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    SignInButton(
+                      Buttons.Facebook,
+                      padding: EdgeInsets.symmetric(vertical: 15.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext, signInType: ExternalSignInType.FACEBOOK),
+                    ),
+                    SizedBox(height: 15.0),
+                    SignInButton(
+                      Buttons.Google,
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext),
+                    ),
+                    SizedBox(height: 20.0),
+                    Text(
+                      'Coming Soon',
+                      style: TextStyle(
+                        fontFamily: 'BebasNeue',
+                        fontSize: 32.0,
+                        color: Colors.orange,
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    IgnorePointer( // TODO: Add GitHub
+                      child: SignInButton(
+                        Buttons.GitHub,
                         padding: EdgeInsets.symmetric(vertical: 15.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),
-                        onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext, signInType: ExternalSignInType.FACEBOOK),
-                      ),
-                      SizedBox(height: 15.0),
-                      SignInButton(
-                        Buttons.Google,
-                        padding: EdgeInsets.symmetric(vertical: 8.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext),
-                      ),
-                    ]
+                        onPressed: () => {},
+                      )
+                    ),
+                  ]
                 ),
                 SizedBox(height: 15.0),
                 Column(

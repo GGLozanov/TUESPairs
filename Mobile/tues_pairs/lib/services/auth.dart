@@ -7,7 +7,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/shared/constants.dart';
-import 'package:tues_pairs/shared/github_models.dart';
 
 class Auth {
 
@@ -164,10 +163,6 @@ class Auth {
     }
   }
 
-  Future<User> signInWithTwitter() async {
-
-  }
-  
   // -----------------------
 
   Future deleteCurrentFirebaseUser() async {

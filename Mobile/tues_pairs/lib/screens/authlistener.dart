@@ -19,7 +19,7 @@ class AuthListener extends StatefulWidget {
 
   static ExternRegister externRegister = ExternRegister();
 
-  AuthListener.callback({ExternRegister externRegister}) {
+  AuthListener.callback({ExternRegister externRegister}) { // TODO: Utilise this in future GitHub sign-in
     AuthListener.externRegister = externRegister;
   }
 

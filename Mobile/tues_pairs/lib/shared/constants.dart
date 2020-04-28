@@ -52,7 +52,7 @@ enum TagCardType {
 enum ExternalSignInType {
   GOOGLE,
   FACEBOOK,
-  TWITTER
+  GITHUB
 }
 
 class StackPageHandler {

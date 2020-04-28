@@ -71,7 +71,7 @@ class _MessageCardState extends State<MessageCard> {
   Widget displayAvatar(User user) {
     return CircleAvatar(
       radius: 22.5,
-      backgroundColor: Color.fromRGBO(33, 36, 44, 1),
+      backgroundColor: darkGreyColor,
       child: ClipOval(
         child: SizedBox(
           width: 45.0,
@@ -117,7 +117,7 @@ class _MessageCardState extends State<MessageCard> {
       ),
       SizedBox(width: 5.0),
       Material(
-        color: widget.isMe ? Colors.orange : Color.fromRGBO(34, 34, 43, 1),
+        color: widget.isMe ? Colors.orange : darkGreyColor,
         borderRadius: BorderRadius.circular(10.0),
         elevation: 2.0,
         child: Container(
