@@ -47,7 +47,7 @@ class Auth {
           switch(userInfo.providerId) {
             case 'google.com':
             case 'facebook.com':
-            case 'twitter.com':
+            case 'github.com':
               isExternPlatform = true;
               break;
             default: break;
