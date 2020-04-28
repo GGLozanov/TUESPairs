@@ -48,16 +48,34 @@ const config = {
 
     messages = () => this.db.collection(`messages`);
 
+    tags = () => this.db.collection(`tags`);
+
+    tag = tid => this.db.doc(`tags/${tid}`);
+
     currentUser = snapshot => {
         const firebaseUser = snapshot.data();
-    
+        const tags = this.getUserTags(firebaseUser.tagIDs);
+
         return {
-            uid: this.auth.currentUser.uid,
-            email: this.auth.currentUser.email,
             ...firebaseUser,
+            uid: this.auth.currentUser.uid,
+            tags: tags,
         };
     }
     
+    getUserTags = tagIDs => {
+        let tags = [];
+
+        tagIDs.forEach(tag => {
+            this.tag(tag).get()
+            .then(doc => {
+                tags.push({...doc.data(), tid: doc.id });
+            })
+        });
+
+        return tags;
+    }
+
   }
 
   export default Firebase;

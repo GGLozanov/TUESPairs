@@ -4,12 +4,11 @@
 }
 
 .page-main {
-    display: flex;
-    justify-content: center;
+    text-align: center;
     margin-top: 5em;
 
     .profile-card {
-
+        margin: auto;
         box-sizing: border-box;
         box-shadow: 0px 0px 15px 0px black;
 
@@ -19,6 +18,18 @@
         }
 
         .profile-body {
+
+            .tag-list {
+                .btn-group {
+                    margin-top: 1rem;
+                    margin-bottom: 1rem;
+                    button {
+                        margin: 5px;
+                        outline: none;
+                        border: none;
+                    }
+                }
+            }
             
             .card-title {
                 text-align: center;
@@ -102,6 +113,19 @@
                     &:focus {
                         border: 1px solid rgb(252, 152, 0);
                         box-shadow: none;
+                    }
+                }
+            }
+
+            .tag-list {
+                .btn-group {
+                    margin-top: 1rem;
+                    margin-bottom: 1rem;
+                    button {
+                        background-color: rgb(252, 152, 0);
+                        margin: 5px;
+                        outline: none;
+                        border: none;
                     }
                 }
             }

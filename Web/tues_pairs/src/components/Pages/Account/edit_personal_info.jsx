@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormControl, Button, Col, Image, Form, Row, Alert, Spinner, InputGroup } from 'react-bootstrap';
+import { FormControl, Button, Col, Image, Form, Row, Alert, Spinner, InputGroup, ButtonGroup } from 'react-bootstrap';
 import { withCurrentUser } from '../../Authentication/context';
 import { compose } from 'recompose';
 import { withFirebase } from '../../Firebase';
@@ -8,6 +8,7 @@ import { withRouter } from 'react-router-dom';
 import * as ROUTES from '../../../constants/routes';
 import { Link } from 'react-router-dom';
 import { PasswordChangeLink } from '../PasswordForget/passwordchange';
+import rgbHex from 'rgb-hex';
 
 const StudentInfo = () => (
     <div>
@@ -25,6 +26,8 @@ class EditPersonalInfo extends Component{
             GPA: this.props.authUser.GPA,
             photoURL: this.props.authUser.photoURL,
             email: this.props.authUser.email,
+            tags: [],
+            tagIDs: [],
             error: '',
             message: '',
             users: null,
@@ -41,12 +44,47 @@ class EditPersonalInfo extends Component{
         .then(snapshot => {
             const currentUser = this.props.firebase.currentUser(snapshot);
 
-            this.setState({ photoURL: currentUser.photoURL, email: currentUser.email, loading: false });
-        });
+            this.setState({ photoURL: currentUser.photoURL, email: currentUser.email, tagIDs: currentUser.tagIDs, loading: false });
+        }).then(() => {
+            this.tagProvider = this.props.firebase.tags()
+            .onSnapshot(snapshot => {
+                let tags = [];
+
+                snapshot.forEach(doc => 
+                    tags.push({ ...doc.data(), tid: doc.id }),
+                );
+
+                this.setState({ tags, loading: false });
+            });
+        })
+    }
+
+
+    setChecked = event => {
+        let tagIDs = this.state.tagIDs;
+        const tagColor = event.target.value;
+        const tagID = event.target.name;
+
+        if(event.target.style.backgroundColor === '') {
+            event.target.style.backgroundColor = 'rgb(252, 152, 0)';
+        }
+
+        let bgColor = '#' + rgbHex(event.target.style.backgroundColor);
+
+        if(bgColor === tagColor) {
+            event.target.style.backgroundColor = 'rgb(252, 152, 0)';
+            var index = tagIDs.indexOf(tagID);
+            if (index !== -1) tagIDs.splice(index, 1);
+        } else {
+            event.target.style.backgroundColor = tagColor;
+            tagIDs.push(tagID);
+        }
+
+        this.setState({ tagIDs });
     }
 
     onSubmit = event => {
-        const { username, email, GPA} = this.state;
+        const { username, email, GPA, tagIDs} = this.state;
 
         const currentUser = this.props.authUser;
 
@@ -54,8 +92,8 @@ class EditPersonalInfo extends Component{
             username: username,
             GPA: parseFloat(GPA),
             email: email,
-            }, 
-        {merge: true})
+            tagIDs: tagIDs,
+        }, {merge: true})
         .then(() => {
             this.props.firebase.doEmailUpdate(email).then(this.props.history.push(ROUTES.ACCOUNT));
         })
@@ -149,7 +187,7 @@ class EditPersonalInfo extends Component{
     }
 
     render() {
-        const { username, email, photoURL, GPA, loading, error} = this.state;
+        const { username, email, photoURL, GPA, loading, error, tags} = this.state;
 
         const isTeacher = this.props.authUser.isTeacher ? false : true;
 
@@ -240,6 +278,27 @@ class EditPersonalInfo extends Component{
                         </Form.Group>
 
                         <PasswordChangeLink />
+
+                        <div className="tag-list">
+                            <ButtonGroup as={Row}>
+                                {tags.map(tag => {
+                                    if(this.state.tagIDs.includes(tag.tid)) {
+                                        return(
+                                        <Button style={{ backgroundColor: tag.color }} value={tag.color} name={tag.tid} onClick={this.setChecked}>
+                                            {tag.name}
+                                        </Button>
+                                        )
+                                    } else {
+                                        return(
+                                        <Button style={{ backgroundColor: 'rgb(252, 152, 0)' }} value={tag.color} name={tag.tid} onClick={this.setChecked}>
+                                            {tag.name}
+                                        </Button>
+                                        )
+                                    }
+                                })}
+                            </ButtonGroup>
+                        </div>
+
                         <div className="error-message">
                             {error && <p>{error.message}</p>}
                         </div>
