@@ -24,17 +24,15 @@ class UserCard extends StatefulWidget {
     @required this.user,
     @required this.onSkip,
     @required this.onMatch,
-    @required this.userImage,
+    this.userImage,
     @required this.listIndex,
-    @required this.tagCards,
+    this.tagCards,
     @required this.currentUser
   }) :
     assert(user != null),
     assert(onSkip != null),
     assert(onMatch != null),
-    assert(userImage != null),
     assert(listIndex != null),
-    assert(tagCards != null),
     assert(currentUser != null),
     super(key: key) {
     hasUserSentMatchRequestToCurrent = currentUser.uid == user.matchedUserID;

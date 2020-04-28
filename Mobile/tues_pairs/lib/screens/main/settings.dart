@@ -26,7 +26,7 @@ class Settings extends StatefulWidget {
   _SettingsState createState() => _SettingsState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin {
 
   Database database;
   final Auth auth = new Auth();
@@ -41,9 +41,20 @@ class _SettingsState extends State<Settings> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    StackPageHandler.settingsController = new AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2),
+    );
+    StackPageHandler.settingsController.forward();
+  }
+
+  @override
   void deactivate() {
     super.deactivate();
     StackPageHandler.currentPage = StackPageHandler.topPageIndex; // reset page back to settings page if user leaves
+    StackPageHandler.settingsController.dispose();
   }
 
   @override
@@ -64,7 +75,7 @@ class _SettingsState extends State<Settings> {
         children: <Widget>[
           TagSelection.settings(
             switchPage: () => switchToNextPage(StackPageHandler.topPageIndex),
-            animationController: StackPageHandler.controller,
+            animationController: StackPageHandler.settingsController,
           ),
           Container(
             color: greyColor,
@@ -194,9 +205,9 @@ class _SettingsState extends State<Settings> {
                             }
                           }
 
-                          await auth.deleteCurrentFirebaseUser();
                           await ImageService().deleteImage(currentUser.photoURL);
                           await database.deleteUser();
+                          await auth.deleteCurrentFirebaseUser();
                           logger.i('Settings: User w/ id "' +
                               currentUser.uid +
                               '" has been deleted.');

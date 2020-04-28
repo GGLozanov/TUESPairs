@@ -48,7 +48,7 @@ class Auth {
           switch(userInfo.providerId) {
             case 'google.com':
             case 'facebook.com':
-            case 'github.com':
+            case 'twitter.com':
               isExternPlatform = true;
               break;
             default: break;
@@ -164,31 +164,8 @@ class Auth {
     }
   }
 
-  Future<User> signInWithGitHub(String code) async {
-    //ACCESS TOKEN REQUEST
+  Future<User> signInWithTwitter() async {
 
-    final response = await http.post(
-      "https://github.com/login/oauth/access_token",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: jsonEncode(GitHubLoginRequest(
-        clientId: GITHUB_CLIENT_ID,
-        clientSecret: GITHUB_CLIENT_SECRET_ID,
-        code: code,
-      )),
-    );
-
-    GitHubLoginResponse loginResponse =
-      GitHubLoginResponse.fromJson(json.decode(response.body));
-
-    final AuthCredential credential = GithubAuthProvider.getCredential(
-      token: loginResponse.accessToken,
-    );
-
-    final FirebaseUser firebaseUser = await FirebaseAuth.instance.signInWithCredential(credential).then((authResult) => authResult.user);
-    return firebaseUserToUser(firebaseUser);
   }
   
   // -----------------------
@@ -196,10 +173,10 @@ class Auth {
   Future deleteCurrentFirebaseUser() async {
     try{
       FirebaseUser firebaseUser = await _auth.currentUser();
-      await logout();
       await firebaseUser.delete();
+      await logout();
       logger.i('Auth: Successfully deleted current Firebase User');
-      return 1; // exit code for success
+      return EXIT_CODE_SUCCESS; // exit code for success
     } catch(exception){
       logger.e('Auth: ' + exception.toString());
       return null;
@@ -210,8 +187,9 @@ class Auth {
     try{
       final id = firebaseUser.uid;
       await firebaseUser.delete();
+      await logout();
       logger.i('Auth: Successfully deleted Firebase user w/ id "' + id + '"');
-      return 1;
+      return EXIT_CODE_SUCCESS;
     } catch(exception){
       logger.e('Auth: ' + exception.toString());
       return null;
@@ -219,12 +197,17 @@ class Auth {
   }
 
   Future logout() async {
+    // TODO: Fix logout and deletion. . .
     try {
-      await googleSignIn.signOut();
-      await facebookLogIn.logOut();
+      try {
+        await googleSignIn.signOut();
+        await facebookLogIn.logOut();
+      } catch(e) {
+        logger.w('Auth: Cannot log out External user: ' + e.toString());
+      }
       await _auth.signOut();
       logger.i('Auth: Successfully logged out current Firebase user');
-      return 1;
+      return EXIT_CODE_SUCCESS;
     } catch(exception) {
       logger.e('Auth: ' + exception.toString());
       return null;

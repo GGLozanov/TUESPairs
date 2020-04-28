@@ -52,14 +52,17 @@ enum TagCardType {
 enum ExternalSignInType {
   GOOGLE,
   FACEBOOK,
-  GITHUB
+  TWITTER
 }
 
 class StackPageHandler {
   static int topPageIndex = 1; // TODO: Change if add more pages (keep track of pages)
   static int currentPage = topPageIndex;
-  static AnimationController controller;
+  static AnimationController registerController;
+  static AnimationController settingsController;
 }
+
+const int EXIT_CODE_SUCCESS = 1;
 
 List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardType.VIEW, User user}) {
   return tags.map((tag) {
@@ -91,10 +94,6 @@ List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardT
     }
   ).toList();
 }
-
-// TODO: make this more secure and not have it exposed in code
-const String GITHUB_CLIENT_ID = 'ed5b07f53b1f0b3dfa37';
-const String GITHUB_CLIENT_SECRET_ID = 'de1ab9b7a709eec44edcab3c29556d4bddc72fce';
 
 Widget centeredText(String text) {
   return Center(

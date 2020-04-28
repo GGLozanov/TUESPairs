@@ -17,8 +17,6 @@ import 'package:tues_pairs/widgets/form/password_input_field.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/register/register_form.dart';
 import 'package:tues_pairs/widgets/register/register_wrapper.dart';
-import 'package:uni_links/uni_links.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../templates/baseauth.dart';
 import '../authlistener.dart';
@@ -38,52 +36,8 @@ class _LoginState extends State<Login> {
   final BaseAuth baseAuth = new BaseAuth();
   final GlobalKey _scaffold = GlobalKey(); // global key used to track the scaffold an the currentContext
 
-  StreamSubscription _subs; // return from listen() on a stream => StreamSubscription
-
   List<User> users;
   List<Tag> tags;
-
-  @override
-  void initState() {
-    _initDeepLinkListener();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _disposeDeepLinkListener();
-    super.dispose();
-  }
-
-  Future<void> _initDeepLinkListener() async {
-    _subs = getLinksStream().listen((String link) {
-      _checkDeepLink(link); // checks whether the deep link from the link stream is valid
-    }, cancelOnError: true);
-  }
-
-  void _checkDeepLink(String link) {
-    if (link != null) {
-      // if the link is valid, we receive the code using regex and moving 5 indices forward
-      String code = link.substring(link.indexOf(RegExp('code=')) + 5);
-      baseAuth.authInstance.signInWithGitHub(code) // Auth code received from parse
-        .then((authUser) {
-          _configureExternalSignIn(authUser);
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context){
-            return AuthListener.callback(externRegister: AuthListener.externRegister,);
-          }));
-        }
-      ).catchError((e) {
-        logger.e('Login: _checkDeepLink() has thrown an exception while authenticating GitHub user!');
-      });
-    }
-  }
-
-  void _disposeDeepLinkListener() {
-    if (_subs != null) {
-      _subs.cancel();
-      _subs = null;
-    }
-  }
 
   void _configureExternalSignIn(User authUser) {
     baseAuth.user = authUser;
@@ -93,25 +47,6 @@ class _LoginState extends State<Login> {
     AuthListener.externRegister.tags = tags;
     AuthListener.externRegister.users = users;
     Login.isExternalCreated = true;
-  }
-
-  Future<void> _redirectToGitHub() async {
-    const String url = 'https://github.com/login/oauth/authorize' +
-      '?client_id=' + GITHUB_CLIENT_ID +
-        '&scope=public_repo%20read:user%20user:email'; // url to auth the GitHub user
-
-    if (await canLaunch(url)) { // async call that checks whether the applicable url can be launched
-      await launch(
-        url,
-        forceSafariVC: false,
-        forceWebView: false,
-      ); // if so, launches it without enforcing WEB/Safari view (due to usage of DeepLink later on)
-    } else {
-      logger.e('Login: redirectToGitHub() cannot lauch this URL!');
-      throw new PlatformException(
-        code: 'ERROR_CANNOT_LAUNCH_GITHUB_URL', message: 'redirectToGitHub() cannot lauch the selected URL!'
-      );
-    }
   }
 
   Future<void> _handleExternalSignIn(BuildContext context,
@@ -126,9 +61,10 @@ class _LoginState extends State<Login> {
             logger.w('Login: User has cancelled/failed Facebook Sign-In. Rerendering login page')
         );
         break;
-      case ExternalSignInType.GITHUB:
+      case ExternalSignInType.TWITTER:
         // handle github sign-in w/ auth here...
-        await _redirectToGitHub();
+        // await baseAuth.authInstance.signInWithTwitter().then((authUser) =>
+        // ).catchError((e) => logger.w('Login: User has cancelled/failed Twitter Sign-In. Rerendering login page'));
         break;
       case ExternalSignInType.GOOGLE:
       default:
@@ -261,15 +197,6 @@ class _LoginState extends State<Login> {
                           borderRadius: BorderRadius.circular(15.0),
                         ),
                         onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext),
-                      ),
-                      SizedBox(height: 15.0),
-                      SignInButton(
-                        Buttons.GitHub,
-                        padding: EdgeInsets.symmetric(vertical: 15.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext, signInType: ExternalSignInType.GITHUB),
                       ),
                     ]
                 ),

@@ -275,11 +275,10 @@ class _RegisterFormState extends State<RegisterForm> {
                 onPressed: () async {
                   var result = await widget.registerUser(baseAuth, imageService, users);
                   if(result == null && !widget.isExternalAuth) {
-                    setState(() {
-                      baseAuth.errorMessages = [''];
-                      baseAuth.errorMessages.add('There was an error. Please try again.');
-                      baseAuth.toggleLoading();
-                    });
+                    // TODO: Reimplement setState(() => {}); threw exception beforehand
+                    baseAuth.errorMessages = [''];
+                    baseAuth.errorMessages.add('There was an error. Please try again.');
+                    baseAuth.toggleLoading();
                   }
                 },
                 color: Colors.deepOrange[500],

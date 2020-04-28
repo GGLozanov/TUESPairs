@@ -46,18 +46,18 @@ class _RegisterWrapperState extends State<RegisterWrapper> with SingleTickerProv
 
   @override
   void dispose() {
-    StackPageHandler.controller.dispose();
+    StackPageHandler.registerController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    StackPageHandler.controller = new AnimationController(
+    StackPageHandler.registerController = new AnimationController(
       vsync: this,
       duration: Duration(seconds: 2),
     );
-    StackPageHandler.controller.forward();
+    StackPageHandler.registerController.forward();
   }
 
   @override
@@ -72,13 +72,13 @@ class _RegisterWrapperState extends State<RegisterWrapper> with SingleTickerProv
         children: [
           Align(
             alignment: Alignment.center,
-            child: TagSelection(switchPage: switchPage, animationController: StackPageHandler.controller,),
+            child: TagSelection(switchPage: switchPage, animationController: StackPageHandler.registerController,),
           ),
           Align(
             alignment: Alignment.center,
             child: widget.isExternalRegister ?
-            RegisterForm.externalSignIn(switchPage: switchPage, animationController: StackPageHandler.controller, callback: widget.callback,) :
-              RegisterForm(switchPage: switchPage, animationController: StackPageHandler.controller,),
+            RegisterForm.externalSignIn(switchPage: switchPage, animationController: StackPageHandler.registerController, callback: widget.callback,) :
+              RegisterForm(switchPage: switchPage, animationController: StackPageHandler.registerController,),
           ),
         ],
       ),

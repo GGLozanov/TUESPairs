@@ -125,8 +125,8 @@ class _UserListState extends State<UserList> {
     return UserCard(
       key: Key(Keys.matchUserCard + userIndex.toString()),
       user: user,
-      userImage: images[userIndex] ?? [],
-      tagCards: tagCards[userIndex] ?? [],
+      userImage: images[userIndex],
+      tagCards: tagCards[userIndex],
       onMatch: () async {
         if (currentUser.matchedUserID == null) {
           logger.i('UserList: Current user w/ id "' + currentUser.uid +
