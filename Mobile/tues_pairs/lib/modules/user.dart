@@ -12,8 +12,10 @@ class User {
   List<String> skippedUserIDs; // skipped TUESPairs users
   List<String> tagIDs; // list of tags he'd like to have for matching with other users
 
+  bool isExternalUser;
+
   User({this.uid, this.email, this.photoURL, this.GPA, this.matchedUserID,
-    this.tagIDs, this.isTeacher, this.username, this.skippedUserIDs});
+    this.tagIDs, this.isTeacher, this.username, this.skippedUserIDs, this.isExternalUser = false});
 
   @override
   bool operator ==(other) {

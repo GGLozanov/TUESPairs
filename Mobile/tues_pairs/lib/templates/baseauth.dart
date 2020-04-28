@@ -6,7 +6,7 @@ class BaseAuth {
 
   final Auth _authInstance = Auth();
 
-  final _key = GlobalKey<FormState>(); // creating a global key again to identify our form -> done
+  final GlobalKey<FormState> _key = new GlobalKey<FormState>(debugLabel: '_formKey'); // creating a global key again to identify our form -> done
   // key can be used for validation in whichever state you want (go generics!)
   // used to identify a given form (!)
   // GlobalKey-s provide access to other objects that are associated with the elements in the generic class (ex. FormState)

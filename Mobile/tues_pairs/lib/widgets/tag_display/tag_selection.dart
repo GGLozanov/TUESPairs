@@ -17,7 +17,7 @@ class TagSelection extends StatefulWidget {
 
   bool isCurrentUserAvailable = false;
 
-  Function triggerAnimation = () => Register.currentPage = Register.topPageIndex; // or maybe just !isShrink?
+  Function triggerAnimation = () => StackPageHandler.currentPage = StackPageHandler.topPageIndex; // or maybe just !isShrink?
 
   TagSelection({@required this.switchPage, this.animationController}) : assert(switchPage != null);
 
@@ -49,7 +49,7 @@ class _TagSelectionState extends State<TagSelection> {
     } else user = Provider.of<BaseAuth>(context).user;
 
     final tags = Provider.of<List<Tag>>(context) ?? [];
-    final tagCards = mapTagsToTagCards(tags, cardType: TagCardType.SELECTION);
+    final tagCards = mapTagsToTagCards(tags, cardType: TagCardType.SELECTION, user: user);
 
     final tagSelection = Container(
       color: greyColor,
@@ -102,7 +102,7 @@ class _TagSelectionState extends State<TagSelection> {
       child: tagSelection,
       builder: (context, child) =>
         Transform.translate(
-          offset: Offset(Register.currentPage == Register.topPageIndex ?
+          offset: Offset(StackPageHandler.currentPage == StackPageHandler.topPageIndex ?
           widget.animationController.value * 345.0 : 0.0, 0.0),
           child: child,
         ),

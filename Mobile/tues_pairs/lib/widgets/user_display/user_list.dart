@@ -29,8 +29,8 @@ class _UserListState extends State<UserList> {
 
   NetworkImage currentUserImage;
 
-  List<User> users = <User>[];
-  List<NetworkImage> images;
+  List<User> users;
+  List<NetworkImage> images = <NetworkImage>[];
   List<List<TagCard>> tagCards;
   List<UserCard> userCards;
 
@@ -54,14 +54,14 @@ class _UserListState extends State<UserList> {
     return images;
   }
 
-  Future<List<List<TagCard>>> getUserTags(User currentUser) async {
+  Future<List<List<TagCard>>> getUserTags(List<Tag> tags, User currentUser) async {
     List<List<Tag>> userTags = new List<List<Tag>>(users.length);
 
     for (int useridx = 0; useridx < users.length; useridx++) {
       userTags[useridx] = <Tag>[];
       if (isUserRenderableForCurrent(currentUser, users[useridx])) {
-        for (var tag in users[useridx].tagIDs) {
-          userTags[useridx].add(await database.getTagByID(tag));
+        for (var tid in users[useridx].tagIDs) {
+          userTags[useridx].add(tags.firstWhere((tag) => tag.tid == tid));
         }
         // get the Tag instance for each tag ID
       }
@@ -126,7 +126,7 @@ class _UserListState extends State<UserList> {
       key: Key(Keys.matchUserCard + userIndex.toString()),
       user: user,
       userImage: images[userIndex],
-      tagCards: tagCards[userIndex] ?? [],
+      tagCards: tagCards[userIndex],
       onMatch: () async {
         if (currentUser.matchedUserID == null) {
           logger.i('UserList: Current user w/ id "' + currentUser.uid +
@@ -149,6 +149,7 @@ class _UserListState extends State<UserList> {
         await _removeUserFromList(user, currentUser);
       },
       listIndex: initialListIndex, // idx of element in the filtered list
+      currentUser: currentUser,
     );
   }
 
@@ -176,7 +177,7 @@ class _UserListState extends State<UserList> {
             ); // add card item here
             try {
               _animatedListKey.currentState.insertItem(
-                  lastItemIndex - 1
+                  lastItemIndex,
               ); // insert the latest item here
             } catch (e) {
               logger.w('User w/ id "' + currentUser.uid +
@@ -195,10 +196,11 @@ class _UserListState extends State<UserList> {
   Widget build(BuildContext context) {
     // access StreamProvider of QuerySnapshots info here
     final currentUser = Provider.of<User>(context);
-    bool isFirstBuild = users.isEmpty;
+    final tags = Provider.of<List<Tag>>(context);
+    users = Provider.of<List<User>>(context) ?? [];
+    bool isFirstBuild = images.isEmpty;
 
     if (isFirstBuild) { // if list is just initialized (first build run)
-      users = Provider.of<List<User>>(context) ?? [];
       userCards = <UserCard>[];
 
       userList = AnimatedList( // list of users widget
@@ -206,7 +208,7 @@ class _UserListState extends State<UserList> {
         key: _animatedListKey,
         initialItemCount: userCards.length,
         // ignore: missing_return
-        itemBuilder: (context, index, animation) {
+        itemBuilder: (context, index, animation) { // context & index of whichever item we're iterating through
           // TODO: get array of skipped users from database (user instance probably won't hold it) through FutureBuilder again maybe -> done
           // TODO: then use contains method to check rendering in if statement -> done
           // TODO: User NEVER enters this state if they have matchedUserID != null; do that check in match.dart -> done
@@ -221,16 +223,17 @@ class _UserListState extends State<UserList> {
                 )
               )
             ),
-            child: userCards[index], // get the generated user card from here
+            child: userCards?.elementAt(index) ?? SizedBox(), // get the generated user card from here
           );
         },
       );
 
       return FutureBuilder<List<List<TagCard>>>(
-        future: getUserTags(currentUser),
+        future: getUserTags(tags, currentUser),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             tagCards = snapshot.data;
+
             // -------------------
             // users
             loadListItems(currentUser, users);
@@ -244,7 +247,7 @@ class _UserListState extends State<UserList> {
             return userList;
           } else return Loading();
         }
-      ); // context & index of whichever item we're iterating through
+      );
     } // get the info from the stream
 
     return userList;

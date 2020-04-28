@@ -49,7 +49,22 @@ enum TagCardType {
   VIEW,
 }
 
-List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardType.VIEW}) {
+enum ExternalSignInType {
+  GOOGLE,
+  FACEBOOK,
+  GITHUB
+}
+
+class StackPageHandler {
+  static int topPageIndex = 1; // TODO: Change if add more pages (keep track of pages)
+  static int currentPage = topPageIndex;
+  static AnimationController registerController;
+  static AnimationController settingsController;
+}
+
+const int EXIT_CODE_SUCCESS = 1;
+
+List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardType.VIEW, User user}) {
   return tags.map((tag) {
     int tagIndex = tags.indexOf(tag);
     switch(cardType) {
@@ -58,12 +73,14 @@ List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardT
           key: Key(Keys.tagCard + tagIndex.toString()),
           tag: tag,
           listIndex: tagIndex,
+          user: user
         );
       case TagCardType.ALREADY_CHOSEN_SELECTION:
         return TagCard.alreadyChosenSelection(
           key: Key(Keys.tagCard + tagIndex.toString()),
           tag: tag,
           listIndex: tagIndex,
+          user: user
         );
       case TagCardType.VIEW:
       default:
@@ -71,6 +88,7 @@ List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardT
           key: Key(Keys.tagCard + tagIndex.toString()),
           tag: tag,
           listIndex: tagIndex,
+          user: user
         );
       }
     }

@@ -62,7 +62,7 @@ void main() {
       Auth auth = new Auth.mock(auth: firebaseAuthMock);
 
       FirebaseUser firebaseResult = await auth.getFirebaseUserFromAuth(user, userPassword);
-      User result = auth.FirebaseUserToUser(firebaseResult);
+      User result = auth.firebaseUserToUser(firebaseResult);
 
       expect(result.email, equals(user.email));
     });

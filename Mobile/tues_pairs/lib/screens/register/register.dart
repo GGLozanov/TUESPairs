@@ -7,14 +7,11 @@ import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/widgets/register/register_form.dart';
+import 'package:tues_pairs/widgets/register/register_wrapper.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_selection.dart';
 
 class Register extends StatefulWidget {
   final Function toggleView;
-
-  static AnimationController controller;
-  static int topPageIndex = 1; // TODO: Change if add more pages (keep track of pages)
-  static int currentPage = topPageIndex;
 
   Register({this.toggleView}); // create a constructor which inits this property toggleView
 
@@ -22,29 +19,13 @@ class Register extends StatefulWidget {
   _RegisterState createState() => _RegisterState();
 }
 
-class _RegisterState extends State<Register> with SingleTickerProviderStateMixin {
+class _RegisterState extends State<Register> {
 
   final BaseAuth baseAuth = new BaseAuth();
   final ImageService imageService = new ImageService();
 
   @override
-  void initState() {
-    super.initState();
-    Register.controller = new AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 3),
-    );
-    Register.controller.forward();
-  }
-
-  @override
   Widget build(BuildContext context) {
-
-    void switchPage({bool isLoading}) {
-      // replace current stack widget with reverse stack widget
-      // with animation
-      setState(() { if(isLoading != null && isLoading) baseAuth.toggleLoading(); });
-    }
 
     return baseAuth.isLoading ? Loading() : Scaffold( // Scaffold grants the material design palette and general layout of the app (properties like appBar)
       key: Key(Keys.registerScaffold),
@@ -83,27 +64,9 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
         ],
       ),
 
-      body: IndexedStack(
-        index: Register.currentPage,
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Provider<BaseAuth>.value(
-              value: baseAuth,
-              child: TagSelection(switchPage: switchPage, animationController: Register.controller,),
-            ),
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: MultiProvider(
-              providers: [
-                Provider<BaseAuth>.value(value: baseAuth),
-                Provider<ImageService>.value(value: imageService),
-              ],
-              child: RegisterForm(switchPage: switchPage, animationController: Register.controller,),
-            ),
-          ),
-        ],
+      body: RegisterWrapper(
+        baseAuth: baseAuth,
+        imageService: imageService,
       ),
     );
   }

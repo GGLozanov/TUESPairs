@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tues_pairs/modules/tag.dart';
-import 'package:tues_pairs/screens/register/register.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
@@ -33,31 +31,30 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
   Database database;
   final Auth auth = new Auth();
   ErrorNotifier errorNotifier = new ErrorNotifier();
-  AnimationController _controller;
 
   void setError(String errorMessage) {
     setState(() => errorNotifier.setError(errorMessage));
   }
 
   void switchToNextPage(int pageidx) {
-    setState(() => Register.currentPage = pageidx);
+    setState(() => StackPageHandler.currentPage = pageidx);
   }
 
   @override
   void initState() {
     super.initState();
-    _controller = new AnimationController(
+    StackPageHandler.settingsController = new AnimationController(
       vsync: this,
       duration: Duration(seconds: 2),
     );
-    _controller.forward();
+    StackPageHandler.settingsController.forward();
   }
-
 
   @override
   void deactivate() {
     super.deactivate();
-    Register.currentPage = Register.topPageIndex; // reset page back to settings page if user leaves
+    StackPageHandler.currentPage = StackPageHandler.topPageIndex; // reset page back to settings page if user leaves
+    StackPageHandler.settingsController.dispose();
   }
 
   @override
@@ -74,11 +71,11 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
         Provider<ImageService>.value(value: imageService),
       ],
       child: IndexedStack(
-        index: Register.currentPage, // always 0 at the start of any new widget (duh)
+        index: StackPageHandler.currentPage, // always 0 at the start of any new widget (duh)
         children: <Widget>[
           TagSelection.settings(
-            switchPage: () => switchToNextPage(Register.topPageIndex),
-            animationController: _controller,
+            switchPage: () => switchToNextPage(StackPageHandler.topPageIndex),
+            animationController: StackPageHandler.settingsController,
           ),
           Container(
             color: greyColor,
@@ -208,10 +205,9 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                             }
                           }
 
-                          await auth.deleteCurrentFirebaseUser();
                           await ImageService().deleteImage(currentUser.photoURL);
                           await database.deleteUser();
-                          await auth.logout();
+                          await auth.deleteCurrentFirebaseUser();
                           logger.i('Settings: User w/ id "' +
                               currentUser.uid +
                               '" has been deleted.');

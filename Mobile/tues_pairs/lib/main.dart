@@ -1,3 +1,6 @@
+import 'package:tues_pairs/modules/tag.dart';
+import 'package:tues_pairs/screens/register/extern_register.dart';
+import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +32,7 @@ class App extends StatelessWidget {
       value: _auth.user, // create an instance of AuthListener() and set the value of the stream listener to the user stream (and auth.onAuthStateChanged gives that)
       child: MaterialApp( // Now MaterialApp, AuthListener, and all future widgets will have access to the value in the StreamProvider (cross-widget communication!)
         key: Key(Keys.app),
+        title: 'TUESPairs',
         home: AuthListener()
       )
     );

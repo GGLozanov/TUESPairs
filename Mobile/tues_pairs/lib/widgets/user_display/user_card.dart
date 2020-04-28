@@ -15,9 +15,28 @@ class UserCard extends StatefulWidget {
   final NetworkImage userImage;
   final List<TagCard> tagCards;
   final int listIndex;
+  final User currentUser;
 
-  UserCard({this.key, this.user, this.onSkip, this.onMatch,
-    this.userImage, this.listIndex, this.tagCards}) : super(key: key);
+  bool hasUserSentMatchRequestToCurrent;
+
+  UserCard({
+    this.key,
+    @required this.user,
+    @required this.onSkip,
+    @required this.onMatch,
+    this.userImage,
+    @required this.listIndex,
+    this.tagCards,
+    @required this.currentUser
+  }) :
+    assert(user != null),
+    assert(onSkip != null),
+    assert(onMatch != null),
+    assert(listIndex != null),
+    assert(currentUser != null),
+    super(key: key) {
+    hasUserSentMatchRequestToCurrent = currentUser.uid == user.matchedUserID;
+  }
 
   @override
   bool operator ==(other) {
@@ -43,7 +62,7 @@ class _UserCardState extends State<UserCard> {
           borderRadius: BorderRadius.circular(20.0),
         ),
         elevation: 5.0,
-        color: darkGreyColor,
+        color: widget.hasUserSentMatchRequestToCurrent ? Colors.black54 : darkGreyColor,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -87,7 +106,15 @@ class _UserCardState extends State<UserCard> {
                     fontSize: 22,
                     fontWeight: FontWeight.bold
                   ),
-                ) : SizedBox(),
+                ) : SizedBox(height: 5.0),
+                widget.hasUserSentMatchRequestToCurrent ? Text(
+                  'User has sent a match request to you!',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 19,
+                      fontWeight: FontWeight.bold
+                  ),
+                ) : SizedBox()
               ]
             ),
             SizedBox(height: 10.0),
