@@ -55,10 +55,16 @@ const config = {
     currentUser = snapshot => {
         const firebaseUser = snapshot.data();
         const tags = this.getUserTags(firebaseUser.tagIDs);
+        let uid = null;
+        if(this.auth.currentUser.uid == null) {
+            uid = null;
+        } else {
+            uid = this.auth.currentUser.uid;
+        }
 
         return {
             ...firebaseUser,
-            uid: this.auth.currentUser.uid,
+            uid: uid,
             tags: tags,
         };
     }
