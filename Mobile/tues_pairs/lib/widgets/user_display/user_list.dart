@@ -13,6 +13,8 @@ import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_card.dart';
 import 'package:tues_pairs/widgets/user_display/user_card.dart';
 
+import '../../services/database.dart';
+
 class UserList extends StatefulWidget {
 
   final Function reinitializeMatch;
@@ -35,6 +37,13 @@ class _UserListState extends State<UserList> {
   List<UserCard> userCards;
 
   final _animatedListKey = GlobalKey<AnimatedListState>(); // key used to follow our animated list through its states
+
+  bool isRequestingOneOfMatched(User currentUser, User matchedUser, User matchedWithEitherUser) {
+    return (matchedWithEitherUser.matchedUserID == currentUser.uid
+        && matchedWithEitherUser.uid != matchedUser.uid)
+        || (matchedWithEitherUser.matchedUserID == matchedUser.uid
+        && matchedWithEitherUser.uid != currentUser.uid);
+  }
 
   bool isUserRenderableForCurrent(User currentUser, User user) {
     return currentUser.isTeacher != user.isTeacher
@@ -117,6 +126,7 @@ class _UserListState extends State<UserList> {
           )
         );
     });
+
   }
 
   UserCard buildUserCard(User currentUser, int userIndex, User user, {int initialListIndex}) {
@@ -128,10 +138,22 @@ class _UserListState extends State<UserList> {
       userImage: images[userIndex],
       tagCards: tagCards[userIndex],
       onMatch: () async {
+        
         if (currentUser.matchedUserID == null) {
           logger.i('UserList: Current user w/ id "' + currentUser.uid +
               '" is matched with user w/ id + "' + user.uid + '"');
           currentUser.matchedUserID = user.uid;
+
+          if(user.matchedUserID == currentUser.uid) {
+            for(int i = 0; i < users.length; i++) {
+              if(isRequestingOneOfMatched(currentUser, user, users[i])){
+                Database requestingUserDB = new Database(uid: users[i].uid);
+                users[i].matchedUserID = null;
+                requestingUserDB.updateUserData(users[i]);
+              }
+            }
+          }
+
           await database.updateUserData(currentUser); // optimise later maybe
         }
 
@@ -143,6 +165,11 @@ class _UserListState extends State<UserList> {
       },
       onSkip: () async {
         currentUser.skippedUserIDs.add(user.uid);
+        if(user.matchedUserID == currentUser.uid) {
+          Database skippedUserDB = new Database(uid: user.uid);
+          user.matchedUserID = null;
+          skippedUserDB.updateUserData(user);
+        }
         await database.updateUserData(currentUser); // optimise later maybe
         users.remove(user);
 

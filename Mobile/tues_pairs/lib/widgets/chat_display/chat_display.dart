@@ -37,10 +37,16 @@ class _ChatDisplayState extends State<ChatDisplay> {
 
     User currentUser = Provider.of<User>(context);
     User matchedUser = widget.matchedUser;
-    DateFormat formatter = new DateFormat().add_yMd().add_jm();
-  
+    DateFormat formatterDateAndTime = new DateFormat().add_yMd().add_jm();
+    DateFormat formatterDate = new DateFormat().add_yMd();
+    String previousDate = null;
+    String today = formatterDate.format(DateTime.now());
+
     List<Widget> messageCards = messages.map((message) {
       DateTime time = DateTime.parse(message.sentTime);
+      String sentTime = formatterDateAndTime.format(time);
+      String sentDate = formatterDate.format(time);
+
       if((message.fromId == currentUser.uid && message.toId == matchedUser.uid) || (message.fromId == matchedUser.uid && message.toId == currentUser.uid)) {
         bool isMe = message.fromId == currentUser.uid;
 
@@ -50,15 +56,49 @@ class _ChatDisplayState extends State<ChatDisplay> {
             currentUser.uid + '" and matched user w/ uid "' + matchedUser.uid + '"'
         );
 
+        MessageCard messageCard = MessageCard(
+          mid: message.mid,
+          content: message.content,
+          fromId: message.fromId,
+          toId: message.toId,
+          sentTime: sentTime,
+          isMe: isMe,
+          matchedUser: isMe ? null : matchedUser,
+        );
+
+
+        if(previousDate == null || previousDate != sentDate) {
+          previousDate = sentDate;
+          return Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                child: Text(
+                  sentDate == today ? "Today" : sentDate,
+                  style: TextStyle(
+                    color: Colors.white24,
+                  ),
+                ),
+              ),
+              messageCard,
+            ],
+          );
+        } else {
+            return messageCard;
+        }
+      
+      /*
         return MessageCard(
           mid: message.mid,
           content: message.content,
           fromId: message.fromId,
           toId: message.toId,
-          sentTime: formatter.format(time),
+          sentTime: formatterDateAndTime.format(time),
           isMe: isMe,
           matchedUser: isMe ? null : matchedUser,
         );
+      }
+      */
       }
       return null;
     }).toList();
