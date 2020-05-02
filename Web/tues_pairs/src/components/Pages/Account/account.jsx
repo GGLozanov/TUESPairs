@@ -37,9 +37,9 @@ class UserProfile extends Component {
     
         this.unsubscribe = this.props.firebase.user(currentUser.uid).get()
         .then(snapshot => {
-            const currentUser = this.props.firebase.currentUser(snapshot);
+            const currentUser = this.props.firebase.getUserFromSnapshot(snapshot);
             log.info("Received current user inside account! Current user is: " + currentUser.toString());
-            this.setState({ photoURL: currentUser.photoURL, username: currentUser.username, tagIDs: currentUser.tagIDs });
+            this.setState({ photoURL: currentUser.photoURL, username: currentUser.username, tagIDs: currentUser.tagIDs, loading: false });
         }).then(() => {
             let tags = [];
             
@@ -49,7 +49,7 @@ class UserProfile extends Component {
                     log.info("Received current user tag inside account! Tag is: " + tag.toString());
                     tags.push(tag.data());
                     
-                    this.setState({ tags, loading: false });
+                    this.setState({ tags });
                 })
             });
         })

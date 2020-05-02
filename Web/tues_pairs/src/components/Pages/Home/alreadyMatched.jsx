@@ -14,7 +14,7 @@ class AlreadyMatched extends Component {
 
         this.state = {
             currentUser: this.props.authUser,
-            matchedUser: this.props.authUser,
+            matchedUser: Object,
             loading: '',
             tags: [],
         }
@@ -26,7 +26,7 @@ class AlreadyMatched extends Component {
 
         this.props.firebase.user(this.props.authUser.uid).get()
         .then(snapshot => {
-            const currentUser = this.props.firebase.currentUser(snapshot);
+            const currentUser = this.props.firebase.getUserFromSnapshot(snapshot);
             log.info("Received current user w/ id " + currentUser.uid);
 
             this.setState({ currentUser });
@@ -34,7 +34,7 @@ class AlreadyMatched extends Component {
             this.props.firebase.user(this.state.currentUser.matchedUserID).get()
             .then(snapshot => {
                 if(snapshot.exists) {
-                    const matchedUser = this.props.firebase.currentUser(snapshot);
+                    const matchedUser = this.props.firebase.getUserFromSnapshot(snapshot);
                     log.info("Received matched user w/ id " + matchedUser.uid + " of current user");
                     
                     this.setState({ matchedUser, loading: false });

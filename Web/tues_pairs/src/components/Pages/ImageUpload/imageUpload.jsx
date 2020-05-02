@@ -42,7 +42,7 @@ class ImageUploadBase extends Component {
 
         this.props.firebase.user(currentUser.uid).get()
         .then(snapshot => {
-            currentUser = this.props.firebase.currentUser(snapshot);
+            currentUser = this.props.firebase.getUserFromSnapshot(snapshot);
 
             this.setState({ currentUser, url: currentUser.photoURL, show: currentUser.photoURL ? true : false });
         }).catch(error => {

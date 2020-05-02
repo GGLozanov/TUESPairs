@@ -43,7 +43,7 @@ class EditPersonalInfo extends Component{
     
         this.unsubscribe = this.props.firebase.user(currentUser.uid).get()
         .then(snapshot => {
-            const currentUser = this.props.firebase.currentUser(snapshot);
+            const currentUser = this.props.firebase.getUserFromSnapshot(snapshot);
 
             this.setState({ photoURL: currentUser.photoURL, email: currentUser.email, tagIDs: currentUser.tagIDs, loading: false });
         }).then(() => {

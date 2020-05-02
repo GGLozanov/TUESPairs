@@ -52,7 +52,7 @@ const config = {
 
     tag = tid => this.db.doc(`tags/${tid}`);
 
-    currentUser = snapshot => { // TODO: Rename to snapshotToUser
+    getUserFromSnapshot = snapshot => {
         const firebaseUser = snapshot.data();
         const tags = this.getUserTags(firebaseUser.tagIDs);
         let uid = null;

@@ -98,7 +98,7 @@ class UserList extends Component {
     if(currentUser.uid) {
     this.props.firebase.user(currentUser.uid).get()
       .then(snapshot => {
-          const currentUser = this.props.firebase.currentUser(snapshot);
+          const currentUser = this.props.firebase.getUserFromSnapshot(snapshot);
 
           this.setState({ currentUser, loading: false });
 
