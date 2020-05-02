@@ -74,17 +74,20 @@ class AlreadyMatched extends Component {
     }
 
     render() {
-        const { matchedUser, loading } = this.state;
+        const { matchedUser, loading, currentUser } = this.state;
+
+        const matched = matchedUser.matchedUserID === currentUser.uid ? true : false;
 
         return(
             <div className="already-matched-page">
                 { loading && <Loading /> }
 
                 <div className="match-text">
-                    <p>You have sent a match request</p>
+                    {!matched &&<p>You have sent a match request to</p>}
+                    {matched &&<p>Congratulations! You are matched with {matchedUser.username} Go ahead and chat</p>}
                 </div>
                 <div className="matched-user-card">
-                    <UserCard user={matchedUser} />
+                    <UserCard user={matchedUser} currentUser={currentUser} />
                 </div>
                 <Button onClick={this.handleCancelMatched} variant="dark">Cancel</Button>
             </div>
