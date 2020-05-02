@@ -40,7 +40,9 @@ class _MessageCardState extends State<MessageCard> {
         currentUser.uid + '"'
     );
   }
-
+  String getMessageInfo() {
+    return widget.isMe ? widget.sentTime + " - " + currentUser.username : widget.matchedUser.username + ' - ' + widget.sentTime;
+  }
   Widget displayImage(User user){
     if(user.photoURL != null) {
       logger.i('MessageCard: Displaying photo of MessageCard w/ mid "' +
@@ -93,7 +95,7 @@ class _MessageCardState extends State<MessageCard> {
       return Padding(
         padding: widget.isMe ? EdgeInsets.only(right: 10.0) : EdgeInsets.only(left: 10.0),
         child: Text(
-          widget.sentTime,
+          getMessageInfo(),
           style: TextStyle(
             color: Colors.white24,
           ),
