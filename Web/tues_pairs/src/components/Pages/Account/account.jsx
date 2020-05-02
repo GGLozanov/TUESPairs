@@ -3,9 +3,11 @@ import { withAuthorization } from '../../Authentication';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import { withFirebase } from '../../Firebase';
-import { Card, Button, Row, ButtonGroup, Spinner } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
 import './style.scss';
 import log from '../../../constants/logger.jsx';
+import TagListView from '../../../constants/tag';
+import Loading from '../../../constants/loading';
 
 const AccountPage = () => (
     <div>
@@ -64,10 +66,7 @@ class UserProfile extends Component {
 
         return(
             <div className="page-main">
-                { loading && 
-                <Spinner animation="border" role="status">
-                <span className="sr-only">Loading...</span>
-                </Spinner> }
+                { loading && <Loading /> }
 
                 <Card bg="dark" style={{ width: '18rem' }} className="profile-card">
                     {hasImage && <Card.Img variant="top" src={photoURL} className="profile-image"/>}
@@ -82,19 +81,7 @@ class UserProfile extends Component {
                         {isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
                         {!isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
                             <div className="tag-list">
-                                <ButtonGroup as={Row}>
-                                    {tags.map(tag => {
-                                        if(tag) {  
-                                            return (
-                                            <Button value={tag.color} style={{backgroundColor: tag.color}} name={tag.tid} onClick={this.setChecked}>
-                                                    {tag.name}
-                                            </Button>
-                                            )
-                                        } else {
-
-                                        }
-                                    })}
-                                </ButtonGroup>
+                                <TagListView tags={tags} />
                             </div>
                         <Button href="/edit_personal_info" variant="dark">Edit your personal info</Button>
                     </Card.Body>

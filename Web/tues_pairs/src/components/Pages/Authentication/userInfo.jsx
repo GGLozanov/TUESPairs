@@ -3,11 +3,12 @@ import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import { withAuthorization } from '../../Authentication';
 import { withFirebase } from '../../Firebase';
-import { FormControl, Form, Button, Spinner, ButtonGroup, Row } from 'react-bootstrap';
+import { FormControl, Form, Button, ButtonGroup, Row } from 'react-bootstrap';
 import './style.scss';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
 import rgbHex from 'rgb-hex';
+import Loading from '../../../constants/loading';
 
 class UserInfo extends Component {
     constructor(props) {
@@ -108,10 +109,7 @@ class UserInfo extends Component {
 
         return (
             <div className="register-page">
-                { loading && 
-                <Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                </Spinner> }
+                { loading && <Loading /> }
 
                 <Form className="user-info" onSubmit={this.onSubmit}>
                     <Form.Group controlId="formBasicPassword">

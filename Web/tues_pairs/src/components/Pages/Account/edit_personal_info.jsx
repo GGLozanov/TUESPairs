@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormControl, Button, Col, Image, Form, Row, Alert, Spinner, InputGroup, ButtonGroup } from 'react-bootstrap';
+import { FormControl, Button, Col, Image, Form, Row, Alert, InputGroup, ButtonGroup } from 'react-bootstrap';
 import { withCurrentUser } from '../../Authentication/context';
 import { compose } from 'recompose';
 import { withFirebase } from '../../Firebase';
@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import { PasswordChangeLink } from '../PasswordForget/passwordchange';
 import rgbHex from 'rgb-hex';
 import log from '../../../constants/logger.jsx';
+import Loading from '../../../constants/loading';
 
 const StudentInfo = () => (
     <div>
@@ -149,7 +150,7 @@ class EditPersonalInfo extends Component{
 
     handleDeleteProfileNotification = () => {
         const show = !this.state.show;
-        log.info("Current user has toggled the delete notification and " + show ? "enabled" : "disabled" + "it");
+        log.info('Current user has toggled the delete notification and' + show ? 'enabled' : 'disabled' + 'it');
         this.setState({ show });
     }
 
@@ -206,10 +207,7 @@ class EditPersonalInfo extends Component{
 
         return(
             <div className="edit-page-info">
-            { loading && 
-                <Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                </Spinner> }
+                { loading && <Loading /> }
                 <div className="profile-editor">
                     <div className="profile-picture">
                         <Col xs={14} md={14}>

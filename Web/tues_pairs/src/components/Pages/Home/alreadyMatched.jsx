@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Card, Row, ButtonGroup, Spinner } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
 import { withAuthorization } from '../../Authentication';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
@@ -7,6 +7,8 @@ import { compose } from 'recompose';
 import './style.scss';
 import { withCurrentUser } from '../../Authentication/context';
 import log from '../../../constants/logger';
+import TagListView from '../../../constants/tag';
+import Loading from '../../../constants/loading';
 
 class AlreadyMatched extends Component {
     constructor(props) {
@@ -16,7 +18,6 @@ class AlreadyMatched extends Component {
             currentUser: this.props.authUser,
             matchedUser: Object,
             loading: '',
-            tags: [],
         }
 
     }
@@ -73,14 +74,11 @@ class AlreadyMatched extends Component {
     }
 
     render() {
-        const { matchedUser, loading, tags } = this.state;
+        const { matchedUser, loading } = this.state;
 
         return(
             <div className="already-matched-page">
-                { loading && 
-                <Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                </Spinner> }
+                { loading && <Loading /> }
 
                 <div className="match-text">
                     <p>You have sent a match request</p>
@@ -99,19 +97,7 @@ class AlreadyMatched extends Component {
                             {matchedUser.isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
                             {!matchedUser.isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
                             <div className="tag-list">
-                                <ButtonGroup as={Row}>
-                                    {tags.map(tag => {
-                                        if(tag) {  
-                                            return (
-                                            <Button value={tag.color} style={{backgroundColor: tag.color}} name={tag.tid} onClick={this.setChecked}>
-                                                    {tag.name}
-                                            </Button>
-                                            )
-                                        } else {
-
-                                        }
-                                    })}
-                                </ButtonGroup>
+                                <TagListView tags={matchedUser.tags} />
                             </div>
                         </Card.Body>
                     </Card>

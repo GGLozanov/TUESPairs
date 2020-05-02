@@ -5,9 +5,11 @@ import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
-import { Button, Card, Row, Spinner, ButtonGroup } from 'react-bootstrap';
+import { Button, Card, Row } from 'react-bootstrap';
 import './style.scss'
 import log from '../../../constants/logger';
+import TagListView from '../../../constants/tag';
+import Loading from '../../../constants/loading';
 
 const HomePage = () => (
     <MatchPage />
@@ -144,10 +146,7 @@ class UserList extends Component {
     
     return(
       <div className="match-page">
-        { loading && 
-        <Spinner animation="border" role="status">
-          <span className="sr-only">Loading...</span>
-        </Spinner> }
+        { loading && <Loading /> }
         
         <div className="user-cards">
             {mappedUsers.map(user => (
@@ -159,19 +158,7 @@ class UserList extends Component {
                       {!isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
                       {isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
                       <div className="tag-list">
-                            <ButtonGroup as={Row}>
-                                {user.tags.map(tag => {
-                                    if(tag) {  
-                                      return (
-                                      <Button value={tag.color} style={{backgroundColor: tag.color}} name={tag.tid} onClick={this.setChecked}>
-                                          {tag.name}
-                                      </Button>
-                                      )
-                                    } else {
-
-                                    }
-                                })}
-                            </ButtonGroup>
+                        <TagListView  tags={user.tags}/>
                       </div>
                       <Button value={user.uid} onClick={this.onMatch} variant="dark">Match</Button>
                       <Button value={user.uid} onClick={this.onSkip} variant="dark">Skip</Button>
