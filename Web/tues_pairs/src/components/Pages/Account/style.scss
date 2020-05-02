@@ -7,6 +7,15 @@
     text-align: center;
     margin-top: 5em;
 
+    a {
+        text-align: center;
+        background-color: rgb(252, 152, 0);
+
+        &:hover {
+            background-color: rgb(211, 127, 0);
+        }
+    }
+
     .profile-card {
         margin: auto;
         box-sizing: border-box;
@@ -39,16 +48,6 @@
                 margin: 5px;
                 color: rgb(252, 152, 0);
                 text-align: center;
-            }
-
-            a {
-                display: block;
-                text-align: center;
-                background-color: rgb(252, 152, 0);
-
-                &:hover {
-                    background-color: rgb(211, 127, 0);
-                }
             }
         }
     }

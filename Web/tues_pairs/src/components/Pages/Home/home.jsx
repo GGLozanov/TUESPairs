@@ -5,11 +5,13 @@ import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
-import { Button, Card, Row } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import './style.scss'
 import log from '../../../constants/logger';
-import TagListView from '../../../constants/tag';
 import Loading from '../../../constants/loading';
+import UserCard from '../../../constants/user_card';
+import { Button } from 'semantic-ui-react';
+
 
 const HomePage = () => (
     <MatchPage />
@@ -125,8 +127,6 @@ class UserList extends Component {
     const { users, loading } = this.state;
 
     let mappedUsers = [];
-
-    const isTeacher = this.props.authUser.isTeacher;
     
     const currentUser = this.state.currentUser;
 
@@ -150,21 +150,14 @@ class UserList extends Component {
         
         <div className="user-cards">
             {mappedUsers.map(user => (
-              <Row xs={14} md={14}>
-                <Card bg="dark" style={{ width: '18rem' }} className="profile-card">
-                  <Card.Img variant="top" src={user.photoURL} className="profile-image"/>
-                  <Card.Body className="profile-body">
-                      <Card.Title>{ user.username }</Card.Title>
-                      {!isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
-                      {isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
-                      <div className="tag-list">
-                        <TagListView  tags={user.tags}/>
-                      </div>
-                      <Button value={user.uid} onClick={this.onMatch} variant="dark">Match</Button>
-                      <Button value={user.uid} onClick={this.onSkip} variant="dark">Skip</Button>
-                  </Card.Body>
-                </Card>
-              </Row>
+              <Col xs={14} md={14}>
+                <UserCard user={user} />
+                <Button.Group>
+                  <Button value={user.uid} onClick={this.onMatch} variant="dark" style={{width: '100%'}, {backgroundColor: 'rgb(252, 152, 0)'}}>Match</Button>
+                  <Button.Or />
+                  <Button value={user.uid} onClick={this.onSkip} variant="dark">Skip</Button>
+                </Button.Group>
+              </Col>
             ))}
       </div>
     </div>

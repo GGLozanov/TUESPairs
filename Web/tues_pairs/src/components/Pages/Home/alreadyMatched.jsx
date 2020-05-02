@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Card } from 'react-bootstrap';
+import { Button} from 'react-bootstrap';
 import { withAuthorization } from '../../Authentication';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
@@ -7,8 +7,8 @@ import { compose } from 'recompose';
 import './style.scss';
 import { withCurrentUser } from '../../Authentication/context';
 import log from '../../../constants/logger';
-import TagListView from '../../../constants/tag';
 import Loading from '../../../constants/loading';
+import UserCard from '../../../constants/user_card';
 
 class AlreadyMatched extends Component {
     constructor(props) {
@@ -84,23 +84,7 @@ class AlreadyMatched extends Component {
                     <p>You have sent a match request</p>
                 </div>
                 <div className="matched-user-card">
-                    <Card bg="dark" style={{ width: '18rem' }} className="profile-card">
-                        {matchedUser.photoURL && <Card.Img variant="top" src={matchedUser.photoURL} className="profile-image"/>}
-                        {!matchedUser.photoURL && 
-                            <Card.Img 
-                                variant="top" 
-                                src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png" 
-                                className="profile-image"
-                            />}                
-                        <Card.Body className="profile-body">
-                            <Card.Title>{ matchedUser.username }</Card.Title>
-                            {matchedUser.isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
-                            {!matchedUser.isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
-                            <div className="tag-list">
-                                <TagListView tags={matchedUser.tags} />
-                            </div>
-                        </Card.Body>
-                    </Card>
+                    <UserCard user={matchedUser} />
                 </div>
                 <Button onClick={this.handleCancelMatched} variant="dark">Cancel</Button>
             </div>
