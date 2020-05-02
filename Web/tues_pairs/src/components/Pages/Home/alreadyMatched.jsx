@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import './style.scss';
 import { withCurrentUser } from '../../Authentication/context';
+import log from '../../../constants/logger';
 
 class AlreadyMatched extends Component {
     constructor(props) {
@@ -26,6 +27,7 @@ class AlreadyMatched extends Component {
         this.props.firebase.user(this.props.authUser.uid).get()
         .then(snapshot => {
             const currentUser = this.props.firebase.currentUser(snapshot);
+            log.info("Received current user w/ id " + currentUser.uid);
 
             this.setState({ currentUser });
         }).then(() => {
@@ -33,6 +35,7 @@ class AlreadyMatched extends Component {
             .then(snapshot => {
                 if(snapshot.exists) {
                     const matchedUser = this.props.firebase.currentUser(snapshot);
+                    log.info("Received matched user w/ id " + matchedUser.uid + " of current user");
                     
                     this.setState({ matchedUser, loading: false });
                 }
@@ -43,7 +46,8 @@ class AlreadyMatched extends Component {
                     this.props.firebase.tag(tid).get()
                     .then(tag => {
                         tags.push(tag.data());
-                        
+                        log.info("Received current tags w/ ids " + tag.toString());
+
                         this.setState({ tags, loading: false });
                     });
                 });
@@ -59,10 +63,11 @@ class AlreadyMatched extends Component {
         }, 
         {merge: true})
         .then(() => {
+            log.info("Current user w/ id " + currentUser.uid + " has cancelled")
             this.props.history.push(ROUTES.HOME);
         })
         .catch(error => {
-            console.error(error);
+            log.error(error);
             this.setState({ error });
         });
     }

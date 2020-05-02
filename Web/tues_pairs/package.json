@@ -9,10 +9,10 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "aes-js": "^3.1.2",
+    "ansi-wrap": "^0.1.0",
     "bootstrap": "^4.4.1",
     "firebase": "^7.11.0",
     "firestore": "^1.1.6",
-    "logger": "0.0.1",
     "mdbreact": "^4.25.6",
     "moment": "^2.24.0",
     "node-sass": "^4.13.1",
@@ -54,5 +54,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "winston": "^3.2.1"
   }
 }

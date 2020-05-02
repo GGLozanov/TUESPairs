@@ -10,6 +10,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import PublishIcon from '@material-ui/icons/Publish';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import './style.scss';
+import log from '../../../constants/logger.jsx';
 
 const ImageUploadPage = () => (
     <ImageUploadForm />
@@ -45,7 +46,7 @@ class ImageUploadBase extends Component {
 
             this.setState({ currentUser, url: currentUser.photoURL, show: currentUser.photoURL ? true : false });
         }).catch(error => {
-            console.error(error);
+            log.error(error);
         })
     }
 
@@ -56,10 +57,11 @@ class ImageUploadBase extends Component {
             photoURL: null,
         }, {merge: true})
         .then(() => {
+            log.info("Current user has cleared their image!");
             this.setState({ url: null, show: !this.state.show });
         })
         .catch(error => {
-            console.error(error);
+            log.error(error);
         });
     }
 
@@ -80,14 +82,14 @@ class ImageUploadBase extends Component {
 
         uploadTask.on('state_changed', 
         (snapshot) => {
-            // progrss function ....
+            // progress function ....
             const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
             this.setState({progress});
         }, 
         (error) => {
             // error function ....
             
-            console.error(error);
+            log.error(error);
         }, 
         () => {
             // complete function ....
@@ -100,7 +102,7 @@ class ImageUploadBase extends Component {
                     this.setState({ progress: 0, image: null, upload: !this.state.upload, show: url ? true : false });
                 })
                 .catch(error => {
-                    console.error(error);
+                    log.error(error);
                 });
             })
         });

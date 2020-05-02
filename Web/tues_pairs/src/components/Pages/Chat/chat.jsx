@@ -9,7 +9,7 @@ import "./style.scss";
 import { Image, Media} from 'react-bootstrap';
 import ScrollableFeed from 'react-scrollable-feed';
 import {FaPaperPlane, FaTrash} from 'react-icons/fa';
-
+import log from '../../../constants/logger';
 
 class Chat extends Component{
 
@@ -50,6 +50,7 @@ class Chat extends Component{
                 this.getMessages = this.props.firebase.messages()
                     .orderBy("sentTime").onSnapshot(snapshot => {
                     let messages = [];
+                    log.info("Received all messages between current user w/ id " + currentUser.uid + " and matched user w/ id " + matchedUser.uid);
                     snapshot.forEach(doc => {
                         let message = { ...doc.data(), mid: doc.id}
                         message.sentTime = moment(message.sentTime).format('LLL');
@@ -82,6 +83,8 @@ class Chat extends Component{
             ...message
         })
 
+        log.info("User has submitted a message " + message.toString());
+
         this.setState({
             content: ""
         })
@@ -94,8 +97,7 @@ class Chat extends Component{
 
         this.props.firebase.db.collection("messages").doc(mid).delete()
         event.preventDefault();
-        
-    
+        log.info("User has deleted a message w/ id " + mid);
     }
 
 

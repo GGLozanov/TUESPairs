@@ -5,6 +5,7 @@ import { withCurrentUser } from '../../Authentication/context';
 import { withFirebase } from '../../Firebase';
 import { Card, Button, Row, ButtonGroup, Spinner } from 'react-bootstrap';
 import './style.scss';
+import log from '../../../constants/logger.jsx';
 
 const AccountPage = () => (
     <div>
@@ -37,6 +38,7 @@ class UserProfile extends Component {
         this.unsubscribe = this.props.firebase.user(currentUser.uid).get()
         .then(snapshot => {
             const currentUser = this.props.firebase.currentUser(snapshot);
+            log.info("Received current user inside account! Current user is: " + currentUser.toString());
             this.setState({ photoURL: currentUser.photoURL, username: currentUser.username, tagIDs: currentUser.tagIDs });
         }).then(() => {
             let tags = [];
@@ -44,6 +46,7 @@ class UserProfile extends Component {
             this.state.tagIDs.forEach(tid => {
                 this.props.firebase.tag(tid).get()
                 .then(tag => {
+                    log.info("Received current user tag inside account! Tag is: " + tag.toString());
                     tags.push(tag.data());
                     
                     this.setState({ tags, loading: false });
