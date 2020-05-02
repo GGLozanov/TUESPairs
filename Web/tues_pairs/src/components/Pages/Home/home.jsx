@@ -124,11 +124,9 @@ class UserList extends Component {
   }
 
   render() {
-    const { users, loading } = this.state;
+    const { users, loading, currentUser } = this.state;
 
     let mappedUsers = [];
-    
-    const currentUser = this.state.currentUser;
 
     for(let i = 0; i < users.length; i++) {
       if(currentUser.isTeacher !== users[i].isTeacher && 
@@ -151,7 +149,7 @@ class UserList extends Component {
         <div className="user-cards">
             {mappedUsers.map(user => (
               <Col xs={14} md={14}>
-                <UserCard user={user} />
+                <UserCard user={user} currentUser={currentUser} />
                 <Button.Group>
                   <Button value={user.uid} onClick={this.onMatch} variant="dark" style={{width: '100%'}, {backgroundColor: 'rgb(252, 152, 0)'}}>Match</Button>
                   <Button.Or />
