@@ -7,6 +7,7 @@ import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
 import { Button, Card, Row, Spinner, ButtonGroup } from 'react-bootstrap';
 import './style.scss'
+import log from '../../../constants/logger';
 
 const HomePage = () => (
     <MatchPage />
@@ -34,10 +35,11 @@ class UserList extends Component {
       }, {merge: true})
       .then(() => {
         this.props.authUser.matchedUserID = currentUser.matchedUserID;
+        log.info("Received current user w/ id " + this.props.authUser.uid + " matched user id " + currentUser.matchedUserID);
         this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE);
       })
       .catch(error => {
-        console.error(error);
+        log.error(error);
       });
     }
     event.preventDefault();
@@ -52,7 +54,7 @@ class UserList extends Component {
       skippedUserIDs: currentUser.skippedUserIDs
     }, {merge: true})
     .catch(error => {
-      console.error(error);
+      log.error(error);
     });
   }
 
@@ -69,7 +71,7 @@ class UserList extends Component {
           doc.data().tagIDs.forEach(tag => {
             if(tag) {
               this.props.firebase.tag(tag).get()
-                .then(inforamtion => {
+                .then(inforamtion => { // TODO: fix typo
                   tags.push(inforamtion.data());
                 })
             }
@@ -101,10 +103,12 @@ class UserList extends Component {
           this.setState({ currentUser, loading: false });
 
           if(currentUser.matchedUserID) {
+            log.info("Current user w/ id " + currentUser.uid + " matched user id " + currentUser.matchedUserID);
             this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE)
           }
 
           if(currentUser.username == null) {
+            log.info("Received current user w/ id " + currentUser.uid + " and null fields. Redirecting him to USER_INFO endpoint.");
             this.props.history.push(ROUTES.USER_INFO);
           }
       });

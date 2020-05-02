@@ -52,11 +52,11 @@ const config = {
 
     tag = tid => this.db.doc(`tags/${tid}`);
 
-    currentUser = snapshot => {
+    currentUser = snapshot => { // TODO: Rename to snapshotToUser
         const firebaseUser = snapshot.data();
         const tags = this.getUserTags(firebaseUser.tagIDs);
         let uid = null;
-        if(this.auth.currentUser.uid == null) {
+        if(this.auth.currentUser === null) {
             uid = null;
         } else {
             uid = this.auth.currentUser.uid;

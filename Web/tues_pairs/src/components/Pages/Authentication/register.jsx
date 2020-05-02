@@ -4,6 +4,7 @@ import { compose } from 'recompose';
 
 import { withFirebase } from '../../Firebase';
 import * as ROUTES from '../../../constants/routes';
+import log from '../../../constants/logger';
 
 import './style.scss';
 
@@ -31,6 +32,7 @@ class SignUpFormBase extends Component {
         this.props.firebase
             .doCreateUserWithEmailAndPassword(email, passwordOne)
             .then(authUser => {
+                log.info("Registered new user w/ id to the Firebase Authentication SDK");
                 this.props.firebase.getCurrentUser().then(currentUser => {
                     authUser = this.props.firebase.db.collection("users").doc(currentUser.uid).set({
                         username: null,
@@ -45,10 +47,12 @@ class SignUpFormBase extends Component {
                 })
             })
             .then(() => {
+                log.info("Current user will be navigated to User info following Authentication");
                 this.setState({ ...INITIAL_STATE });
                 this.props.history.push(ROUTES.USER_INFO);
             })
             .catch(error => {
+                log.error(error);
                 this.setState({ error });
             });
             

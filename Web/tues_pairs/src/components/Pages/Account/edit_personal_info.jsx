@@ -9,6 +9,7 @@ import * as ROUTES from '../../../constants/routes';
 import { Link } from 'react-router-dom';
 import { PasswordChangeLink } from '../PasswordForget/passwordchange';
 import rgbHex from 'rgb-hex';
+import log from '../../../constants/logger.jsx';
 
 const StudentInfo = () => (
     <div>
@@ -95,6 +96,8 @@ class EditPersonalInfo extends Component{
             tagIDs: tagIDs,
         }, {merge: true})
         .then(() => {
+            log.info("Updated current user w/ id edited his settings inside Edit Personal Info page!");
+            log.info(currentUser.uid);
             this.props.firebase.doEmailUpdate(email).then(this.props.history.push(ROUTES.ACCOUNT));
         })
         .catch(error => {
@@ -117,10 +120,11 @@ class EditPersonalInfo extends Component{
             }, 
         {merge: true})
         .then(() => {
+            log.info("Updated current user w/ id " + currentUser.uid + " with a clear of matched user!");
             this.props.history.push(ROUTES.HOME);
         })
         .catch(error => {
-            console.error(error);
+            log.error(error);
             this.setState({ error });
         });
     }
@@ -133,17 +137,19 @@ class EditPersonalInfo extends Component{
         }, 
         {merge: true})
         .then(() => {
+            log.info("Updated current user w/ id ", currentUser.uid, " with a clear of skipped users!");
             this.props.authUser.skippedUserIDs = [];
             this.props.history.push(ROUTES.HOME);
         })
         .catch(error => {
-            console.error(error);
+            log.error(error);
             this.setState({ error });
         });
     }
 
     handleDeleteProfileNotification = () => {
         const show = !this.state.show;
+        log.info("Current user has toggled the delete notification and " + show ? "enabled" : "disabled" + "it");
         this.setState({ show });
     }
 
@@ -181,9 +187,10 @@ class EditPersonalInfo extends Component{
         this.props.firebase.db.collection("users").doc(currentUser.uid).delete()
         .then(this.props.firebase.auth.currentUser.delete())
         .catch(error => {
+            log.error(error);
             this.setState({ error });
         });
-
+        log.info("Current user has successfully been deleted.");
     }
 
     render() {
@@ -317,7 +324,7 @@ class EditPersonalInfo extends Component{
                     <Alert show={this.state.show} variant="success" className="delete-alert">
                         <Alert.Heading>Are you sure you want to delete your profile ?</Alert.Heading>
                             <p>
-                            This changes are final, your account and all its personal data will be deleted permanently.
+                            These changes are final, your account and all its personal data will be deleted permanently.
                             Click the I'm sure button to procceed!
                             </p>
                             <hr />

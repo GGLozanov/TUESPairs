@@ -9,6 +9,7 @@ import './style.scss';
 import { withCurrentUser } from '../../Authentication/context';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import GitHubIcon from '@material-ui/icons/GitHub';
+import log from '../../../constants/logger';
 
 const SignInPage = () => (
   <div>
@@ -32,6 +33,7 @@ class SignInFormBase extends Component {
   handleExternalSignIn = provider => {
     firebase.auth().signInWithPopup(provider)
     .then(result => {
+      log.info("User w/ id has successfully authenticated with external provider!");
       this.props.firebase.user(result.user.uid).get()
       .then(snapshot => {
         if(snapshot.exists) {
@@ -58,10 +60,12 @@ class SignInFormBase extends Component {
     this.props.firebase
       .doSignInWithEmailAndPassword(email, password)
       .then(() => {
+        log.info("User has successfully registered with the Firebase SDK! Redirecting to Home page!");
         this.setState({ ...INITIAL_STATE });
         this.props.history.push(ROUTES.HOME);
       })
       .catch(error => {
+        log.error(error);
         this.setState({ error });
       });
     event.preventDefault();
