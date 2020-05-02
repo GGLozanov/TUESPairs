@@ -8,6 +8,8 @@ import './style.scss';
 import log from '../../../constants/logger.jsx';
 import Loading from '../../../constants/loading';
 import UserCard from '../../../constants/user_card';
+import * as ROUTES from '../../../constants/routes';
+import { withRouter } from 'react-router-dom';
 
 const AccountPage = () => (
     <div>
@@ -35,6 +37,9 @@ class UserProfile extends Component {
         .then(snapshot => {
             const currentUser = this.props.firebase.getUserFromSnapshot(snapshot);
             log.info("Received current user inside account! Current user is: " + currentUser.toString());
+            if(currentUser.username == null) {
+                this.props.history.push(ROUTES.USER_INFO);
+            }
             this.setState({ currentUser, loading: false });
         }).then(() => {
             let tags = [];
@@ -70,6 +75,7 @@ class UserProfile extends Component {
 const condition = authUser => !!authUser;
 
 const UserProfilePage = compose (
+    withRouter,
     withFirebase,
     withCurrentUser,
 )(UserProfile);

@@ -10,6 +10,7 @@ import { Image, Media} from 'react-bootstrap';
 import ScrollableFeed from 'react-scrollable-feed';
 import {FaPaperPlane, FaTrash} from 'react-icons/fa';
 import log from '../../../constants/logger';
+import * as ROUTES from '../../../constants/routes';
 
 class Chat extends Component{
 
@@ -27,7 +28,11 @@ class Chat extends Component{
     componentDidMount() {
         const currentUser = this.state.currentUser;
         let matchedUser = null;
-               
+        
+        if(currentUser.username == null) {
+            this.props.history.push(ROUTES.USER_INFO);
+        }
+
         function filterMessage(message){
             return ((message.fromId === currentUser.uid && message.toId === matchedUser.uid) || (message.fromId === matchedUser.uid && message.toId === currentUser.uid))
         }
