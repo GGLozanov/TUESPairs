@@ -40,7 +40,8 @@ class UserList extends Component {
       .then(() => {
         const users = this.state.users;
         users.forEach(user => {
-          if(user.uid !== currentUser.matchedUserID && user.uid !== currentUser.uid && user.matchedUserID === currentUser.uid) {
+          if(user.uid !== currentUser.matchedUserID && user.uid !== currentUser.uid 
+            && user.matchedUserID === currentUser.uid) {
             this.props.firebase.db.collection("users").doc(user.uid).set({
               matchedUserID: null
             }, {merge: true});
@@ -68,7 +69,8 @@ class UserList extends Component {
     .then(() => {
       const users = this.state.users;
       users.forEach(user => {
-        if(currentUser.skippedUserIDs.includes(user.uid) && user.matchedUserID === currentUser.uid) {
+        if(currentUser.skippedUserIDs.includes(user.uid) 
+        && user.matchedUserID === currentUser.uid) {
           this.props.firebase.db.collection("users").doc(user.uid).set({
             matchedUserID: null
           }, {merge: true})
