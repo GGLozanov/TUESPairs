@@ -38,7 +38,15 @@ class UserList extends Component {
         matchedUserID: currentUser.matchedUserID
       }, {merge: true})
       .then(() => {
-        this.props.authUser.matchedUserID = currentUser.matchedUserID;
+        const users = this.state.users;
+        users.forEach(user => {
+          if(user.uid !== currentUser.matchedUserID && user.uid !== currentUser.uid && user.matchedUserID === currentUser.uid) {
+            this.props.firebase.db.collection("users").doc(user.uid).set({
+              matchedUserID: null
+            }, {merge: true});
+          }
+        })
+
         log.info("Received current user w/ id " + this.props.authUser.uid + " matched user id " + currentUser.matchedUserID);
         this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE);
       })
