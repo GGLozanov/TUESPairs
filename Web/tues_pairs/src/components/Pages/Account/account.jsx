@@ -9,7 +9,7 @@ import log from '../../../constants/logger.jsx';
 import Loading from '../../../constants/loading';
 import UserCard from '../../../constants/user_card';
 import * as ROUTES from '../../../constants/routes';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 
 const AccountPage = () => (
     <div>
@@ -64,7 +64,9 @@ class UserProfile extends Component {
                 { loading && <Loading /> }
 
                 <UserCard user={currentUser} />
-                <Button href="/edit_personal_info" variant="dark">Edit your personal info</Button>
+                <Link to={ROUTES.EDIT_PERSONAL_INFO}>
+                    <Button variant="dark">Edit your personal info</Button>
+                </Link>
             </div>
         )
     }

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { withAuthorization } from '../../Authentication';
 
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import { Button, ProgressBar, Form, Col, Image } from 'react-bootstrap';
@@ -9,8 +9,6 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import PublishIcon from '@material-ui/icons/Publish';
 import './style.scss';
 import log from '../../../constants/logger.jsx';
-
-import * as ROUTES from '../../../constants/routes';
 
 const ImageUploadPage = () => (
     <ImageUploadForm />
@@ -142,11 +140,9 @@ class ImageUploadBase extends Component {
                 </button>}
             </div>
             <div>
-                <Link to={ROUTES.HOME}>
-                    <Button>
-                        Continue
-                    </Button>
-                </Link>
+                <Button href="/account">
+                    Continue
+                </Button>
             </div>
         </div>
         )

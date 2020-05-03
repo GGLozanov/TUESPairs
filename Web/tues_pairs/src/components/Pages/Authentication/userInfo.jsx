@@ -146,6 +146,7 @@ class UserInfo extends Component {
                     </Form.Group>
 
                     <div className="tag-list">
+                        <p>What technologies can you use?</p>
                         <ButtonGroup as={Row}>
                             {tags.map(tag => (
                                 <Button value={tag.color} name={tag.tid} onClick={this.setChecked}>

@@ -104,7 +104,6 @@ class UserList extends Component {
 
       this.setState({
         users,
-        loading: false,
       });
     });
 
@@ -146,17 +145,21 @@ class UserList extends Component {
 
     let mappedUsers = [];
 
-    for(let i = 0; i < users.length; i++) {
-      if(currentUser.isTeacher !== users[i].isTeacher && 
-        !currentUser.skippedUserIDs.includes(users[i].uid) &&
-        (users[i].matchedUserID === null || users[i].matchedUserID === currentUser.uid) &&
-        !users[i].skippedUserIDs.includes(currentUser.uid)){
-        if(users[i].photoURL === null) {
-          users[i].photoURL = "https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png";
-        }
-        mappedUsers.push(users[i]);
-      }
+    if(currentUser === undefined) {
+      return(<Loading />);
     }
+
+    users.forEach(user => {
+      if(currentUser.isTeacher !== user.isTeacher && 
+        !currentUser.skippedUserIDs.includes(user.uid) &&
+        (user.matchedUserID === null || user.matchedUserID === currentUser.uid) &&
+        !user.skippedUserIDs.includes(currentUser.uid)){
+        if(user.photoURL === null) {
+          user.photoURL = "https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png";
+        }
+        mappedUsers.push(user);
+      }
+    })
     
 
     

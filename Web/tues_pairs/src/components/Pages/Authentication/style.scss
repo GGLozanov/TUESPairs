@@ -103,7 +103,12 @@
 
     .tag-list {
       margin: 2rem;
-
+      p {
+        text-align: center;
+        font-size: medium;
+        color: rgb(252, 152, 0);
+        font-weight: bold;
+      }
       button {
         margin: 8px;
         color: white;
