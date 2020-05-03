@@ -57,6 +57,16 @@ class UserList extends Component {
     this.props.firebase.db.collection("users").doc(currentUser.uid).set({
       skippedUserIDs: currentUser.skippedUserIDs
     }, {merge: true})
+    .then(() => {
+      const users = this.state.users;
+      users.forEach(user => {
+        if(currentUser.skippedUserIDs.includes(user.uid) && user.matchedUserID === currentUser.uid) {
+          this.props.firebase.db.collection("users").doc(user.uid).set({
+            matchedUserID: null
+          }, {merge: true})
+        }
+      });
+    })
     .catch(error => {
       log.error(error);
     });
