@@ -5,9 +5,13 @@ import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
-import { Button, Card, Row, Spinner, ButtonGroup } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import './style.scss'
 import log from '../../../constants/logger';
+import Loading from '../../../constants/loading';
+import UserCard from '../../../constants/user_card';
+import { Button } from 'semantic-ui-react';
+
 
 const HomePage = () => (
     <MatchPage />
@@ -34,7 +38,16 @@ class UserList extends Component {
         matchedUserID: currentUser.matchedUserID
       }, {merge: true})
       .then(() => {
-        this.props.authUser.matchedUserID = currentUser.matchedUserID;
+        const users = this.state.users;
+        users.forEach(user => {
+          if(user.uid !== currentUser.matchedUserID && user.uid !== currentUser.uid 
+            && user.matchedUserID === currentUser.uid) {
+            this.props.firebase.db.collection("users").doc(user.uid).set({
+              matchedUserID: null
+            }, {merge: true});
+          }
+        })
+
         log.info("Received current user w/ id " + this.props.authUser.uid + " matched user id " + currentUser.matchedUserID);
         this.props.history.push(ROUTES.ALREADY_MATCHED_PAGE);
       })
@@ -53,6 +66,17 @@ class UserList extends Component {
     this.props.firebase.db.collection("users").doc(currentUser.uid).set({
       skippedUserIDs: currentUser.skippedUserIDs
     }, {merge: true})
+    .then(() => {
+      const users = this.state.users;
+      users.forEach(user => {
+        if(currentUser.skippedUserIDs.includes(user.uid) 
+        && user.matchedUserID === currentUser.uid) {
+          this.props.firebase.db.collection("users").doc(user.uid).set({
+            matchedUserID: null
+          }, {merge: true})
+        }
+      });
+    })
     .catch(error => {
       log.error(error);
     });
@@ -82,7 +106,6 @@ class UserList extends Component {
 
       this.setState({
         users,
-        loading: false,
       });
     });
 
@@ -98,7 +121,7 @@ class UserList extends Component {
     if(currentUser.uid) {
     this.props.firebase.user(currentUser.uid).get()
       .then(snapshot => {
-          const currentUser = this.props.firebase.currentUser(snapshot);
+          const currentUser = this.props.firebase.getUserFromSnapshot(snapshot);
 
           this.setState({ currentUser, loading: false });
 
@@ -120,64 +143,42 @@ class UserList extends Component {
   }
 
   render() {
-    const { users, loading } = this.state;
+    const { users, loading, currentUser } = this.state;
 
     let mappedUsers = [];
 
-    const isTeacher = this.props.authUser.isTeacher;
-    
-    const currentUser = this.state.currentUser;
-
-    for(let i = 0; i < users.length; i++) {
-      if(currentUser.isTeacher !== users[i].isTeacher && 
-        !currentUser.skippedUserIDs.includes(users[i].uid) &&
-        (users[i].matchedUserID === null || users[i].matchedUserID === currentUser.uid) &&
-        !users[i].skippedUserIDs.includes(currentUser.uid)){
-        if(users[i].photoURL === null) {
-          users[i].photoURL = "https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png";
-        }
-        mappedUsers.push(users[i]);
-      }
+    if(currentUser === undefined) {
+      return(<Loading />);
     }
+
+    users.forEach(user => {
+      if(currentUser.isTeacher !== user.isTeacher && 
+        !currentUser.skippedUserIDs.includes(user.uid) &&
+        (user.matchedUserID === null || user.matchedUserID === currentUser.uid) &&
+        !user.skippedUserIDs.includes(currentUser.uid)){
+        if(user.photoURL === null) {
+          user.photoURL = "https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png";
+        }
+        mappedUsers.push(user);
+      }
+    })
     
 
     
     return(
       <div className="match-page">
-        { loading && 
-        <Spinner animation="border" role="status">
-          <span className="sr-only">Loading...</span>
-        </Spinner> }
+        { loading && <Loading /> }
         
         <div className="user-cards">
             {mappedUsers.map(user => (
-              <Row xs={14} md={14}>
-                <Card bg="dark" style={{ width: '18rem' }} className="profile-card">
-                  <Card.Img variant="top" src={user.photoURL} className="profile-image"/>
-                  <Card.Body className="profile-body">
-                      <Card.Title>{ user.username }</Card.Title>
-                      {!isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
-                      {isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
-                      <div className="tag-list">
-                            <ButtonGroup as={Row}>
-                                {user.tags.map(tag => {
-                                    if(tag) {  
-                                      return (
-                                      <Button value={tag.color} style={{backgroundColor: tag.color}} name={tag.tid} onClick={this.setChecked}>
-                                          {tag.name}
-                                      </Button>
-                                      )
-                                    } else {
-
-                                    }
-                                })}
-                            </ButtonGroup>
-                      </div>
-                      <Button value={user.uid} onClick={this.onMatch} variant="dark">Match</Button>
-                      <Button value={user.uid} onClick={this.onSkip} variant="dark">Skip</Button>
-                  </Card.Body>
-                </Card>
-              </Row>
+              <Col xs={14} md={14}>
+                <UserCard user={user} currentUser={currentUser} />
+                <Button.Group>
+                  <Button value={user.uid} onClick={this.onMatch} variant="dark" style={{width: '100%'}, {backgroundColor: 'rgb(252, 152, 0)'}}>Match</Button>
+                  <Button.Or />
+                  <Button value={user.uid} onClick={this.onSkip} variant="dark">Skip</Button>
+                </Button.Group>
+              </Col>
             ))}
       </div>
     </div>

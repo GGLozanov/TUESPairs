@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Card, Row, ButtonGroup, Spinner } from 'react-bootstrap';
+import { Button} from 'react-bootstrap';
 import { withAuthorization } from '../../Authentication';
 import * as ROUTES from '../../../constants/routes';
 import { withRouter } from 'react-router-dom';
@@ -7,6 +7,8 @@ import { compose } from 'recompose';
 import './style.scss';
 import { withCurrentUser } from '../../Authentication/context';
 import log from '../../../constants/logger';
+import Loading from '../../../constants/loading';
+import UserCard from '../../../constants/user_card';
 
 class AlreadyMatched extends Component {
     constructor(props) {
@@ -14,9 +16,8 @@ class AlreadyMatched extends Component {
 
         this.state = {
             currentUser: this.props.authUser,
-            matchedUser: this.props.authUser,
+            matchedUser: Object,
             loading: '',
-            tags: [],
         }
 
     }
@@ -26,7 +27,7 @@ class AlreadyMatched extends Component {
 
         this.props.firebase.user(this.props.authUser.uid).get()
         .then(snapshot => {
-            const currentUser = this.props.firebase.currentUser(snapshot);
+            const currentUser = this.props.firebase.getUserFromSnapshot(snapshot);
             log.info("Received current user w/ id " + currentUser.uid);
 
             this.setState({ currentUser });
@@ -34,7 +35,7 @@ class AlreadyMatched extends Component {
             this.props.firebase.user(this.state.currentUser.matchedUserID).get()
             .then(snapshot => {
                 if(snapshot.exists) {
-                    const matchedUser = this.props.firebase.currentUser(snapshot);
+                    const matchedUser = this.props.firebase.getUserFromSnapshot(snapshot);
                     log.info("Received matched user w/ id " + matchedUser.uid + " of current user");
                     
                     this.setState({ matchedUser, loading: false });
@@ -73,48 +74,20 @@ class AlreadyMatched extends Component {
     }
 
     render() {
-        const { matchedUser, loading, tags } = this.state;
+        const { matchedUser, loading, currentUser } = this.state;
+
+        const matched = matchedUser.matchedUserID === currentUser.uid ? true : false;
 
         return(
             <div className="already-matched-page">
-                { loading && 
-                <Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                </Spinner> }
+                { loading && <Loading /> }
 
                 <div className="match-text">
-                    <p>You have sent a match request</p>
+                    {!matched &&<p>You have sent a match request to</p>}
+                    {matched &&<p>Congratulations! You are matched with {matchedUser.username} Go ahead and chat</p>}
                 </div>
                 <div className="matched-user-card">
-                    <Card bg="dark" style={{ width: '18rem' }} className="profile-card">
-                        {matchedUser.photoURL && <Card.Img variant="top" src={matchedUser.photoURL} className="profile-image"/>}
-                        {!matchedUser.photoURL && 
-                            <Card.Img 
-                                variant="top" 
-                                src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png" 
-                                className="profile-image"
-                            />}                
-                        <Card.Body className="profile-body">
-                            <Card.Title>{ matchedUser.username }</Card.Title>
-                            {matchedUser.isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
-                            {!matchedUser.isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
-                            <div className="tag-list">
-                                <ButtonGroup as={Row}>
-                                    {tags.map(tag => {
-                                        if(tag) {  
-                                            return (
-                                            <Button value={tag.color} style={{backgroundColor: tag.color}} name={tag.tid} onClick={this.setChecked}>
-                                                    {tag.name}
-                                            </Button>
-                                            )
-                                        } else {
-
-                                        }
-                                    })}
-                                </ButtonGroup>
-                            </div>
-                        </Card.Body>
-                    </Card>
+                    <UserCard user={matchedUser} currentUser={currentUser} />
                 </div>
                 <Button onClick={this.handleCancelMatched} variant="dark">Cancel</Button>
             </div>

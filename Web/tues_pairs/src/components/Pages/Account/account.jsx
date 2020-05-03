@@ -3,9 +3,13 @@ import { withAuthorization } from '../../Authentication';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import { withFirebase } from '../../Firebase';
-import { Card, Button, Row, ButtonGroup, Spinner } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import './style.scss';
 import log from '../../../constants/logger.jsx';
+import Loading from '../../../constants/loading';
+import UserCard from '../../../constants/user_card';
+import * as ROUTES from '../../../constants/routes';
+import { withRouter, Link } from 'react-router-dom';
 
 const AccountPage = () => (
     <div>
@@ -18,15 +22,9 @@ class UserProfile extends Component {
         super(props);
 
         this.state = {
-            username: this.props.authUser.username,
-            email: this.props.authUser.email,
-            photoURL: this.props.authUser.photoURL,
-            GPA: this.props.authUser.GPA,
             tags: [],
-            tagIDs: [],
             error: '',
             message: '',
-            users: null,
             loading: true,
         };
     }
@@ -37,68 +35,38 @@ class UserProfile extends Component {
     
         this.unsubscribe = this.props.firebase.user(currentUser.uid).get()
         .then(snapshot => {
-            const currentUser = this.props.firebase.currentUser(snapshot);
+            const currentUser = this.props.firebase.getUserFromSnapshot(snapshot);
             log.info("Received current user inside account! Current user is: " + currentUser.toString());
-            this.setState({ photoURL: currentUser.photoURL, username: currentUser.username, tagIDs: currentUser.tagIDs });
+            if(currentUser.username == null) {
+                this.props.history.push(ROUTES.USER_INFO);
+            }
+            this.setState({ currentUser, loading: false });
         }).then(() => {
             let tags = [];
             
-            this.state.tagIDs.forEach(tid => {
+            currentUser.tagIDs.forEach(tid => {
                 this.props.firebase.tag(tid).get()
                 .then(tag => {
                     log.info("Received current user tag inside account! Tag is: " + tag.toString());
                     tags.push(tag.data());
                     
-                    this.setState({ tags, loading: false });
+                    this.setState({ tags });
                 })
             });
         })
     }
 
     render() {
-        const { username, photoURL, tags, loading} = this.state;
-
-        const isTeacher = this.props.authUser.isTeacher;
-
-        const hasImage = photoURL ? true : false;
+        const { currentUser, loading } = this.state;
 
         return(
             <div className="page-main">
-                { loading && 
-                <Spinner animation="border" role="status">
-                <span className="sr-only">Loading...</span>
-                </Spinner> }
+                { loading && <Loading /> }
 
-                <Card bg="dark" style={{ width: '18rem' }} className="profile-card">
-                    {hasImage && <Card.Img variant="top" src={photoURL} className="profile-image"/>}
-                    {!hasImage && 
-                        <Card.Img 
-                            variant="top" 
-                            src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png" 
-                            className="profile-image"
-                        />}                
-                    <Card.Body className="profile-body">
-                        <Card.Title>{ username }</Card.Title>
-                        {isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
-                        {!isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
-                            <div className="tag-list">
-                                <ButtonGroup as={Row}>
-                                    {tags.map(tag => {
-                                        if(tag) {  
-                                            return (
-                                            <Button value={tag.color} style={{backgroundColor: tag.color}} name={tag.tid} onClick={this.setChecked}>
-                                                    {tag.name}
-                                            </Button>
-                                            )
-                                        } else {
-
-                                        }
-                                    })}
-                                </ButtonGroup>
-                            </div>
-                        <Button href="/edit_personal_info" variant="dark">Edit your personal info</Button>
-                    </Card.Body>
-                </Card>
+                <UserCard user={currentUser} />
+                <Link to={ROUTES.EDIT_PERSONAL_INFO}>
+                    <Button variant="dark">Edit your personal info</Button>
+                </Link>
             </div>
         )
     }
@@ -109,6 +77,7 @@ class UserProfile extends Component {
 const condition = authUser => !!authUser;
 
 const UserProfilePage = compose (
+    withRouter,
     withFirebase,
     withCurrentUser,
 )(UserProfile);

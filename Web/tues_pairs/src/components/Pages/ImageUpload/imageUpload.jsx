@@ -5,10 +5,8 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import { Button, ProgressBar, Form, Col, Image } from 'react-bootstrap';
-import HomeIcon from '@material-ui/icons/Home';
 import CancelIcon from '@material-ui/icons/Cancel';
 import PublishIcon from '@material-ui/icons/Publish';
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import './style.scss';
 import log from '../../../constants/logger.jsx';
 
@@ -42,7 +40,7 @@ class ImageUploadBase extends Component {
 
         this.props.firebase.user(currentUser.uid).get()
         .then(snapshot => {
-            currentUser = this.props.firebase.currentUser(snapshot);
+            currentUser = this.props.firebase.getUserFromSnapshot(snapshot);
 
             this.setState({ currentUser, url: currentUser.photoURL, show: currentUser.photoURL ? true : false });
         }).catch(error => {
@@ -142,13 +140,8 @@ class ImageUploadBase extends Component {
                 </button>}
             </div>
             <div>
-                <Button href="/home">
-                    Go to
-                    <HomeIcon fontSize="large" />
-                </Button>
-                <Button href="/edit_personal_info">
-                    Go to
-                    <AssignmentIndIcon fontSize="large" />
+                <Button href="/account">
+                    Continue
                 </Button>
             </div>
         </div>
