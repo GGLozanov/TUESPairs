@@ -36,6 +36,8 @@ const config = {
     doPasswordUpdate = password =>
         this.auth.currentUser.updatePassword(password);
 
+    doEmailUpdate = email => this.auth.currentUser.updateEmail(email);
+
     // *** User API ***
 
     getCurrentUser = async () => this.auth.currentUser;
@@ -43,7 +45,46 @@ const config = {
     user = uid => this.db.doc(`users/${uid}`);
 
     users = () => this.db.collection(`users`);
+
+    messages = () => this.db.collection(`messages`);
+
+    tags = () => this.db.collection(`tags`);
+
+    tag = tid => this.db.doc(`tags/${tid}`);
+
+    getUserFromSnapshot = snapshot => {
+        const firebaseUser = snapshot.data();
+        let tags = [];
+        if(firebaseUser !== undefined) {
+            tags = this.getUserTags(firebaseUser.tagIDs);
+        }
+        let uid = null;
+        if(this.auth.currentUser === null) {
+            uid = null;
+        } else {
+            uid = this.auth.currentUser.uid;
+        }
+
+        return {
+            ...firebaseUser,
+            uid: uid,
+            tags: tags,
+        };
+    }
     
+    getUserTags = tagIDs => {
+        let tags = [];
+
+        tagIDs.forEach(tag => {
+            this.tag(tag).get()
+            .then(doc => {
+                tags.push({...doc.data(), tid: doc.id });
+            })
+        });
+
+        return tags;
+    }
+
   }
 
   export default Firebase;

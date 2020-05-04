@@ -2,6 +2,7 @@ import React from 'react';
 
 import AuthUserContext from './context';
 import { withFirebase } from '../Firebase';
+import log from '../../constants/logger.jsx';
 
 const withAuthentication = Component => {
     class WithAuthentication extends React.Component {
@@ -17,24 +18,17 @@ const withAuthentication = Component => {
             this.listener = this.props.firebase.auth.onAuthStateChanged(
                 authUser => {
                     if(authUser) {
+                        log.info("Successfully authenticated user a new authUser!");
                         this.props.firebase.user(authUser.uid).get()
                         .then(snapshot => {
-                            const firebaseUser = snapshot.data();
-
-                            //default empty roles
-                            if(!firebaseUser.roles) {
-                                firebaseUser.roles = {};
-                            }
-
-                            authUser = {
-                                uid: authUser.uid,
-                                email: authUser.email,
-                                ...firebaseUser,
-                            };
+                            authUser = this.props.firebase.getUserFromSnapshot(snapshot);
+                            console.log(authUser)
+                            log.info("Successfully garnered current user information!");
 
                             this.setState({ authUser });
                         });
                     } else {
+                        log.info("User not authenticated (authUser). Going to Authenticate!");
                         this.setState({ authUser: null })
                     }
                 }

@@ -1,0 +1,110 @@
+.bg-dark {
+    background-color: rgb(34, 34, 43)!important
+}
+
+.navbar{
+    width: 100%;
+
+    .navbar-brand{
+        img{
+            width: 100px;
+            height: 29.80px;
+        }
+    }
+
+    .navbar-collapse{
+        justify-content: flex-end;
+    }
+
+    .nav-tabs {
+        margin: auto;
+        a{
+            border-top-left-radius: .25rem;
+            border-top-right-radius: .25rem;
+            text-align: center;
+            padding: 1em 2em;
+            text-decoration: none;
+            color: white;
+            align-self: center;
+        }
+
+        .nav-link{
+            border-top-left-radius: .25rem;
+            border-top-right-radius: .25rem;
+            text-align: center;
+            padding: 1em 2em;
+            text-decoration: none;
+            color: white;
+            align-self: center;
+            padding-right: 0;
+            padding-left: 0;
+
+            &:hover{
+                background-color: rgb(252, 152, 0);
+
+                a{
+                    border: 1px solid transparent;
+                    border-bottom: 3px solid transparent;
+                    color: black;
+
+                    &:hover{
+                        background-color: rgb(252,152,0);
+                        color: black;
+                    }
+                }
+            }
+        }
+    
+        .nav-link.active{
+            background-color: rgb(252,152,0);    
+        }
+    }
+
+    button {
+        align-self: center;
+        margin: 10px;
+        font-size: 21px;
+        padding: 5px 20px;
+        border: 0;
+        font-size: small;
+        background-color: rgb(252, 152, 0);
+        color: #fff;
+        border-radius: 3px;
+        transition: all 250ms ease-in-out;
+        cursor: pointer;
+        &:hover {
+          background-color: orange;
+          color: black;
+        }
+        &:focus {
+          outline: none;
+        }
+    }
+}
+
+.site-footer {
+    text-align: end;
+    bottom: 0;
+    color: white;
+    width: 100%;
+
+    hr {
+        margin-left: 40px;
+        margin-right: 40px;
+        border: 0.4px solid white;
+    }
+
+    ul {
+        display: flex;
+        padding: 10px;
+        list-style: none;
+        flex-direction: column;
+        justify-content: center;
+
+        li {
+            align-self: center;
+            font-size: large;
+            font-family: 'Courier New', Courier, monospace;
+        }
+    }
+}
