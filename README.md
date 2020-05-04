@@ -1,5 +1,12 @@
 # TUESPairs
 Pairing up our favourite peers with their favourite teachers.
+
+Last build status: [![Latest Build Status](https://app.bitrise.io/app/65f7e81df01f66b6/status.svg?token=N6j31UVCWpUMdM9_P9tSZQ)](https://app.bitrise.io/app/65f7e81df01f66b6)
+
+master/release: [![master Build Status](https://app.bitrise.io/app/65f7e81df01f66b6/status.svg?token=N6j31UVCWpUMdM9_P9tSZQ&branch=master)](https://app.bitrise.io/app/65f7e81df01f66b6)
+
+Mobile: ![[Mobile Build Status]](https://app.bitrise.io/app/65f7e81df01f66b6/status.svg?token=N6j31UVCWpUMdM9_P9tSZQ&branch=Mobile)
+
 ## 1.	 Идея
 Мобилно + WEB приложение за правене на съответствия между дипломанти от ТУЕС и дипломни ръководители.
  
@@ -39,8 +46,10 @@ Flutter (Google Framework), Dart, Android Studio (Java-based SDK), React (JS Fra
 Git Flow разделен на няколко бранча:
  * master - само и единствено стабилен код готов за deployment
  * Mobile/Web (development) - development бранчове за разработка на general purpose features и мърджване на feature бранчове
- * Development-Feature_Name - feature бранч за разработка на специфични, large-scale features, които се мърджват с development
-Git Flow е избрана заради възможността за колаборация по еднакви feature-и със съотборници и обезопасяването на стабилната част от кода от бъгове и конфликти.
+ * Development-Feature_Name - feature бранч за разработка на специфични, large-scale features, който се мърджва с development
+ * Development-Hotfix_Name - hotfix бранч за оправяне на специфични части от development бранча, който се мърджва с master
+  
+[Git Flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) е избрана заради възможността за колаборация по еднакви feature-и със съотборници и обезопасяването на стабилната част от кода от бъгове и конфликти.
 ## 7.	Database
 Firebase и, by extension, Firestore database и Firebase Storage.
 ## 8.	 Авторизация 
