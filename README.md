@@ -40,7 +40,7 @@ Mobile: ![[Mobile Build Status]](https://app.bitrise.io/app/65f7e81df01f66b6/sta
 
 ## 3. Автори
 * **Георги Лозанов** - Mobile lead програмист - [katapultman](https://github.com/katapultman)
-* **Мариан Бицов** - WEB lead програмист, дизайнер - [marianbitsov23](https://github.com/marianbitsov23)
+* **Мариян Бицов** - WEB lead програмист, дизайнер - [marianbitsov23](https://github.com/marianbitsov23)
 * **Мартин Симов** - WEB и Mobile програмист, дизайнер - [martinsimov10a19](https://github.com/martinsimov10a19)
 
 ## 4.	 Технологии 
