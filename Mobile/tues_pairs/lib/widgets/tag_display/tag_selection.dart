@@ -56,7 +56,8 @@ class _TagSelectionState extends State<TagSelection> {
       child: Column(
         children: <Widget>[
           SizedBox(
-            height: 550.0,
+            height: widget.isCurrentUserAvailable ? MediaQuery.of(context).size.height / 1.8 :
+              MediaQuery.of(context).size.height / 1.5,
             child: Provider<User>.value(
               value: user,
               child: ListView(
@@ -64,7 +65,7 @@ class _TagSelectionState extends State<TagSelection> {
               ),
             ),
           ),
-          SizedBox(height: 50.0),
+          SizedBox(height: MediaQuery.of(context).size.height / 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[

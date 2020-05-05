@@ -80,6 +80,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
           Container(
             color: greyColor,
             child: ListView(
+              key: Key(Keys.settingsListView),
               children: <Widget>[
                 SizedBox(height: 25.0),
                 AvatarWrapper(),

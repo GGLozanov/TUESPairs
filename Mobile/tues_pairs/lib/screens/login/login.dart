@@ -121,118 +121,123 @@ class _LoginState extends State<Login> {
 
       body: Container(
         color: greyColor,
-        child: Form(
-          key: baseAuth.key,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 25.0), // Padding accessed by EdgeInsets
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
-                  child: Text(
-                    'Welcome to TUESPairs',
-                    style: TextStyle(
-                      color: Colors.orange,
-                      fontFamily: 'BebasNeue',
-                      letterSpacing: 1.0,
-                      fontSize: 40.0,
+        child: ListView(
+          children: [
+           Form(
+            key: baseAuth.key,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 25.0), // Padding accessed by EdgeInsets
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                    child: Text(
+                      'Welcome to TUESPairs',
+                      style: TextStyle(
+                        color: Colors.orange,
+                        fontFamily: 'BebasNeue',
+                        letterSpacing: 1.0,
+                        fontSize: 40.0,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 15.0),
-                EmailInputField(
-                  key: Key(Keys.loginEmailInputField),
-                  onChanged: (value) => setState(() => baseAuth.user.email = value),
-                  initialValue: baseAuth.user.email,
-                ),
-                SizedBox(height: 15.0), // SizedBox widget creates an invisible box with a height/width to help separate elements
-                PasswordInputField(
-                  key: Key(Keys.loginPasswordInputField),
-                  onChanged: (value) => setState(() => baseAuth.password = value),
-                ),
-                SizedBox(height: 25.0),
-                InputButton(
-                  key: Key(Keys.logInButton),
-                  minWidth: 250.0,
-                  height: 60.0,
-                  text: 'Log in',
-                  onPressed: () async {
-                    if(baseAuth.key.currentState.validate()) {
-                      setState(() => baseAuth.toggleLoading());
+                  SizedBox(height: 15.0),
+                  EmailInputField(
+                    key: Key(Keys.loginEmailInputField),
+                    onChanged: (value) => setState(() => baseAuth.user.email = value),
+                    initialValue: baseAuth.user.email,
+                  ),
+                  SizedBox(height: 15.0), // SizedBox widget creates an invisible box with a height/width to help separate elements
+                  PasswordInputField(
+                    key: Key(Keys.loginPasswordInputField),
+                    onChanged: (value) => setState(() => baseAuth.password = value),
+                  ),
+                  SizedBox(height: 25.0),
+                  InputButton(
+                    key: Key(Keys.logInButton),
+                    minWidth: 250.0,
+                    height: 60.0,
+                    text: 'Log in',
+                    onPressed: () async {
+                      if(baseAuth.key.currentState.validate()) {
+                        setState(() => baseAuth.toggleLoading());
 
-                      User user = await baseAuth.authInstance.loginUserByEmailAndPassword(baseAuth.user.email, baseAuth.password); // call the login method
+                        User user = await baseAuth.authInstance.loginUserByEmailAndPassword(baseAuth.user.email, baseAuth.password); // call the login method
 
-                      if(user == null) {
-                        logger.w('Login: Failed user login (invalid credentials)');
-                        setState(() {
-                          baseAuth.errorMessages = [];
-                          baseAuth.errorMessages.add('Invalid login credentials');
-                          baseAuth.toggleLoading();
-                        });
-                      } else logger.i('Login: User w/ id "' + user.uid + '" has successfully logged in');
-                    }
-                  },
-                ),
-                SizedBox(height: 30.0),
-                Divider(height: 15.0, thickness: 10.0, color: darkGreyColor),
-                SizedBox(height: 30.0),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    SignInButton(
-                      Buttons.Facebook,
-                      padding: EdgeInsets.symmetric(vertical: 15.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext, signInType: ExternalSignInType.FACEBOOK),
-                    ),
-                    SizedBox(height: 15.0),
-                    SignInButton(
-                      Buttons.Google,
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext),
-                    ),
-                    SizedBox(height: 20.0),
-                    Text(
-                      'Coming Soon',
+                        if(user == null) {
+                          logger.w('Login: Failed user login (invalid credentials)');
+                          setState(() {
+                            baseAuth.errorMessages = [];
+                            baseAuth.errorMessages.add('Invalid login credentials');
+                            baseAuth.toggleLoading();
+                          });
+                        } else logger.i('Login: User w/ id "' + user.uid + '" has successfully logged in');
+                      }
+                    },
+                  ),
+                  SizedBox(height: 20.0),
+                  Column(
+                    children: baseAuth.errorMessages?.map((message) => Text(
+                      "$message",
                       style: TextStyle(
-                        fontFamily: 'BebasNeue',
-                        fontSize: 32.0,
-                        color: Colors.orange,
+                        color: Colors.red,
+                        fontFamily: 'Nilam',
+                        fontSize: 25.0,
                       ),
-                    ),
-                    SizedBox(height: 10.0),
-                    IgnorePointer( // TODO: Add GitHub
-                      child: SignInButton(
-                        Buttons.GitHub,
+                    ))?.toList() ?? [],
+                  ),
+                  SizedBox(height: 30.0),
+                  Divider(height: 15.0, thickness: 10.0, color: darkGreyColor),
+                  SizedBox(height: 30.0),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      SignInButton(
+                        Buttons.Facebook,
                         padding: EdgeInsets.symmetric(vertical: 15.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),
-                        onPressed: () => {},
-                      )
-                    ),
-                  ]
-                ),
-                SizedBox(height: 15.0),
-                Column(
-                  children: baseAuth.errorMessages?.map((message) => Text(
-                    "$message",
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 15.0,
-                    ),
-                  ))?.toList() ?? [],
-                ),
-              ],
-            ),
+                        onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext, signInType: ExternalSignInType.FACEBOOK),
+                      ),
+                      SizedBox(height: 15.0),
+                      SignInButton(
+                        Buttons.Google,
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext),
+                      ),
+                      SizedBox(height: 20.0),
+                      Text(
+                        'Coming Soon',
+                        style: TextStyle(
+                          fontFamily: 'BebasNeue',
+                          fontSize: 32.0,
+                          color: Colors.orange,
+                        ),
+                      ),
+                      SizedBox(height: 10.0),
+                      IgnorePointer( // TODO: Add GitHub
+                        child: SignInButton(
+                          Buttons.GitHub,
+                          padding: EdgeInsets.symmetric(vertical: 15.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          onPressed: () => {},
+                        )
+                      ),
+                    ]
+                  ),
+                ],
+              ),
+            )
           )
-        )
-      ),
+        ],
+       ),
+      )
     );
   }
 }
