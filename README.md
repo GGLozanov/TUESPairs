@@ -36,6 +36,8 @@ Mobile: ![[Mobile Build Status]](https://app.bitrise.io/app/65f7e81df01f66b6/sta
 ### 2.2 WEB-сайт
 Отидете на хостнатия линк: (TBA)
 
+Или си клонирайте репото и го пуснете на localhost чрез `npm i` и после `npm start`.
+
 ## 3. Автори
 * **Георги Лозанов** - Mobile lead програмист - [katapultman](https://github.com/katapultman)
 * **Мариан Бицов** - WEB lead програмист, дизайнер - [marianbitsov23](https://github.com/marianbitsov23)
