@@ -1,7 +1,8 @@
-# TUESPairs
-Pairing up our favourite peers with their favourite teachers.
+![](https://cdn.discordapp.com/attachments/570237847672586270/707178057961570324/Logo_Text.png)
 
-Last build status: [![Latest Build Status](https://app.bitrise.io/app/65f7e81df01f66b6/status.svg?token=N6j31UVCWpUMdM9_P9tSZQ)](https://app.bitrise.io/app/65f7e81df01f66b6)
+# Pairing up our favourite peers with their favourite teachers.
+
+Latest build status: [![Latest Build Status](https://app.bitrise.io/app/65f7e81df01f66b6/status.svg?token=N6j31UVCWpUMdM9_P9tSZQ)](https://app.bitrise.io/app/65f7e81df01f66b6)
 
 master/release: [![master Build Status](https://app.bitrise.io/app/65f7e81df01f66b6/status.svg?token=N6j31UVCWpUMdM9_P9tSZQ&branch=master)](https://app.bitrise.io/app/65f7e81df01f66b6)
 
@@ -9,11 +10,39 @@ Mobile: ![[Mobile Build Status]](https://app.bitrise.io/app/65f7e81df01f66b6/sta
 
 ## 1.	 Идея
 Мобилно + WEB приложение за правене на съответствия между дипломанти от ТУЕС и дипломни ръководители.
- 
-## 2.	 Технологии 
-Flutter (Google Framework), Dart, Android Studio (Java-based SDK), React (JS Framework), Firebase (Google-powered server).
 
-## 3.	 Features
+## 2. Как да си сваля и използвам проекта?
+
+### 2.1 Мобилнo Приложение
+
+### Инструкции за сваляне
+1) Отидете на полето на този сайт (това репо), където се състои информацията за проекта (трябва да пише "къмити"/"commits", "бранчове"/"branches") и намерете таба, където са последните версии ("рилийзес"/"releases")
+2) Натиснете този таб
+3) Намерете най-новата версия на приложението (v1.0, v.2.0, т.н.)
+4) Кликнете върху нея
+5) Изтеглете файла с extension apk и изчакайте да се изтегли
+
+### Инструкции за инсталация
+1) Намерете изтегленото apk (най-вероятно е някъде в известията на телефона ви е изписало)
+2) Натиснете го
+3) Потвърдете всички стъпки за инсталация и инсталирайте приложението
+
+### Инструкции за стартиране на приложението
+1) Намерете приложението на главния екран на телефона си
+2) Натиснете го
+
+### 2.2 WEB-сайт
+Отидете на хостнатия линк: (TBA)
+
+## 3. Автори
+* **Георги Лозанов** - Mobile lead програмист - [katapultman](https://github.com/katapultman)
+* **Мариан Бицов** - WEB lead програмист, дизайнер - [marianbitsov23](https://github.com/marianbitsov23)
+* **Мартин Симов** - WEB и Mobile програмист, дизайнер - [martinsimov10a19](https://github.com/martinsimov10a19)
+
+## 4.	 Технологии 
+Flutter (Google SDK), Dart, Android Studio (Java-based SDK w/ IntelliJ-based IDE), React (JS Framework), Firebase (Google-powered server).
+
+## 5.	 Features
  * 4 модула - дипломанти и ръководители, идеи, тагове:
     * Дипломанти - име, снимка, описание, технологии, които харесва/владее (тагове), статус (зает/незает), описание на конкретна идея (инстанция на 1 модул)
     * Ръководители - име, снимка, описание, технологии, които владеят (тагове), избрани дипломанти (списък от дипломанти)
@@ -28,11 +57,11 @@ Flutter (Google Framework), Dart, Android Studio (Java-based SDK), React (JS Fra
  * Чат м/у дипломант и ръководител
  * Един Database за WEB и Mobile - Firebase сървър, който изпраща информация към Flutter и React приложението.
 
-## 4.	 Milestones
+## 6.	 Milestones
   * Първи Milestone - CRUD операции; Match страница (и на WEB, и на Mobile; възможно е с някой незавършени features).
   * Втори Milestone - Завършена Match страница, CRUD, връзката м/у WEB и Mobile да бъде осъществена, чат.
 
-## 5.	 Final
+## 7.	 Final
   * CRUD операции за всички модули
     *	Регистрация
     *	Логин
@@ -42,7 +71,7 @@ Flutter (Google Framework), Dart, Android Studio (Java-based SDK), React (JS Fra
   * Конфигурирани логове за Android Studio и отделни за WEB
   * Unit Tests
 
-## 6.	 Branching Strategy
+## 8.	 Branching Strategy
 Git Flow разделен на няколко бранча:
  * master - само и единствено стабилен код готов за deployment
  * Mobile/Web (development) - development бранчове за разработка на general purpose features и мърджване на feature бранчове
@@ -50,7 +79,7 @@ Git Flow разделен на няколко бранча:
  * Development-Hotfix_Name - hotfix бранч за оправяне на специфични части от development бранча, който се мърджва с master
   
 [Git Flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) е избрана заради възможността за колаборация по еднакви feature-и със съотборници и обезопасяването на стабилната част от кода от бъгове и конфликти.
-## 7.	Database
+## 9.	Database
 Firebase и, by extension, Firestore database и Firebase Storage.
-## 8.	 Авторизация 
+## 10.	 Авторизация 
 Superuser директор, който да одобрява регистрация за ръководител, среден успех и т.н.
