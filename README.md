@@ -1,4 +1,4 @@
-![](https://cdn.discordapp.com/attachments/570237847672586270/707178057961570324/Logo_Text.png)
+![](https://cdn.discordapp.com/attachments/570237847672586270/707345183708151888/68747470733a2f2f63646e2e646973636f72646170702e636f6d2f6174746163686d656e74732f3537303233373834373637.png)
 
 # Pairing up our favourite peers with their favourite teachers.
 
