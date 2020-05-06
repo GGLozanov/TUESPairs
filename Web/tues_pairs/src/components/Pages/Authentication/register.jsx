@@ -85,20 +85,41 @@ class SignUpFormBase extends Component {
                         <form onSubmit={this.onSubmit}>
                             <div className="form-group">
                                 <label htmlFor="email">Email</label>
-                                <input name="email" value={email} onChange={this.onChange} type="email" placeholder="Enter your email address"/>
+                                <input name="email" 
+                                value={email} 
+                                onChange={this.onChange} 
+                                type="email" 
+                                placeholder="Enter your email address"
+                                aria-label="email"/>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="passwordOne">Password</label>
-                                <input name="passwordOne" value={passwordOne} onChange={this.onChange} type="password" placeholder="Enter your password" minLength="4" maxLength="8"/>
+                                <input name="passwordOne"
+                                    value={passwordOne}
+                                    onChange={this.onChange}
+                                    type="password"
+                                    placeholder="Enter your password"
+                                    minLength="4" 
+                                    maxLength="8"
+                                    aria-label="passwordOne"
+                                />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="passwordTwo">Confirm your password</label>
-                                <input name="passwordTwo" value={passwordTwo} onChange={this.onChange} type="password" placeholder="Confirm your password" minLength="4" maxLength="8"/>
+                                <input name="passwordTwo" 
+                                    value={passwordTwo} 
+                                    onChange={this.onChange} 
+                                    type="password" 
+                                    placeholder="Confirm your password" 
+                                    minLength="4" 
+                                    maxLength="8"
+                                    aria-label="passwordTwo"    
+                                />
                             </div>
                             <div className="error-message">
                                 {error && <p>{error.message}</p>}
                             </div>
-                            <button type="button" className="btn" disabled={isInvalid} onClick={this.onSubmit}>
+                            <button type="button" className="btn" disabled={isInvalid} onClick={this.onSubmit} data-testid="signup-button">
                                 Sign Up
                             </button>
                         </form>
