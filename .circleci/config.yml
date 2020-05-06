@@ -3,15 +3,10 @@ orbs:
   node: circleci/node@1.1.6
 jobs:
   build-and-test:
-    on:
-      push:
-        branches:
-          - master
-          - 'Web'
-      pull-request:
-        branches:
-          - master
-          - 'Web/**'
+    branches:
+      only:
+        - master
+        - /Web-.*/
     executor:
       name: node/default
     steps:
