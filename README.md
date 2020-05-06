@@ -2,11 +2,13 @@
 
 # Pairing up our favourite peers with their favourite teachers.
 
-Latest build status: [![Latest Build Status](https://app.bitrise.io/app/65f7e81df01f66b6/status.svg?token=N6j31UVCWpUMdM9_P9tSZQ)](https://app.bitrise.io/app/65f7e81df01f66b6)
+Latest build status: [![Latest Build Status](https://app.bitrise.io/app/65f7e81df01f66b6/status.svg?token=N6j31UVCWpUMdM9_P9tSZQ)](https://app.bitrise.io/app/65f7e81df01f66b6) [![<katpultan>](https://circleci.com/gh/katapultman/TUESPairs.svg?style=svg)](https://circleci.com/gh/katapultman/TUESPairs)
 
 master/release: [![master Build Status](https://app.bitrise.io/app/65f7e81df01f66b6/status.svg?token=N6j31UVCWpUMdM9_P9tSZQ&branch=master)](https://app.bitrise.io/app/65f7e81df01f66b6)
 
 Mobile: ![[Mobile Build Status]](https://app.bitrise.io/app/65f7e81df01f66b6/status.svg?token=N6j31UVCWpUMdM9_P9tSZQ&branch=Mobile)
+
+WEB: [![<katpultan>](https://circleci.com/gh/katapultman/TUESPairs.svg?style=svg)](https://circleci.com/gh/katapultman/TUESPairs)
 
 ## 1.	 Идея
 Мобилно + WEB приложение за правене на съответствия между дипломанти от ТУЕС и дипломни ръководители.
