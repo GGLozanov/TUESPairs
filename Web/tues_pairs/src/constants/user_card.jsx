@@ -17,12 +17,13 @@ const UserCard = props => {
     }
     return(
         <Card bg="dark" style={{ width: '20.6rem' , borderColor: color}} className="profile-card">
-            {thisUser.photoURL && <Card.Img variant="top" src={thisUser.photoURL} className="profile-image"/>}
+            {thisUser.photoURL && <Card.Img variant="top" src={thisUser.photoURL} className="profile-image" data-testid="profile-image"/>}
             {!thisUser.photoURL && 
                 <Card.Img 
                     variant="top" 
                     src="https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png" 
                     className="profile-image"
+                    data-testid="default-image"
                 />}                
             <Card.Body className="profile-body">
                 <Card.Title>{ thisUser.username }</Card.Title>
