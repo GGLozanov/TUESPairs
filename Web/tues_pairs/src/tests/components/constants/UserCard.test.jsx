@@ -18,6 +18,7 @@ test('User card render parameters', () => {
         photoURL: null,
         username: 'example',
         isTeacher: false,
+        gpa: 5.32,
         tags: tags,
     };
 
@@ -26,6 +27,16 @@ test('User card render parameters', () => {
     );
 
     const defaultImage = container.getByTestId('default-image');
+    const username = container.getByTestId('username');
+    const student = container.getByTestId('student');
+    const gpa = container.getByTestId('gpa');
 
-    expect(defaultImage.src).toBe("https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png")
+    expect(defaultImage.src).toBe("https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png");
+
+    let expected = container.getByText(user.username);
+    expect(expected).toBe(username);
+    expected = container.getByText('Student');
+    expect(expected).toBe(student);
+    expected = container.getByText('GPA:');
+    expect(expected).toBe(gpa);
 })

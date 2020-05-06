@@ -26,10 +26,10 @@ const UserCard = props => {
                     data-testid="default-image"
                 />}                
             <Card.Body className="profile-body">
-                <Card.Title>{ thisUser.username }</Card.Title>
-                {thisUser.isTeacher &&<Card.Subtitle>Teacher</Card.Subtitle>}
-                {!thisUser.isTeacher &&<Card.Subtitle>Student</Card.Subtitle>}
-                {!thisUser.isTeacher &&<Card.Text>GPA: {thisUser.GPA}</Card.Text>}
+                <Card.Title data-testid="username">{ thisUser.username }</Card.Title>
+                {thisUser.isTeacher &&<Card.Subtitle data-testid="teacher">Teacher</Card.Subtitle>}
+                {!thisUser.isTeacher &&<Card.Subtitle data-testid="student">Student</Card.Subtitle>}
+                {!thisUser.isTeacher &&<Card.Text data-testid="gpa">GPA: {thisUser.GPA}</Card.Text>}
                 {show && <Card.Text>User has send you a match request</Card.Text>}
                 <div className="tag-list">
                     <TagListView tags={thisUser.tags} />
