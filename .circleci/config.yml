@@ -20,3 +20,6 @@ workflows:
                 only:
                   - master
                   - /Web-.*/
+                ignore:
+                  - Mobile
+                  - /Mobile-.*/
