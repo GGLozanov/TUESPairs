@@ -45,7 +45,7 @@ class InputFormSettingsState extends State<InputFormSettings> {
                     initialValue: currentUser.username
                 ) : SizedBox(),
               currentUser.email != '' &&
-                  currentUser.email != null && !currentUser.isExternalUser ?
+                  currentUser.email != null && !currentUser.isExternalUser && false ? // TODO: Remove 'false' upon beginning of Settings 2.0
                 EmailInputField(
                     onChanged: (value) => setState(() => currentUser.email = value),
                     initialValue: currentUser.email
