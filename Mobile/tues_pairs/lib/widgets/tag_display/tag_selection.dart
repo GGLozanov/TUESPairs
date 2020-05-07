@@ -50,14 +50,15 @@ class _TagSelectionState extends State<TagSelection> {
 
     final tags = Provider.of<List<Tag>>(context) ?? [];
     final tagCards = mapTagsToTagCards(tags, cardType: TagCardType.SELECTION, user: user);
+    final screenSize = MediaQuery.of(context).size; // can't put in a single var due to required BuildContext param
 
     final tagSelection = Container(
       color: greyColor,
       child: Column(
         children: <Widget>[
           SizedBox(
-            height: widget.isCurrentUserAvailable ? MediaQuery.of(context).size.height / 1.8 :
-              MediaQuery.of(context).size.height / 1.5,
+            height: widget.isCurrentUserAvailable ? screenSize.height / 1.8 :
+              screenSize.height / 1.5, // keep as magic amounts here (no use in using reasonableWidth constant here, will only bring more magic amounts)
             child: Provider<User>.value(
               value: user,
               child: ListView(
@@ -65,7 +66,7 @@ class _TagSelectionState extends State<TagSelection> {
               ),
             ),
           ),
-          SizedBox(height: MediaQuery.of(context).size.height / 15),
+          SizedBox(height: screenSize.height / widgetReasonableHeightMargin),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[

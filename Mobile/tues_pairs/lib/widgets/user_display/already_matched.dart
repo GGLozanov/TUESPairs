@@ -19,9 +19,18 @@ class AlreadyMatched extends StatelessWidget {
             final matchedUser = snapshot.data;
             logger.i('AlreadyMatched: Received matched user w/ id "' + matchedUser.uid + '"'
                 'for current user w/ id "' + currentUser.uid + '"');
+
             return currentUser.matchedUserID == matchedUser.uid && matchedUser.matchedUserID == currentUser.uid 
-                ? centeredText('You are matched with: ' + matchedUser.username + '. Go ahead and chat!')
-                : centeredText('You have sent a match request to: ' + matchedUser.username + '. Why not go ahead and chat with them when they accept it?');
+                ? CenteredText(
+                  text: 'You are matched with: ' +
+                      matchedUser.username +
+                      '. Go ahead and chat!'
+                  )
+                : CenteredText(
+                  text: 'You have sent a match request to: ' +
+                      matchedUser.username +
+                      '. Why not go ahead and chat with them when they accept it?'
+                );
         } else return Loading();
       }
     );

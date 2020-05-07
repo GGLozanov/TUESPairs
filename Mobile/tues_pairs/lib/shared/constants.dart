@@ -63,6 +63,8 @@ class StackPageHandler {
 }
 
 const int EXIT_CODE_SUCCESS = 1;
+const double widgetReasonableHeightMargin = 15.5; // represents the (reasonable) divisor margin for the screen height corresponding a given widget
+const double widgetReasonableWidthMargin = 3.75; // represents the (reasonable) divisor margin for the screen width corresponding a given widget
 
 List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardType.VIEW, User user}) {
   return tags.map((tag) {
@@ -95,7 +97,7 @@ List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardT
   ).toList();
 }
 
-Widget centeredText(String text) {
+Widget CenteredText({String text = ''}) { // acts like a widget, which is why convention is a bit iffy
   return Center(
     child: Padding(
       padding: EdgeInsets.only(left: 10.0, right: 10.0),

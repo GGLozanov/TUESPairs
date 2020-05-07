@@ -39,7 +39,6 @@ class _AvatarState extends State<Avatar> {
   Future setPictureFromCamera() async {
     logger.i('Avatar: User image selection chosen from camera. Awaiting user image selection.');
     var image = await widget.imageService.getImageByCamera();
-    logger.i('Avatar: User image chosen from camera w/ path "' + image.path + '"');
     setImage(image);
   }
 
@@ -73,7 +72,7 @@ class _AvatarState extends State<Avatar> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
           CircleAvatar(
-            radius: 70.0,
+            radius: 80.0,
             backgroundColor: darkGreyColor,
             child: ClipOval(
               child: SizedBox(

@@ -65,6 +65,10 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
     ImageService imageService = new ImageService();
     database = new Database(uid: currentUser.uid);
 
+    final screenSize = MediaQuery.of(context).size;
+    final btnHeight = screenSize.height / widgetReasonableHeightMargin;
+    final btnWidth = screenSize.width / widgetReasonableWidthMargin;
+
     return MultiProvider(
       providers: [
         Provider<User>.value(value: currentUser),
@@ -82,7 +86,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
             child: ListView(
               key: Key(Keys.settingsListView),
               children: <Widget>[
-                SizedBox(height: 25.0),
+                SizedBox(height: 15.0),
                 AvatarWrapper(),
                 InputFormSettings(),
                 SizedBox(height: 15.0),
@@ -90,8 +94,8 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                   padding: const EdgeInsets.only(left: 40.0, right: 40.0),
                   child: InputButton(
                     key: Key(Keys.settingsEditTagsButton),
-                    minWidth: 100.0,
-                    height: 50.0,
+                    minWidth: btnWidth * 1.25, // wider
+                    height: btnHeight, // shorter
                     text: 'Edit tags',
                     onPressed: () {
                       switchToNextPage(0);
@@ -109,8 +113,8 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                       SizedBox(height: 15.0),
                       InputButton(
                         key: Key(Keys.settingsClearMatchedUserButton),
-                        minWidth: 100.0,
-                        height: 50.0,
+                        minWidth: btnWidth,
+                        height: btnHeight,
                         text: currentUser.isTeacher ? 'Clear Student' : 'Clear Teacher',
                         onPressed: () async {
                           // TODO: Use updateUserData from Database here to update matchedUserID
@@ -136,8 +140,8 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                       SizedBox(width: 15.0),
                       InputButton(
                         key: Key(Keys.settingsClearSkippedUsersButton),
-                        minWidth: 100.0,
-                        height: 50.0,
+                        minWidth: btnWidth,
+                        height: btnHeight,
                         text: 'Clear Skipped',
                         onPressed: () async {
                           if(currentUser.skippedUserIDs != []) {
@@ -151,8 +155,8 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                       ),
                       InputButton(
                         key: Key(Keys.settingsSubmitButton),
-                        minWidth: 100.0,
-                        height: 50.0,
+                        minWidth: btnWidth,
+                        height: btnHeight,
                         text: 'Submit',
                         onPressed: () async {
                           // TODO: Use updateUserData from Database here -> done
@@ -190,8 +194,8 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                       // TODO: Implement alertDialog onPressed for Delete button
                       InputButton(
                         key: Key(Keys.settingsDeleteAccountButton),
-                        minWidth: 100.0,
-                        height: 50.0,
+                        minWidth: btnWidth,
+                        height: btnHeight,
                         text: 'Delete',
                         onPressed: () async {
                           for(int i = 0; i < users.length; i++) {
