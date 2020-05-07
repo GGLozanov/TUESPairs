@@ -50,7 +50,10 @@ class _TagSelectionState extends State<TagSelection> {
 
     final tags = Provider.of<List<Tag>>(context) ?? [];
     final tagCards = mapTagsToTagCards(tags, cardType: TagCardType.SELECTION, user: user);
+
     final screenSize = MediaQuery.of(context).size; // can't put in a single var due to required BuildContext param
+    final btnHeight = screenSize.height / (widgetReasonableHeightMargin - 1.25);
+    final btnWidth = screenSize.width / (widgetReasonableWidthMargin - 1.25);
 
     final tagSelection = Container(
       color: greyColor,
@@ -72,8 +75,8 @@ class _TagSelectionState extends State<TagSelection> {
             children: <Widget>[
               InputButton(
                 key: Key(Keys.backButton),
-                minWidth: 150.0,
-                height: 60.0,
+                minWidth:btnWidth,
+                height: btnHeight,
                 text: 'Back',
                 onPressed: () async {
                   // TODO: Optimise without database; keep initial tags separately
@@ -85,8 +88,8 @@ class _TagSelectionState extends State<TagSelection> {
               ),
               InputButton(
                 key: Key(Keys.nextButton),
-                minWidth: 150.0,
-                height: 60.0,
+                minWidth: btnWidth,
+                height: btnHeight,
                 text: 'Confirm tags',
                 onPressed: () {
                   if(widget.isCurrentUserAvailable) database.updateUserData(user);
@@ -99,6 +102,7 @@ class _TagSelectionState extends State<TagSelection> {
       ),
     );
 
+    // TODO: Replace this in Register and here w/ AnimatedSwitcher!!!
     return AnimatedBuilder(
       animation: widget.animationController,
       child: tagSelection,
