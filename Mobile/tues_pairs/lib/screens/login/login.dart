@@ -36,16 +36,12 @@ class _LoginState extends State<Login> {
   final BaseAuth baseAuth = new BaseAuth();
   final GlobalKey _scaffold = GlobalKey(); // global key used to track the scaffold an the currentContext
 
-  List<User> users;
-  List<Tag> tags;
-
   void _configureExternalSignIn(User authUser) {
     baseAuth.user = authUser;
     baseAuth.user.isTeacher = false;
     baseAuth.user.tagIDs = <String>[];
+
     AuthListener.externRegister.baseAuth = baseAuth;
-    AuthListener.externRegister.tags = tags;
-    AuthListener.externRegister.users = users;
     Login.isExternalCreated = true;
   }
 
@@ -78,10 +74,6 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-
-    users = Provider.of<List<User>>(context);
-    tags = Provider.of<List<Tag>>(context);
-
     return baseAuth.isLoading ? Loading() : Scaffold(
       key: _scaffold,
       appBar: AppBar(
