@@ -64,6 +64,7 @@ class Keys {
   static const String settingsSubmitButton = 'settingsSubmitButton';
   static const String settingsDeleteAccountButton = 'settingsDeleteAccountButton';
   static const String settingsEditTagsButton = 'settingsEditTagsButton';
+  static const String settingsListView = 'settingsListView';
   // -------------------------
 
   // -------------------------

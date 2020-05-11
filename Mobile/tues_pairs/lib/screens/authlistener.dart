@@ -30,6 +30,9 @@ class AuthListener extends StatefulWidget {
 }
 
 class _AuthListenerState extends State<AuthListener> {
+
+  final Database database = new Database();
+
   @override
   Widget build(BuildContext context) {
 
@@ -42,38 +45,49 @@ class _AuthListenerState extends State<AuthListener> {
     // user is not auth'd if Provider returns null
     // user is auth'd if Provder returns instance of FirebaseUser (or whichever class we passed as a generic parameter)
 
+    final tags = database.tags;
+    final users = database.users;
+
     // TODO: give callback for here to setState() from register??
     User authUser = Provider.of<User>(context);
 
-    if(authUser != null) {
-      logger.i('AuthListener: Auth user w/ id "' + authUser.uid + '" received');
-      return FutureBuilder<User>( // Get current user here for use down the entire widget tree
-        future: Database(uid: authUser.uid).getUserById(), // the Provider.of() generic method takes context,
-        builder: (context, snapshot) {
-          if(snapshot.connectionState == ConnectionState.done) {
-            final user = snapshot.data;
+    return MultiProvider(
+      providers: [
+        StreamProvider<List<User>>.value(
+          value: users,
+        ),
+        StreamProvider<List<Tag>>.value(
+          value: tags,
+        )
+      ],
+      child: authUser != null ?
+        FutureBuilder<User>( // Get current user here for use down the entire widget tree
+          future: Database(uid: authUser.uid).getUserById(), // the Provider.of() generic method takes context,
+          builder: (context, snapshot) {
+            if(snapshot.connectionState == ConnectionState.done) {
+              final user = snapshot.data;
 
-            if(user == null) {
-              if(!authUser.isExternalUser && !Login.isExternalCreated) {
-                Auth().deleteCurrentFirebaseUser();
-                return Authenticate();
-              } else { // check if there has actually been a user in login
-                AuthListener.externRegister.callback = () => setState(() => {});
-                return AuthListener.externRegister;
+              if(user == null) {
+                if((!authUser.isExternalUser && !Login.isExternalCreated) ||
+                    AuthListener.externRegister.isInvalid()) { // handle both typical user null errors and external user errors (w/ empty externRegister instances)
+                  logger.i('AuthListener: Invalid authUser and/or not logged from extern provider. Deleting user.');
+                  Auth().deleteCurrentFirebaseUser();
+                  return Authenticate();
+                } else { // check if there has actually been a user in login
+                  logger.i('AuthListener: Valid authUser logged from extern provider. Redirecting to extern Registration page.');
+                  AuthListener.externRegister.callback = () => setState(() => {});
+                  return AuthListener.externRegister;
+                }
               }
-            }
 
-            logger.i('AuthListener: Current user w/ username "' + user.username + '" received and authenticated');
-            return Provider<User>.value(
-              value: user,
-              child: Home(),
-            );
-          } else return Loading();
-        }
-      );
-    } else {
-      logger.i('AuthListener: Current user not authenticated and going to authenticate');
-      return Authenticate();
-    }
+              logger.i('AuthListener: Current user w/ username "' + user.username + '" received and authenticated');
+              return Provider<User>.value(
+                value: user,
+                child: Home(),
+              );
+            } else return Loading();
+          }
+      ) : Authenticate(),
+    );
   }
 }

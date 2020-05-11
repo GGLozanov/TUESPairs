@@ -22,4 +22,8 @@ class User {
     return other is User ? uid == other.uid : false;
   }
 
+  bool isInvalid() {
+    return uid == null || email == null || isTeacher == null || username == null;
+  }
+
 }

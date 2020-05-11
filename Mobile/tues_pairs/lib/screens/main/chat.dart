@@ -1,14 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/modules/message.dart';
 import 'package:tues_pairs/widgets/chat_display/chat_display.dart';
-import 'package:tues_pairs/widgets/chat_display/chat_input.dart';
 
 import '../../modules/user.dart';
-import '../../services/database.dart';
-import '../../services/database.dart';
 import '../../services/database.dart';
 import '../../shared/constants.dart';
 import '../loading/loading.dart';
@@ -53,7 +48,9 @@ class _ChatState extends State<Chat> {
 
     return Container(
       color: greyColor,
-      child: currentUser.matchedUserID == null ? centeredText("You are not matched with anyone!") : FutureBuilder<User>(
+      child: currentUser.matchedUserID == null ? CenteredText(
+        text: 'You are not matched with anyone!'
+      ) : FutureBuilder<User>(
         future: database.getUserById(),
         builder: (context, snapshot){
           if(snapshot.connectionState == ConnectionState.done){
@@ -62,7 +59,9 @@ class _ChatState extends State<Chat> {
               value: database.messages,
               child: currentUser.matchedUserID == matchedUser.uid && matchedUser.matchedUserID == currentUser.uid 
                 ? ChatDisplay(matchedUser: matchedUser, messageController: messageController, callback: sendMessage, scrollController: scrollController) 
-                : centeredText("Wait until your request is accepted!")
+                : CenteredText(
+                    text: 'Wait until your request is accepted!'
+                )
             );
           } else return Loading();
         },
