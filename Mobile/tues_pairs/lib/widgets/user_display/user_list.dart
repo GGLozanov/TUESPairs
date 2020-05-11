@@ -224,10 +224,20 @@ class _UserListState extends State<UserList> {
     // access StreamProvider of QuerySnapshots info here
     final currentUser = Provider.of<User>(context);
     final tags = Provider.of<List<Tag>>(context);
+
     users = Provider.of<List<User>>(context) ?? [];
+    users.removeWhere((user) => user.isInvalid()); // removes invalid users w/ no Firestore records in order to not crash app (sync w/ WEB)
+
+    if(users.isEmpty) {
+      return CenteredText(
+        text: 'Whoops, looks like there isn\'t anyone to match with! '
+            'Make sure you haven\'t skipped your potential matches by clearing your skipped users!'
+      );
+    }
+
     bool isFirstBuild = images.isEmpty;
 
-    if (isFirstBuild) { // if list is just initialized (first build run)
+    if(isFirstBuild) { // if list is just initialized (first build run)
       userCards = <UserCard>[];
 
       userList = AnimatedList( // list of users widget

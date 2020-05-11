@@ -69,21 +69,21 @@ class _UserCardState extends State<UserCard> {
           children: <Widget>[
             SizedBox(height: 15.0),
             CircleAvatar(
-              radius: 70.0,
+              radius: 80.0,
               backgroundColor: darkGreyColor, // TODO: Use user photoURL here
               child: ClipOval(
-                  child: SizedBox(
-                    width: 175.0,
-                    height: 400.0,
-                    child: widget.userImage == null ? Icon(
-                      Icons.person,
-                      size: 75.0,
-                      color: Colors.orange,
-                    ) : Image(
-                      image: widget.userImage,
-                      fit: BoxFit.fill,
-                    ),
-                  )
+                child: SizedBox(
+                  width: 175.0,
+                  height: 400.0,
+                  child: widget.userImage == null ? Icon(
+                    Icons.person,
+                    size: 75.0,
+                    color: Colors.orange,
+                  ) : Image(
+                    image: widget.userImage,
+                    fit: BoxFit.fill,
+                  ),
+                )
               ),
             ),
             SizedBox(height: 10.0),

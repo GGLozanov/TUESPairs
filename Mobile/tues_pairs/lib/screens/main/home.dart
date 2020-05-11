@@ -51,16 +51,7 @@ class _HomeState extends State<Home> {
     final users = database.users;
     final tags = database.tags;
 
-    return MultiProvider(
-      providers: [
-        StreamProvider<List<User>>.value(
-          value: users,
-        ),
-        StreamProvider<List<Tag>>.value(
-          value: tags,
-        )
-      ],
-      child: Scaffold(
+    return Scaffold(
         key: Key(Keys.homeScaffold),
         appBar: AppBar(
           backgroundColor: darkGreyColor,
@@ -149,7 +140,6 @@ class _HomeState extends State<Home> {
           onTap: onItemTap,
           backgroundColor: darkGreyColor,
         ),
-      ),
     );
   }
 }

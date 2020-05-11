@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>911913368022-a14cbnuao0o9882t57bt2bj4r10hqiup.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.911913368022-a14cbnuao0o9882t57bt2bj4r10hqiup</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>911913368022-elrva2mfuagv2nqbngblmoc9vuuev1md.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDFFmM8QRNnOvGPLSu4kZaB9CVNfBkBJJQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>911913368022</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.tuesPairs</string>
+	<key>PROJECT_ID</key>
+	<string>tuespairs</string>
+	<key>STORAGE_BUCKET</key>
+	<string>tuespairs.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:911913368022:ios:9a6aa4a6b82ac370208c77</string>
+	<key>DATABASE_URL</key>
+	<string>https://tuespairs.firebaseio.com</string>
+</dict>
+</plist>

@@ -54,6 +54,7 @@ void main() {
     final settingsClearMatchedUserButtonFinder = find.byValueKey(Keys.settingsClearMatchedUserButton);
     final settingsClearSkippedUsersButtonFinder = find.byValueKey(Keys.settingsClearSkippedUsersButton);
     final settingsSubmitButtonFinder = find.byValueKey(Keys.settingsSubmitButton);
+    final settingsListViewFinder = find.byValueKey(Keys.settingsListView);
 
     FlutterDriver driver; // driver that simulates I/O (pointer/tap) operations and general device interation
 
@@ -185,14 +186,20 @@ void main() {
       await driver.tap(button);
     }
 
-    Future<void> navigateToPageAndTapButton(SerializableFinder button, String page) async {
+    Future<void> navigateToPageAndTapButton(SerializableFinder button, String page, {bool needToScroll = false}) async {
       delay(waitDuration);
 
       await navigateToPage(page);
 
       delay(waitDuration);
 
-      await findAndTapButton(button);
+      if(needToScroll) {
+        driver.scrollUntilVisible(settingsListViewFinder, button);
+
+        await driver.waitFor(button);
+
+        await driver.tap(button);
+      } else await findAndTapButton(button);
     }
     // ------------------------
 
@@ -225,11 +232,11 @@ void main() {
 
       await driver.waitFor(matchAnimatedList, timeout: Duration(milliseconds: waitDuration*10));
 
-      delay(waitDuration*5);
+      delay(waitDuration*2);
 
       await findAndTapButton(matchMatchButtonFinder);
 
-      delay(waitDuration*3);
+      delay(waitDuration*2);
 
       await navigateToPageAndTapButton(settingsClearMatchedUserButtonFinder, 'Settings');
 
@@ -250,7 +257,7 @@ void main() {
 
       await findAndTapButton(matchSkipButtonFinder);
 
-      delay(waitDuration*5);
+      delay(waitDuration*2);
 
       await navigateToPageAndTapButton(settingsClearSkippedUsersButtonFinder, 'Settings');
 
@@ -261,7 +268,7 @@ void main() {
     test('sign in, delete', () async {
       await logInWithLoginTestUser();
 
-      await navigateToPageAndTapButton(settingsDeleteAccountButtonFinder, 'Settings');
+      await navigateToPageAndTapButton(settingsDeleteAccountButtonFinder, 'Settings', needToScroll: true);
 
     });
 
