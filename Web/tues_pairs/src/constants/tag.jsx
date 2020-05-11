@@ -7,7 +7,7 @@ const TagListView = tags => {
             <ButtonGroup as={Row}>
                 {tags.tags.map(tag => {  
                     return (
-                    <Button value={tag.color} style={{backgroundColor: tag.color}} name={tag.tid}>
+                    <Button value={tag.color} style={{backgroundColor: tag.color}} name={tag.tid} data-testid={tag.name}>
                         {tag.name}
                     </Button>
                     )
