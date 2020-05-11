@@ -19,7 +19,6 @@ workflows:
               branches:
                 only:
                   - master
-                  - /^Web-.*/
+                  - Web
                 ignore:
                   - Mobile
-                  - /^Mobile-.*/
