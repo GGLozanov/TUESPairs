@@ -60,7 +60,7 @@ class SignInFormBase extends Component {
     this.props.firebase
       .doSignInWithEmailAndPassword(email, password)
       .then(() => {
-        log.info("User has successfully registered with the Firebase SDK! Redirecting to Home page!");
+        log.info("User has successfully logged in with the Firebase SDK! Redirecting to Home page!");
         this.setState({ ...INITIAL_STATE });
         this.props.history.push(ROUTES.HOME);
       })
@@ -91,11 +91,11 @@ class SignInFormBase extends Component {
             <form onSubmit={this.onSubmit}>
               <div className="form-group">
                 <label htmlFor="email">Email</label>
-                <input name="email" value={email} onChange={this.onChange} type="email" placeholder="Email Address" />
+                <input name="email" value={email} onChange={this.onChange} type="email" placeholder="Email Address" aria-label="email"/>
               </div>
               <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <input name="password" value={password} onChange={this.onChange} type="password" placeholder="Password"/>
+                <input name="password" value={password} onChange={this.onChange} type="password" placeholder="Password" aria-label="password"/>
               </div>
               <div className="error-message">
                 {error && <p>{error.message}</p>}
@@ -104,7 +104,7 @@ class SignInFormBase extends Component {
           </div>
         </div>
         <div className="footer">
-          <button type="button" className="btn" disabled={isInvalid} onClick={this.onSubmit}>
+          <button type="button" className="btn" disabled={isInvalid} onClick={this.onSubmit} data-testid="signin-button">
             Login
           </button>
         </div>
