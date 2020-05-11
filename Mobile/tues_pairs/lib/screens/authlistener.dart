@@ -68,7 +68,6 @@ class _AuthListenerState extends State<AuthListener> {
               final user = snapshot.data;
 
               if(user == null) {
-                print('user null: isExtern: ${!authUser.isExternalUser}; isExternCreated (Login): ${!Login.isExternalCreated}; isInvalid: ${ AuthListener.externRegister.isInvalid()}');
                 if((!authUser.isExternalUser && !Login.isExternalCreated) ||
                     AuthListener.externRegister.isInvalid()) { // handle both typical user null errors and external user errors (w/ empty externRegister instances)
                   logger.i('AuthListener: Invalid authUser and/or not logged from extern provider. Deleting user.');
