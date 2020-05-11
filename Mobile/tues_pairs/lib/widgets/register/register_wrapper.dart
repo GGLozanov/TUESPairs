@@ -67,7 +67,9 @@ class _RegisterWrapperState extends State<RegisterWrapper> with SingleTickerProv
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // executes whenever the app has been detached (put in the background), destroyed, resumed, etc.
     // in this specific instance, whenever it is detached (Android term) and inactive (iOS term)
-    if(state == AppLifecycleState.detached || state == AppLifecycleState.inactive) {
+    if((state == AppLifecycleState.detached ||
+        state == AppLifecycleState.inactive) &&
+          widget.isExternalRegister) {
       Navigator.pop(context); // remove the page from the widget tree and rebuild without it upon entering
       // avoids setState() exception during build() call for AuthListener
     }
