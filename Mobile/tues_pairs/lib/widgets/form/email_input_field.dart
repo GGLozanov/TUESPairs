@@ -5,7 +5,12 @@ import 'package:tues_pairs/widgets/form/input_field.dart';
 
 class EmailInputField extends InputField {
 
-  EmailInputField({Key key, Function onChanged, String initialValue}) : super(key: key, onChanged: onChanged, initialValue: initialValue);
+  EmailInputField({
+    Key key,
+    @required Function onChanged,
+    @required String initialValue,
+    int maxLines
+  }) : super(key: key, onChanged: onChanged, initialValue: initialValue, maxLines: maxLines);
 
   @override
   Widget build(BuildContext context) {

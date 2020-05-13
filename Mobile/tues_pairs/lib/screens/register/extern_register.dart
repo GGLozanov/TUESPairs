@@ -21,17 +21,8 @@ class ExternRegister extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold( // Scaffold grants the material design palette and general layout of the app (properties like appBar)
       backgroundColor: greyColor,
-      appBar: AppBar(
-        backgroundColor: darkGreyColor,
-        title: Text(
-          'Register',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 40.0,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
-          )
-        ),
+      appBar: buildAppBar(
+        pageTitle: 'Register'
       ),
       body: RegisterWrapper.external(baseAuth: baseAuth, imageService: new ImageService(), callback: callback),
     );

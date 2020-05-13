@@ -5,7 +5,12 @@ import 'package:tues_pairs/widgets/form/input_field.dart';
 
 class UsernameInputField extends InputField {
 
-  UsernameInputField({Key key, Function onChanged, String initialValue}) : super(key: key, onChanged: onChanged, initialValue: initialValue);
+  UsernameInputField({
+    Key key,
+    @required Function onChanged,
+    String initialValue,
+    int maxLines
+  }) : super(key: key, onChanged: onChanged, initialValue: initialValue, maxLines: maxLines);
 
   @override
   Widget build(BuildContext context) {

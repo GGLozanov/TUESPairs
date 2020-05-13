@@ -53,9 +53,7 @@ class _LoginState extends State<Login> {
         // handle faceboook sign-in w/ auth here...
         baseAuth.authInstance.loginWithFacebook().then((authUser) =>
             _configureExternalSignIn(authUser)
-        ).catchError((e) =>
-            logger.w('Login: User has cancelled/failed Facebook Sign-In. Rerendering login page')
-        );
+        ).catchError((e) => logger.w('Login: User has cancelled/failed Facebook Sign-In. Rerendering login page'));
         break;
       case ExternalSignInType.GITHUB:
         // handle github sign-in w/ auth here...
@@ -76,17 +74,8 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return baseAuth.isLoading ? Loading() : Scaffold(
       key: _scaffold,
-      appBar: AppBar(
-        backgroundColor: darkGreyColor,
-        title: Text(
-          'Login',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 40.0,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
-          )
-        ),
+      appBar: buildAppBar(
+        pageTitle: 'Login',
         actions: <Widget>[
           FlatButton.icon(
             key: Key(Keys.toggleToRegisterButton),
@@ -130,6 +119,7 @@ class _LoginState extends State<Login> {
                         fontFamily: 'BebasNeue',
                         letterSpacing: 1.0,
                         fontSize: 40.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -143,6 +133,7 @@ class _LoginState extends State<Login> {
                   PasswordInputField(
                     key: Key(Keys.loginPasswordInputField),
                     onChanged: (value) => setState(() => baseAuth.password = value),
+                    hintText: 'Enter a password',
                   ),
                   SizedBox(height: 25.0),
                   InputButton(

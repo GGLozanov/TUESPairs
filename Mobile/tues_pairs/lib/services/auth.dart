@@ -53,10 +53,9 @@ class Auth {
             default: break;
           }
         }
-        return isExternPlatform
-            ? firebaseUserToUser(user, isExtern: true)
-            : firebaseUserToUser(user);
+        return firebaseUserToUser(user, isExtern: isExternPlatform);
       }
+
       return firebaseUserToUser(user);
     });
     // getter method which returns whether Auth State has changed (returns null if it hasn't)

@@ -37,30 +37,12 @@ class RegisterWrapper extends StatefulWidget {
   _RegisterWrapperState createState() => _RegisterWrapperState();
 }
 
-class _RegisterWrapperState extends State<RegisterWrapper> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+class _RegisterWrapperState extends State<RegisterWrapper> with WidgetsBindingObserver {
 
   void switchPage({bool isLoading = false}) {
     // replace current stack widget with reverse stack widget
     // with animation
     setState(() { if(isLoading) widget.baseAuth.toggleLoading(); });
-  }
-
-  @override
-  void dispose() {
-    StackPageHandler.registerController.dispose();
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    StackPageHandler.registerController = new AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 2),
-    );
-    StackPageHandler.registerController.forward();
   }
 
   @override
@@ -77,26 +59,24 @@ class _RegisterWrapperState extends State<RegisterWrapper> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
+    final registerForm = Align(
+      alignment: Alignment.center,
+      child: widget.isExternalRegister ?
+        RegisterForm.externalSignIn(
+          switchPage: switchPage,
+          callback: widget.callback,
+        ) :
+        RegisterForm(
+          switchPage: switchPage,
+        ),
+    );
+
     return MultiProvider(
       providers: [
         Provider<BaseAuth>.value(value: widget.baseAuth),
         Provider<ImageService>.value(value: widget.imageService),
       ],
-      child: IndexedStack(
-        index: StackPageHandler.currentPage,
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: TagSelection(switchPage: switchPage, animationController: StackPageHandler.registerController,),
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: widget.isExternalRegister ?
-            RegisterForm.externalSignIn(switchPage: switchPage, animationController: StackPageHandler.registerController, callback: widget.callback,) :
-              RegisterForm(switchPage: switchPage, animationController: StackPageHandler.registerController,),
-          ),
-        ],
-      ),
+      child: registerForm
     );
   }
 }

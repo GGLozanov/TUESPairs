@@ -30,18 +30,8 @@ class _RegisterState extends State<Register> {
     return baseAuth.isLoading ? Loading() : Scaffold( // Scaffold grants the material design palette and general layout of the app (properties like appBar)
       key: Key(Keys.registerScaffold),
       backgroundColor: greyColor,
-      appBar: AppBar(
-        backgroundColor: darkGreyColor,
-        title: Text(
-          'Register',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 40.0,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
-          )
-        ),
-        // actions take a list of Widgets and are used to display available actions on the AppBar
+      appBar: buildAppBar(
+        pageTitle: 'Register',
         actions: <Widget>[
           FlatButton.icon(
             key: Key(Keys.toggleToLoginButton),
