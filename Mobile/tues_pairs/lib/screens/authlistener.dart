@@ -67,10 +67,6 @@ class _AuthListenerState extends State<AuthListener> {
             if(snapshot.connectionState == ConnectionState.done) {
               final user = snapshot.data;
 
-              // give authUser info to user here
-              user.isExternalUser = authUser.isExternalUser;  // used in settings
-              // may need to pass more info later
-
               if(user == null) {
                 if((!authUser.isExternalUser && !Login.isExternalCreated) ||
                     AuthListener.externRegister.isInvalid()) { // handle both typical user null errors and external user errors (w/ empty externRegister instances)
@@ -83,6 +79,10 @@ class _AuthListenerState extends State<AuthListener> {
                   return AuthListener.externRegister;
                 }
               }
+
+              // give authUser info to user here
+              user.isExternalUser = authUser.isExternalUser;  // used in settings
+              // may need to pass more info later
 
               logger.i('AuthListener: Current user w/ username "' + user.username + '" received and authenticated');
               return Provider<User>.value(

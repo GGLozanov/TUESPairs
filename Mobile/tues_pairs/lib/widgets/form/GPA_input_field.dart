@@ -9,8 +9,15 @@ class GPAInputField extends InputField {
     Key key,
     @required Function onChanged,
     String initialValue,
+    String hintText = 'Enter GPA throughout 8-12th grade',
     int maxLines
-  }) : super(key: key, onChanged: onChanged, initialValue: initialValue, maxLines: maxLines);
+  }) : super(
+      key: key,
+      onChanged: onChanged,
+      initialValue: initialValue,
+      hintText: hintText,
+      maxLines: maxLines,
+    );
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +28,10 @@ class GPAInputField extends InputField {
       style: textInputColor,
       validator: (value) {
         double GPA = double.tryParse(value);
-        if(GPA == null || value.isEmpty || GPA < 2 || GPA > 6){
+        if(GPA == null || value.isEmpty || GPA < 2 || GPA > 6) {
           return "Incorrect GPA (Range: 2 to 6)";
-        } else {
-          return null;
         }
+        return null;
       },
       keyboardType: TextInputType.number,
       decoration: textInputDecoration.copyWith(
@@ -33,7 +39,7 @@ class GPAInputField extends InputField {
           Icons.border_color,
           color: Colors.orange,
         ),
-        hintText: 'Enter GPA throughout 8-12th grade',
+        hintText: hintText,
       ),
     );
   }

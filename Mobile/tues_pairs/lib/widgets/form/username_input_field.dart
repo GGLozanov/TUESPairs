@@ -9,8 +9,15 @@ class UsernameInputField extends InputField {
     Key key,
     @required Function onChanged,
     String initialValue,
+    String hintText = 'Enter a username',
     int maxLines
-  }) : super(key: key, onChanged: onChanged, initialValue: initialValue, maxLines: maxLines);
+  }) : super(
+      key: key,
+      onChanged: onChanged,
+      initialValue: initialValue,
+      hintText: hintText,
+      maxLines: maxLines
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,7 @@ class UsernameInputField extends InputField {
           Icons.person,
           color: Colors.orange,
         ),
-        hintText: 'Enter a username',
+        hintText: hintText,
       ),
     );
   }

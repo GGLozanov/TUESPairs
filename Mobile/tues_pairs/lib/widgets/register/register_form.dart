@@ -28,7 +28,6 @@ class RegisterForm extends StatefulWidget {
   Function formIsValid;
   Function registerUser;
 
-
   RegisterForm({
     @required this.switchPage,
     this.animationController
@@ -36,27 +35,26 @@ class RegisterForm extends StatefulWidget {
 
     formIsValid = (BaseAuth baseAuth, List<User> users) {
       final FormState formState = baseAuth.key.currentState;
-      bool isValid = true;
 
       baseAuth.errorMessages = [''];
       if(!formState.validate()) {
-        isValid = false;
         logger.w('Register: User is invalid (incorrect data entered)');
         baseAuth.errorMessages.add('Please enter correct data');
+        return false;
       }
       if(usernameExists(baseAuth.user.username, users)) {
-        isValid = false;
         logger.w('Register: User is invalid (username already exists)');
         baseAuth.errorMessages.add('Username exists');
+        return false;
       }
       if(baseAuth.password != baseAuth.confirmPassword) {
-        isValid = false;
         logger.w('Register: User is invalid (passwords do not match)');
         baseAuth.errorMessages.add('Passwords do not match');
+        return false;
       }
 
       logger.i('Register: User is valid');
-      return isValid;
+      return true;
     };
 
     registerUser = (BaseAuth baseAuth,
@@ -65,7 +63,6 @@ class RegisterForm extends StatefulWidget {
 
       if(formIsValid(baseAuth, users)) {
         final FormState formState = baseAuth.key.currentState;
-        formState.save();
 
         switchPage(isLoading: true);
 
@@ -97,22 +94,21 @@ class RegisterForm extends StatefulWidget {
 
     formIsValid = (BaseAuth baseAuth, List<User> users) {
       final FormState formState = baseAuth.key.currentState;
-      bool isValid = true;
 
       baseAuth.errorMessages = [''];
       if(!formState.validate()) {
-        isValid = false;
         logger.w('Register: User is invalid (incorrect data entered)');
         baseAuth.errorMessages.add('Please enter correct data');
+        return false;
       }
       if(usernameExists(baseAuth.user.username, users)) {
-        isValid = false;
         logger.w('Register: User is invalid (username already exists)');
         baseAuth.errorMessages.add('Username exists');
+        return false;
       }
 
       logger.i('Register: User is valid');
-      return isValid;
+      return true;
     };
 
     registerUser = (BaseAuth baseAuth,
@@ -206,7 +202,7 @@ class _RegisterFormState extends State<RegisterForm> {
                             "$message",
                             style: TextStyle(
                               color: Colors.red,
-                              fontSize: 10.0,
+                              fontSize: 20.0,
                             ),
                           ))?.toList() ?? [],
                         ),
@@ -272,7 +268,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       );
                     },
                   ),
-                  Divider(height: 30.0, thickness: 5.0,),
+                  Divider(height: 30.0, thickness: 5.0, color: darkGreyColor),
                   InputButton(
                     key: Key(Keys.registerButton),
                     minWidth: 250.0,
@@ -282,14 +278,12 @@ class _RegisterFormState extends State<RegisterForm> {
                       var result = await widget.registerUser(baseAuth, imageService, users);
                       if(result == null && !widget.isExternalAuth) {
                         // TODO: Reimplement setState(() => {}); threw exception beforehand
-                        baseAuth.errorMessages = [''];
-                        baseAuth.errorMessages.add('There was an error. Please try again.');
-                        baseAuth.toggleLoading();
+                        baseAuth.clearAndAddError('There was an error. Please try again.');
                       }
                     },
                     color: Colors.deepOrange[500],
                   ),
-                  SizedBox(height: 35.0),
+                  SizedBox(height: 20.0),
                   widget.isExternalAuth ? InputButton(
                     key: Key(Keys.externBackButton),
                     minWidth: 300.0,

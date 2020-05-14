@@ -24,6 +24,12 @@ class BaseAuth {
     isLoading = !isLoading;
   }
 
+  void clearAndAddError(String error) {
+    errorMessages = [];
+    errorMessages.add(error);
+    toggleLoading();
+  }
+
   BaseAuth({this.errorMessages});
 
   Auth get authInstance => _authInstance;

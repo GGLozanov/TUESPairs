@@ -7,8 +7,14 @@ class ConfirmPasswordInputField extends InputField {
   ConfirmPasswordInputField({
     Key key,
     @required Function onChanged,
+    String hintText = 'Confirm password',
     int maxLines
-  }) : super(key: key, onChanged: onChanged, maxLines: maxLines);
+  }) : super(
+      key: key,
+      onChanged: onChanged,
+      hintText: hintText,
+      maxLines: maxLines,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +29,7 @@ class ConfirmPasswordInputField extends InputField {
           Icons.repeat,
           color: Colors.orange,
         ),
-        hintText: 'Confirm password',
+        hintText: hintText,
       ),
     );
   }

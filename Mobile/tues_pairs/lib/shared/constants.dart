@@ -102,22 +102,6 @@ List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardT
   ).toList();
 }
 
-Widget CenteredText({String text = ''}) { // acts like a widget, which is why convention is a bit iffy
-  return Center(
-    child: Padding(
-      padding: EdgeInsets.only(left: 10.0, right: 10.0),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.orange,
-          fontSize: 30.0,
-        ),
-        textAlign: TextAlign.center,
-      )
-    ),
-  );
-}
-
 Widget buildAppBar({
   @required pageTitle,
   List<Widget> actions = const []

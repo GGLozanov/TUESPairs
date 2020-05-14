@@ -9,6 +9,7 @@ import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/widgets/form/input_button.dart';
+import 'package:tues_pairs/widgets/general/button_pair.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_card.dart';
 
 class TagSelection extends StatefulWidget {
@@ -62,39 +63,29 @@ class _TagSelectionState extends State<TagSelection> {
               ),
             ),
             SizedBox(height: screenSize.height / widgetReasonableHeightMargin),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                InputButton(
-                  key: Key(Keys.backButton),
-                  minWidth: btnWidth,
-                  height: btnHeight,
-                  text: 'Back',
-                  onPressed: () async {
-                    // TODO: Optimise without database; keep initial tags separately
-                    if(widget.isCurrentUserAvailable) {
-                      currentUser.tagIDs = await database.getUserById()
-                          .then((usr) => usr.tagIDs);
-                    }
+            ButtonPair(
+              leftBtnKey: Key(Keys.backButton),
+              rightBtnKey: Key(Keys.nextButton),
+              btnsHeight: btnHeight,
+              btnsWidth: btnWidth,
+              rightBtnText: 'Confirm Tags', // no need to pass left text because set to default
+              onLeftPressed: () async {
+                if(widget.isCurrentUserAvailable) {
+                  await database.updateUserData(currentUser);
+                }
 
-                    // Pop the route from the stack when called from Settings/Register
-                    Navigator.pop(context);
-                  },
-                ),
-                InputButton(
-                  key: Key(Keys.nextButton),
-                  minWidth: btnWidth,
-                  height: btnHeight,
-                  text: 'Confirm tags',
-                  onPressed: () {
-                    if(widget.isCurrentUserAvailable) {
-                      database.updateUserData(currentUser);
-                    }
+                Navigator.pop(context);
+              },
+              onRightPressed: () async {
+                // TODO: Optimise without database; keep initial tags separately
+                if(widget.isCurrentUserAvailable) {
+                  currentUser.tagIDs = await database.getUserById()
+                      .then((usr) => usr.tagIDs);
+                }
 
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+                // Pop the route from the stack when called from Settings/Register
+                Navigator.pop(context);
+              },
             ),
           ],
         ),

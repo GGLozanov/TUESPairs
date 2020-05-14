@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +16,7 @@ import 'package:tues_pairs/widgets/form/input_button.dart';
 import 'package:tues_pairs/widgets/form/email_input_field.dart';
 import 'package:tues_pairs/widgets/form/password_input_field.dart';
 import 'package:tues_pairs/shared/constants.dart';
+import 'package:tues_pairs/widgets/general/spaced_divider.dart';
 import 'package:tues_pairs/widgets/register/register_form.dart';
 import 'package:tues_pairs/widgets/register/register_wrapper.dart';
 
@@ -150,28 +152,38 @@ class _LoginState extends State<Login> {
                         if(user == null) {
                           logger.w('Login: Failed user login (invalid credentials)');
                           setState(() {
-                            baseAuth.errorMessages = [];
-                            baseAuth.errorMessages.add('Invalid login credentials');
-                            baseAuth.toggleLoading();
+                            baseAuth.clearAndAddError('Invalid login credentials');
                           });
                         } else logger.i('Login: User w/ id "' + user.uid + '" has successfully logged in');
                       }
                     },
                   ),
                   SizedBox(height: 20.0),
+                  GestureDetector(
+                    onTap: () {},  // TODO: Implement reset password
+                    child: Text(
+                      'Reset password?',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontFamily: 'Nilam',
+                        fontStyle: FontStyle.normal,
+                        color: Colors.orange,
+                      )
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
                   Column(
                     children: baseAuth.errorMessages?.map((message) => Text(
                       "$message",
                       style: TextStyle(
                         color: Colors.red,
                         fontFamily: 'Nilam',
+                        fontWeight: FontWeight.bold,
                         fontSize: 25.0,
                       ),
                     ))?.toList() ?? [],
                   ),
-                  SizedBox(height: 30.0),
-                  Divider(height: 15.0, thickness: 10.0, color: darkGreyColor),
-                  SizedBox(height: 30.0),
+                  SpacedDivider(),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -181,7 +193,10 @@ class _LoginState extends State<Login> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),
-                        onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext, signInType: ExternalSignInType.FACEBOOK),
+                        onPressed: () async => await _handleExternalSignIn(
+                            _scaffold.currentContext,
+                            signInType: ExternalSignInType.FACEBOOK
+                        ),
                       ),
                       SizedBox(height: 15.0),
                       SignInButton(
@@ -190,7 +205,9 @@ class _LoginState extends State<Login> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),
-                        onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext),
+                        onPressed: () async => await _handleExternalSignIn(
+                            _scaffold.currentContext
+                        ),
                       ),
                       SizedBox(height: 20.0),
                       Text(

@@ -5,16 +5,19 @@ import 'package:tues_pairs/widgets/form/input_field.dart';
 
 class PasswordInputField extends InputField {
 
-  final String hintText;
-
   PasswordInputField({
     Key key,
     @required Function onChanged,
-    @required this.hintText,
+    @required String hintText,
     int maxLines
   }) : assert(onChanged != null),
        assert(hintText != null),
-        super(key: key, onChanged: onChanged, maxLines: maxLines);
+        super(
+          key: key,
+          onChanged: onChanged,
+          maxLines: maxLines,
+          hintText: hintText
+  );
 
   @override
   Widget build(BuildContext context) {

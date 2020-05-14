@@ -8,9 +8,16 @@ class EmailInputField extends InputField {
   EmailInputField({
     Key key,
     @required Function onChanged,
-    @required String initialValue,
+    String initialValue,
+    String hintText = 'Enter an e-mail',
     int maxLines
-  }) : super(key: key, onChanged: onChanged, initialValue: initialValue, maxLines: maxLines);
+  }) : super(
+      key: key,
+      onChanged: onChanged,
+      initialValue: initialValue,
+      hintText: hintText,
+      maxLines: maxLines
+    );
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,7 @@ class EmailInputField extends InputField {
           Icons.mail,
           color: Colors.orange,
         ),
-        hintText: 'Enter an e-mail',
+        hintText: hintText,
       ),
     );
   }

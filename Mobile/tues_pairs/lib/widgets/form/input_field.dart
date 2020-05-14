@@ -10,12 +10,14 @@ abstract class InputField extends StatelessWidget {
   final Key key;
   final Function onChanged;
   final int maxLines;
+  final String hintText;
   String initialValue;
 
   InputField({
     this.key,
     @required this.onChanged,
     this.initialValue,
+    this.hintText = 'Enter',
     this.maxLines = 1
   }) : assert(onChanged != null),
         super(key: key);
@@ -33,7 +35,7 @@ abstract class InputField extends StatelessWidget {
           Icons.create,
           color: Colors.orange,
         ),
-        hintText: 'Enter GPA throughout 8-12th grade',
+        hintText: hintText,
       ),
     );
   }
