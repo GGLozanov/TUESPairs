@@ -63,7 +63,24 @@ class Keys {
   static const String settingsClearSkippedUsersButton = 'settingsClearSkippedUsersButton';
   static const String settingsSubmitButton = 'settingsSubmitButton';
   static const String settingsDeleteAccountButton = 'settingsDeleteAccountButton';
+  static const String settingsDeleteAccountAlertDialog = 'settingsDeleteAccountAlertDialog';
+  static const String settingsConfirmDeleteAccountButton = 'settingsConfirmDeleteAccountButton';
+
   static const String settingsEditTagsButton = 'settingsEditTagsButton';
+  static const String settingsEditSensitiveButton = 'settingsEditSensitiveButton';
+
+  static const String settingsEmailFormBackButton = 'settingsEmailFormBackButton';
+  static const String settingsEmailFormConfirmButton = 'settingsEmailFormConfirmButton';
+  static const String settingsEmailFormEmailInputField = 'settingsEmailFormEmailInputField';
+  static const String settingsEmailFormPasswordInputField = 'settingsEmailFormPasswordInputField';
+  static const String settingsEmailFormConfirmPasswordInputField = 'settingsEmailFormConfirmPasswordInputField';
+
+  static const String settingsPasswordFormOldPasswordInputField = 'settingsPasswordFormOldPasswordInputField';
+  static const String settingsPasswordFormPasswordInputField = 'settingsPasswordFormPasswordInputField';
+  static const String settingsPasswordFormConfirmPasswordInputField = 'settingsPasswordFormConfirmPasswordInputField';
+  static const String settingsPasswordFormBackButton = 'settingsPasswordFormBackButton';
+  static const String settingsPasswordFormConfirmButton = 'settingsPasswordFormConfirmButton';
+
   static const String settingsListView = 'settingsListView';
   // -------------------------
 

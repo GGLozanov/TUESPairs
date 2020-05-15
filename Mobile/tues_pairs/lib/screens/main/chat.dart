@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/modules/message.dart';
 import 'package:tues_pairs/widgets/chat_display/chat_display.dart';
+import 'package:tues_pairs/widgets/general/centered_text.dart';
 
 import '../../modules/user.dart';
 import '../../services/database.dart';

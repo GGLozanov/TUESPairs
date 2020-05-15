@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
+import 'package:tues_pairs/widgets/general/centered_text.dart';
 
 
 import '../../shared/constants.dart';
@@ -20,7 +21,8 @@ class AlreadyMatched extends StatelessWidget {
             logger.i('AlreadyMatched: Received matched user w/ id "' + matchedUser.uid + '"'
                 'for current user w/ id "' + currentUser.uid + '"');
 
-            return currentUser.matchedUserID == matchedUser.uid && matchedUser.matchedUserID == currentUser.uid 
+            return currentUser.matchedUserID == matchedUser.uid &&
+              matchedUser.matchedUserID == currentUser.uid
                 ? CenteredText(
                   text: 'You are matched with: ' +
                       matchedUser.username +

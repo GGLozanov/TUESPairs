@@ -4,7 +4,17 @@ import 'package:tues_pairs/widgets/form/input_field.dart';
 
 class ConfirmPasswordInputField extends InputField {
 
-  ConfirmPasswordInputField({Key key, Function onChanged}) : super(key: key, onChanged: onChanged);
+  ConfirmPasswordInputField({
+    Key key,
+    @required Function onChanged,
+    String hintText = 'Confirm password',
+    int maxLines
+  }) : super(
+      key: key,
+      onChanged: onChanged,
+      hintText: hintText,
+      maxLines: maxLines,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +29,7 @@ class ConfirmPasswordInputField extends InputField {
           Icons.repeat,
           color: Colors.orange,
         ),
-        hintText: 'Confirm password',
+        hintText: hintText,
       ),
     );
   }

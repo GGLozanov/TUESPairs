@@ -13,15 +13,15 @@ import 'package:path/path.dart';
 
 // TODO: Improve code here by creating reusable input form for register and login
 
-class InputFormSettings extends StatefulWidget {
-
+class FormSettings extends StatefulWidget {
   static BaseAuth baseAuth = new BaseAuth();
+
   @override
-  InputFormSettingsState createState() => InputFormSettingsState();
+  FormSettingsState createState() => FormSettingsState();
 
 }
 
-class InputFormSettingsState extends State<InputFormSettings> {
+class FormSettingsState extends State<FormSettings> {
 
   ImageService imageService;
   User currentUser;
@@ -32,7 +32,7 @@ class InputFormSettingsState extends State<InputFormSettings> {
     imageService = Provider.of<ImageService>(context);
     return Center(
       child: Form(
-        key: InputFormSettings.baseAuth.key,
+        key: FormSettings.baseAuth.key,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
           child: Column(
@@ -43,12 +43,6 @@ class InputFormSettingsState extends State<InputFormSettings> {
                 UsernameInputField(
                     onChanged: (value) => setState(() => currentUser.username = value),
                     initialValue: currentUser.username
-                ) : SizedBox(),
-              currentUser.email != '' &&
-                  currentUser.email != null && !currentUser.isExternalUser && false ? // TODO: Remove 'false' upon beginning of Settings 2.0
-                EmailInputField(
-                    onChanged: (value) => setState(() => currentUser.email = value),
-                    initialValue: currentUser.email
                 ) : SizedBox(),
               currentUser.isTeacher ? SizedBox() : GPAInputField(onChanged: (value) => setState(() => currentUser.GPA = double.tryParse(value)),
                   initialValue: currentUser.GPA.toString()),

@@ -10,8 +10,13 @@ class InputButton extends StatelessWidget {
   final Key key;
   final Color color;
 
-  InputButton({this.key, @required this.minWidth, @required this.height,
-    @required this.onPressed, @required this.text, this.color = darkGreyColor}) :
+  InputButton({
+    this.key,
+    @required this.minWidth,
+    @required this.height,
+    @required this.onPressed,
+    @required this.text, 
+    this.color = darkGreyColor}) :
       assert(minWidth != null),
       assert(height != null),
       assert(onPressed != null),

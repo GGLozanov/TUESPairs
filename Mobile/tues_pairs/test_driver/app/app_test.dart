@@ -51,6 +51,9 @@ void main() {
     final matchAnimatedList = find.byType('AnimatedList');
 
     final settingsDeleteAccountButtonFinder = find.byValueKey(Keys.settingsDeleteAccountButton);
+    final settingsDeleteAccountAlertDialogFinder = find.byValueKey(Keys.settingsDeleteAccountAlertDialog);
+    final settingsConfirmDeleteAccountButtonFinder = find.byValueKey(Keys.settingsConfirmDeleteAccountButton);
+
     final settingsClearMatchedUserButtonFinder = find.byValueKey(Keys.settingsClearMatchedUserButton);
     final settingsClearSkippedUsersButtonFinder = find.byValueKey(Keys.settingsClearSkippedUsersButton);
     final settingsSubmitButtonFinder = find.byValueKey(Keys.settingsSubmitButton);
@@ -269,6 +272,10 @@ void main() {
       await logInWithLoginTestUser();
 
       await navigateToPageAndTapButton(settingsDeleteAccountButtonFinder, 'Settings', needToScroll: true);
+
+      await driver.waitFor(settingsDeleteAccountAlertDialogFinder);
+
+      await driver.tap(settingsConfirmDeleteAccountButtonFinder);
 
     });
 

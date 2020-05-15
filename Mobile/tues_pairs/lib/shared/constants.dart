@@ -55,6 +55,11 @@ enum ExternalSignInType {
   GITHUB
 }
 
+enum RegisterPageType {
+  REGISTER,
+  TAG_SELECTION
+}
+
 class StackPageHandler {
   static int topPageIndex = 1; // TODO: Change if add more pages (keep track of pages)
   static int currentPage = topPageIndex;
@@ -97,20 +102,35 @@ List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardT
   ).toList();
 }
 
-Widget CenteredText({String text = ''}) { // acts like a widget, which is why convention is a bit iffy
-  return Center(
-    child: Padding(
-      padding: EdgeInsets.only(left: 10.0, right: 10.0),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.orange,
-          fontSize: 30.0,
-        ),
-        textAlign: TextAlign.center,
-      )
+Widget buildAppBar({
+  @required pageTitle,
+  List<Widget> actions = const []
+}) {
+  assert(pageTitle != null);
+  return AppBar(
+    backgroundColor: darkGreyColor,
+    title: Text(
+      pageTitle, // convert widget title to string
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 40.0,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 1.5,
+      ),
     ),
+    actions: actions
   );
+}
+
+bool usernameExists(String username, List<User> users) {
+  for(User data in users ?? []) {
+    if(username == data.username) {
+      logger.i('Username already exists');
+      return true;
+    }
+  }
+  logger.i('Username doesn\'t exist');
+  return false;
 }
 
 void scrollAnimation(ScrollController scrollController) {
