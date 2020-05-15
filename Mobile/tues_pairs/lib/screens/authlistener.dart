@@ -71,6 +71,7 @@ class _AuthListenerState extends State<AuthListener> {
                 if((!authUser.isExternalUser && !Login.isExternalCreated) ||
                     AuthListener.externRegister.isInvalid()) { // handle both typical user null errors and external user errors (w/ empty externRegister instances)
                   logger.i('AuthListener: Invalid authUser and/or not logged from extern provider. Deleting user.');
+
                   Auth().deleteCurrentFirebaseUser();
                   return Authenticate();
                 } else { // check if there has actually been a user in login

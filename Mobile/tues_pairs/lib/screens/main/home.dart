@@ -57,7 +57,10 @@ class _HomeState extends State<Home> {
         actions: <Widget>[
           FlatButton.icon(
             key: Key(Keys.logOutButton),
-            onPressed: () => _auth.logout(),
+            onPressed: () {
+              Home.selectedIndex = 1; // restores back to match page on logout
+              _auth.logout();
+            },
             icon: Icon(
               Icons.exit_to_app,
               color: Colors.orange,

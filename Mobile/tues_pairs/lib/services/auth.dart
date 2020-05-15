@@ -168,11 +168,16 @@ class Auth {
     try{
       FirebaseUser firebaseUser = await _auth.currentUser();
       await firebaseUser.delete();
+    } catch(e){
+      logger.e('Auth: Delete current Firebase user' + e.toString());
+    }
+
+    try {
       await logout();
       logger.i('Auth: Successfully deleted current Firebase User');
       return EXIT_CODE_SUCCESS; // exit code for success
-    } catch(exception){
-      logger.e('Auth: ' + exception.toString());
+    } catch(e) {
+      logger.e('Auth: Log out current Firebase user' + e.toString());
       return null;
     }
   }
@@ -181,13 +186,18 @@ class Auth {
     try{
       final id = firebaseUser.uid;
       await firebaseUser.delete();
-      await logout();
       logger.i('Auth: Successfully deleted Firebase user w/ id "' + id + '"');
-      return EXIT_CODE_SUCCESS;
-    } catch(exception){
-      logger.e('Auth: ' + exception.toString());
-      return null;
+    } catch(e){
+      logger.e('Auth: Delete user ' + e.toString());
     }
+
+    try {
+      await logout();
+      return EXIT_CODE_SUCCESS;
+    } catch(e) {
+      logger.e('Auth: Logout user ' + e.toString());
+    }
+
   }
 
   Future logout() async {
@@ -195,15 +205,29 @@ class Auth {
     try {
       try {
         await googleSignIn.signOut();
+      } catch(e) {
+        logger.e('Auth: Cannot log out Google user: ' + e.toString());
+      }
+
+      try {
         await facebookLogIn.logOut();
       } catch(e) {
-        logger.w('Auth: Cannot log out External user: ' + e.toString());
+        logger.e('Auth: Cannot log out Facebook user: ' + e.toString());
       }
-      await _auth.signOut();
-      logger.i('Auth: Successfully logged out current Firebase user');
-      return EXIT_CODE_SUCCESS;
+
+      try {
+        await _auth.signOut();
+        logger.i('Auth: Successfully logged out current Firebase user');
+        return EXIT_CODE_SUCCESS;
+      } catch(e) {
+        logger.e('Auth: Logout failed ' + e.toSting());
+        throw new PlatformException(
+          code: 'ERROR_LOGOUT_FAILED',
+          message: 'User attempted logout, but the operation could not be performed. Aborting logout. See logs for more info'
+        );
+      }
     } catch(exception) {
-      logger.e('Auth: ' + exception.toString());
+      logger.e('Auth: Logout ' + exception.toString());
       return null;
     }
   }

@@ -300,8 +300,16 @@ class _RegisterFormState extends State<RegisterForm> {
                     minWidth: 300.0,
                     height: 60.0,
                     text: 'Back',
-                    onPressed: () {
-                      baseAuth.authInstance.deleteCurrentFirebaseUser();
+                    onPressed: () async {
+                      try {
+                        await baseAuth.authInstance.deleteCurrentFirebaseUser();
+                      } catch(e) {
+                        logger.e('RegisterForm: Back ' + e.toString());
+                        setState(() =>
+                            baseAuth.clearAndAddError('Could not go back to login. Your auth token may have expired. Please exit and try again.')
+                        );
+                        return;
+                      }
                       widget.switchPage();
                     },
                   ) : SizedBox(),

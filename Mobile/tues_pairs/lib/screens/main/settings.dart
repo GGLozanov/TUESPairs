@@ -321,7 +321,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                     logger.w('Settings: User w/ id "' +
                         currentUser.uid +
                         '" has entered invalid information in Settings fields!');
-                    setError("Invalid info in fields or username already exists!");
+                    setError('Invalid info in fields or username already exists!');
                   }
                 },
               ),
