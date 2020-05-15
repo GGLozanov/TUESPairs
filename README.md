@@ -59,8 +59,8 @@
 Или си клонирайте репото и го пуснете на localhost чрез `npm i` и после `npm start`.
 
 ## 3. Автори
-* **Георги Лозанов** - Mobile lead програмист - [katapultman](https://github.com/katapultman)
-* **Мариян Бицов** - WEB lead програмист, дизайнер - [marianbitsov23](https://github.com/marianbitsov23)
+* **Георги Лозанов** - Mobile програмист, team lead - [katapultman](https://github.com/katapultman)
+* **Мариян Бицов** - WEB програмист, дизайнер - [marianbitsov23](https://github.com/marianbitsov23)
 * **Мартин Симов** - WEB и Mobile програмист, дизайнер - [martinsimov10a19](https://github.com/martinsimov10a19)
 
 ## 4.	 Технологии 
