@@ -7,7 +7,7 @@ import { withAuthorization } from '../../Authentication';
 import { withRouter } from 'react-router-dom';
 import * as ROUTES from '../../../constants/routes';
 import { Link } from 'react-router-dom';
-import { PasswordChangeLink } from '../PasswordForget/passwordchange';
+import { PasswordChangeLink } from '../ChangeForms/passwordchange';
 import rgbHex from 'rgb-hex';
 import log from '../../../constants/logger.jsx';
 import Loading from '../../../constants/loading';
@@ -246,40 +246,21 @@ class EditPersonalInfo extends Component{
                         <Form.Group controlId="formBasicGPA">
                             {isTeacher && 
                             <Form.Label>GPA</Form.Label>}
-                            {isTeacher && <FormControl
-                                onChange={this.onChange}
-                                aria-label="Recipient's GPA"
-                                aria-describedby="basic-addon2"
-                                placeholder={GPA}
-                                type="number"
-                                name="GPA"
-                                min="2"
-                                max="6"
-                            />}
-                        </Form.Group>
-
-                        <Form.Group as={Row} controlId="formPlaintextEmail">
-                            <Form.Label column sm="2">
-                                Your current email
-                            </Form.Label>
-                            <Col sm="4">
-                                <Form.Control plaintext readOnly defaultValue={email} />
-                            </Col>
-                        </Form.Group>
-                        <Form.Group as={Row} controlId="formBasicEmail">
-                            <Form.Label column sm="2">
-                                New email
-                            </Form.Label>
-                            <Col sm="4">
-                                <FormControl
+                            {isTeacher &&<InputGroup>
+                                {isTeacher && <FormControl
                                     onChange={this.onChange}
-                                    aria-label="Recipient's email"
+                                    aria-label="Recipient's GPA"
                                     aria-describedby="basic-addon2"
-                                    placeholder="example@example.com"
-                                    type="text"
-                                    name="email"
-                                />
-                            </Col>
+                                    placeholder={GPA}
+                                    type="number"
+                                    name="GPA"
+                                    min="2"
+                                    max="6"
+                                />}
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="inputGroupPrepend">{GPA}</InputGroup.Text>
+                                </InputGroup.Prepend>
+                            </InputGroup>}
                         </Form.Group>
 
                         <PasswordChangeLink />

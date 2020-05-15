@@ -42,6 +42,13 @@ const config = {
 
     getCurrentUser = async () => this.auth.currentUser;
 
+    getCredentials = (email, password) => {
+        return app.auth.EmailAuthProvider.credential(
+            email,
+            password
+        ); 
+    }
+
     user = uid => this.db.doc(`users/${uid}`);
 
     users = () => this.db.collection(`users`);

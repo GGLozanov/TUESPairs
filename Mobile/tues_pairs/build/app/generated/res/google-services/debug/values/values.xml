@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">911913368022-g6ct7cf9ki3hpbbrmpb59tp2icpn7sor.apps.googleusercontent.com</string>
+    <string name="firebase_database_url" translatable="false">https://tuespairs.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">911913368022</string>
+    <string name="google_api_key" translatable="false">AIzaSyB_iuwvG-XmZOHIPGpFKn1w_nssFqGHXnU</string>
+    <string name="google_app_id" translatable="false">1:911913368022:android:36c68cefe7742d91208c77</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyB_iuwvG-XmZOHIPGpFKn1w_nssFqGHXnU</string>
+    <string name="google_storage_bucket" translatable="false">tuespairs.appspot.com</string>
+    <string name="project_id" translatable="false">tuespairs</string>
+</resources>

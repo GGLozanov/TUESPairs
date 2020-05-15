@@ -42,16 +42,17 @@ class AlreadyMatched extends Component {
                 }
             }).then(() => {
                 let tags = [];
-                
-                this.state.matchedUser.tagIDs.forEach(tid => {
-                    this.props.firebase.tag(tid).get()
-                    .then(tag => {
-                        tags.push(tag.data());
-                        log.info("Received current tags w/ ids " + tag.toString());
-
-                        this.setState({ tags, loading: false });
+                if(this.state.matchedUser.tagIDs) {
+                    this.state.matchedUser.tagIDs.forEach(tid => {
+                        this.props.firebase.tag(tid).get()
+                        .then(tag => {
+                            tags.push(tag.data());
+                            log.info("Received current tags w/ ids " + tag.toString());
+    
+                            this.setState({ tags, loading: false });
+                        });
                     });
-                });
+                }
             });
         });
     }

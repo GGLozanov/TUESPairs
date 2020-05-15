@@ -4,7 +4,7 @@ import './app.scss';
 
 import Navigation from '../Pages/Navigation/navigation';
 import ChatPage from '../Pages/Chat/chat';
-import PasswordForgetPage from '../Pages/PasswordForget';
+import PasswordForgetPage from '../Pages/ChangeForms';
 import HomePage from '../Pages/Home/home';
 import AlreadyMatchedPage from '../Pages/Home/alreadyMatched';
 import AccountPage from '../Pages/Account/account';
@@ -14,7 +14,7 @@ import * as ROUTES from '../../constants/routes.jsx';
 import { withAuthentication } from '../Authentication';
 import ChangeHandler from '../Pages/Authentication/changeHandler';
 import StudentInfo from '../Pages/Account/edit_personal_info';
-import PasswordChangePage from '../Pages/PasswordForget/passwordchange';
+import PasswordChangePage from '../Pages/ChangeForms/passwordchange';
 import UserInfoPage from '../Pages/Authentication/userInfo';
 
 const App = () => (
