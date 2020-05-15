@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/modules/user.dart';
+import 'package:tues_pairs/screens/main/home.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/shared/keys.dart';
@@ -78,47 +80,99 @@ class _FormSettingsPasswordState extends State<FormSettingsPassword> {
                         Navigator.pop(context),
                       onRightPressed: () async {
                         final currentState = widget.baseAuth.key.currentState;
-                        if(currentState.validate() &&
-                          oldUserPassword != '' &&
-                          (currentUser.email != null || currentUser.email != '') &&
-                          newUserConfirmPassword != '' && newUserPassword != '' &&
-                          newUserPassword == newUserConfirmPassword) {
-                            final _authCredential = EmailAuthProvider.getCredential(
-                              email: currentUser.email,
-                              password: oldUserPassword
-                            );
+                        widget.baseAuth.errorMessages = [];
 
-                            final currentFirebaseUser = await _auth.currentUser; // TODO: Optimise these calls to currentUser (provider?)
+                        try {
+                          if(currentState.validate() &&
+                            oldUserPassword != '' &&
+                            (currentUser.email != null || currentUser.email != '') &&
+                            newUserConfirmPassword != '' && newUserPassword != '' &&
+                            newUserPassword == newUserConfirmPassword) {
 
-                            currentFirebaseUser.reauthenticateWithCredential(_authCredential)
-                              .then((_) async {
-                                 // update the password
-                                await currentFirebaseUser
-                                    .updatePassword(newUserPassword).then((_) async {
-                                  try {
-                                    await currentFirebaseUser.reauthenticateWithCredential( // reauth w/ new password
-                                      EmailAuthProvider.getCredential(
-                                        email: currentUser.email,
-                                        password: newUserPassword,
-                                      )
-                                    );
-                                  } catch(e) {
-                                    logger.e('SettingPassword: ' + e.toString());
-                                  }
-                                });}) // if there is no error, the password is verified and correct
-                              .catchError((e) {
-                                logger.e('SettingsPassword: ' + e.toString());
-                                setState(() =>
-                                  widget.baseAuth.clearAndAddError(
-                                    'Invalid information. Old password is incorrect!'
-                                  )
+                              if(oldUserPassword == newUserPassword) {
+                                logger.e('SettingsPassword: Old password and new password match!');
+                                widget.baseAuth.clearAndAddError(
+                                    'Invalid information. Old password is the same as the new one!'
+                                );
+                                throw new PlatformException(
+                                  code: 'ERROR_INVALID_PASSWORD_SELECTION',
+                                  message: 'User has entered the same password for both new and old. Cancel update!'
                                 );
                               }
+
+                              final _authCredential = EmailAuthProvider.getCredential(
+                                email: currentUser.email,
+                                password: oldUserPassword
+                              );
+
+                              final currentFirebaseUser = await _auth.currentUser; // TODO: Optimise these calls to currentUser (provider?)
+
+                              try {
+                                await currentFirebaseUser.reauthenticateWithCredential(_authCredential)
+                                  .then((_) async {
+                                     // update the password
+                                    currentFirebaseUser
+                                      .updatePassword(newUserPassword).then((_) async {
+                                      await currentFirebaseUser.reauthenticateWithCredential( // reauth w/ new password
+                                        EmailAuthProvider.getCredential(
+                                          email: currentUser.email,
+                                          password: newUserPassword,
+                                        )
+                                      )
+                                      .catchError((e) {
+                                        logger.e('SettingPassword: Reauth with new password ' + e.toString());
+                                        widget.baseAuth.errorMessages.add(
+                                          'Invalid information. New passwords do not match or the password itself is invalid!'
+                                        );
+                                        throw new PlatformException(
+                                          code: 'ERROR_INCORRECT_NEW_PASSWORD',
+                                          message: 'User has inputted an incorrect new password! Cancelling update and reauth!'
+                                        );
+                                    });
+                                  }).catchError((e) {
+                                    logger.e('SettingPassword: UpdatePassword ' + e.toString());
+                                    widget.baseAuth.errorMessages.add(
+                                        'Could not update with new password! You may need to relogin or provide a longer password!'
+                                    );
+                                    throw new PlatformException(
+                                        code: 'ERROR_BAD_PASSWORD',
+                                        message: 'User has inputted a bad new password for update! Cancelling update and reauth!'
+                                    );
+                                  });
+                                }).catchError((e) {
+                                  logger.e('SettingPassword: Reauth with old password ' + e.toString());
+                                  widget.baseAuth.errorMessages.add(
+                                      'Invalid information. New passwords do not match or the password itself is invalid!'
+                                  );
+                                  throw new PlatformException(
+                                      code: 'ERROR_INCORRECT_OLD_PASSWORD',
+                                      message: 'User has inputted an incorrect old password! Cancelling update and reauth!'
+                                  );
+                                }); // if there is no error, the password is verified and correct
+                              } catch(e) {
+                                logger.e('SettingsPassword: Reauthenticate ' + e.toString());
+                                widget.baseAuth.errorMessages.add(
+                                  'Auth info is incorrect!'
+                                );
+                                throw new PlatformException(
+                                  code: 'ERROR_INVALID_AUTH',
+                                  message: 'Invalid auth info received! Cancelling update and reauth!',
+                                );
+                              }
+                              Home.selectedIndex = 2; // change selected page indexw
+                              Navigator.pop(context);
+                          } else {
+                            logger.e('SettingsPassword: Invalid information entered in form!');
+                            widget.baseAuth.clearAndAddError(
+                              'Invalid information in forms or new passwords do not match!'
                             );
-                        } else {
-                          setState(() =>
-                              widget.baseAuth.clearAndAddError('Invalid information. New passwords do not match!')
-                          );
+                            throw new PlatformException(
+                              code: 'ERROR_INVALID_FORM_INFO',
+                              message: 'User has entered invalid information in forms! Cancelling update and reauth!',
+                            );
+                          }
+                        } catch(e) {
+                          setState(() => {}); // setState to trigger errors
                         }
                       },
                     ),

@@ -152,7 +152,7 @@ class _LoginState extends State<Login> {
                         if(user == null) {
                           logger.w('Login: Failed user login (invalid credentials)');
                           setState(() {
-                            baseAuth.clearAndAddError('Invalid login credentials');
+                            baseAuth.clearAndAddError('Invalid login credentials or too many attempts.');
                           });
                         } else logger.i('Login: User w/ id "' + user.uid + '" has successfully logged in');
                       }
@@ -179,8 +179,9 @@ class _LoginState extends State<Login> {
                         color: Colors.red,
                         fontFamily: 'Nilam',
                         fontWeight: FontWeight.bold,
-                        fontSize: 25.0,
+                        fontSize: 21.0,
                       ),
+                      textAlign: TextAlign.center,
                     ))?.toList() ?? [],
                   ),
                   SpacedDivider(),

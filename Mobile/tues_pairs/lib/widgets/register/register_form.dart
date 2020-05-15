@@ -211,7 +211,7 @@ class _RegisterFormState extends State<RegisterForm> {
                             "$message",
                             style: TextStyle(
                               color: Colors.red,
-                              fontSize: 20.0,
+                              fontSize: 18.0,
                             ),
                           ))?.toList() ?? [],
                         ),

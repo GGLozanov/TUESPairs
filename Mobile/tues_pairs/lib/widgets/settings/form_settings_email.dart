@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/screens/main/home.dart';
@@ -9,11 +10,9 @@ import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/widgets/form/confim_password_input_field.dart';
 import 'package:tues_pairs/widgets/form/email_input_field.dart';
-import 'package:tues_pairs/widgets/form/input_button.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/form/password_input_field.dart';
 import 'package:tues_pairs/widgets/general/button_pair.dart';
-import 'package:tues_pairs/widgets/general/spaced_divider.dart';
 
 import 'form_settings_password.dart';
 
@@ -32,6 +31,8 @@ class _FormSettingsEmailState extends State<FormSettingsEmail> {
   String userPassword = '';
   String userConfirmPassword = '';
   final int maxSensitiveInfoLines = 5;
+
+  bool isInvalidReauth = false;
 
   @override
   Widget build(BuildContext context) {
@@ -108,37 +109,81 @@ class _FormSettingsEmailState extends State<FormSettingsEmail> {
                         Navigator.pop(context),
                       onRightPressed: () async {
                         final currentState = widget.baseAuth.key.currentState;
-                        if(currentState.validate() &&
-                            userPassword != '' &&
-                            (currentUser.email != null || currentUser.email != '') &&
-                            userConfirmPassword == userPassword) {
-                          setState(() =>
-                              widget.baseAuth.toggleLoading());
-                          final currentFirebaseUser = await _auth.currentUser;
-                          try {
-                            currentFirebaseUser.updateEmail(currentUser.email).then((_) async =>
-                              await currentFirebaseUser.reauthenticateWithCredential(
-                                  EmailAuthProvider.getCredential(
-                                    email: currentUser.email,
-                                    password: userPassword,
-                                  )
-                              )
-                            ).catchError((e) => logger.e('SettingsSensitive: ' + e.toString()));
-                          } catch(e) {
-                            logger.e('SettingsSensitive: ' + e.toString());
-                            setState(() =>
-                              widget.baseAuth.clearAndAddError('Could not update e-mail!')
-                            );
-                            return;
-                          }
+                        widget.baseAuth.errorMessages = [];
 
-                          await Database(uid: currentUser.uid).updateUserData(currentUser); // update e-mail in DB
-                          widget.baseAuth.errorMessages = [];
-                          Navigator.pop(context);
-                        } else {
-                          setState(() =>
-                            widget.baseAuth.clearAndAddError('E-mail is invalid or passwords do not match!')
-                          );
+                        try {
+                          if(currentState.validate() &&
+                              userPassword != '' &&
+                              (currentUser.email != null || currentUser.email != '') &&
+                              userConfirmPassword == userPassword) {
+
+                            final currentFirebaseUser = await _auth.currentUser;
+                            String currentEmail = currentFirebaseUser.email; // email in FirebaseSDK
+
+                            if(currentEmail == currentUser.email) {
+                              widget.baseAuth.errorMessages.add('E-mail is not changed!');
+                              throw new PlatformException(
+                                  code: 'ERROR_EMAIL_NOT_CHANGED',
+                                  message: 'User has entered an unchanged e-mail. Do not update e-mail!'
+                              );
+                            }
+
+                            try {
+                              await currentFirebaseUser.updateEmail(
+                                  currentUser.email
+                              ).catchError((e) {
+                                logger.e('SettingsSensitive: UpdateEmail ' + e.toString());
+                                widget.baseAuth.errorMessages.add('E-mail couldn\'t be changed! You may need to relog into your account!');
+                                throw new PlatformException(
+                                    code: 'ERROR_INCORRECT_EMAIL',
+                                    message: 'User has entered an incorrect e-mail (may be in use). Do not update e-mail!'
+                                );
+                              });
+                              await currentFirebaseUser.reauthenticateWithCredential(
+                                EmailAuthProvider.getCredential(
+                                  email: currentUser.email,
+                                  password: userPassword,
+                                )
+                              ).catchError((e) async {
+                                  logger.e('SettingsSensitive: Reauthenticate ' + e.toString());
+                                  currentUser.email = currentEmail;
+                                  await currentFirebaseUser.updateEmail(currentEmail); // update back to old e-mail
+                                  widget.baseAuth.errorMessages.add('Password is not valid/correct!');
+                                  throw new PlatformException(
+                                    code: 'ERROR_INCORRECT_PASSWORD',
+                                    message: 'User has entered an incorrect password. Do not update e-mail!'
+                                  );
+                              });
+                            } catch(e) {
+                              logger.e('SettingsSensitive: UpdateEmail ' +
+                                  e.toString());
+                              logger.i(
+                                  'SettingsSensitive: Reauth is invalid. Ending.');
+
+                              throw new PlatformException(
+                                code: 'ERROR_REAUTH_FAILED',
+                                message: 'User reauth has failed. Do not update e-mail!'
+                              );
+                            }
+
+                            setState(() =>
+                                widget.baseAuth.toggleLoading()
+                            );
+                            await Database(uid: currentUser.uid).updateUserData(currentUser); // update e-mail in DB
+                            Home.selectedIndex = 2; // change selected page indexw
+                            Navigator.pop(context);
+
+                          } else {
+                            logger.e('SettingsSensitive: Current user has entered incorrect form information.');
+                            widget.baseAuth
+                                .clearAndAddError('Invalid info in forms or passwords do not match!');
+                            throw new PlatformException(
+                                code: 'ERROR_FORM_INVALID',
+                                message: 'User has written incorrect info in forms. Cancel update!'
+                            );
+                          }
+                        } catch(e) {
+                          setState(() => {}); // trigger setState for errors
                         }
                       }
                     ),

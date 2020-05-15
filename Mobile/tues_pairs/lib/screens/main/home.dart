@@ -7,13 +7,15 @@ import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/shared/keys.dart';
 
 class Home extends StatefulWidget {
+  static int selectedIndex = 1; 
+  // selected index for page (first is the middle one); change throughout route navigation
+  // static due to change in Settings routes
+
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-
-  int selectedIndex = 1; // selected index for page (first is the middle one); change throughout route navigation
 
   // ---------------
   // NavigationBar properties:
@@ -22,8 +24,7 @@ class _HomeState extends State<Home> {
   final Auth _auth = new Auth();
 
   PageController _controller = PageController(
-    initialPage: 1,
-    keepPage: true,
+    initialPage: Home.selectedIndex,
   );
 
   List<Widget> _widgets = [
@@ -34,7 +35,7 @@ class _HomeState extends State<Home> {
 
   void onItemSwipe(int index) {
     setState(() {
-      selectedIndex = index;
+      Home.selectedIndex = index;
       _controller.animateToPage(
           index, duration: Duration(milliseconds: 500), curve: Curves.ease);
     }); // set the selected index to the index given
@@ -42,7 +43,7 @@ class _HomeState extends State<Home> {
 
   void onItemTap(int index) {
     setState(() {
-      selectedIndex = index;
+      Home.selectedIndex = index;
       _controller.jumpToPage(index);
     });
   }
@@ -52,7 +53,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       key: Key(Keys.homeScaffold),
       appBar: buildAppBar(
-        pageTitle: _widgets[selectedIndex].toString(),
+        pageTitle: _widgets[Home.selectedIndex].toString(),
         actions: <Widget>[
           FlatButton.icon(
             key: Key(Keys.logOutButton),
@@ -124,7 +125,7 @@ class _HomeState extends State<Home> {
             backgroundColor: Colors.deepOrangeAccent
           ),
         ],
-        currentIndex: selectedIndex,
+        currentIndex: Home.selectedIndex,
         onTap: onItemTap,
         backgroundColor: darkGreyColor,
       ),

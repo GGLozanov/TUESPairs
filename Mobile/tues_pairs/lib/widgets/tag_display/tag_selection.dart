@@ -76,6 +76,7 @@ class _TagSelectionState extends State<TagSelection> {
                 if(widget.isCurrentUserAvailable) {
                   currentUser.tagIDs = await database.getUserById()
                       .then((usr) => usr.tagIDs);
+                  Home.selectedIndex = 2; // change selected page indexw
                 }
 
                 // Pop the route from the stack when called from Settings/Register
@@ -85,6 +86,7 @@ class _TagSelectionState extends State<TagSelection> {
                 // TODO: Optimise without database; keep initial tags separately
                 if(widget.isCurrentUserAvailable) {
                   await database.updateUserData(currentUser);
+                  Home.selectedIndex = 2; // change selected page indexw
                 }
 
                 Navigator.pop(context);
