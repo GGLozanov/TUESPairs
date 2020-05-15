@@ -213,6 +213,7 @@ class _RegisterFormState extends State<RegisterForm> {
                               color: Colors.red,
                               fontSize: 18.0,
                             ),
+                            textAlign: TextAlign.center,
                           ))?.toList() ?? [],
                         ),
                       ],
