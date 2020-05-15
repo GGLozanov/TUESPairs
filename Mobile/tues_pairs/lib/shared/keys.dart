@@ -63,6 +63,8 @@ class Keys {
   static const String settingsClearSkippedUsersButton = 'settingsClearSkippedUsersButton';
   static const String settingsSubmitButton = 'settingsSubmitButton';
   static const String settingsDeleteAccountButton = 'settingsDeleteAccountButton';
+  static const String settingsDeleteAccountAlertDialog = 'settingsDeleteAccountAlertDialog';
+  static const String settingsConfirmDeleteAccountButton = 'settingsConfirmDeleteAccountButton';
 
   static const String settingsEditTagsButton = 'settingsEditTagsButton';
   static const String settingsEditSensitiveButton = 'settingsEditSensitiveButton';

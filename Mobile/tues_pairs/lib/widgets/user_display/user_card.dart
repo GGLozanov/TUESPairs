@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/modules/user.dart';
-import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_card.dart';
@@ -35,7 +34,7 @@ class UserCard extends StatefulWidget {
     assert(listIndex != null),
     assert(currentUser != null),
     super(key: key) {
-    hasUserSentMatchRequestToCurrent = currentUser.uid == user.matchedUserID;
+      hasUserSentMatchRequestToCurrent = currentUser.uid == user.matchedUserID;
   }
 
   @override
@@ -48,8 +47,6 @@ class UserCard extends StatefulWidget {
 }
 
 class _UserCardState extends State<UserCard> {
-  final Database database = new Database();
-  
   @override
   Widget build(BuildContext context) {
 

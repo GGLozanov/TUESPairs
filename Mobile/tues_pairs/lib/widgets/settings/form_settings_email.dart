@@ -33,12 +33,6 @@ class _FormSettingsEmailState extends State<FormSettingsEmail> {
   String userConfirmPassword = '';
   final int maxSensitiveInfoLines = 5;
 
-  void _triggerError() {
-    setState(() {
-
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -48,116 +42,124 @@ class _FormSettingsEmailState extends State<FormSettingsEmail> {
       backgroundColor: greyColor,
       appBar: buildAppBar(pageTitle: 'Settings'),
       body: Container(
-        child: Form(
-          key: widget.baseAuth.key,
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: <Widget> [
-                Text( // Wrap in align?
-                  'You can change your sensitive information (E-mail, password) in these pages.',
-                  style: TextStyle(
-                    fontFamily: 'BebasNeue',
-                    fontSize: 30.0,
-                    color: Colors.orange,
-                  ),
-                  textAlign: TextAlign.start,
-                ),
-                SizedBox(height: 25.0),
-                EmailInputField(
-                  onChanged: (value) => currentUser.email = value,
-                  initialValue: currentUser.email,
-                  maxLines: maxSensitiveInfoLines,
-                ),
-                SizedBox(height: 10.0),
-                PasswordInputField(
-                  onChanged: (value) => userPassword = value,
-                  hintText: 'Enter your password',
-                  maxLines: maxSensitiveInfoLines,
-                ),
-                SizedBox(height: 10.0),
-                ConfirmPasswordInputField(
-                  onChanged: (value) => userConfirmPassword = value,
-                  maxLines: maxSensitiveInfoLines,
-                ),
-                SizedBox(height: 30.0),
-                GestureDetector(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                        Provider<User>.value(
-                            value: currentUser,
-                            child: FormSettingsPassword()
-                        ),
-                      )
-                  ),
-                  child: Text(
-                      'Change password?',
+        child: ListView(
+          children: <Widget>[
+            Form(
+              key: widget.baseAuth.key,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: <Widget> [
+                    Text( // Wrap in align?
+                      'You can change your sensitive information (E-mail, password) in these pages.',
                       style: TextStyle(
-                        fontFamily: 'Nilam',
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.bold,
+                        fontFamily: 'BebasNeue',
+                        fontSize: 30.0,
                         color: Colors.orange,
-                      )
-                  ),
-                ),
-                SizedBox(height: 30.0),
-                ButtonPair(
-                  leftBtnKey: Key(Keys.settingsEmailFormBackButton),
-                  rightBtnKey: Key(Keys.settingsEmailFormConfirmButton),
-                  btnsHeight: screenSize.height / widgetReasonableHeightMargin,
-                  btnsWidth: screenSize.width / widgetReasonableWidthMargin,
-                  onLeftPressed: () =>
-                    Navigator.pop(context),
-                  onRightPressed: () async {
-                    final currentState = widget.baseAuth.key.currentState;
-                    if(currentState.validate() &&
-                        userPassword != '' &&
-                        (currentUser.email != null || currentUser.email != '') &&
-                        userConfirmPassword == userPassword) {
-                      setState(() =>
-                          widget.baseAuth.toggleLoading());
-                      final currentFirebaseUser = await _auth.currentUser;
-                      try {
-                        currentFirebaseUser.updateEmail(currentUser.email).then((_) async =>
-                          await currentFirebaseUser.reauthenticateWithCredential(
-                              EmailAuthProvider.getCredential(
-                                email: currentUser.email,
-                                password: userPassword,
-                              )
-                          )
-                        ).catchError((e) => logger.e('SettingsSensitive: ' + e.toString()));
-                      } catch(e) {
-                        logger.e('SettingsSensitive: ' + e.toString());
-                        _triggerError();
-                        return;
-                      }
-
-                      await Database(uid: currentUser.uid).updateUserData(currentUser); // update e-mail in DB
-                      widget.baseAuth.errorMessages = [];
-                      Navigator.pop(context);
-                    } else {
-                      _triggerError();
-                    }
-                  }
-                ),
-                SizedBox(height: 30.0),
-                Column(
-                  children: widget.baseAuth.
-                    errorMessages?.map((message) => Text(
-                    "$message",
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontFamily: 'Nilam',
-                      fontSize: 25.0,
+                      ),
+                      textAlign: TextAlign.start,
                     ),
-                    textAlign: TextAlign.center,
-                  ))?.toList() ?? [],
+                    SizedBox(height: 25.0),
+                    EmailInputField(
+                      onChanged: (value) => currentUser.email = value,
+                      initialValue: currentUser.email,
+                      maxLines: maxSensitiveInfoLines,
+                    ),
+                    SizedBox(height: 10.0),
+                    PasswordInputField(
+                      onChanged: (value) => userPassword = value,
+                      hintText: 'Enter your password',
+                      maxLines: maxSensitiveInfoLines,
+                    ),
+                    SizedBox(height: 10.0),
+                    ConfirmPasswordInputField(
+                      onChanged: (value) => userConfirmPassword = value,
+                      maxLines: maxSensitiveInfoLines,
+                    ),
+                    SizedBox(height: 30.0),
+                    GestureDetector(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                            Provider<User>.value(
+                                value: currentUser,
+                                child: FormSettingsPassword()
+                            ),
+                          )
+                      ),
+                      child: Text(
+                          'Change password?',
+                          style: TextStyle(
+                            fontFamily: 'Nilam',
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                          )
+                      ),
+                    ),
+                    SizedBox(height: 30.0),
+                    ButtonPair(
+                      leftBtnKey: Key(Keys.settingsEmailFormBackButton),
+                      rightBtnKey: Key(Keys.settingsEmailFormConfirmButton),
+                      btnsHeight: screenSize.height / widgetReasonableHeightMargin,
+                      btnsWidth: screenSize.width / widgetReasonableWidthMargin,
+                      onLeftPressed: () =>
+                        Navigator.pop(context),
+                      onRightPressed: () async {
+                        final currentState = widget.baseAuth.key.currentState;
+                        if(currentState.validate() &&
+                            userPassword != '' &&
+                            (currentUser.email != null || currentUser.email != '') &&
+                            userConfirmPassword == userPassword) {
+                          setState(() =>
+                              widget.baseAuth.toggleLoading());
+                          final currentFirebaseUser = await _auth.currentUser;
+                          try {
+                            currentFirebaseUser.updateEmail(currentUser.email).then((_) async =>
+                              await currentFirebaseUser.reauthenticateWithCredential(
+                                  EmailAuthProvider.getCredential(
+                                    email: currentUser.email,
+                                    password: userPassword,
+                                  )
+                              )
+                            ).catchError((e) => logger.e('SettingsSensitive: ' + e.toString()));
+                          } catch(e) {
+                            logger.e('SettingsSensitive: ' + e.toString());
+                            setState(() =>
+                              widget.baseAuth.clearAndAddError('Could not update e-mail!')
+                            );
+                            return;
+                          }
+
+                          await Database(uid: currentUser.uid).updateUserData(currentUser); // update e-mail in DB
+                          widget.baseAuth.errorMessages = [];
+                          Navigator.pop(context);
+                        } else {
+                          setState(() =>
+                            widget.baseAuth.clearAndAddError('E-mail is invalid or passwords do not match!')
+                          );
+                        }
+                      }
+                    ),
+                    SizedBox(height: 30.0),
+                    Column(
+                      children: widget.baseAuth.
+                        errorMessages?.map((message) => Text(
+                        "$message",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontFamily: 'Nilam',
+                          fontSize: 25.0,
+                        ),
+                        textAlign: TextAlign.center,
+                      ))?.toList() ?? [],
+                    ),
+                  ]
                 ),
-              ]
+              )
             ),
-          )
+          ],
         )
       )
     );

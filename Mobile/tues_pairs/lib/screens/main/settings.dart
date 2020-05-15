@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/avatar/avatar_wrapper.dart';
+import 'package:tues_pairs/widgets/general/centered_text.dart';
 import 'package:tues_pairs/widgets/settings/form_settings.dart';
 import 'package:tues_pairs/templates/error_notifier.dart';
 import 'package:tues_pairs/widgets/form/input_button.dart';
@@ -36,6 +37,110 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
 
   void setError(String errorMessage) {
     setState(() => errorNotifier.setError(errorMessage));
+  }
+
+  Future<void> _showDeleteAlertDialog({
+    @required BuildContext context,
+    @required User currentUser,
+    @required List<User> users
+  }) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          key: Key(Keys.settingsDeleteAccountAlertDialog),
+          backgroundColor: darkGreyColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25.0),
+          ),
+          title: Text(
+            'Confirm Account Deletion',
+            style: TextStyle(
+              fontFamily: 'Nilam',
+              fontSize: 30.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.orange,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  'Are you absolutely sure you want to delete your account?',
+                  style: TextStyle(
+                    fontFamily: 'Nilam',
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange,
+                  ),
+                ),
+                SizedBox(height: 10.0),
+                Text(
+                  'This change is permanent and cannot be reverted.',
+                  style: TextStyle(
+                    fontFamily: 'Nilam',
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.redAccent[700],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton.icon(
+                icon: Icon(Icons.arrow_back),
+                label: Text(
+                  'Back',
+                  style: TextStyle(
+                    fontFamily: 'Nilam',
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange,
+                  ),
+                ),
+                onPressed: () =>
+                    Navigator.of(context).pop()
+            ),
+            FlatButton.icon(
+              key: Key(Keys.settingsConfirmDeleteAccountButton),
+              icon: Icon(Icons.delete),
+              label: Text(
+                'Approve',
+                style: TextStyle(
+                  fontFamily: 'Nilam',
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange,
+                ),
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                for(int i = 0; i < users.length; i++) {
+                  Database userDatabase = new Database(uid: users[i].uid);
+                  if(users[i].skippedUserIDs.contains(currentUser.uid)){
+                    users[i].skippedUserIDs.remove(currentUser.uid);
+                    await userDatabase.updateUserData(users[i]);
+                  }
+                  if(users[i].matchedUserID == currentUser.uid){
+                    users[i].matchedUserID = null;
+                    await userDatabase.updateUserData(users[i]);
+                  }
+                }
+
+                await ImageService().deleteImage(currentUser.photoURL);
+                await database.deleteUser();
+                await auth.deleteCurrentFirebaseUser();
+                logger.i('Settings: User w/ id "' +
+                    currentUser.uid +
+                    '" has been deleted.');
+              },
+            )
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -105,7 +210,8 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                 },
               ),
             ) : SizedBox(),
-            SizedBox(height: 15.0),
+            !currentUser.isExternalUser ? SizedBox(height: 15.0)
+              : SizedBox(),
             Padding(
               padding: const EdgeInsets.only(left: 10.0, top: 10.0, right: 10.0, bottom: 20.0),
               child: Wrap(
@@ -156,84 +262,74 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                       }
                     }
                   ),
-                  InputButton(
-                    key: Key(Keys.settingsSubmitButton),
-                    minWidth: btnWidth,
-                    height: btnHeight,
-                    text: 'Submit',
-                    onPressed: () async {
-                      // TODO: Use updateUserData from Database here -> done
-                      final FormState currentState = FormSettings.baseAuth.key.currentState;
-                      if(currentState.validate() &&
-                          currentUser.email != null &&
-                          currentUser.username != null &&
-                      !usernameExists(currentUser.username, users)) {
-                        currentUser.photoURL = await imageService.uploadImage()
-                            ?? currentUser.photoURL; // check if pfp changed
-
-                        logger.i('Settings: User w/ id "' +
-                            currentUser.uid.toString() +
-                            '" has updated his settings w/ photoURL "' +
-                            currentUser.photoURL.toString() + '"');
-
-                        await database.updateUserData(currentUser); // upload image + wait for update
-                        // TODO: Update w/ more fields in the future
-
-                        logger.i('Settings: User w/ id "' + currentUser.uid.toString() +
-                            '" has updated his settings w/ params ' +
-                            '(username: "' + currentUser.username.toString() + '", ' +
-                            'GPA: "' + currentUser.GPA.toString() + '", ' + '")');
-
-                        setState(() {});
-                      } else {
-                        logger.w('Settings: User w/ id "' +
-                            currentUser.uid +
-                            '" has entered invalid information in Settings fields!');
-                        setError("Invalid info in fields or username already exists!");
-                      }
-                    },
-                  ),
                   SizedBox(width: 15.0),
                   // TODO: Implement alertDialog onPressed for Delete button
-                  InputButton(
-                    key: Key(Keys.settingsDeleteAccountButton),
-                    minWidth: btnWidth,
-                    height: btnHeight,
-                    text: 'Delete',
-                    onPressed: () async {
-                      for(int i = 0; i < users.length; i++) {
-                        Database userDatabase = new Database(uid: users[i].uid);
-                        if(users[i].skippedUserIDs.contains(currentUser.uid)){
-                          users[i].skippedUserIDs.remove(currentUser.uid);
-                          await userDatabase.updateUserData(users[i]);
-                        }
-                        if(users[i].matchedUserID == currentUser.uid){
-                          users[i].matchedUserID = null;
-                          await userDatabase.updateUserData(users[i]);
-                        }
-                      }
-
-                      await ImageService().deleteImage(currentUser.photoURL);
-                      await database.deleteUser();
-                      await auth.deleteCurrentFirebaseUser();
-                      logger.i('Settings: User w/ id "' +
-                          currentUser.uid +
-                          '" has been deleted.');
-                    },
-                  ),
                 ],
+              )
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 35.0, right: 35.0),
+              child: InputButton(
+                key: Key(Keys.settingsDeleteAccountButton),
+                minWidth: btnWidth,
+                height: btnHeight,
+                color: Colors.redAccent[700],
+                text: 'Delete',
+                onPressed: () async {
+                  await _showDeleteAlertDialog(
+                    context: context,
+                    currentUser: currentUser,
+                    users: users,
+                  );
+                },
               ),
             ),
             SizedBox(height: 15.0),
-            Center(
-              child: Text(
-                'Warning: Modifications on account text fields and profile images only take change after hitting the Submit button!',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Nilam',
-                  fontSize: 20.0,
-                ),
+            Padding(
+              padding: const EdgeInsets.only(left: 40.0, right: 40.0),
+              child: InputButton(
+                key: Key(Keys.settingsSubmitButton),
+                minWidth: btnWidth * 1.25,
+                height: btnHeight,
+                color: Colors.orange,
+                text: 'Submit',
+                onPressed: () async {
+                  // TODO: Use updateUserData from Database here -> done
+                  final FormState currentState = FormSettings.baseAuth.key.currentState;
+                  if(currentState.validate() &&
+                      currentUser.email != null &&
+                      currentUser.username != null &&
+                      !usernameExists(currentUser.username, users)) {
+                    currentUser.photoURL = await imageService.uploadImage()
+                        ?? currentUser.photoURL; // check if pfp changed
+
+                    logger.i('Settings: User w/ id "' +
+                        currentUser.uid.toString() +
+                        '" has updated his settings w/ photoURL "' +
+                        currentUser.photoURL.toString() + '"');
+
+                    await database.updateUserData(currentUser); // upload image + wait for update
+                    // TODO: Update w/ more fields in the future
+
+                    logger.i('Settings: User w/ id "' + currentUser.uid.toString() +
+                        '" has updated his settings w/ params ' +
+                        '(username: "' + currentUser.username.toString() + '", ' +
+                        'GPA: "' + currentUser.GPA.toString() + '", ' + '")');
+
+                    setState(() {});
+                  } else {
+                    logger.w('Settings: User w/ id "' +
+                        currentUser.uid +
+                        '" has entered invalid information in Settings fields!');
+                    setError("Invalid info in fields or username already exists!");
+                  }
+                },
               ),
+            ),
+            SizedBox(height: 10.0),
+            CenteredText(
+              text: '(Hint: Changes to account fields and image only take effect upon pressing the Submit button!)',
+              fontSize: 22.0,
             ),
             errorNotifier.isError ? errorNotifier.showError() : SizedBox(),
           ],

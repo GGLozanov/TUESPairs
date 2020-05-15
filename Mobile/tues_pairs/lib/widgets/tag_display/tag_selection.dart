@@ -47,7 +47,10 @@ class _TagSelectionState extends State<TagSelection> {
     final btnWidth = screenSize.width / (widgetReasonableWidthMargin - 1.25);
 
     return Scaffold(
-      appBar: buildAppBar(pageTitle: 'Register'),
+      appBar: buildAppBar(
+        pageTitle: widget.isCurrentUserAvailable ?
+          'Settings' : 'Register'
+      ),
       body: Container(
         color: greyColor,
         child: Column(
@@ -71,19 +74,19 @@ class _TagSelectionState extends State<TagSelection> {
               rightBtnText: 'Confirm Tags', // no need to pass left text because set to default
               onLeftPressed: () async {
                 if(widget.isCurrentUserAvailable) {
-                  await database.updateUserData(currentUser);
-                }
-
-                Navigator.pop(context);
-              },
-              onRightPressed: () async {
-                // TODO: Optimise without database; keep initial tags separately
-                if(widget.isCurrentUserAvailable) {
                   currentUser.tagIDs = await database.getUserById()
                       .then((usr) => usr.tagIDs);
                 }
 
                 // Pop the route from the stack when called from Settings/Register
+                Navigator.pop(context);
+              },
+              onRightPressed: () async {
+                // TODO: Optimise without database; keep initial tags separately
+                if(widget.isCurrentUserAvailable) {
+                  await database.updateUserData(currentUser);
+                }
+
                 Navigator.pop(context);
               },
             ),

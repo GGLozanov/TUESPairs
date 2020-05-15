@@ -63,6 +63,7 @@ class RegisterForm extends StatefulWidget {
 
       if(formIsValid(baseAuth, users)) {
         final FormState formState = baseAuth.key.currentState;
+        formState.save();
 
         switchPage(isLoading: true);
 
@@ -70,6 +71,7 @@ class RegisterForm extends StatefulWidget {
         if(registeredUser.isTeacher) registeredUser.GPA = null;
 
         if(imageService != null && imageService.profileImage != null) {
+          logger.i('Register: Attempting to upload authUser image to Firebase storage');
           registeredUser.photoURL = await imageService.uploadImage();
         }
 
@@ -79,9 +81,12 @@ class RegisterForm extends StatefulWidget {
           logger.w('Register: User hasn\'t been registered (failed)');
           return null;
         }
+
+        return user;
       } else {
         switchPage();
       }
+      return null;
     };
   }
 
@@ -103,7 +108,7 @@ class RegisterForm extends StatefulWidget {
       }
       if(usernameExists(baseAuth.user.username, users)) {
         logger.w('Register: User is invalid (username already exists)');
-        baseAuth.errorMessages.add('Username exists');
+        baseAuth.errorMessages.add('Username exists!');
         return false;
       }
 
@@ -124,15 +129,19 @@ class RegisterForm extends StatefulWidget {
         // TODO: narrow these final settings of values down in function
         if(registeredUser.isTeacher) registeredUser.GPA = null;
 
+        // user already auth'd here because external so we can upload the image
         if(baseAuth.user.photoURL == null || (imageService != null && imageService.profileImage != null)) {
           registeredUser.photoURL = await imageService.uploadImage();
         } // TODO: Potential bug here if user continues with default image?
 
         await Database(uid: registeredUser.uid).updateUserData(registeredUser); // update external auth user DB
         callback();
+
+        return registeredUser;
       } else {
         switchPage();
       }
+      return null;
     };
   }
 
@@ -164,8 +173,8 @@ class _RegisterFormState extends State<RegisterForm> {
         ),
         SizedBox(height: 15.0),
         ConfirmPasswordInputField(
-        key: Key(Keys.registerConfirmPasswordInputField),
-        onChanged: (value) => setState(() {baseAuth.confirmPassword = value;}),
+          key: Key(Keys.registerConfirmPasswordInputField),
+          onChanged: (value) => setState(() {baseAuth.confirmPassword = value;}),
         ),
       ],
     );
@@ -192,7 +201,7 @@ class _RegisterFormState extends State<RegisterForm> {
                             ),
                             Provider<User>.value(
                               value: imageService.profileImage == null ?
-                              baseAuth.user : null,
+                                baseAuth.user : null,
                             ),
                           ],
                           child: AvatarWrapper(),
@@ -216,7 +225,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   ),
                   SizedBox(height: 15.0),
                   widget.isExternalAuth ? SizedBox() :
-                  baseAuthInputFields,
+                    baseAuthInputFields,
                   SizedBox(height: 15.0),
                   baseAuth.user.isTeacher ? SizedBox() : GPAInputField(
                     key: Key(Keys.registerGPAInputField),
@@ -273,15 +282,17 @@ class _RegisterFormState extends State<RegisterForm> {
                     key: Key(Keys.registerButton),
                     minWidth: 250.0,
                     height: 60.0,
+                    color: Colors.deepOrange[500],
                     text: widget.isExternalAuth ? 'Finish Account' : 'Create account',
                     onPressed: () async {
                       var result = await widget.registerUser(baseAuth, imageService, users);
                       if(result == null && !widget.isExternalAuth) {
                         // TODO: Reimplement setState(() => {}); threw exception beforehand
-                        baseAuth.clearAndAddError('There was an error. Please try again.');
+                        setState(() =>
+                            baseAuth.clearAndAddError('Your e-mail may already be in use or your passwords may not match!')
+                        );
                       }
                     },
-                    color: Colors.deepOrange[500],
                   ),
                   SizedBox(height: 20.0),
                   widget.isExternalAuth ? InputButton(

@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 class CenteredText extends StatelessWidget {
 
   final String text;
+  final double fontSize;
 
   CenteredText({
-    this.text = ''
+    this.text = '',
+    this.fontSize = 30.0
   });
 
   @override
@@ -17,7 +19,7 @@ class CenteredText extends StatelessWidget {
           text,
           style: TextStyle(
             color: Colors.orange,
-            fontSize: 30.0,
+            fontSize: fontSize,
           ),
           textAlign: TextAlign.center,
         )
