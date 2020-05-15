@@ -328,7 +328,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
             ),
             SizedBox(height: 10.0),
             CenteredText(
-              text: '(Hint: Changes to account fields and image only take effect upon pressing the Submit button!)',
+              text: 'Hint: Changes to account fields and image only take effect upon pressing the Submit button!',
               fontSize: 22.0,
             ),
             errorNotifier.isError ? errorNotifier.showError() : SizedBox(),

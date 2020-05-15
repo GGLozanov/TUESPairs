@@ -214,6 +214,19 @@ class _UserListState extends State<UserList> {
     }
   }
 
+  List<User> _getFilteredUsers({
+    @required BuildContext context,
+    @required User currentUser
+  }) {
+    assert(context != null);
+    assert(currentUser != null);
+
+    final users = Provider.of<List<User>>(context) ?? [];
+    users.removeWhere((user) => user.isInvalid() ||
+        !isUserRenderableForCurrent(currentUser, user));
+    return users;
+  }
+
   Widget userList;
 
   @override
@@ -222,9 +235,10 @@ class _UserListState extends State<UserList> {
     final currentUser = Provider.of<User>(context);
     final tags = Provider.of<List<Tag>>(context);
 
-    final users = Provider.of<List<User>>(context) ?? [];
-    users.removeWhere((user) => user.isInvalid() ||
-        !isUserRenderableForCurrent(currentUser, user));
+    List<User> users = _getFilteredUsers(
+      context: context,
+      currentUser: currentUser,
+    );
     // removes invalid users w/ no Firestore records in order to not crash app (sync w/ WEB)
     // and users which are not rendereable
 
@@ -235,34 +249,41 @@ class _UserListState extends State<UserList> {
       );
     }
 
-    bool isFirstBuild = images.isEmpty;
+    bool isFirstBuild = images.isEmpty; // it's a first build if there are no rendered/mapped images
 
     if(isFirstBuild) { // if list is just initialized (first build run)
       userCards = <UserCard>[];
 
-      userList = AnimatedList( // list of users widget
-        shrinkWrap: true,
-        key: _animatedListKey,
-        initialItemCount: userCards.length,
-        // ignore: missing_return
-        itemBuilder: (context, index, animation) { // context & index of whichever item we're iterating through
-          // TODO: get array of skipped users from database (user instance probably won't hold it) through FutureBuilder again maybe -> done
-          // TODO: then use contains method to check rendering in if statement -> done
-          // TODO: User NEVER enters this state if they have matchedUserID != null; do that check in match.dart -> done
+      userList = RefreshIndicator(
+        backgroundColor: greyColor,
+        color: Colors.orange,
+        onRefresh: () async => setState(() => images = []),
+            // refresh user data by clearing images and triggering first build and DB retrieval again
+            // TODO: Maybe fix this method as ti sn't really clear
+        child: AnimatedList( // list of users widget
+          shrinkWrap: true,
+          key: _animatedListKey,
+          initialItemCount: userCards.length,
+          // ignore: missing_return
+          itemBuilder: (context, index, animation) { // context & index of whichever item we're iterating through
+            // TODO: get array of skipped users from database (user instance probably won't hold it) through FutureBuilder again maybe -> done
+            // TODO: then use contains method to check rendering in if statement -> done
+            // TODO: User NEVER enters this state if they have matchedUserID != null; do that check in match.dart -> done
 
-          return SlideTransition(
-            position: animation.drive(Tween<Offset>(
-              begin: const Offset(1, 0), // represent a point in Cartesian (x-y coordinate) space; dx and dy are args for points
-              end: const Offset(0, 0), // points are between 1 and 0 (use that!)
-            ).chain(
-                CurveTween(
-                  curve: Curves.decelerate
+            return SlideTransition(
+              position: animation.drive(Tween<Offset>(
+                begin: const Offset(1, 0), // represent a point in Cartesian (x-y coordinate) space; dx and dy are args for points
+                end: const Offset(0, 0), // points are between 1 and 0 (use that!)
+              ).chain(
+                  CurveTween(
+                    curve: Curves.decelerate
+                  )
                 )
-              )
-            ),
-            child: userCards?.elementAt(index) ?? SizedBox(), // get the generated user card from here
-          );
-        },
+              ),
+              child: userCards?.elementAt(index) ?? SizedBox(), // get the generated user card from here
+            );
+          },
+        )
       );
 
       return FutureBuilder<List<List<TagCard>>>(
