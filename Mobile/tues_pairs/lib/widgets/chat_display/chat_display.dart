@@ -86,19 +86,6 @@ class _ChatDisplayState extends State<ChatDisplay> {
         } else {
             return messageCard;
         }
-      
-      /*
-        return MessageCard(
-          mid: message.mid,
-          content: message.content,
-          fromId: message.fromId,
-          toId: message.toId,
-          sentTime: formatterDateAndTime.format(time),
-          isMe: isMe,
-          matchedUser: isMe ? null : matchedUser,
-        );
-      }
-      */
       }
       return null;
     }).toList();

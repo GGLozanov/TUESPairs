@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
-import 'package:tues_pairs/screens/register/register.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
+import 'package:tues_pairs/templates/step_info.dart';
 import 'package:tues_pairs/widgets/avatar/avatar_wrapper.dart';
 import 'package:tues_pairs/widgets/form/GPA_input_field.dart';
 import 'package:tues_pairs/widgets/form/input_button.dart';
@@ -37,7 +37,7 @@ class RegisterForm extends StatefulWidget {
     formIsValid = (BaseAuth baseAuth,
         List<User> users, List<FormState> formStates) {
 
-      formStates.removeWhere((state) => null); // remove null states (like GPA if deselected)
+      formStates.removeWhere((state) => state == null); // remove null states (like GPA if deselected)
 
       baseAuth.errorMessages = [''];
       if(formStates.firstWhere(
@@ -67,6 +67,8 @@ class RegisterForm extends StatefulWidget {
         List<GlobalKey<FormState>> stepperKeys) async {
       final User registeredUser = baseAuth.user;
 
+      stepperKeys.removeWhere((key) => key == null); // remove null keys (for fields that are not forms)
+
       if(formIsValid(baseAuth, users, stepperKeys
           .map((key) => key.currentState)
           .toList())) {
@@ -85,6 +87,7 @@ class RegisterForm extends StatefulWidget {
 
         if(user == null) {
           logger.w('Register: User hasn\'t been registered (failed)');
+          switchPage();
           return null;
         }
 
@@ -105,7 +108,7 @@ class RegisterForm extends StatefulWidget {
     formIsValid = (BaseAuth baseAuth,
         List<User> users, List<FormState> formStates) {
 
-      formStates.removeWhere((state) => null); // remove null states (like GPA if deselected)
+      formStates.removeWhere((state) => state == null); // remove null states (like GPA if deselected)
 
       baseAuth.errorMessages = [''];
       if(formStates.firstWhere(
@@ -129,6 +132,8 @@ class RegisterForm extends StatefulWidget {
         ImageService imageService, List<User> users,
         List<GlobalKey<FormState>> stepperKeys) async {
       final User registeredUser = baseAuth.user;
+
+      stepperKeys.removeWhere((key) => key == null); // remove null keys (for fields that are not forms)
 
       if(formIsValid(baseAuth, users, stepperKeys
           .map((key) => key.currentState)
@@ -163,37 +168,21 @@ class _RegisterFormState extends State<RegisterForm> {
 
   int currentStep = 0;
 
-  Map<int, String> _stepNames;
-
-  List<GlobalKey<FormState>> _formStateKeys = [
-    GlobalKey<FormState>(),
-    GlobalKey<FormState>(),
-    GlobalKey<FormState>(),
-    GlobalKey<FormState>(),
-    GlobalKey<FormState>(),
-  ]; // TODO: Change when adding project idea fields
-  // globalkeys used to validate each stepper form
-
-  StepState _stateConditionTemplate(
-    int stepIdx,
-    {@required innerCondition}) {
-    assert(innerCondition != null);
-
-    return currentStep == stepIdx // changes the state depending
-        ? StepState.editing // on the stepidx, which affects the icon shown
-        : innerCondition ? // if the form has been filled, we show the 'complete' state
-    StepState.complete : StepState.indexed;
-  }
+  List<StepInfo> _stepInfos; // idx to map with String keys and dynamic values (GlobakLeys, names, etc. associated)
 
   Step _stepFromWidget(
       Widget content,
       int stepIdx,
-      StepState state,
+      bool innerCondition,
       {bool isActive = true}
   ) {
+    assert(content != null);
+    assert(stepIdx != null);
+    assert(innerCondition != null);
+
     return Step(
       title: Text(
-        _stepNames[stepIdx],
+        _stepInfos[stepIdx].name,
         style: TextStyle(
           fontFamily: 'Nilam',
           fontSize: 20.0,
@@ -203,7 +192,10 @@ class _RegisterFormState extends State<RegisterForm> {
       ),
       content: content,
       isActive: isActive,
-      state: state
+      state: currentStep == stepIdx // changes the state depending
+        ? StepState.editing // on the stepidx, which affects the icon shown
+      : innerCondition ? // if the form has been filled, we show the 'complete' state
+        StepState.complete : StepState.indexed
     );
   }
 
@@ -212,44 +204,23 @@ class _RegisterFormState extends State<RegisterForm> {
       final stepIdx = fields.indexOf(widget);
 
       if(widget is InputField) { // decide which conversion func to call
-        bool isCurrentStepValid = _formStateKeys[stepIdx] // retrieve whether the form is currently filled
-            ?.currentState?.validate();
-
-        if(isCurrentStepValid == null) { // check for null and revert to not filled
-          isCurrentStepValid = false; // which means showing the index of the step (since the form is empty)
-        }
-
+        // retrieve whether the form is currently filled (should not save currentState)
         return _stepFromWidget(
           Form(
-            key: _formStateKeys[stepIdx],
+            key: _stepInfos[stepIdx].formKey,
             child: widget
-          ),
-          stepIdx,
-          _stateConditionTemplate(
-            stepIdx,
-            innerCondition: isCurrentStepValid
-          ),
-          isActive: currentStep >= stepIdx
+          ), // content
+          stepIdx, // step index
+          _stepInfos[stepIdx].isFormValid(shouldSave: false), // inner condition for state (edit, indexed, complete)
+          isActive: currentStep >= stepIdx // isActive (highlighted w/ blue)
         );
-      } else if(widget is Checkbox) { // TODO: Implement in Stepper
+      }
+      if(widget is Row) {
+        // if it's not an input field, it's a row with switch
         return _stepFromWidget(
           widget,
           stepIdx,
-          _stateConditionTemplate(
-            stepIdx,
-            innerCondition: currentStep > stepIdx
-          ),
-          isActive: currentStep >= stepIdx
-        );
-      } else if(widget is InputButton) { // TODO: Implement in Stepper
-        print('');
-        return _stepFromWidget(
-          widget,
-          stepIdx,
-          _stateConditionTemplate(
-            stepIdx,
-            innerCondition: RegisterForm.hasUserEnteredTags,
-          ),
+          currentStep > stepIdx,
           isActive: currentStep >= stepIdx
         );
       }
@@ -263,18 +234,56 @@ class _RegisterFormState extends State<RegisterForm> {
   @override
   void initState() {
     super.initState();
-    _stepNames = widget.isExternalAuth ? // TODO: Optimise this to be better and for future fields
-      {
-        0 : 'Username',
-        1 : 'GPA'
-      }
-    : {
-      0 : 'E-mail', // first -> name of step
-      1 : 'Password',
-      2 : 'Confirm Password', // TODO: Implement Tag selection and isTeacher in Stepper
-      3 : 'Username',
-      4 : 'GPA',
-    };
+    _stepInfos = widget.isExternalAuth ? // TODO: Optimise this to be better and for future fields
+      [
+        new StepInfo(
+          stepIdx: 0,
+          name: 'Are you a teacher?',
+          formKey: null
+        ),
+        new StepInfo(
+            stepIdx: 1,
+            name: 'Username',
+            formKey: GlobalKey<FormState>()
+        ),
+        new StepInfo(
+            stepIdx: 2,
+            name: 'GPA',
+            formKey: GlobalKey<FormState>()
+        ),
+      ]
+    : [
+      new StepInfo(
+        stepIdx: 0,
+        name: 'Are you a teacher?',
+        formKey: null
+      ),
+      new StepInfo(
+        stepIdx: 1,
+        name: 'E-mail',
+        formKey: GlobalKey<FormState>(),
+      ),
+      new StepInfo(
+        stepIdx: 2,
+        name: 'Password',
+        formKey: GlobalKey<FormState>(),
+      ),
+      new StepInfo(
+        stepIdx: 3,
+        name: 'Confirm Password',
+        formKey: GlobalKey<FormState>(),
+      ),
+      new StepInfo(
+        stepIdx: 1,
+        name: 'Username',
+        formKey: GlobalKey<FormState>(),
+      ),
+      new StepInfo(
+        stepIdx: 1,
+        name: 'GPA',
+        formKey: GlobalKey<FormState>(),
+      ),
+    ];
   }
 
   @override
@@ -286,6 +295,30 @@ class _RegisterFormState extends State<RegisterForm> {
     final imageService = Provider.of<ImageService>(context);
 
     final screenSize = MediaQuery.of(context).size;
+
+    final _isTeacherField = <Widget>[
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+          'Are you a teacher?',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.0,
+            fontSize: 18.0,
+          )
+          ),
+          Switch(
+            key: Key(Keys.isTeacherSwitch),
+            value: baseAuth.user.isTeacher, // has the current user selected the isTeacher property
+            onChanged: (value) => setState(() {baseAuth.user.isTeacher = value;}),
+            // Rerun the build method in order for the switch to actually change
+            activeColor: Colors.orange,
+          ),
+        ],
+      ),
+    ];
 
     final _baseAuthInputFields = <Widget>[
       EmailInputField(
@@ -315,11 +348,13 @@ class _RegisterFormState extends State<RegisterForm> {
     ];
 
     final _defaultFields = <List<Widget>>[
+      _isTeacherField,
       _baseAuthInputFields,
       _infoInputFields,
     ];
 
     final _externFields = <List<Widget>>[
+      _isTeacherField,
       _infoInputFields
     ];
 
@@ -364,153 +399,145 @@ class _RegisterFormState extends State<RegisterForm> {
                     textAlign: TextAlign.center,
                   ))?.toList() ?? [],
                 ),
-                SizedBox(height: 15.0),
-                Stepper(
-                  // create a new stepper with a unique key each time the stepper length changes
-                  key: Key(Keys.registerStepper + _steps.length.toString()),
-                  physics: ClampingScrollPhysics(),
-                  steps: _steps,
-                  currentStep: currentStep,
-                  onStepTapped: (stepIdx) {
-                    setState(() {
-                      currentStep = stepIdx;
-                    });
-                  },
-                  onStepContinue: () {
-                    final currentFormState =
-                        _formStateKeys[currentStep]
-                        .currentState;
-                    currentFormState.save();
-                    setState(() {
-                    if(currentFormState.validate() &&
-                          currentStep < _steps.length - 1) {
-                      currentStep++;
-                      } else currentStep = 0;
-                    });
-                  },
-                  onStepCancel: () {
-                    setState(() {
-                      currentStep = currentStep > 0 ?
-                          currentStep - 1 : 0;
-                    });
-                  },
-                  controlsBuilder: (context, {onStepContinue, onStepCancel}) {
-                    final bool isFinalStep = currentStep == _steps.length - 1;
+                Theme(
+                  data: ThemeData(
+                    primaryColor: Colors.deepOrange,
+                  ),
+                  child: Stepper(
+                    // create a new stepper with a unique key each time the stepper length changes
+                    key: Key(Keys.registerStepper + _steps.length.toString()),
+                    physics: ClampingScrollPhysics(),
+                    steps: _steps,
+                    currentStep: currentStep,
+                    onStepTapped: (stepIdx) {
+                      setState(() {
+                        currentStep = stepIdx;
+                      });
+                    },
+                    onStepContinue: () {
+                      bool isCurrentFormValid =
+                          _stepInfos[currentStep]
+                          .isFormValid();
+                      setState(() {
+                      if(isCurrentFormValid &&
+                            currentStep < _steps.length - 1) {
+                        currentStep++;
+                        } else currentStep = 0;
+                      });
+                    },
+                    onStepCancel: () {
+                      setState(() {
+                        currentStep = currentStep > 0 ?
+                            currentStep - 1 : 0;
+                      });
+                    },
+                    controlsBuilder: (context, {onStepContinue, onStepCancel}) {
+                      final bool isFinalStep = currentStep == _steps.length - 1;
 
-                    return Row(
-                      children: <Widget>[
-                        SizedBox(height: 100.0),
-                        ButtonTheme( // TODO: Maybe extract in widget
-                          height: screenSize.height / (widgetReasonableHeightMargin + 1),
-                          minWidth: screenSize.width / widgetReasonableWidthMargin,
-                          child: FlatButton(
-                            key: Key(Keys.registerStepNextButton),
-                            color: darkGreyColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(23.0),
-                            ),
-                            child: Text(
-                              isFinalStep ? 'Go to Email' : 'Continue',
-                              style: TextStyle(
-                                fontFamily: 'Nilam',
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.orange,
+                      return Row(
+                        children: <Widget>[
+                          SizedBox(height: 80.0),
+                          ButtonTheme( // TODO: Maybe extract in widget
+                            height: screenSize.height / (widgetReasonableHeightMargin + 1),
+                            minWidth: screenSize.width / widgetReasonableWidthMargin,
+                            child: FlatButton(
+                              key: Key(Keys.registerStepNextButton),
+                              color: darkGreyColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(23.0),
                               ),
-                            ),
-                            onPressed: onStepContinue,
-                          ),
-                        ),
-                        SizedBox(width: 15.0),
-                        ButtonTheme(
-                          height: screenSize.height / (widgetReasonableHeightMargin + 1),
-                          minWidth: screenSize.width / widgetReasonableWidthMargin,
-                          child: FlatButton(
-                            key: Key(Keys.registerStepBackButton),
-                            color: darkGreyColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(23.0),
-                            ),
-                            child: Text(
-                              'Back',
-                              style: TextStyle(
-                                fontFamily: 'Nilam',
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.orange,
+                              child: Text(
+                                isFinalStep ? 'Go to Email' : 'Continue',
+                                style: TextStyle(
+                                  fontFamily: 'Nilam',
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange,
+                                ),
                               ),
+                              onPressed: onStepContinue,
                             ),
-                            onPressed: onStepCancel
                           ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                SizedBox(height: 15.0),
+                          SizedBox(width: 15.0),
+                          ButtonTheme(
+                            height: screenSize.height / (widgetReasonableHeightMargin + 1),
+                            minWidth: screenSize.width / widgetReasonableWidthMargin,
+                            child: FlatButton(
+                              key: Key(Keys.registerStepBackButton),
+                              color: darkGreyColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(23.0),
+                              ),
+                              child: Text(
+                                'Back',
+                                style: TextStyle(
+                                  fontFamily: 'Nilam',
+                                  fontSize: 22.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange,
+                                ),
+                              ),
+                              onPressed: onStepCancel
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ), 
+                SizedBox(height: 10.0),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Text(
-                      'Are you a teacher?',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.0,
-                        fontSize: 18.0,
-                      )
+                    InputButton(
+                      key: Key(Keys.chooseTagsButton),
+                      minWidth: screenSize.width / (widgetReasonableWidthMargin + 1),
+                      height: screenSize.height / widgetReasonableHeightMargin,
+                      text: 'Choose tags',
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MultiProvider(
+                                  providers: [
+                                    Provider<List<Tag>>.value(value: tags),
+                                    Provider<BaseAuth>.value(value: baseAuth),
+                                  ],
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: TagSelection(),
+                                  ),
+                                )
+                            )
+                        );
+                      },
                     ),
-                    Switch(
-                      key: Key(Keys.isTeacherSwitch),
-                      value: baseAuth.user.isTeacher, // has the current user selected the isTeacher property
-                      onChanged: (value) => setState(() {baseAuth.user.isTeacher = value;}),
-                      // Rerun the build method in order for the switch to actually change
-                      activeColor: Colors.orange,
+                    SizedBox(width: 10.0),
+                    InputButton(
+                      key: Key(Keys.registerButton),
+                      minWidth: screenSize.width / (widgetReasonableWidthMargin + 1),
+                      height: screenSize.height / widgetReasonableHeightMargin,
+                      color: Colors.deepOrange[500],
+                      text: widget.isExternalAuth ? 'Finish Account' : 'Create account',
+                      onPressed: () async {
+                        var result = await widget.registerUser(
+                            baseAuth,
+                            imageService,
+                            users,
+                            _stepInfos.map((stepInfo) => stepInfo.formKey).toList() // map to keys and get all them as a list
+                        );
+
+                        if(result == null && !widget.isExternalAuth) {
+                          // TODO: Reimplement setState(() => {}); threw exception beforehand -> done
+                          setState(() =>
+                              baseAuth.errorMessages.add(
+                                  'An error has occurred! Please try again!'
+                              )
+                          );
+                        }
+                      },
                     ),
                   ],
-                ),
-                SizedBox(height: 30.0),
-                InputButton(
-                  key: Key(Keys.chooseTagsButton),
-                  minWidth: 250.0,
-                  height: 60.0,
-                  text: 'Choose tags',
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MultiProvider(
-                              providers: [
-                                Provider<List<Tag>>.value(value: tags),
-                                Provider<BaseAuth>.value(value: baseAuth),
-                              ],
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: TagSelection(),
-                              ),
-                            )
-                        )
-                    );
-                  },
-                ),
-                Divider(height: 30.0, thickness: 5.0, color: darkGreyColor),
-                InputButton(
-                  key: Key(Keys.registerButton),
-                  minWidth: 250.0,
-                  height: 60.0,
-                  color: Colors.deepOrange[500],
-                  text: widget.isExternalAuth ? 'Finish Account' : 'Create account',
-                  onPressed: () async {
-                    var result = await widget.registerUser(baseAuth, imageService, users, _formStateKeys);
-                    if(result == null && !widget.isExternalAuth) {
-                      // TODO: Reimplement setState(() => {}); threw exception beforehand -> done
-                      setState(() =>
-                          baseAuth.errorMessages.add(
-                              'An error has occurred! Please try again!'
-                          )
-                      );
-                    }
-                  },
                 ),
                 SizedBox(height: 20.0),
                 widget.isExternalAuth ? InputButton(
