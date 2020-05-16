@@ -12,14 +12,14 @@ import 'package:tues_pairs/widgets/form/confim_password_input_field.dart';
 import 'package:tues_pairs/widgets/form/password_input_field.dart';
 import 'package:tues_pairs/widgets/general/button_pair.dart';
 
-class FormSettingsPassword extends StatefulWidget {
+class SettingsPasswordForm extends StatefulWidget {
   BaseAuth baseAuth = new BaseAuth(); // TODO: cut down on the keys because they're expensive!
 
   @override
-  _FormSettingsPasswordState createState() => _FormSettingsPasswordState();
+  _SettingsPasswordFormState createState() => _SettingsPasswordFormState();
 }
 
-class _FormSettingsPasswordState extends State<FormSettingsPassword> {
+class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
 
   final Auth _auth = new Auth();
 

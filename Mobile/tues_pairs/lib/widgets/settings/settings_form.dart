@@ -13,15 +13,15 @@ import 'package:path/path.dart';
 
 // TODO: Improve code here by creating reusable input form for register and login
 
-class FormSettings extends StatefulWidget {
+class SettingsForm extends StatefulWidget {
   static BaseAuth baseAuth = new BaseAuth();
 
   @override
-  FormSettingsState createState() => FormSettingsState();
+  SettingsFormState createState() => SettingsFormState();
 
 }
 
-class FormSettingsState extends State<FormSettings> {
+class SettingsFormState extends State<SettingsForm> {
 
   ImageService imageService;
   User currentUser;
@@ -32,7 +32,7 @@ class FormSettingsState extends State<FormSettings> {
     imageService = Provider.of<ImageService>(context);
     return Center(
       child: Form(
-        key: FormSettings.baseAuth.key,
+        key: SettingsForm.baseAuth.key,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
           child: Column(

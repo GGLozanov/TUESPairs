@@ -16,6 +16,7 @@ import 'package:tues_pairs/widgets/form/username_input_field.dart';
 import 'package:tues_pairs/widgets/form/email_input_field.dart';
 import 'package:tues_pairs/widgets/form/password_input_field.dart';
 import 'package:tues_pairs/widgets/form/confim_password_input_field.dart';
+import 'package:tues_pairs/widgets/general/stepper_button.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_selection.dart';
 
 class RegisterForm extends StatefulWidget {
@@ -242,14 +243,14 @@ class _RegisterFormState extends State<RegisterForm> {
           formKey: null
         ),
         new StepInfo(
-            stepIdx: 1,
-            name: 'Username',
-            formKey: GlobalKey<FormState>()
+          stepIdx: 1,
+          name: 'Username',
+          formKey: GlobalKey<FormState>()
         ),
         new StepInfo(
-            stepIdx: 2,
-            name: 'GPA',
-            formKey: GlobalKey<FormState>()
+          stepIdx: 2,
+          name: 'GPA',
+          formKey: GlobalKey<FormState>()
         ),
       ]
     : [
@@ -274,12 +275,12 @@ class _RegisterFormState extends State<RegisterForm> {
         formKey: GlobalKey<FormState>(),
       ),
       new StepInfo(
-        stepIdx: 1,
+        stepIdx: 4,
         name: 'Username',
         formKey: GlobalKey<FormState>(),
       ),
       new StepInfo(
-        stepIdx: 1,
+        stepIdx: 5,
         name: 'GPA',
         formKey: GlobalKey<FormState>(),
       ),
@@ -301,12 +302,12 @@ class _RegisterFormState extends State<RegisterForm> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-          'Are you a teacher?',
+          'Tap the switch if you are',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.0,
-            fontSize: 18.0,
+            fontSize: 15.0,
           )
           ),
           Switch(
@@ -401,7 +402,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 ),
                 Theme(
                   data: ThemeData(
-                    primaryColor: Colors.deepOrange,
+                    primaryColor: Colors.orangeAccent,
                   ),
                   child: Stepper(
                     // create a new stepper with a unique key each time the stepper length changes
@@ -437,50 +438,36 @@ class _RegisterFormState extends State<RegisterForm> {
                       return Row(
                         children: <Widget>[
                           SizedBox(height: 80.0),
-                          ButtonTheme( // TODO: Maybe extract in widget
-                            height: screenSize.height / (widgetReasonableHeightMargin + 1),
-                            minWidth: screenSize.width / widgetReasonableWidthMargin,
-                            child: FlatButton(
-                              key: Key(Keys.registerStepNextButton),
-                              color: darkGreyColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(23.0),
+                          StepperButton(
+                            screenSize: screenSize,
+                            key: Key(Keys.registerStepNextButton),
+                            child: Text(
+                              isFinalStep ? 'Go to Email' : 'Continue',
+                              style: TextStyle(
+                                fontFamily: 'Nilam',
+                                fontSize: 22.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.orange,
                               ),
-                              child: Text(
-                                isFinalStep ? 'Go to Email' : 'Continue',
-                                style: TextStyle(
-                                  fontFamily: 'Nilam',
-                                  fontSize: 22.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.orange,
-                                ),
-                              ),
-                              onPressed: onStepContinue,
                             ),
+                            onPressed: onStepContinue,
                           ),
                           SizedBox(width: 15.0),
-                          ButtonTheme(
-                            height: screenSize.height / (widgetReasonableHeightMargin + 1),
-                            minWidth: screenSize.width / widgetReasonableWidthMargin,
-                            child: FlatButton(
-                              key: Key(Keys.registerStepBackButton),
-                              color: darkGreyColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(23.0),
+                          StepperButton(
+                            screenSize: screenSize,
+                            key: Key(Keys.registerStepBackButton),
+                            child: Text(
+                              'Back',
+                              style: TextStyle(
+                                fontFamily: 'Nilam',
+                                fontSize: 22.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.orange,
                               ),
-                              child: Text(
-                                'Back',
-                                style: TextStyle(
-                                  fontFamily: 'Nilam',
-                                  fontSize: 22.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.orange,
-                                ),
-                              ),
-                              onPressed: onStepCancel
                             ),
+                            onPressed: onStepCancel,
                           ),
-                        ],
+                        ]
                       );
                     },
                   ),
@@ -491,31 +478,31 @@ class _RegisterFormState extends State<RegisterForm> {
                   children: <Widget>[
                     InputButton(
                       key: Key(Keys.chooseTagsButton),
-                      minWidth: screenSize.width / (widgetReasonableWidthMargin + 1),
+                      minWidth: screenSize.width / (widgetReasonableWidthMargin + 1.1),
                       height: screenSize.height / widgetReasonableHeightMargin,
                       text: 'Choose tags',
                       onPressed: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MultiProvider(
-                                  providers: [
-                                    Provider<List<Tag>>.value(value: tags),
-                                    Provider<BaseAuth>.value(value: baseAuth),
-                                  ],
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: TagSelection(),
-                                  ),
-                                )
-                            )
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MultiProvider(
+                                providers: [
+                                  Provider<List<Tag>>.value(value: tags),
+                                  Provider<BaseAuth>.value(value: baseAuth),
+                                ],
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: TagSelection(),
+                                ),
+                              )
+                          )
                         );
                       },
                     ),
                     SizedBox(width: 10.0),
                     InputButton(
                       key: Key(Keys.registerButton),
-                      minWidth: screenSize.width / (widgetReasonableWidthMargin + 1),
+                      minWidth: screenSize.width / (widgetReasonableWidthMargin + 1.1),
                       height: screenSize.height / widgetReasonableHeightMargin,
                       color: Colors.deepOrange[500],
                       text: widget.isExternalAuth ? 'Finish Account' : 'Create account',
@@ -539,7 +526,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     ),
                   ],
                 ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 30.0),
                 widget.isExternalAuth ? InputButton(
                   key: Key(Keys.externBackButton),
                   minWidth: 300.0,
@@ -553,7 +540,6 @@ class _RegisterFormState extends State<RegisterForm> {
                       setState(() =>
                           baseAuth.clearAndAddError('Could not go back to login. Your auth token may have expired. Please exit and try again.')
                       );
-                      return;
                     }
                   },
                 ) : SizedBox(),

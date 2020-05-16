@@ -25,7 +25,9 @@ class PasswordInputField extends InputField {
       obscureText: true, // obscures text (like for a password)
       onChanged: onChanged,
       style: textInputColor,
-      validator: (value) => value.isEmpty ? 'Enter a password' : null,
+      validator: (value) =>
+        value.isEmpty || value.length < 6 ?
+          'Enter a longer password' : null,
       keyboardType: TextInputType.visiblePassword,
       decoration: textInputDecoration.copyWith(
         icon: Icon(

@@ -9,10 +9,10 @@ import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/avatar/avatar_wrapper.dart';
 import 'package:tues_pairs/widgets/general/centered_text.dart';
-import 'package:tues_pairs/widgets/settings/form_settings.dart';
+import 'package:tues_pairs/widgets/settings/settings_form.dart';
 import 'package:tues_pairs/templates/error_notifier.dart';
 import 'package:tues_pairs/widgets/form/input_button.dart';
-import 'package:tues_pairs/widgets/settings/form_settings_email.dart';
+import 'package:tues_pairs/widgets/settings/settings_email_form.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_selection.dart';
 
 import '../../services/auth.dart';
@@ -166,7 +166,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
           children: <Widget>[
             SizedBox(height: 15.0),
             AvatarWrapper(),
-            FormSettings(),
+            SettingsForm(),
             SizedBox(height: 15.0),
             Padding(
               padding: const EdgeInsets.only(left: 40.0, right: 40.0),
@@ -204,7 +204,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                   Navigator.push(context, MaterialPageRoute(
                     builder: (context) => Provider.value(
                       value: currentUser,
-                      child: FormSettingsEmail()
+                      child: SettingsEmailForm()
                     ),
                   ));
                 },
@@ -295,7 +295,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                 text: 'Submit',
                 onPressed: () async {
                   // TODO: Use updateUserData from Database here -> done
-                  final FormState currentState = FormSettings.baseAuth.key.currentState;
+                  final FormState currentState = SettingsForm.baseAuth.key.currentState;
                   if(currentState.validate() &&
                       currentUser.email != null &&
                       currentUser.username != null &&

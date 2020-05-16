@@ -14,17 +14,17 @@ import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/form/password_input_field.dart';
 import 'package:tues_pairs/widgets/general/button_pair.dart';
 
-import 'form_settings_password.dart';
+import 'settings_password_form.dart';
 
 /// This is a seperate route, which is why the Scaffold is being rerendered
-class FormSettingsEmail extends StatefulWidget {
+class SettingsEmailForm extends StatefulWidget {
   BaseAuth baseAuth = new BaseAuth();
 
   @override
-  _FormSettingsEmailState createState() => _FormSettingsEmailState();
+  _SettingsEmailFormState createState() => _SettingsEmailFormState();
 }
 
-class _FormSettingsEmailState extends State<FormSettingsEmail> {
+class _SettingsEmailFormState extends State<SettingsEmailForm> {
 
   final Auth _auth = new Auth();
 
@@ -80,23 +80,23 @@ class _FormSettingsEmailState extends State<FormSettingsEmail> {
                     SizedBox(height: 30.0),
                     GestureDetector(
                       onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                            Provider<User>.value(
-                                value: currentUser,
-                                child: FormSettingsPassword()
-                            ),
-                          )
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                          Provider<User>.value(
+                              value: currentUser,
+                              child: SettingsPasswordForm()
+                          ),
+                        )
                       ),
                       child: Text(
-                          'Change password?',
-                          style: TextStyle(
-                            fontFamily: 'Nilam',
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange,
-                          )
+                        'Change password?',
+                        style: TextStyle(
+                          fontFamily: 'Nilam',
+                          fontSize: 25.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange,
+                        )
                       ),
                     ),
                     SizedBox(height: 30.0),
