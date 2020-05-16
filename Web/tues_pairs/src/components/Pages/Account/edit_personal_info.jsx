@@ -8,6 +8,7 @@ import { withRouter } from 'react-router-dom';
 import * as ROUTES from '../../../constants/routes';
 import { Link } from 'react-router-dom';
 import { PasswordChangeLink } from '../ChangeForms/passwordchange';
+import { EmailChangeLink } from '../ChangeForms/emailChange';
 import rgbHex from 'rgb-hex';
 import log from '../../../constants/logger.jsx';
 import Loading from '../../../constants/loading';
@@ -264,6 +265,7 @@ class EditPersonalInfo extends Component{
                         </Form.Group>
 
                         <PasswordChangeLink />
+                        <EmailChangeLink />
 
                         <div className="tag-list">
                             <ButtonGroup as={Row}>

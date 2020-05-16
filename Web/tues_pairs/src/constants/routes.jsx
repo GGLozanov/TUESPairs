@@ -10,3 +10,4 @@ export const SIGN = '/sign'
 export const CHAT = '/chat';
 export const EDIT_PERSONAL_INFO = '/edit_personal_info';
 export const USER_INFO = '/user_info';
+export const EMAIL_CHANGE = '/email_change';
