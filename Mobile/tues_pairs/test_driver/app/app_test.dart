@@ -141,10 +141,6 @@ void main() {
 
       delay(waitDuration);
 
-      await enterTextInFieldWithDelay(registerUsernameInputFieldFinder, registerUser.username);
-
-      delay(waitDuration);
-
       await enterTextInFieldWithDelay(registerEmailInputFieldFinder, registerUser.email);
 
       delay(waitDuration);
@@ -154,6 +150,10 @@ void main() {
       delay(waitDuration);
 
       await enterTextInFieldWithDelay(registerConfirmPasswordInputFieldFinder, registeredUserPassword);
+
+      delay(waitDuration);
+
+      await enterTextInFieldWithDelay(registerUsernameInputFieldFinder, registerUser.username);
 
       delay(waitDuration);
 

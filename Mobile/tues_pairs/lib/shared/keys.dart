@@ -35,6 +35,12 @@ class Keys {
   static const String backButton = 'backButton';
   static const String externBackButton = 'externBackButton';
   static const String chooseTagsButton = 'chooseTagsButton';
+
+  static const String registerStepper = 'registerStepper';
+  static const String registerStep = 'registerStep';
+  static const String registerStepNextButton = 'registerStepNextButton';
+  static const String registerStepBackButton = 'registerStepBackButton';
+
   static const String registerUsernameInputField = 'registerUsernameInputField';
   static const String registerEmailInputField = 'registerEmailInputField';
   static const String registerPasswordInputField = 'registerPasswordInputField';
