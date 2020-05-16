@@ -10,6 +10,7 @@ import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/widgets/form/confim_password_input_field.dart';
 import 'package:tues_pairs/widgets/form/password_input_field.dart';
+import 'package:tues_pairs/widgets/general/baseauth_error_display.dart';
 import 'package:tues_pairs/widgets/general/button_pair.dart';
 
 class SettingsPasswordForm extends StatefulWidget {
@@ -29,12 +30,15 @@ class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
     final currentUser = Provider.of<User>(context);
+
+    final screenSize = MediaQuery.of(context).size;
+    final btnHeight = screenSize.height / (widgetReasonableHeightMargin - 1.25);
+    final btnWidth  = screenSize.width / (widgetReasonableWidthMargin - 1.25);
 
     return Scaffold(
       backgroundColor: greyColor,
-      appBar: buildAppBar(pageTitle: 'Settings'),
+      appBar: buildAppBar(pageTitle: 'Edit Password'),
       body: Container(
         child: ListView(
           children: <Widget>[
@@ -44,13 +48,20 @@ class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   children: <Widget>[
+                    Center(
+                      child: Image.asset(
+                        'images/lock_tues_pairs.png'
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
                     Text(
                       'You can change your password here.',
                       style: TextStyle(
                         fontFamily: 'BebasNeue',
                         fontSize: 30.0,
                         color: Colors.orange,
-                      )
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 15.0),
                     PasswordInputField(
@@ -69,13 +80,14 @@ class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
                       key: Key(Keys.settingsPasswordFormConfirmPasswordInputField),
                       hintText: 'Confirm your new password',
                       onChanged: (value) => newUserConfirmPassword = value,
+                      sourcePassword: newUserPassword,
                     ),
                     SizedBox(height: 30.0),
                     ButtonPair(
                       leftBtnKey: Key(Keys.settingsPasswordFormBackButton),
                       rightBtnKey: Key(Keys.settingsPasswordFormConfirmButton),
-                      btnsHeight: screenSize.height / widgetReasonableHeightMargin,
-                      btnsWidth: screenSize.width / widgetReasonableWidthMargin,
+                      btnsHeight: btnHeight,
+                      btnsWidth: btnWidth,
                       onLeftPressed: () =>
                         Navigator.pop(context),
                       onRightPressed: () async {
@@ -177,18 +189,7 @@ class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
                       },
                     ),
                     SizedBox(height: 30.0),
-                    Column(
-                      children: widget.baseAuth.
-                      errorMessages?.map((message) => Text(
-                        "$message",
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontFamily: 'Nilam',
-                          fontSize: 25.0,
-                        ),
-                        textAlign: TextAlign.center,
-                      ))?.toList() ?? [],
-                    ),
+                    BaseAuthErrorDisplay(baseAuth: widget.baseAuth,)
                   ]
                 ),
               ),

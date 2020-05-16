@@ -16,6 +16,8 @@ import 'package:tues_pairs/widgets/form/username_input_field.dart';
 import 'package:tues_pairs/widgets/form/email_input_field.dart';
 import 'package:tues_pairs/widgets/form/password_input_field.dart';
 import 'package:tues_pairs/widgets/form/confim_password_input_field.dart';
+import 'package:tues_pairs/widgets/general/baseauth_error_display.dart';
+import 'package:tues_pairs/widgets/general/button_pair.dart';
 import 'package:tues_pairs/widgets/general/stepper_button.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_selection.dart';
 
@@ -296,6 +298,8 @@ class _RegisterFormState extends State<RegisterForm> {
     final imageService = Provider.of<ImageService>(context);
 
     final screenSize = MediaQuery.of(context).size;
+    final btnHeight = screenSize.height / (widgetReasonableHeightMargin - 1.25);
+    final btnWidth = screenSize.width / (widgetReasonableWidthMargin - 1.25);
 
     final _isTeacherField = <Widget>[
       Row(
@@ -334,6 +338,7 @@ class _RegisterFormState extends State<RegisterForm> {
       ConfirmPasswordInputField(
         key: Key(Keys.registerConfirmPasswordInputField),
         onChanged: (value) => setState(() {baseAuth.confirmPassword = value;}),
+        sourcePassword: baseAuth.password,
       ),
     ];
 
@@ -390,16 +395,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     child: AvatarWrapper(),
                   ),
                 ),
-                Column(
-                  children: baseAuth.errorMessages?.map((message) => Text(
-                    "$message",
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 18.0,
-                    ),
-                    textAlign: TextAlign.center,
-                  ))?.toList() ?? [],
-                ),
+                BaseAuthErrorDisplay(baseAuth: baseAuth,),
                 Theme(
                   data: ThemeData(
                     primaryColor: Colors.orangeAccent,
@@ -473,58 +469,48 @@ class _RegisterFormState extends State<RegisterForm> {
                   ),
                 ), 
                 SizedBox(height: 10.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    InputButton(
-                      key: Key(Keys.chooseTagsButton),
-                      minWidth: screenSize.width / (widgetReasonableWidthMargin + 1.1),
-                      height: screenSize.height / widgetReasonableHeightMargin,
-                      text: 'Choose tags',
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MultiProvider(
-                                providers: [
-                                  Provider<List<Tag>>.value(value: tags),
-                                  Provider<BaseAuth>.value(value: baseAuth),
-                                ],
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: TagSelection(),
-                                ),
-                              )
-                          )
-                        );
-                      },
-                    ),
-                    SizedBox(width: 10.0),
-                    InputButton(
-                      key: Key(Keys.registerButton),
-                      minWidth: screenSize.width / (widgetReasonableWidthMargin + 1.1),
-                      height: screenSize.height / widgetReasonableHeightMargin,
-                      color: Colors.deepOrange[500],
-                      text: widget.isExternalAuth ? 'Finish Account' : 'Create account',
-                      onPressed: () async {
-                        var result = await widget.registerUser(
-                            baseAuth,
-                            imageService,
-                            users,
-                            _stepInfos.map((stepInfo) => stepInfo.formKey).toList() // map to keys and get all them as a list
-                        );
+                ButtonPair(
+                  leftBtnKey: Key(Keys.chooseTagsButton),
+                  rightBtnKey: Key(Keys.registerButton),
+                  btnsHeight: btnHeight,
+                  btnsWidth: btnWidth,
+                  leftBtnText: 'Choose Tags',
+                  rightBtnText: widget.isExternalAuth ? 'Finish Account' : 'Create account',
+                  onLeftPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MultiProvider(
+                              providers: [
+                                Provider<List<Tag>>.value(value: tags),
+                                Provider<BaseAuth>.value(value: baseAuth),
+                              ],
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: TagSelection(),
+                              ),
+                            )
+                        )
+                    );
+                  },
+                  onRightPressed: () async {
+                    var result = await widget.registerUser(
+                        baseAuth,
+                        imageService,
+                        users,
+                        _stepInfos.map((stepInfo) => stepInfo.formKey).toList() // map to keys and get all them as a list
+                    );
 
-                        if(result == null && !widget.isExternalAuth) {
-                          // TODO: Reimplement setState(() => {}); threw exception beforehand -> done
-                          setState(() =>
-                              baseAuth.errorMessages.add(
-                                  'An error has occurred! Please try again!'
-                              )
-                          );
-                        }
-                      },
-                    ),
-                  ],
+                    if(result == null && !widget.isExternalAuth) {
+                      // TODO: Reimplement setState(() => {}); threw exception beforehand -> done
+                      setState(() =>
+                          baseAuth.errorMessages.add(
+                              'An error has occurred! Please try again!'
+                          )
+                      );
+                    }
+                  },
+                  rightBtnColor: Colors.deepOrange[500],
                 ),
                 SizedBox(height: 30.0),
                 widget.isExternalAuth ? InputButton(

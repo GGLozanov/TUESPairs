@@ -4,12 +4,18 @@ import 'package:tues_pairs/widgets/form/input_field.dart';
 
 class ConfirmPasswordInputField extends InputField {
 
+  final String sourcePassword;
+
   ConfirmPasswordInputField({
     Key key,
     @required Function onChanged,
+    @required this.sourcePassword,
     String hintText = 'Confirm password',
     int maxLines
-  }) : super(
+  }) :
+    assert(onChanged != null),
+    assert(sourcePassword != null),
+    super(
       key: key,
       onChanged: onChanged,
       hintText: hintText,
@@ -22,7 +28,17 @@ class ConfirmPasswordInputField extends InputField {
       obscureText: true, // obscures text (like for a password)
       onChanged: onChanged,
       style: textInputColor,
-      validator: (value) => value.isEmpty ? 'Confirm password' : null,
+      validator: (value) {
+        if(value.isEmpty) {
+          return 'Enter confirm password';
+        }
+
+        if(value != sourcePassword) {
+          return 'Passwords do not match!';
+        }
+
+        return null;
+      },
       keyboardType: TextInputType.visiblePassword,
       decoration: textInputDecoration.copyWith(
         icon: Icon(

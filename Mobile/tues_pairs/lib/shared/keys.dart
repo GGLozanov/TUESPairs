@@ -24,6 +24,11 @@ class Keys {
   static const String loginEmailInputField = 'loginEmailInputField';
   static const String loginPasswordInputField = 'loginPasswordInputField';
   static const String logInButton = 'logInButton';
+
+  static const String passwordForgotText = 'passwordForgotText';
+  static const String passwordForgotEmailInputField = 'passwordEmailInputField';
+  static const String passwordForgotSubmitButton = 'paswordForgotSubmitButton';
+  static const String passwordForgotBackButton = 'passwordForgotBackButton';
   // -------------------------
 
   // -------------------------

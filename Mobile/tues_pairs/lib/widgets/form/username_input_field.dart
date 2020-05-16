@@ -26,7 +26,15 @@ class UsernameInputField extends InputField {
       onChanged: onChanged,
       // validator property is used for the validation of separate TextFormFields (takes a function with a value and you can
       style: textInputColor,
-      validator: (value) => value.isEmpty ? 'Enter a username' : null, // validator returns string (tag to put on the field if input is invalid)
+      validator: (value) {
+        if(value.isEmpty) {
+          return 'Enter a username';
+        }
+        if(value.length > 30) {
+          return 'Enter a shorter username!';
+        }
+        return null;
+      }, // validator returns string (tag to put on the field if input is invalid)
       keyboardType: TextInputType.text, // optimize type set to e-mail
       decoration: textInputDecoration.copyWith(
         icon: Icon(
