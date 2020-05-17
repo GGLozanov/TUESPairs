@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './passwordforget.scss';
+import './changeform.scss';
 import { compose } from 'recompose';
 import { withAuthorization } from '../../Authentication';
 import { withCurrentUser } from '../../Authentication/context';
@@ -7,6 +7,7 @@ import * as ROUTES from '../../../constants/routes';
 import { Link, withRouter } from 'react-router-dom';
 import { Card, Button, Form, FormControl } from 'react-bootstrap';
 import { withFirebase } from '../../Firebase';
+import log from '../../../constants/logger';
 
 class PasswordChange extends Component {
     constructor(props) {
@@ -16,28 +17,35 @@ class PasswordChange extends Component {
             error: '',
             currentPassword: '',
             newPassword: '',
-            confirmNewPassowrd: ''
+            confirmNewPassowrd: '',
+            currentUser: Object,
+            credential: Object
         };
     }
 
-    onSubmit = async () => {
+    onSubmit = event => {
         const { currentPassword, newPassword } = this.state;
-        const currentFirebaseUser = await this.props.firebase.getCurrentUser();
-        const credential = this.props.firebase.getCredentials(this.props.authUser.email, currentPassword);
-
-        console.log(credential);
-                
-        currentFirebaseUser.reauthenticateWithCredential(credential).then(() => {
-            this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
-
-            //this.props.firebase.doPasswordUpdate(newPassword).then(() => {
-            //});
-        }).catch(error => {
-            console.error(error);
-            this.setState({ error });
-            this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
+        let credential;
+        this.props.firebase.getCurrentUser()
+        .then(currentUser => {
+            this.setState({ currentUser });
+        }).then(() => {
+            credential = this.props.firebase.getCredentials(this.props.authUser.email, currentPassword);
+        }).then(() => {
+            this.state.currentUser.reauthenticateWithCredential(credential).then(() => {
+                this.props.firebase.doPasswordUpdate(newPassword).then(() => {
+                    this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
+                }).catch(error => {
+                    console.error(error);
+                    this.setState({ error });
+                });
+            }).catch(error => {
+                log.error(error);
+                this.setState({ error });
+            });
         });
 
+        event.preventDefault();
     }
 
     onChange = event => {
@@ -98,7 +106,9 @@ class PasswordChange extends Component {
                                     Save changes
                                 </Button>
                             </Form>
-                            {error && <p>{error.message}</p>}
+                            <div className="error-message">
+                                {error && <p>{error.message}</p>}
+                            </div>
                         </Card.Body>
                     </Card>
                     <div className="back-link">
@@ -122,10 +132,12 @@ const PasswordChangePage = compose (
 )(PasswordChange);
 
 const PasswordChangeLink = () => (
-    <div className="password-forget-link">
-        <p>
-        <Link to={ROUTES.PASSWORD_CHANGE}>Change my password</Link>
-        </p>
+    <div className="change-link">
+        <Link to={ROUTES.PASSWORD_CHANGE}>
+            <Button variant="light">
+                Change my password
+            </Button>
+        </Link>
     </div>
 )
 

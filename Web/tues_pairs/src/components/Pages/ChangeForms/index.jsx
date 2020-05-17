@@ -6,7 +6,7 @@ import * as ROUTES from '../../../constants/routes';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 
-import './passwordforget.scss';
+import './changeform.scss';
 import { Card, Form, FormControl, Button } from 'react-bootstrap';
 
 const PasswordForgetPage = () => (

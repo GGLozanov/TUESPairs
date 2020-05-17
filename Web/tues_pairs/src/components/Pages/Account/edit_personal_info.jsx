@@ -244,6 +244,15 @@ class EditPersonalInfo extends Component{
                             </InputGroup>
                         </Form.Group>
 
+                        <Form.Group as={Row} controlId="formPlaintextEmail">
+                            <Form.Label column sm="2">
+                                Email
+                            </Form.Label>
+                            <Col sm="10">
+                                <Form.Control plaintext readOnly defaultValue={email} />
+                            </Col>
+                        </Form.Group>
+
                         <Form.Group controlId="formBasicGPA">
                             {isTeacher && 
                             <Form.Label>GPA</Form.Label>}
@@ -264,8 +273,8 @@ class EditPersonalInfo extends Component{
                             </InputGroup>}
                         </Form.Group>
 
-                        <PasswordChangeLink />
                         <EmailChangeLink />
+                        <PasswordChangeLink />
 
                         <div className="tag-list">
                             <ButtonGroup as={Row}>
@@ -290,8 +299,8 @@ class EditPersonalInfo extends Component{
                         <div className="error-message">
                             {error && <p>{error.message}</p>}
                         </div>
-                        <Button variant="primary" type="submit">
-                            Submit
+                        <Button variant="success" type="submit" className="submit-button">
+                            Save Changes
                         </Button>
                     </Form>
                     <div className="clear-buttons">
