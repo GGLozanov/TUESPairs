@@ -6,6 +6,7 @@ import { withFirebase } from '../../Firebase';
 import { withCurrentUser } from '../../Authentication/context';
 import * as ROUTES from '../../../constants/routes';
 import { Card, FormControl, Button, Form, Modal } from 'react-bootstrap';
+import log from '../../../constants/logger';
 
 class EmailChangeFormBase extends Component {
     constructor(props) {
@@ -16,7 +17,8 @@ class EmailChangeFormBase extends Component {
             error: '',
             password: '',
             modalShow: false,
-            setModalShow: false
+            setModalShow: false,
+            currentUser: Object
         };
     }
 
@@ -25,13 +27,37 @@ class EmailChangeFormBase extends Component {
     }
 
     onSubmit = () => {
-
+        const { email, password } = this.state;
+        let credential;
+        this.props.firebase.getCurrentUser()
+        .then(currentUser => {
+            this.setState({ currentUser });
+        }).then(() => {
+            credential = this.props.firebase.getCredentials(this.props.authUser.email, password);
+        }).then(() => {
+            this.state.currentUser.reauthenticateWithCredential(credential).then(() => {
+                this.props.firebase.db.collection("users").doc(this.props.authUser.uid).set({
+                    email: email,
+                }, {merge: true}).then(() => {
+                    this.props.firebase.doEmailUpdate(email).then(() => {
+                        this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
+                    }).catch(error => {
+                        log.error(error);
+                        this.setState({ error, modalShow: false });
+                    })
+                });
+            }).catch(error => {
+                log.error(error);
+                this.setState({ error, modalShow: false });
+            });
+        });
     }
 
     render() {
         const{ error, email, password, modalShow } = this.state;
 
-        const isInvalid = email === '';
+        const isInvalid = email === '' ||
+        !email.includes('@');
 
         return(
             <div className="email-confirmation">
@@ -59,7 +85,9 @@ class EmailChangeFormBase extends Component {
                         Change Email
                       </Button>
                     </Form>
-                  {error && <p>{error.message}</p>}
+                    <div className="error-message">
+                        {error && <p>{error.message}</p>}
+                    </div>
                   </Card.Body>
                 </Card>
                 <div className="back-link">
@@ -88,14 +116,16 @@ class EmailChangeFormBase extends Component {
                             placeholder="Enter your current password"
                             name="password"
                             type="password"
+                            onChange={this.onChange}
                         />
                     </Form.Group>
                     <p>
+                        You will be notified on the current email, that you had it changed.
                         Changes will take effect after hitting the submit button!
                     </p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => this.setState({ modalShow: false })}>Submit</Button>
+                    <Button onClick={this.onSubmit}>Submit</Button>
                 </Modal.Footer>
             </Modal>
         </div>
@@ -105,10 +135,12 @@ class EmailChangeFormBase extends Component {
 }
 
 const EmailChangeLink = () => (
-    <div className="password-forget-link">
-        <p>
-            <Link to={ROUTES.EMAIL_CHANGE}>Change my email</Link>
-        </p>
+    <div className="change-link">
+        <Link to={ROUTES.EMAIL_CHANGE}>
+            <Button variant="light">
+                Change my email
+            </Button>
+        </Link>
     </div>
 )
 
