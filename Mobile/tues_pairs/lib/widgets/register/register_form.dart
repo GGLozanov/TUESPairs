@@ -20,6 +20,7 @@ import 'package:tues_pairs/widgets/general/baseauth_error_display.dart';
 import 'package:tues_pairs/widgets/general/button_pair.dart';
 import 'package:tues_pairs/widgets/general/stepper_button.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_selection.dart';
+import 'package:tues_pairs/widgets/form/description_input_field.dart';
 
 class RegisterForm extends StatefulWidget {
 
@@ -202,12 +203,20 @@ class _RegisterFormState extends State<RegisterForm> {
     );
   }
 
-  List<Step> _getSteps(List<Widget> fields) {
+  List<Step> _getSteps(
+      List<Widget> fields,
+      {bool isCurrentTeacher = false}
+  ) {
     final steps = fields.map((widget) {
       final stepIdx = fields.indexOf(widget);
 
       if(widget is InputField) { // decide which conversion func to call
         // retrieve whether the form is currently filled (should not save currentState)
+        if(widget is DescriptionInputField) { // TODO: limit conversion checks
+          _stepInfos[stepIdx].name = isCurrentTeacher ? 'Qualifications' : 'Idea';
+          // change the stepTitle to 'Qualifications' if teacher
+        }
+
         return _stepFromWidget(
           Form(
             key: _stepInfos[stepIdx].formKey,
@@ -254,6 +263,11 @@ class _RegisterFormState extends State<RegisterForm> {
           name: 'GPA',
           formKey: GlobalKey<FormState>(debugLabel: 'GPA')
         ),
+        new StepInfo(
+          stepIdx: 3,
+          name: 'Idea',
+          formKey: GlobalKey<FormState>(debugLabel: 'Description')
+        )
       ]
     : [
       new StepInfo(
@@ -286,6 +300,11 @@ class _RegisterFormState extends State<RegisterForm> {
         name: 'GPA',
         formKey: GlobalKey<FormState>(debugLabel: 'GPA'),
       ),
+      new StepInfo(
+        stepIdx: 6,
+        name: 'Idea',
+        formKey: GlobalKey<FormState>(debugLabel: 'Description')
+      )
     ];
   }
 
@@ -306,13 +325,13 @@ class _RegisterFormState extends State<RegisterForm> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-          'Tap the switch if you are',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.0,
-            fontSize: 15.0,
-          )
+            'Tap the switch if you are',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.0,
+              fontSize: 15.0,
+            )
           ),
           Switch(
             key: Key(Keys.isTeacherSwitch),
@@ -351,6 +370,11 @@ class _RegisterFormState extends State<RegisterForm> {
         key: Key(Keys.registerGPAInputField),
         onChanged: (value) => setState(() => baseAuth.user.GPA = double.tryParse(value)),
       ),
+      DescriptionInputField(
+        key: Key(Keys.registerDescriptionInputField),
+        onChanged: (value) => setState(() => baseAuth.user.description = value),
+        isTeacher: baseAuth.user.isTeacher,
+      ),
     ];
 
     final _defaultFields = <List<Widget>>[
@@ -365,8 +389,14 @@ class _RegisterFormState extends State<RegisterForm> {
     ];
 
     final _steps = widget.isExternalAuth ?
-      _getSteps(_externFields.expand((widget) => widget).toList()) :
-        _getSteps(_defaultFields.expand((widget) => widget).toList());
+      _getSteps(
+        _externFields.expand((widget) => widget).toList(),
+        isCurrentTeacher: baseAuth.user.isTeacher,
+      ) :
+        _getSteps(
+          _defaultFields.expand((widget) => widget).toList(),
+          isCurrentTeacher: baseAuth.user.isTeacher
+      );
 
     if(currentStep >= _steps.length) {
       currentStep = _steps.length - 1;
@@ -438,7 +468,7 @@ class _RegisterFormState extends State<RegisterForm> {
                             screenSize: screenSize,
                             key: Key(Keys.registerStepNextButton),
                             child: Text(
-                              isFinalStep ? 'Go to Email' : 'Continue',
+                              isFinalStep ? 'Go to Start' : 'Continue',
                               style: TextStyle(
                                 fontFamily: 'Nilam',
                                 fontSize: 22.0,

@@ -16,7 +16,9 @@ void main() {
   final User registerUser = new User(
     email: 'example123456@gmail.com',
     username: 'example',
-    GPA: 5.45, isTeacher: false,
+    description: 'I like to dance! :)',
+    GPA: 5.45,
+    isTeacher: false,
     photoURL: null,
   );
 
@@ -41,6 +43,7 @@ void main() {
     final registerPasswordInputFieldFinder = find.byValueKey(Keys.registerPasswordInputField);
     final registerConfirmPasswordInputFieldFinder = find.byValueKey(Keys.registerConfirmPasswordInputField);
     final registerGPAInputFieldFinder = find.byValueKey(Keys.registerGPAInputField);
+    final registerDescriptionInputFieldFinder = find.byValueKey(Keys.registerDescriptionInputField);
 
     final isTeacherSwitchFinder = find.byValueKey(Keys.isTeacherSwitch);
     final registerButtonFinder = find.byValueKey(Keys.registerButton);
@@ -194,10 +197,20 @@ void main() {
           text: registerUser.username
       );
 
+      await driver.scrollUntilVisible(registerListView, registerDescriptionInputFieldFinder);
+
       // enter GPA
       await completeInputFieldStep(
           registerGPAInputFieldFinder,
           text: registerUser.GPA.toString()
+      );
+
+      await driver.scrollUntilVisible(registerListView, registerDescriptionInputFieldFinder);
+
+      // enter description
+      await completeInputFieldStep(
+        registerDescriptionInputFieldFinder,
+        text: registerUser.description
       );
 
       // confirm sign-in

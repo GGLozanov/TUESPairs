@@ -46,12 +46,13 @@ class Keys {
   static const String registerStepNextButton = 'registerStepNextButton';
   static const String registerStepBackButton = 'registerStepBackButton';
 
-  static const String registerUsernameInputField = 'registerUsernameInputField';
+  static const String isTeacherSwitch = 'isTeacherSwitch';
   static const String registerEmailInputField = 'registerEmailInputField';
   static const String registerPasswordInputField = 'registerPasswordInputField';
   static const String registerConfirmPasswordInputField = 'registerConfirmPasswordInputField';
+  static const String registerUsernameInputField = 'registerUsernameInputField';
   static const String registerGPAInputField = 'registerGPAInputField';
-  static const String isTeacherSwitch = 'isTeacherSwitch';
+  static const String registerDescriptionInputField = 'registerDescriptionInputField';
   // -------------------------
 
   // -------------------------
