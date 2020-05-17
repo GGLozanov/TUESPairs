@@ -27,7 +27,7 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
     return Scaffold(
       backgroundColor: greyColor,
       appBar: buildAppBar(
-        pageTitle: 'ResetPassword'
+        pageTitle: 'Redo Password'
       ),
       body: Container(
         child: Form(
@@ -38,7 +38,7 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
               children: <Widget>[
                 Center(
                   child: Image.asset(
-                      'images/lock_tues_pairs.png'
+                    'images/lock_tues_pairs.png'
                   ),
                 ),
                 SizedBox(height: 10.0),
