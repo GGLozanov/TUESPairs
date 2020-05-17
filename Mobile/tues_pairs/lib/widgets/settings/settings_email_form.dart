@@ -12,19 +12,20 @@ import 'package:tues_pairs/widgets/form/confim_password_input_field.dart';
 import 'package:tues_pairs/widgets/form/email_input_field.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/form/password_input_field.dart';
+import 'package:tues_pairs/widgets/general/baseauth_error_display.dart';
 import 'package:tues_pairs/widgets/general/button_pair.dart';
 
-import 'form_settings_password.dart';
+import 'settings_password_form.dart';
 
 /// This is a seperate route, which is why the Scaffold is being rerendered
-class FormSettingsEmail extends StatefulWidget {
+class SettingsEmailForm extends StatefulWidget {
   BaseAuth baseAuth = new BaseAuth();
 
   @override
-  _FormSettingsEmailState createState() => _FormSettingsEmailState();
+  _SettingsEmailFormState createState() => _SettingsEmailFormState();
 }
 
-class _FormSettingsEmailState extends State<FormSettingsEmail> {
+class _SettingsEmailFormState extends State<SettingsEmailForm> {
 
   final Auth _auth = new Auth();
 
@@ -36,12 +37,15 @@ class _FormSettingsEmailState extends State<FormSettingsEmail> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
     final currentUser = Provider.of<User>(context);
+
+    final screenSize = MediaQuery.of(context).size;
+    final btnHeight = screenSize.height / (widgetReasonableHeightMargin - 1.25);
+    final btnWidth = screenSize.width / (widgetReasonableWidthMargin - 1.25);
 
     return Scaffold( // Scaffold grants the material design palette and general layout of the app (properties like appBar)
       backgroundColor: greyColor,
-      appBar: buildAppBar(pageTitle: 'Settings'),
+      appBar: buildAppBar(pageTitle: 'Edit E-mail'),
       body: Container(
         child: ListView(
           children: <Widget>[
@@ -51,6 +55,12 @@ class _FormSettingsEmailState extends State<FormSettingsEmail> {
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   children: <Widget> [
+                    Center(
+                      child: Image.asset(
+                        'images/envelope_tues_pairs.png'
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
                     Text( // Wrap in align?
                       'You can change your sensitive information (E-mail, password) in these pages.',
                       style: TextStyle(
@@ -58,7 +68,7 @@ class _FormSettingsEmailState extends State<FormSettingsEmail> {
                         fontSize: 30.0,
                         color: Colors.orange,
                       ),
-                      textAlign: TextAlign.start,
+                      textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 25.0),
                     EmailInputField(
@@ -76,35 +86,36 @@ class _FormSettingsEmailState extends State<FormSettingsEmail> {
                     ConfirmPasswordInputField(
                       onChanged: (value) => userConfirmPassword = value,
                       maxLines: maxSensitiveInfoLines,
+                      sourcePassword: userPassword,
                     ),
                     SizedBox(height: 30.0),
                     GestureDetector(
                       onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                            Provider<User>.value(
-                                value: currentUser,
-                                child: FormSettingsPassword()
-                            ),
-                          )
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                          Provider<User>.value(
+                              value: currentUser,
+                              child: SettingsPasswordForm()
+                          ),
+                        )
                       ),
                       child: Text(
-                          'Change password?',
-                          style: TextStyle(
-                            fontFamily: 'Nilam',
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange,
-                          )
+                        'Change password?',
+                        style: TextStyle(
+                          fontFamily: 'Nilam',
+                          fontSize: 25.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange,
+                        )
                       ),
                     ),
                     SizedBox(height: 30.0),
                     ButtonPair(
                       leftBtnKey: Key(Keys.settingsEmailFormBackButton),
                       rightBtnKey: Key(Keys.settingsEmailFormConfirmButton),
-                      btnsHeight: screenSize.height / widgetReasonableHeightMargin,
-                      btnsWidth: screenSize.width / widgetReasonableWidthMargin,
+                      btnsHeight: btnHeight,
+                      btnsWidth: btnWidth,
                       onLeftPressed: () =>
                         Navigator.pop(context),
                       onRightPressed: () async {
@@ -188,18 +199,7 @@ class _FormSettingsEmailState extends State<FormSettingsEmail> {
                       }
                     ),
                     SizedBox(height: 30.0),
-                    Column(
-                      children: widget.baseAuth.
-                        errorMessages?.map((message) => Text(
-                        "$message",
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontFamily: 'Nilam',
-                          fontSize: 25.0,
-                        ),
-                        textAlign: TextAlign.center,
-                      ))?.toList() ?? [],
-                    ),
+                    BaseAuthErrorDisplay(baseAuth: widget.baseAuth,)
                   ]
                 ),
               )

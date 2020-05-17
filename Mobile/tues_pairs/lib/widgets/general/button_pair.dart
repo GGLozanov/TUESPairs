@@ -12,8 +12,11 @@ class ButtonPair extends StatelessWidget {
   final VoidCallback onRightPressed;
   final String leftBtnText;
   final String rightBtnText;
+  final Color leftBtnColor;
+  final Color rightBtnColor;
 
   ButtonPair({
+    Key key,
     this.leftBtnKey,
     this.rightBtnKey,
     this.btnsHeight = 600 / widgetReasonableHeightMargin,
@@ -22,13 +25,16 @@ class ButtonPair extends StatelessWidget {
     @required this.onRightPressed,
     this.leftBtnText = 'Back',
     this.rightBtnText = 'Confirm',
+    this.leftBtnColor = darkGreyColor,
+    this.rightBtnColor = darkGreyColor
   }) :
       assert(onLeftPressed != null),
-      assert(onRightPressed != null);
+      assert(onRightPressed != null),
+      super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return  Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         InputButton(
@@ -37,6 +43,7 @@ class ButtonPair extends StatelessWidget {
           height: btnsHeight,
           text: leftBtnText,
           onPressed: onLeftPressed,
+          color: leftBtnColor
         ),
         InputButton(
           key: rightBtnKey,
@@ -44,6 +51,7 @@ class ButtonPair extends StatelessWidget {
           height: btnsHeight,
           text: rightBtnText,
           onPressed: onRightPressed,
+          color: rightBtnColor
         ),
       ],
     );

@@ -31,13 +31,17 @@ void main() {
 
     final loginEmailInputFieldFinder = find.byValueKey(Keys.loginEmailInputField);
     final loginPasswordInputFieldFinder = find.byValueKey(Keys.loginPasswordInputField);
-    final logInButtonFinder = find.byValueKey(Keys.logInButton);
+    final loginButtonFinder = find.byValueKey(Keys.logInButton);
+
+    final registerStepperContinueButtonFinder = find.byValueKey(Keys.registerStepNextButton); // number = stepIdx
+    final registerStepperBackButtonFinder = find.byValueKey(Keys.registerStepBackButton);
 
     final registerUsernameInputFieldFinder = find.byValueKey(Keys.registerUsernameInputField);
     final registerEmailInputFieldFinder = find.byValueKey(Keys.registerEmailInputField);
     final registerPasswordInputFieldFinder = find.byValueKey(Keys.registerPasswordInputField);
     final registerConfirmPasswordInputFieldFinder = find.byValueKey(Keys.registerConfirmPasswordInputField);
     final registerGPAInputFieldFinder = find.byValueKey(Keys.registerGPAInputField);
+
     final isTeacherSwitchFinder = find.byValueKey(Keys.isTeacherSwitch);
     final registerButtonFinder = find.byValueKey(Keys.registerButton);
     final registerListView = find.byValueKey(Keys.registerListView);
@@ -92,7 +96,7 @@ void main() {
 
     Future<void> waitLogin() async {
       // wait to ensure we're in the sign-in page and not already auth'd
-      await driver.waitFor(logInButtonFinder);
+      await driver.waitFor(loginButtonFinder);
       await driver.waitFor(loginEmailInputFieldFinder);
       await driver.waitFor(loginPasswordInputFieldFinder);
     }
@@ -106,7 +110,28 @@ void main() {
 
       await enterTextInFieldWithDelay(loginPasswordInputFieldFinder, registeredUserPassword);
 
-      await driver.tap(logInButtonFinder);
+      await driver.tap(loginButtonFinder);
+    }
+
+    Future<void> completeInputFieldStep(
+        SerializableFinder finder,
+        {String text = ''}
+    ) async {
+      await driver.waitFor(finder);
+
+      delay(waitDuration);
+
+      await enterTextInFieldWithDelay(finder, text);
+
+      delay(waitDuration);
+
+      await driver.waitFor(registerStepperContinueButtonFinder);
+
+      delay(waitDuration);
+
+      await driver.tap(registerStepperContinueButtonFinder);
+
+      delay(waitDuration);
     }
 
     Future<void> logOut() async {
@@ -131,36 +156,51 @@ void main() {
 
       delay(waitDuration);
 
-      // wait for the rendering of all the necessary widgets
-      await driver.waitFor(registerUsernameInputFieldFinder);
-      await driver.waitFor(registerEmailInputFieldFinder);
-      await driver.waitFor(registerPasswordInputFieldFinder);
-      await driver.waitFor(registerConfirmPasswordInputFieldFinder);
-      await driver.waitFor(registerGPAInputFieldFinder);
+      // skip teacher switch
       await driver.waitFor(isTeacherSwitchFinder);
 
       delay(waitDuration);
 
-      await enterTextInFieldWithDelay(registerUsernameInputFieldFinder, registerUser.username);
+      // wait for stepper button
+      await driver.waitFor(registerStepperContinueButtonFinder);
 
       delay(waitDuration);
 
-      await enterTextInFieldWithDelay(registerEmailInputFieldFinder, registerUser.email);
+      await driver.tap(registerStepperContinueButtonFinder);
 
       delay(waitDuration);
 
-      await enterTextInFieldWithDelay(registerPasswordInputFieldFinder, registeredUserPassword);
+      // enter e-mail
+      await completeInputFieldStep(
+          registerEmailInputFieldFinder,
+          text: registerUser.email
+      );
 
-      delay(waitDuration);
+      // enter password
+      await completeInputFieldStep(
+          registerPasswordInputFieldFinder,
+          text: registeredUserPassword
+      );
 
-      await enterTextInFieldWithDelay(registerConfirmPasswordInputFieldFinder, registeredUserPassword);
+      // enter confirm password
+      await completeInputFieldStep(
+          registerConfirmPasswordInputFieldFinder,
+          text: registeredUserPassword
+      );
 
-      delay(waitDuration);
+      // enter Username
+      await completeInputFieldStep(
+          registerUsernameInputFieldFinder,
+          text: registerUser.username
+      );
 
-      await enterTextInFieldWithDelay(registerGPAInputFieldFinder, registerUser.GPA.toString());
+      // enter GPA
+      await completeInputFieldStep(
+          registerGPAInputFieldFinder,
+          text: registerUser.GPA.toString()
+      );
 
-      delay(waitDuration);
-
+      // confirm sign-in
       await driver.scrollUntilVisible(registerListView, registerButtonFinder);
 
       await driver.waitFor(registerButtonFinder);

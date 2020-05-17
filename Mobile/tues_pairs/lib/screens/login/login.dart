@@ -16,7 +16,9 @@ import 'package:tues_pairs/widgets/form/input_button.dart';
 import 'package:tues_pairs/widgets/form/email_input_field.dart';
 import 'package:tues_pairs/widgets/form/password_input_field.dart';
 import 'package:tues_pairs/shared/constants.dart';
+import 'package:tues_pairs/widgets/general/baseauth_error_display.dart';
 import 'package:tues_pairs/widgets/general/spaced_divider.dart';
+import 'package:tues_pairs/widgets/login/forgot_password_form.dart';
 import 'package:tues_pairs/widgets/register/register_form.dart';
 import 'package:tues_pairs/widgets/register/register_wrapper.dart';
 
@@ -160,9 +162,16 @@ class _LoginState extends State<Login> {
                   ),
                   SizedBox(height: 20.0),
                   GestureDetector(
-                    onTap: () {},  // TODO: Implement reset password
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                          ForgotPasswordForm()
+                      ),
+                    ),
                     child: Text(
                       'Reset password?',
+                      key: Key(Keys.passwordForgotText),
                       style: TextStyle(
                         fontSize: 24.0,
                         fontFamily: 'Nilam',
@@ -171,19 +180,8 @@ class _LoginState extends State<Login> {
                       )
                     ),
                   ),
-                  SizedBox(height: 10.0),
-                  Column(
-                    children: baseAuth.errorMessages?.map((message) => Text(
-                      "$message",
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontFamily: 'Nilam',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 21.0,
-                      ),
-                      textAlign: TextAlign.center,
-                    ))?.toList() ?? [],
-                  ),
+                  SizedBox(height: 5.0),
+                  BaseAuthErrorDisplay(baseAuth: baseAuth,),
                   SpacedDivider(),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,

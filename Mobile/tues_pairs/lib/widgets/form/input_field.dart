@@ -7,14 +7,13 @@ import 'package:tues_pairs/shared/constants.dart';
 
 abstract class InputField extends StatelessWidget {
 
-  final Key key;
   final Function onChanged;
   final int maxLines;
   final String hintText;
   String initialValue;
 
   InputField({
-    this.key,
+    Key key,
     @required this.onChanged,
     this.initialValue,
     this.hintText = 'Enter',

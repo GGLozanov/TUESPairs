@@ -49,7 +49,7 @@ class _TagSelectionState extends State<TagSelection> {
     return Scaffold(
       appBar: buildAppBar(
         pageTitle: widget.isCurrentUserAvailable ?
-          'Settings' : 'Register'
+          'Edit Tags' : 'Select Tags'
       ),
       body: Container(
         color: greyColor,
