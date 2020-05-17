@@ -16,6 +16,7 @@ class ButtonPair extends StatelessWidget {
   final Color rightBtnColor;
 
   ButtonPair({
+    Key key,
     this.leftBtnKey,
     this.rightBtnKey,
     this.btnsHeight = 600 / widgetReasonableHeightMargin,
@@ -28,11 +29,12 @@ class ButtonPair extends StatelessWidget {
     this.rightBtnColor = darkGreyColor
   }) :
       assert(onLeftPressed != null),
-      assert(onRightPressed != null);
+      assert(onRightPressed != null),
+      super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return  Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         InputButton(

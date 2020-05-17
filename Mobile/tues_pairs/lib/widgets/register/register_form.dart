@@ -247,12 +247,12 @@ class _RegisterFormState extends State<RegisterForm> {
         new StepInfo(
           stepIdx: 1,
           name: 'Username',
-          formKey: GlobalKey<FormState>()
+          formKey: GlobalKey<FormState>(debugLabel: 'Username')
         ),
         new StepInfo(
           stepIdx: 2,
           name: 'GPA',
-          formKey: GlobalKey<FormState>()
+          formKey: GlobalKey<FormState>(debugLabel: 'GPA')
         ),
       ]
     : [
@@ -264,27 +264,27 @@ class _RegisterFormState extends State<RegisterForm> {
       new StepInfo(
         stepIdx: 1,
         name: 'E-mail',
-        formKey: GlobalKey<FormState>(),
+        formKey: GlobalKey<FormState>(debugLabel: 'E-mail'),
       ),
       new StepInfo(
         stepIdx: 2,
         name: 'Password',
-        formKey: GlobalKey<FormState>(),
+        formKey: GlobalKey<FormState>(debugLabel: 'Password'),
       ),
       new StepInfo(
         stepIdx: 3,
         name: 'Confirm Password',
-        formKey: GlobalKey<FormState>(),
+        formKey: GlobalKey<FormState>(debugLabel: 'Confirm Password'),
       ),
       new StepInfo(
         stepIdx: 4,
         name: 'Username',
-        formKey: GlobalKey<FormState>(),
+        formKey: GlobalKey<FormState>(debugLabel: 'Username'),
       ),
       new StepInfo(
         stepIdx: 5,
         name: 'GPA',
-        formKey: GlobalKey<FormState>(),
+        formKey: GlobalKey<FormState>(debugLabel: 'GPA'),
       ),
     ];
   }

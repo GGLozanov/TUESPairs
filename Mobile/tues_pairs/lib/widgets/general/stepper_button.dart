@@ -4,14 +4,13 @@ import 'package:tues_pairs/shared/constants.dart';
 
 class StepperButton extends StatelessWidget {
 
-  final Key key;
   final Size screenSize;
   final Color color;
   final Widget child;
   final VoidCallback onPressed;
 
   const StepperButton({
-    this.key,
+    Key key,
     @required this.screenSize,
     this.color = darkGreyColor,
     @required this.onPressed,
@@ -25,7 +24,6 @@ class StepperButton extends StatelessWidget {
       height: screenSize.height / (widgetReasonableHeightMargin + 1),
       minWidth: screenSize.width / widgetReasonableWidthMargin,
       child: FlatButton(
-        key: key,
         color: color,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(23.0),
