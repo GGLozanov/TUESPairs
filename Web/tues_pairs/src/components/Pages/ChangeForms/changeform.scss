@@ -175,6 +175,7 @@
     }
 
     .modal-title {
+        color: rgb(252, 152, 0);
         font-weight: bold;
     }
 
@@ -200,7 +201,7 @@
     }
 
     .modal-footer {
-        button {
+        .submit {
             background-color: rgb(252, 152, 0);
             border: none;
 

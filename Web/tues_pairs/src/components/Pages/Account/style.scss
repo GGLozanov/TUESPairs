@@ -123,6 +123,22 @@
                 }
             }
 
+            .email-plain {
+
+                label {
+                    border: 1px solid #ced4da;
+                }
+
+                background-color: rgb(58, 64, 78);
+                border: 1px solid #ced4da;
+                border-radius: .25rem; 
+            
+                input {
+                    margin: auto;
+                    text-align: center;
+                }
+            }
+
             .tag-list {
                 margin: 30px;
                 .btn-group {
@@ -158,14 +174,9 @@
 
         .delete-profile {
             text-align: center;
-            background-color: red;
             border: none;
             display: block;
             margin: auto;
-
-            &:hover {
-                background-color: rgb(196, 0, 0);
-            }
         }
 
         .alert {
@@ -180,28 +191,6 @@
             p {
                 text-align: center;
                 color: white;
-            }
-
-            button {
-                box-shadow: none;
-                align-self: center;
-                margin: 10px;
-                font-size: 21px;
-                padding: 5px 20px;
-                border: 0;
-                font-size: small;
-                background-color: rgb(252, 152, 0);
-                color: #fff;
-                border-radius: 3px;
-                transition: all 250ms ease-in-out;
-                cursor: pointer;
-                &:hover {
-                  background-color: orange;
-                  color: black;
-                }
-                &:focus {
-                  outline: none;
-                }
             }
         }
     }

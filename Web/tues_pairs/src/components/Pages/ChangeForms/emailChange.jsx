@@ -125,7 +125,7 @@ class EmailChangeFormBase extends Component {
                     </p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={this.onSubmit}>Submit</Button>
+                    <Button className="submit" onClick={this.onSubmit}>Submit</Button>
                 </Modal.Footer>
             </Modal>
         </div>

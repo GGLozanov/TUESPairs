@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormControl, Button, Col, Image, Form, Row, Alert, InputGroup, ButtonGroup } from 'react-bootstrap';
+import { FormControl, Button, Col, Image, Form, Row, Alert, InputGroup, ButtonGroup, Modal } from 'react-bootstrap';
 import { withCurrentUser } from '../../Authentication/context';
 import { compose } from 'recompose';
 import { withFirebase } from '../../Firebase';
@@ -36,6 +36,7 @@ class EditPersonalInfo extends Component{
             users: null,
             loading: false,
             show: false,
+            password: '',
         };
     }
 
@@ -155,8 +156,27 @@ class EditPersonalInfo extends Component{
         this.setState({ show });
     }
 
-    handleDeleteProfile = event => {
+    submitWithPassword = event => {
+        const { password } = this.state;
+        let credential;
+        this.props.firebase.getCurrentUser()
+        .then(currentUser => {
+            this.setState({ currentUser });
+        }).then(() => {
+            credential = this.props.firebase.getCredentials(this.props.authUser.email, password);
+        }).then(() => {
+            this.state.currentUser.reauthenticateWithCredential(credential).then(() => {
+                this.handleDeleteProfile(event);
+            }).catch(error => {
+                log.error(error);
+                this.setState({ error, modalShow: false });
+            });
+        });
+
         event.preventDefault();
+    }
+
+    handleDeleteProfile = event => {
         let users = [];
 
         const currentUser = this.props.authUser;
@@ -190,13 +210,15 @@ class EditPersonalInfo extends Component{
         .then(this.props.firebase.auth.currentUser.delete())
         .catch(error => {
             log.error(error);
-            this.setState({ error });
+            this.setState({ error, modalShow: false });
         });
         log.info("Current user has successfully been deleted.");
+
+        event.preventDefault();
     }
 
     render() {
-        const { username, email, photoURL, GPA, loading, error, tags} = this.state;
+        const { username, email, photoURL, GPA, loading, error, tags, show} = this.state;
 
         const isTeacher = this.props.authUser.isTeacher ? false : true;
 
@@ -244,7 +266,7 @@ class EditPersonalInfo extends Component{
                             </InputGroup>
                         </Form.Group>
 
-                        <Form.Group as={Row} controlId="formPlaintextEmail">
+                        <Form.Group as={Row} controlId="formPlaintextEmail" className="email-plain">
                             <Form.Label column sm="2">
                                 Email
                             </Form.Label>
@@ -307,24 +329,42 @@ class EditPersonalInfo extends Component{
                         {isMatched && <Button onClick={this.handleClearMatchedUser}>Clear Match</Button>}
                         {hasSkipped && <Button onClick={this.handleSkippedUsers}>Clear Skipped</Button>}
                     </div>
-                    <Button onClick={this.handleDeleteProfileNotification} className="delete-profile">
+                    <Button onClick={this.handleDeleteProfileNotification} variant="danger" className="delete-profile">
                             Delete profile
                     </Button>
 
-                    <Alert show={this.state.show} variant="success" className="delete-alert">
-                        <Alert.Heading>Are you sure you want to delete your profile ?</Alert.Heading>
+                    <Modal
+                        show={show}
+                        onHide={() => this.setState({ show: false })}
+                        size="lg"
+                        aria-labelledby="contained-modal-title-vcenter"
+                        centered
+                    >
+                        <Modal.Header closeButton>
+                            <Modal.Title id="contained-modal-title-vcenter">
+                                Confirm Account Deletion
+                            </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <h4>Enter your password</h4>
+                            <Form.Group controlId="formBasicCurrentPassword">
+                                <FormControl
+                                    aria-describedby="basic-addon2"
+                                    placeholder="Enter your current password"
+                                    name="password"
+                                    type="password"
+                                    onChange={this.onChange}
+                                />
+                            </Form.Group>
                             <p>
-                            These changes are final, your account and all its personal data will be deleted permanently.
-                            Click the I'm sure button to procceed!
+                                Are you absolutely sure that you want to delete your account ?
+                                This change is permanent and cannot be reverted. Press the I'm Sure button to proceed.
                             </p>
-                            <hr />
-                        <div className="d-flex justify-content-end">
-                            <Button onClick={this.handleDeleteProfile} variant="outline-success">
-                                I'm sure
-                            </Button>
-                        </div>
-                        {!this.state.show && <Button >Show Alert</Button>}
-                    </Alert>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="danger" onClick={this.handleDeleteProfile}>I'm Sure</Button>
+                        </Modal.Footer>
+                    </Modal>
                 </div>
             </div>
         )
