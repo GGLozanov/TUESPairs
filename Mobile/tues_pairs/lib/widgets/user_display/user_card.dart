@@ -108,8 +108,9 @@ class _UserCardState extends State<UserCard> {
                     fontSize: 36,
                     fontWeight: FontWeight.bold
                   ),
+                  textAlign: TextAlign.center
                 ),
-                SizedBox(height: 10.0),
+                SizedBox(height: !widget.user.isTeacher ? 10.0 : 0.0),
                 !widget.user.isTeacher ? Text(
                   'GPA: ' + widget.user.GPA.toString(),
                   style: TextStyle(
@@ -117,7 +118,7 @@ class _UserCardState extends State<UserCard> {
                     fontSize: 22,
                     fontWeight: FontWeight.bold
                   ),
-                ) : SizedBox(height: 5.0),
+                ) : SizedBox(),
                 widget.hasUserSentMatchRequestToCurrent ? Text(
                   'User has sent a match request to you!',
                   style: TextStyle(
@@ -126,17 +127,19 @@ class _UserCardState extends State<UserCard> {
                     fontWeight: FontWeight.bold
                   ),
                 ) : SizedBox(),
+                SizedBox(height: widget.user.description != '' ? 5.0 : 0.0),
                 Text(
                   widget.user.description,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 22,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold
                   ),
+                  textAlign: TextAlign.center
                 ),
+                SizedBox(height: widget.user.description != '' ? 7.5 : 0.0),
               ]
             ),
-            SizedBox(height: !widget.isViewCard ? 10.0 : 0.0),
             !widget.isViewCard ? ButtonBar(
               alignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[

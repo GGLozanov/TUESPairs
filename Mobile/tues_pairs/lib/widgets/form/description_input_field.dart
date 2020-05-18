@@ -39,6 +39,7 @@ class DescriptionInputField extends InputField {
       }, // validator property is used for the validation of separate TextFormFields (takes a function with a value and you can
       // validator returns string (tag to put on the field if input is invalid)
       keyboardType: TextInputType.multiline, // optimize type set to e-mail
+      textCapitalization: TextCapitalization.sentences,
       maxLines: null,
       decoration: textInputDecoration.copyWith(
         icon: Icon(
