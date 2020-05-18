@@ -96,8 +96,8 @@ class UserList extends Component {
             doc.data().tagIDs.forEach(tag => {
               if(tag) {
                 this.props.firebase.tag(tag).get()
-                  .then(inforamtion => { // TODO: fix typo
-                    tags.push(inforamtion.data());
+                  .then(information => {
+                    tags.push(information.data());
                   })
               }
             });

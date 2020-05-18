@@ -17,7 +17,7 @@ class PasswordChange extends Component {
             error: '',
             currentPassword: '',
             newPassword: '',
-            confirmNewPassowrd: '',
+            confirmNewPassword: '',
             currentUser: Object,
             credential: Object
         };
@@ -37,7 +37,7 @@ class PasswordChange extends Component {
                     log.info("Updated current user changed his password inside Password Change page!");
                     this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
                 }).catch(error => {
-                    console.error(error);
+                    log.error(error);
                     this.setState({ error });
                 });
             }).catch(error => {
@@ -54,13 +54,13 @@ class PasswordChange extends Component {
     };
 
     render() {
-        const { error, currentPassword, newPassword, confirmNewPassowrd } = this.state;
+        const { error, currentPassword, newPassword, confirmNewPassword } = this.state;
 
         const isInvalid =
-            newPassword !== confirmNewPassowrd ||
+            newPassword !== confirmNewPassword ||
             currentPassword === '' ||
             newPassword === '' || 
-            confirmNewPassowrd === '';
+            confirmNewPassword === '';
 
         return (
             <div className="email-confirmation">
@@ -99,7 +99,7 @@ class PasswordChange extends Component {
                                         onChange={this.onChange}
                                         aria-describedby="basic-addon2"
                                         placeholder="Confirm your new password"
-                                        name="confirmNewPassowrd"
+                                        name="confirmNewPassword"
                                         type="password"
                                     />
                                 </Form.Group>

@@ -7,6 +7,7 @@ import { withCurrentUser } from '../../Authentication/context';
 import * as ROUTES from '../../../constants/routes';
 import { Card, FormControl, Button, Form, Modal } from 'react-bootstrap';
 import log from '../../../constants/logger';
+import validator from 'validator';
 
 class EmailChangeFormBase extends Component {
     constructor(props) {
@@ -57,8 +58,8 @@ class EmailChangeFormBase extends Component {
     render() {
         const{ error, email, modalShow } = this.state;
 
-        const isInvalid = email === '' ||
-        !email.includes('@');
+        const isInvalid = validator.isEmpty(email) ||
+        !validator.isEmail(email);
 
         return(
             <div className="email-confirmation">
