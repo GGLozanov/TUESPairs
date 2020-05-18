@@ -20,6 +20,7 @@ class CenteredText extends StatelessWidget {
           style: TextStyle(
             color: Colors.orange,
             fontSize: fontSize,
+            fontFamily: 'Nilam',
           ),
           textAlign: TextAlign.center,
         )

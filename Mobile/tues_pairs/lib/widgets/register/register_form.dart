@@ -213,7 +213,8 @@ class _RegisterFormState extends State<RegisterForm> {
       if(widget is InputField) { // decide which conversion func to call
         // retrieve whether the form is currently filled (should not save currentState)
         if(widget is DescriptionInputField) { // TODO: limit conversion checks
-          _stepInfos[stepIdx].name = isCurrentTeacher ? 'Qualifications' : 'Idea';
+          _stepInfos[stepIdx].name = (isCurrentTeacher ?
+            'Qualifications' : 'Idea') + ' (Optional)';
           // change the stepTitle to 'Qualifications' if teacher
         }
 
@@ -265,7 +266,7 @@ class _RegisterFormState extends State<RegisterForm> {
         ),
         new StepInfo(
           stepIdx: 3,
-          name: 'Idea',
+          name: 'Idea (Optional)',
           formKey: GlobalKey<FormState>(debugLabel: 'Description')
         )
       ]
@@ -302,7 +303,7 @@ class _RegisterFormState extends State<RegisterForm> {
       ),
       new StepInfo(
         stepIdx: 6,
-        name: 'Idea',
+        name: 'Idea (Optional)',
         formKey: GlobalKey<FormState>(debugLabel: 'Description')
       )
     ];

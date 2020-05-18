@@ -71,7 +71,33 @@ const int EXIT_CODE_SUCCESS = 1;
 const double widgetReasonableHeightMargin = 15.5; // represents the (reasonable) divisor margin for the screen height corresponding a given widget
 const double widgetReasonableWidthMargin = 3.75; // represents the (reasonable) divisor margin for the screen width corresponding a given widget
 
-List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardType.VIEW, User user}) {
+List<Tag> getUserMappedTags(
+  List<Tag> tags,
+  User user
+) {
+  List<Tag> userTagCards = [];
+  for(var tid in user.tagIDs) {
+    userTagCards.add(tags.firstWhere((tag) => tag.tid == tid));
+  }
+
+  return userTagCards;
+}
+
+List<TagCard> getUserTagCards(
+    List<Tag> tags,
+    User user
+) {
+  return mapTagsToTagCards(
+      getUserMappedTags(tags, user),
+      user: user
+  );
+}
+
+List<TagCard> mapTagsToTagCards(
+    List<Tag> tags,
+    {TagCardType cardType = TagCardType.VIEW,
+    User user}
+) {
   return tags.map((tag) {
     int tagIndex = tags.indexOf(tag);
     switch(cardType) {
@@ -122,7 +148,10 @@ Widget buildAppBar({
   );
 }
 
-bool usernameExists(String username, List<User> users) {
+bool usernameExists(
+  String username,
+  List<User> users
+) {
   for(User data in users ?? []) {
     if(username == data.username) {
       logger.i('Username already exists');

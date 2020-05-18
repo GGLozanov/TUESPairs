@@ -66,6 +66,7 @@ class Keys {
   static const String matchMatchButton = 'matchMatchButton';
   static const String matchSkipButton = 'matchSkipButton';
   static const String matchUserCard = 'matchUserCard';
+  static const String alreadyMatchedListView = 'alreadyMatchedListView';
   static int lastMatchedUserIndex = 0;
   // -------------------------
 

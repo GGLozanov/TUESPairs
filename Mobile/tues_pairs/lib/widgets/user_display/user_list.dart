@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
-import 'package:tues_pairs/services/auth.dart';
+import 'package:tues_pairs/shared/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/modules/user.dart';
@@ -57,7 +57,7 @@ class _UserListState extends State<UserList> {
     for (int useridx = 0; useridx < images.length; useridx++) {
       final user = users[useridx];
       if (user.photoURL != null) {
-        images[useridx] = imageService.getImageByURL(users[useridx].photoURL);
+        images[useridx] = ImageService.getImageByURL(users[useridx].photoURL);
       }
     }
     return images;
@@ -67,10 +67,7 @@ class _UserListState extends State<UserList> {
     List<List<Tag>> userTags = new List<List<Tag>>(users.length);
 
     for (int useridx = 0; useridx < users.length; useridx++) {
-      userTags[useridx] = <Tag>[];
-      for (var tid in users[useridx].tagIDs) {
-        userTags[useridx].add(tags.firstWhere((tag) => tag.tid == tid));
-      }
+      userTags[useridx] = getUserMappedTags(tags, users[useridx]);
       // get the Tag instance for each tag ID
     }
     return userTags.map((tags) =>
@@ -187,7 +184,6 @@ class _UserListState extends State<UserList> {
     // TODO: Optimise filtration of users with removeWhere()
     var future = Future(() {});
     for (int idx = 0; idx < users.length; idx++) {
-      final user = users[idx];
       // reinitializing future with lvalue helps futures wait for one-another (+then)
       future = future.then((_) {
         return Future.delayed(Duration(milliseconds: 100), () {
@@ -259,17 +255,13 @@ class _UserListState extends State<UserList> {
         color: Colors.orange,
         onRefresh: () async => setState(() => images = []),
             // refresh user data by clearing images and triggering first build and DB retrieval again
-            // TODO: Maybe fix this method as ti sn't really clear
+            // TODO: Maybe fix this method as it isn't really clear
         child: AnimatedList( // list of users widget
           shrinkWrap: true,
           key: _animatedListKey,
           initialItemCount: userCards.length,
           // ignore: missing_return
           itemBuilder: (context, index, animation) { // context & index of whichever item we're iterating through
-            // TODO: get array of skipped users from database (user instance probably won't hold it) through FutureBuilder again maybe -> done
-            // TODO: then use contains method to check rendering in if statement -> done
-            // TODO: User NEVER enters this state if they have matchedUserID != null; do that check in match.dart -> done
-
             return SlideTransition(
               position: animation.drive(Tween<Offset>(
                 begin: const Offset(1, 0), // represent a point in Cartesian (x-y coordinate) space; dx and dy are args for points

@@ -27,28 +27,25 @@ class DescriptionInputField extends InputField {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 10.0, left: 10.0),
-      child: TextFormField(
-        initialValue: initialValue ?? '',
-        onChanged: onChanged,
-        style: textInputColor,
-        validator: (value) {
-          if(value.length > 200) {
-            return 'Enter a shorter' + descriptionTag;
-          }
-          return null;
-        }, // validator property is used for the validation of separate TextFormFields (takes a function with a value and you can
-        // validator returns string (tag to put on the field if input is invalid)
-        keyboardType: TextInputType.multiline, // optimize type set to e-mail
-        maxLines: null,
-        decoration: textInputDecoration.copyWith(
-          icon: Icon(
-            Icons.code,
-            color: Colors.orange,
-          ),
-          hintText: hintText,
+    return TextFormField(
+      initialValue: initialValue ?? '',
+      onChanged: onChanged,
+      style: textInputColor,
+      validator: (value) {
+        if(value.length > 200) {
+          return 'Enter a shorter' + descriptionTag;
+        }
+        return null;
+      }, // validator property is used for the validation of separate TextFormFields (takes a function with a value and you can
+      // validator returns string (tag to put on the field if input is invalid)
+      keyboardType: TextInputType.multiline, // optimize type set to e-mail
+      maxLines: null,
+      decoration: textInputDecoration.copyWith(
+        icon: Icon(
+          Icons.code,
+          color: Colors.orange,
         ),
+        hintText: hintText,
       ),
     );
   }

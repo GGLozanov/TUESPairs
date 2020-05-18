@@ -28,7 +28,7 @@ class _AvatarWrapperState extends State<AvatarWrapper> {
       return Avatar(imageService: imageService, userImage: null);
     }
 
-    userImage = imageService.getImageByURL(currentUser.photoURL);
+    userImage = ImageService.getImageByURL(currentUser.photoURL);
     logger.i('AvatarWrapper: Current user detected or their photo URL isn\'t null => Rendering Avatar with user image w/ url "' + userImage.url + '"');
     return userImage != null ? Avatar(imageService: imageService, userImage: userImage) : Error();
 

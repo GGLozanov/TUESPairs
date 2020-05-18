@@ -49,7 +49,7 @@ void main() {
       ImageService imageService = new ImageService.mock(profileImage: new File('picture.jpg'));
 
       // upload and retrieve photo here for conversion
-      expect(imageService.getImageByURL(await imageService.uploadImage()), isNull);
+      expect(ImageService.getImageByURL(await imageService.uploadImage()), isNull);
     });
   });
 }

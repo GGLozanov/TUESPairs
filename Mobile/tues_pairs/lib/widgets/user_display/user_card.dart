@@ -9,14 +9,15 @@ class UserCard extends StatefulWidget {
 
   final Key key;
   final User user;
-  final Function onSkip;
-  final Function onMatch;
+  Function onSkip;
+  Function onMatch;
   final NetworkImage userImage;
   final List<TagCard> tagCards;
-  final int listIndex;
+  int listIndex;
   final User currentUser;
 
-  bool hasUserSentMatchRequestToCurrent;
+  bool hasUserSentMatchRequestToCurrent = false;
+  bool isViewCard = false;
 
   UserCard({
     this.key,
@@ -35,6 +36,19 @@ class UserCard extends StatefulWidget {
     assert(currentUser != null),
     super(key: key) {
       hasUserSentMatchRequestToCurrent = currentUser.uid == user.matchedUserID;
+  }
+
+  UserCard.view({
+    this.key,
+    @required this.user,
+    this.userImage,
+    this.tagCards,
+    @required this.currentUser
+  }) :
+        assert(user != null),
+        assert(currentUser != null),
+        super(key: key) {
+    isViewCard = true;
   }
 
   @override
@@ -107,15 +121,23 @@ class _UserCardState extends State<UserCard> {
                 widget.hasUserSentMatchRequestToCurrent ? Text(
                   'User has sent a match request to you!',
                   style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 19,
-                      fontWeight: FontWeight.bold
+                    color: Colors.white,
+                    fontSize: 19,
+                    fontWeight: FontWeight.bold
                   ),
-                ) : SizedBox()
+                ) : SizedBox(),
+                Text(
+                  widget.user.description,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
               ]
             ),
-            SizedBox(height: 10.0),
-            ButtonBar(
+            SizedBox(height: !widget.isViewCard ? 10.0 : 0.0),
+            !widget.isViewCard ? ButtonBar(
               alignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 Container(
@@ -153,7 +175,7 @@ class _UserCardState extends State<UserCard> {
                   ),
                 ),
               ],
-            ),
+            ) : SizedBox(),
             SizedBox(height: 10.0),
             IgnorePointer(
               child: Wrap(
