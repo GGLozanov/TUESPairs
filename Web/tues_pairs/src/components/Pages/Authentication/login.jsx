@@ -4,7 +4,7 @@ import { compose } from 'recompose';
 import firebase from 'firebase';
 import { withFirebase } from '../../Firebase';
 import * as ROUTES from '../../../constants/routes';
-import { PasswordForgetLink } from '../PasswordForget'
+import { PasswordForgetLink } from '../ChangeForms'
 import './style.scss';
 import { withCurrentUser } from '../../Authentication/context';
 import FacebookIcon from '@material-ui/icons/Facebook';

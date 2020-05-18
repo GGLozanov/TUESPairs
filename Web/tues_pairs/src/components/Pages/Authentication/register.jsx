@@ -7,6 +7,7 @@ import * as ROUTES from '../../../constants/routes';
 import log from '../../../constants/logger';
 
 import './style.scss';
+import validator from 'validator';
 
 const SingUpPage = () => (
     <div>
@@ -75,7 +76,8 @@ class SignUpFormBase extends Component {
         const isInvalid = 
             passwordOne !== passwordTwo ||
             passwordOne === '' ||
-            email === '';
+            validator.isEmpty(email) ||
+            !validator.isEmail(email);
 
         return(
             <div className="base-container" ref={this.props.contanerRef}>
