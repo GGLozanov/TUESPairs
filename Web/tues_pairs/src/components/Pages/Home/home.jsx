@@ -176,7 +176,7 @@ class UserList extends Component {
               <Col xs={14} md={14}>
                 <UserCard user={user} currentUser={currentUser} />
                 <Button.Group>
-                  <Button value={user.uid} onClick={this.onMatch} variant="dark" style={{width: '100%', backgroundColor: 'rgb(252, 152, 0)'}}>Match</Button>
+                  <Button value={user.uid} onClick={this.onMatch} variant="dark" style={{ backgroundColor: 'rgb(252, 152, 0)'}}>Match</Button>
                     <Button.Or />
                   <Button value={user.uid} onClick={this.onSkip} variant="dark">Skip</Button>
                 </Button.Group>
