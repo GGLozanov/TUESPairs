@@ -18,15 +18,15 @@ class LandingPageBase extends Component {
 
         return(
             <div className="landing-page">
-                <img className="background-image" alt="Landing-page" src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/tues_pairs_landing.png?alt=media&token=0f45ea7b-c1b1-47fa-b1f7-e6cbb256d907"></img>
-                <Card bg="dark" style={{ width: '500px', height: '500px' }} className="landing-card">    
+                <img className="background-image" alt="Landing-page" src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/tues_pairs_landing.png?alt=media&token=552445ef-dbdb-4bb2-87d1-40e1dd2dd692"></img>
+                <Card bg="dark" style={{ width: '400px', height: '500px' }} className="landing-card">    
                     <Card.Img
                         className="tues-pairs-logo"
-                        src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/Logo.png?alt=media&token=d96cf827-1192-44f8-96d3-372bc18fd0d1"
+                        src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/Logo_Text.png?alt=media&token=d787193b-09ef-468a-b6c8-034c1497e8c8"
                     />
                     <Card.Body className="landing-body">
                         <Card.Title className="perfect-pair">
-                            Go ahead and find your perfect pair!
+                            Pairing up our favourite peers with their favourite teachers
                         </Card.Title>
                         <Link to={ROUTES.SIGN}>
                             <Button size="lg" variant="warning" className="continue-button">

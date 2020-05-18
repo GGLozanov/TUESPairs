@@ -10,16 +10,23 @@
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         border: 1px solid #8d8d8d;
         position: absolute;
+
+        @media only screen and (max-width: 625px) {
+            top: 225px;
+            right: 35px;
+        }
+
         right: 170px;
-        top: 300px;
+        top: 200px;
 
         .tues-pairs-logo {
             height: 100px;
-            width: 200px;
+            width: 360px;
             margin: 10px auto;
         }
 
         .perfect-pair {
+            color: #b8b8b8;
             text-align: center;
             font-weight: bold;
             font-size: x-large;
