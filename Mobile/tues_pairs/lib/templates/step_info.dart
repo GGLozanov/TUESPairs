@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class StepInfo {
   final int stepIdx;
-  final String name;
+  String name;
   final GlobalKey<FormState> formKey; // globalkeys used to validate each stepper form
   bool isInputField;
 

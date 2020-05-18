@@ -9,14 +9,15 @@ class UserCard extends StatefulWidget {
 
   final Key key;
   final User user;
-  final Function onSkip;
-  final Function onMatch;
+  Function onSkip;
+  Function onMatch;
   final NetworkImage userImage;
   final List<TagCard> tagCards;
-  final int listIndex;
+  int listIndex;
   final User currentUser;
 
-  bool hasUserSentMatchRequestToCurrent;
+  bool hasUserSentMatchRequestToCurrent = false;
+  bool isViewCard = false;
 
   UserCard({
     this.key,
@@ -35,6 +36,19 @@ class UserCard extends StatefulWidget {
     assert(currentUser != null),
     super(key: key) {
       hasUserSentMatchRequestToCurrent = currentUser.uid == user.matchedUserID;
+  }
+
+  UserCard.view({
+    this.key,
+    @required this.user,
+    this.userImage,
+    this.tagCards,
+    @required this.currentUser
+  }) :
+        assert(user != null),
+        assert(currentUser != null),
+        super(key: key) {
+    isViewCard = true;
   }
 
   @override
@@ -94,8 +108,9 @@ class _UserCardState extends State<UserCard> {
                     fontSize: 36,
                     fontWeight: FontWeight.bold
                   ),
+                  textAlign: TextAlign.center
                 ),
-                SizedBox(height: 10.0),
+                SizedBox(height: !widget.user.isTeacher ? 10.0 : 0.0),
                 !widget.user.isTeacher ? Text(
                   'GPA: ' + widget.user.GPA.toString(),
                   style: TextStyle(
@@ -103,19 +118,29 @@ class _UserCardState extends State<UserCard> {
                     fontSize: 22,
                     fontWeight: FontWeight.bold
                   ),
-                ) : SizedBox(height: 5.0),
+                ) : SizedBox(),
                 widget.hasUserSentMatchRequestToCurrent ? Text(
                   'User has sent a match request to you!',
                   style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 19,
-                      fontWeight: FontWeight.bold
+                    color: Colors.white,
+                    fontSize: 19,
+                    fontWeight: FontWeight.bold
                   ),
-                ) : SizedBox()
+                ) : SizedBox(),
+                SizedBox(height: widget.user.description != '' ? 5.0 : 0.0),
+                Text(
+                  widget.user.description,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold
+                  ),
+                  textAlign: TextAlign.center
+                ),
+                SizedBox(height: widget.user.description != '' ? 7.5 : 0.0),
               ]
             ),
-            SizedBox(height: 10.0),
-            ButtonBar(
+            !widget.isViewCard ? ButtonBar(
               alignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 Container(
@@ -153,7 +178,7 @@ class _UserCardState extends State<UserCard> {
                   ),
                 ),
               ],
-            ),
+            ) : SizedBox(),
             SizedBox(height: 10.0),
             IgnorePointer(
               child: Wrap(

@@ -69,7 +69,7 @@ class ImageService {
     return null;
   }
 
-  NetworkImage getImageByURL(String photoURL) {
+  static NetworkImage getImageByURL(String photoURL) {
     if(photoURL != null) {
       try {
         logger.i('ImageService: getImageByURL has been called with a photoURL "' + photoURL + '"; returning NetworkImage with that URL');

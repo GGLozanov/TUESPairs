@@ -69,8 +69,9 @@ class Database {
           'isTeacher: "' + user.isTeacher.toString() + '", ' +
           'photoURL: "' + user.photoURL.toString() + '", ' +
           'matchedUserID: "' + user.matchedUserID.toString() + '", ' +
-          'skippedUserIDs: "' + user.skippedUserIDs.toString() + '",'
-          'tagIDs: "' + user.tagIDs.toString() + '").'
+          'skippedUserIDs: "' + user.skippedUserIDs.toString() + '",' +
+          'tagIDs: "' + user.tagIDs.toString() + '",' +
+          'description: "' + user.description.toString() + '")'
       );
 
       return await _userCollectionReference.document(uid).setData({
@@ -82,6 +83,7 @@ class Database {
         'matchedUserID': user.matchedUserID,
         'skippedUserIDs': user.skippedUserIDs ?? <String>[],
         'tagIDs': user.tagIDs ?? <String>[],
+        'description': user.description ?? ''
       });
     }
 
@@ -100,7 +102,8 @@ class Database {
           'photoURL: "' + doc.data['photoURL'].toString() + '", ' +
           'matchedUserID: "' + doc.data['matchedUserID'].toString() + '", ' +
           'skippedUserIDs: "' + (doc.data['skippedUserIDs'].toString() ?? <String>[].toString()) + '", ' +
-          'tagIDs: "' + doc.data['tagIDs'].toString() + '").'
+          'tagIDs: "' + doc.data['tagIDs'].toString() + '").' +
+          'description: "' + doc.data['description'].toString() + '")'
       );
 
       return doc.data['isTeacher'] ?
@@ -112,7 +115,8 @@ class Database {
           username: doc.data['username'] ?? '',
           matchedUserID: doc.data['matchedUserID'] ?? null,
           skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : List<String>.from(doc.data['skippedUserIDs']),
-          tagIDs: doc.data['tagIDs'] == null ? <String>[] : List<String>.from(doc.data['tagIDs'])
+          tagIDs: doc.data['tagIDs'] == null ? <String>[] : List<String>.from(doc.data['tagIDs']),
+          description: doc.data['description'] ?? ''
         ) : Student(
           uid: doc.documentID,
           email: doc.data['email'] ?? '',
@@ -122,7 +126,8 @@ class Database {
           username: doc.data['username'] ?? '',
           matchedUserID: doc.data['matchedUserID'] ?? null,
           skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : List<String>.from(doc.data['skippedUserIDs']),
-          tagIDs: doc.data['tagIDs'] == null ? <String>[] : List<String>.from(doc.data['tagIDs'])
+          tagIDs: doc.data['tagIDs'] == null ? <String>[] : List<String>.from(doc.data['tagIDs']),
+          description: doc.data['description'] ?? ''
       );
     }
 

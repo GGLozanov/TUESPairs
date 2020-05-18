@@ -37,7 +37,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
 
   void setError(String errorMessage) {
     setState(() => errorNotifier.setError(errorMessage));
-  }
+  } // TODO: Reimplement setError & showError
 
   Future<void> _showDeleteAlertDialog({
     @required BuildContext context,
@@ -90,18 +90,18 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
           ),
           actions: <Widget>[
             FlatButton.icon(
-                icon: Icon(Icons.arrow_back),
-                label: Text(
-                  'Back',
-                  style: TextStyle(
-                    fontFamily: 'Nilam',
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange,
-                  ),
+              icon: Icon(Icons.arrow_back),
+              label: Text(
+                'Back',
+                style: TextStyle(
+                  fontFamily: 'Nilam',
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.orange,
                 ),
-                onPressed: () =>
-                    Navigator.of(context).pop()
+              ),
+              onPressed: () =>
+                  Navigator.of(context).pop()
             ),
             FlatButton.icon(
               key: Key(Keys.settingsConfirmDeleteAccountButton),
@@ -296,10 +296,13 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                 onPressed: () async {
                   // TODO: Use updateUserData from Database here -> done
                   final FormState currentState = SettingsForm.baseAuth.key.currentState;
+                  final currentUserUsername = await database.getUserById().then((user) => user.username);
+
                   if(currentState.validate() &&
                       currentUser.email != null &&
                       currentUser.username != null &&
-                      !usernameExists(currentUser.username, users)) {
+                      (!usernameExists(currentUser.username, users)
+                          || currentUser.username == currentUserUsername)) {
                     currentUser.photoURL = await imageService.uploadImage()
                         ?? currentUser.photoURL; // check if pfp changed
 
@@ -331,7 +334,6 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
               text: 'Hint: Changes to account fields and image only take effect upon pressing the Submit button!',
               fontSize: 22.0,
             ),
-            errorNotifier.isError ? errorNotifier.showError() : SizedBox(),
           ],
         ),
       ),
