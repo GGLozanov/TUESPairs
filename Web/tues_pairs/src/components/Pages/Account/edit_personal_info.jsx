@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormControl, Button, Col, Image, Form, Row, Alert, InputGroup, ButtonGroup, Modal } from 'react-bootstrap';
+import { FormControl, Button, Col, Image, Form, Row, InputGroup, ButtonGroup, Modal } from 'react-bootstrap';
 import { withCurrentUser } from '../../Authentication/context';
 import { compose } from 'recompose';
 import { withFirebase } from '../../Firebase';
@@ -152,7 +152,8 @@ class EditPersonalInfo extends Component{
 
     handleDeleteProfileNotification = () => {
         const show = !this.state.show;
-        log.info('Current user has toggled the delete notification and' + show ? 'enabled' : 'disabled' + 'it');
+        const logText = show ? 'enabled' : 'disabled';
+        log.info('Current user has toggled the delete notification and ' + logText + ' it');
         this.setState({ show });
     }
 
@@ -266,15 +267,6 @@ class EditPersonalInfo extends Component{
                             </InputGroup>
                         </Form.Group>
 
-                        <Form.Group as={Row} controlId="formPlaintextEmail" className="email-plain">
-                            <Form.Label column sm="2">
-                                Email
-                            </Form.Label>
-                            <Col sm="10">
-                                <Form.Control plaintext readOnly defaultValue={email} />
-                            </Col>
-                        </Form.Group>
-
                         <Form.Group controlId="formBasicGPA">
                             {isTeacher && 
                             <Form.Label>GPA</Form.Label>}
@@ -294,6 +286,10 @@ class EditPersonalInfo extends Component{
                                 </InputGroup.Prepend>
                             </InputGroup>}
                         </Form.Group>
+
+                        <Button className="email" variant="primary" size="lg" block>
+                            { email }
+                        </Button>
 
                         <EmailChangeLink />
                         <PasswordChangeLink />
@@ -321,14 +317,16 @@ class EditPersonalInfo extends Component{
                         <div className="error-message">
                             {error && <p>{error.message}</p>}
                         </div>
+                        <div className="clear-buttons">
+                            <ButtonGroup as={Row}>
+                                {isMatched && <Button variant="secondary" onClick={this.handleClearMatchedUser}>Clear Match</Button>}
+                                {hasSkipped && <Button variant="secondary" onClick={this.handleSkippedUsers}>Clear Skipped</Button>}
+                            </ButtonGroup>
+                        </div>
                         <Button variant="success" type="submit" className="submit-button">
                             Save Changes
                         </Button>
                     </Form>
-                    <div className="clear-buttons">
-                        {isMatched && <Button onClick={this.handleClearMatchedUser}>Clear Match</Button>}
-                        {hasSkipped && <Button onClick={this.handleSkippedUsers}>Clear Skipped</Button>}
-                    </div>
                     <Button onClick={this.handleDeleteProfileNotification} variant="danger" className="delete-profile">
                             Delete profile
                     </Button>

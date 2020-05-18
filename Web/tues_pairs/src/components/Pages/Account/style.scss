@@ -123,20 +123,12 @@
                 }
             }
 
-            .email-plain {
-
-                label {
-                    border: 1px solid #ced4da;
-                }
-
+            .email {
                 background-color: rgb(58, 64, 78);
                 border: 1px solid #ced4da;
                 border-radius: .25rem; 
-            
-                input {
-                    margin: auto;
-                    text-align: center;
-                }
+                width: 50%;
+                margin: 35px auto;
             }
 
             .tag-list {
@@ -158,6 +150,18 @@
                 color: rgb(252, 152, 0);
                 font-weight: bold;
             }
+            
+            .clear-buttons {
+                .btn-group {
+                    display: block;
+                    text-align: center;
+                    margin: 20px auto;
+    
+                    button {
+                        margin: 5px;
+                    }
+                }
+            }
 
             .submit-button {
                 display: block;
@@ -166,11 +170,6 @@
             }
         }
 
-        .clear-buttons {
-            button {
-                margin: 10px;
-            }
-        }
 
         .delete-profile {
             text-align: center;

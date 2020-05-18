@@ -40,6 +40,7 @@ class EmailChangeFormBase extends Component {
                     email: email,
                 }, {merge: true}).then(() => {
                     this.props.firebase.doEmailUpdate(email).then(() => {
+                        log.info("Updated current user changed his email inside Email Change page!");
                         this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
                     }).catch(error => {
                         log.error(error);
@@ -54,7 +55,7 @@ class EmailChangeFormBase extends Component {
     }
 
     render() {
-        const{ error, email, password, modalShow } = this.state;
+        const{ error, email, modalShow } = this.state;
 
         const isInvalid = email === '' ||
         !email.includes('@');

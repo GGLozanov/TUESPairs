@@ -34,6 +34,7 @@ class PasswordChange extends Component {
         }).then(() => {
             this.state.currentUser.reauthenticateWithCredential(credential).then(() => {
                 this.props.firebase.doPasswordUpdate(newPassword).then(() => {
+                    log.info("Updated current user changed his password inside Password Change page!");
                     this.props.history.push(ROUTES.EDIT_PERSONAL_INFO);
                 }).catch(error => {
                     console.error(error);
