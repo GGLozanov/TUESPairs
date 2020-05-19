@@ -18,7 +18,7 @@ class LandingPageBase extends Component {
 
         return(
             <div className="landing-page">
-                <img className="background-image" alt="Landing-page" src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/tues_pairs_landing.png?alt=media&token=552445ef-dbdb-4bb2-87d1-40e1dd2dd692"></img>
+                <img className="background-image" alt="Landing-page" src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/tues_pairs_landing.png?alt=media&token=004e7b32-7e45-4756-9575-8e78f5fee82e"></img>
                 <Card bg="dark" style={{ width: '400px', height: '500px' }} className="landing-card">    
                     <Card.Img
                         className="tues-pairs-logo"
