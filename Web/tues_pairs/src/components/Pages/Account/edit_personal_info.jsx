@@ -296,7 +296,7 @@ class EditPersonalInfo extends Component{
 
                         <div className="description">
                         <Form.Group controlId="exampleForm.ControlTextarea1">
-                            {!isTeacher && <p>Change is your project idea?</p>}
+                            {!isTeacher && <p>Change your project idea?</p>}
                             {isTeacher && <p>Change in what projects are you interested in?</p>}
                             <Form.Control as="textarea" 
                                 rows="3" 
