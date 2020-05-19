@@ -4,7 +4,7 @@ import { Router } from 'react-router-dom';
 import { fireEvent, render, waitForDomChange } from '@testing-library/react';
 import { FirebaseContext } from '../../../../components/Firebase';
 import MockedFirebase from '../../../Firebase/MockedFirebase';
-import SingUpPage from '../../../../components/Pages/Authentication/register';
+import SingUpPage from '../../../../components/Pages/Sign/register';
 
 test('full app rendering/navigating', () => {
     const history = createMemoryHistory();

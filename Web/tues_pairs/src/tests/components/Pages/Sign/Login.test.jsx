@@ -2,7 +2,7 @@ import React from 'react';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 import { fireEvent, render, waitForDomChange } from '@testing-library/react';
-import SignInPage from '../../../../components/Pages/Authentication/login';
+import SignInPage from '../../../../components/Pages/Sign/login';
 import Firebase ,{ FirebaseContext } from '../../../../components/Firebase';
 import MockedFirebase from '../../../Firebase/MockedFirebase';
 
