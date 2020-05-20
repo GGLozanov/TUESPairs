@@ -8,10 +8,6 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 class LandingPageBase extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-
-        }
     }
 
     render() {
