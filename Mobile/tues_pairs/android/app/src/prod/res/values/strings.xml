@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TUESPairs</string>
+    <string name="facebook_app_id">283482699333231</string>
+    <string name="fb_login_protocol_scheme">fb283482699333231</string>
+</resources>
