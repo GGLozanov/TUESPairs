@@ -37,6 +37,7 @@ class EditPersonalInfo extends Component{
             loading: false,
             show: false,
             password: '',
+            description: '',
         };
     }
 
@@ -48,7 +49,12 @@ class EditPersonalInfo extends Component{
         .then(snapshot => {
             const currentUser = this.props.firebase.getUserFromSnapshot(snapshot);
 
-            this.setState({ photoURL: currentUser.photoURL, email: currentUser.email, tagIDs: currentUser.tagIDs, loading: false });
+            this.setState({ 
+                photoURL: currentUser.photoURL, 
+                email: currentUser.email, 
+                tagIDs: currentUser.tagIDs, 
+                description: currentUser.description,
+                loading: false });
         }).then(() => {
             this.tagProvider = this.props.firebase.tags()
             .onSnapshot(snapshot => {
@@ -88,7 +94,7 @@ class EditPersonalInfo extends Component{
     }
 
     onSubmit = event => {
-        const { username, email, GPA, tagIDs} = this.state;
+        const { username, email, GPA, tagIDs, description} = this.state;
 
         const currentUser = this.props.authUser;
 
@@ -97,6 +103,7 @@ class EditPersonalInfo extends Component{
             GPA: parseFloat(GPA),
             email: email,
             tagIDs: tagIDs,
+            description: description,
         }, {merge: true})
         .then(() => {
             log.info("Updated current user w/ id edited his settings inside Edit Personal Info page!");
@@ -219,7 +226,7 @@ class EditPersonalInfo extends Component{
     }
 
     render() {
-        const { username, email, photoURL, GPA, loading, error, tags, show} = this.state;
+        const { username, email, photoURL, GPA, loading, error, tags, show, description} = this.state;
 
         const isTeacher = this.props.authUser.isTeacher ? false : true;
 
@@ -258,7 +265,7 @@ class EditPersonalInfo extends Component{
                                     onChange={this.onChange}
                                     aria-label="Recipient's username"
                                     aria-describedby="basic-addon2"
-                                    placeholder={username}
+                                    value={username}
                                     name="username"
                                 />
                                 <InputGroup.Prepend>
@@ -286,6 +293,20 @@ class EditPersonalInfo extends Component{
                                 </InputGroup.Prepend>
                             </InputGroup>}
                         </Form.Group>
+
+                        <div className="description">
+                        <Form.Group controlId="exampleForm.ControlTextarea1">
+                            {!isTeacher && <p>Change your project idea?</p>}
+                            {isTeacher && <p>Change in what projects are you interested in?</p>}
+                            <Form.Control as="textarea" 
+                                rows="3" 
+                                maxlength="200"
+                                onChange={this.onChange}
+                                name="description"
+                                value={description}
+                            />
+                        </Form.Group>
+                    </div>
 
                         <Button className="email" variant="primary" size="lg" block>
                             { email }

@@ -50,6 +50,10 @@
                 color: rgb(252, 152, 0);
                 text-align: center;
             }
+
+            .description {
+                color: #8d8d8d;
+            }
         }
     }
 }
@@ -109,7 +113,7 @@
                 margin-bottom: 20px;
                 width: 50%;
                 .form-label {
-                    color: white;
+                    color: rgb(252, 152, 0);
                 }
                 
                 input {
@@ -122,6 +126,25 @@
                     }
                 }
             }
+
+            .description {
+                margin: 20px 0;
+          
+                p {
+                  color: rgb(252, 152, 0);
+                  font-weight: bold;
+                }
+          
+                textarea {
+                  background-color: rgb(58, 64, 78);
+                  color: white;
+          
+                  &:focus {
+                      border: 1px solid rgb(252, 152, 0);
+                      box-shadow: none;
+                  }
+                }
+              }
 
             .email {
                 background-color: rgb(58, 64, 78);

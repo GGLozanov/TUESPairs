@@ -12,18 +12,19 @@ import ImageUploadPage from '../Pages/ImageUpload/imageUpload';
 
 import * as ROUTES from '../../constants/routes.jsx';
 import { withAuthentication } from '../Authentication';
-import ChangeHandler from '../Pages/Authentication/changeHandler';
+import ChangeHandler from '../Pages/Sign/changeHandler';
 import StudentInfo from '../Pages/Account/edit_personal_info';
 import PasswordChangePage from '../Pages/ChangeForms/passwordchange';
-import UserInfoPage from '../Pages/Authentication/userInfo';
+import UserInfoPage from '../Pages/Sign/userInfo';
 import EmailChangeForm from '../Pages/ChangeForms/emailChange';
+import LandingPageBase from '../Pages/Landing/landing';
 
 const App = () => (
     <Router>
         <Navigation />
         <div className="main">
+            <Route exact path={ROUTES.LANDING} component={LandingPageBase} />
             <Route path={ROUTES.SIGN} component={ChangeHandler} />
-
             <Route exact path={ROUTES.CHAT} component={ChatPage} />
             <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />
             <Route path={ROUTES.PASSWORD_CHANGE} component={PasswordChangePage} />

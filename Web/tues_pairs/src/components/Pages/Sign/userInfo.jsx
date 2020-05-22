@@ -22,6 +22,7 @@ class UserInfo extends Component {
             tags: [],
             loading: false,
             currentUser: this.props.authUser,
+            description: ''
         }
 
         this.state.currentUser.tagIDs = [];
@@ -70,7 +71,7 @@ class UserInfo extends Component {
     }
 
     onSubmit = event => {
-        const { username, isTeacher, GPA } = this.state;
+        const { username, isTeacher, GPA, description } = this.state;
         const currentUser = this.state.currentUser;
 
         this.props.firebase.db.collection("users").doc(currentUser.uid).set({
@@ -78,6 +79,7 @@ class UserInfo extends Component {
             isTeacher: Boolean(isTeacher),
             GPA: parseFloat(GPA),
             tagIDs: currentUser.tagIDs,
+            description: description
         }, {merge: true})
         .then(() => {
             this.props.authUser.username = username;
@@ -144,6 +146,19 @@ class UserInfo extends Component {
                             min="2"
                         />}
                     </Form.Group>
+
+                    <div className="description">
+                        <Form.Group controlId="exampleForm.ControlTextarea1">
+                            {!this.state.isTeacher && <p>What is your project idea?</p>}
+                            {this.state.isTeacher && <p>In what projects are you interested in?</p>}
+                            <Form.Control as="textarea" 
+                                rows="3" 
+                                maxlength="200"
+                                onChange={this.onChange}
+                                name="description"
+                            />
+                        </Form.Group>
+                    </div>
 
                     <div className="tag-list">
                         <p>What technologies can you use?</p>
