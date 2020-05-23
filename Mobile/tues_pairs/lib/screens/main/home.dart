@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/auth.dart';
@@ -9,6 +10,7 @@ import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/widgets/notifications/notification_list.dart';
+import 'dart:io' show Platform, exit;
 
 import '../../main.dart';
 
@@ -76,21 +78,21 @@ class _HomeState extends State<Home> {
             icon: Icon(
               Icons.exit_to_app,
               color: Colors.orange,
-              size: 35.0,
+              size: 25.0,
             ),
             label: Text(
               'Logout',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 25.0,
+                fontSize: 35.0,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.5,
               ),
             ),
           ),
-        ],
+        ]
       ),
-      
+
       drawer: Drawer(
         child: NotificationList(), // ListView to display all notifications
       ),

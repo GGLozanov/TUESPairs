@@ -128,14 +128,17 @@ class _UserCardState extends State<UserCard> {
                   ),
                 ) : SizedBox(),
                 SizedBox(height: widget.user.description != '' ? 5.0 : 0.0),
-                Text(
-                  widget.user.description,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    widget.user.description,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
+                    ),
+                    textAlign: TextAlign.center
                   ),
-                  textAlign: TextAlign.center
                 ),
                 SizedBox(height: widget.user.description != '' ? 7.5 : 0.0),
               ]
@@ -181,9 +184,12 @@ class _UserCardState extends State<UserCard> {
             ) : SizedBox(),
             SizedBox(height: 10.0),
             IgnorePointer(
-              child: Wrap(
-                alignment: WrapAlignment.spaceEvenly,
-                children: widget.tagCards,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Wrap(
+                  alignment: WrapAlignment.spaceEvenly,
+                  children: widget.tagCards,
+                ),
               )
             ),
             SizedBox(height: 10.0),

@@ -16,6 +16,7 @@ class Keys {
   static const String toggleToRegisterButton = 'toggleToRegisterButton';
   static const String toggleToLoginButton = 'toggleToLoginButton';
   static const String logOutButton = 'logOutButton';
+  static const String exitAppButton = 'exitAppButton';
   // -------------------------
 
   // -------------------------
