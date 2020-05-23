@@ -15,6 +15,8 @@ import 'package:tues_pairs/screens/loading/loading.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 
+import '../main.dart';
+
 class AuthListener extends StatefulWidget {
 
   static ExternRegister externRegister = ExternRegister();
@@ -38,7 +40,7 @@ class _AuthListenerState extends State<AuthListener> {
 
     // this widget is instantiated in main.dart
     // and since we're using StreamProvider and its instantiation is derived inside of the StreamProvider.value() widget
-    // that means we can use the value set in the StreamProvider widget here as well!
+    // that means we can use the value set in the StreamProvider widget here as well
 
     // using the Provider.of() generic method
     // return either register or login widget if User is auth'ed
@@ -84,6 +86,10 @@ class _AuthListenerState extends State<AuthListener> {
               // give authUser info to user here
               user.isExternalUser = authUser.isExternalUser;  // used in settings
               // may need to pass more info later
+
+              // update again to reinitialize device key
+              Database(uid: authUser.uid).updateUserData(user); // this is doen to keep track of the device key; can't afford to await
+              // TODO: Optimize; way too many DB queries
 
               logger.i('AuthListener: Current user w/ username "' + user.username + '" received and authenticated');
               return Provider<User>.value(

@@ -119,12 +119,6 @@ class Database {
     if(doc != null && doc.data != null) {
       logger.i('Database: Received document snapshot of user with information w/ uid "' + doc.documentID + '"');
 
-      List<String> deviceTokens = doc.data['deviceTokens'] == null ? List<String>.from(doc.data['deviceTokens']) // do conversion to List of Strings
-            : <String>[App.currentUserDeviceToken];
-      if(doc.data['deviceTokens'] != null && !deviceTokens.contains(App.currentUserDeviceToken)) {
-        deviceTokens.add(App.currentUserDeviceToken); // add the device token if not present in the not-null list
-      }
-
       logger.i('Database: Receiving user w/ ' +
           '(GPA: "' + doc.data['GPA'].toString() + '", ' +
           'isTeacher: "' + doc.data['isTeacher'].toString()  + '", ' +
@@ -147,7 +141,8 @@ class Database {
           skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : List<String>.from(doc.data['skippedUserIDs']),
           tagIDs: doc.data['tagIDs'] == null ? <String>[] : List<String>.from(doc.data['tagIDs']),
           description: doc.data['description'] ?? '',
-          deviceTokens: deviceTokens ?? <String>[App.currentUserDeviceToken],
+          deviceTokens: doc.data['deviceTokens'] == null ? <String>[App.currentUserDeviceToken] // do conversion to List of Strings
+              : List<String>.from(doc.data['deviceTokens']),
         ) : Student(
           uid: doc.documentID,
           email: doc.data['email'] ?? '',
@@ -159,7 +154,8 @@ class Database {
           skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : List<String>.from(doc.data['skippedUserIDs']),
           tagIDs: doc.data['tagIDs'] == null ? <String>[] : List<String>.from(doc.data['tagIDs']),
           description: doc.data['description'] ?? '',
-          deviceTokens: deviceTokens ?? <String>[App.currentUserDeviceToken],
+          deviceTokens: doc.data['deviceTokens'] == null ? <String>[App.currentUserDeviceToken]
+              : List<String>.from(doc.data['deviceTokens']), // do conversion to List of Strings,
       );
     }
 
@@ -171,8 +167,6 @@ class Database {
   // TODO: clean code to avoid all redundant checks
   Future<User> getUserById() async {
     // always gets called after main because AuthListener
-    App.currentUserDeviceToken = await MessagingService.getUserDeviceToken(); // TODO: Fix overhead (bool callback flag for authlistener?)
-
     if(uid != null) {
       logger.i('Database: getUserById called with passed in uid for Database');
       return getUserBySnapshot(await _userCollectionReference.document(uid).get());

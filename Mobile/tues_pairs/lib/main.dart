@@ -1,4 +1,5 @@
 import 'package:tues_pairs/modules/tag.dart';
+import 'package:tues_pairs/screens/loading/loading.dart';
 import 'package:tues_pairs/screens/register/extern_register.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/services/messaging.dart';
@@ -19,7 +20,7 @@ void main() async {
 }
 
 class App extends StatelessWidget {
-  static String currentUserDeviceToken = '';
+  static String currentUserDeviceToken;
   final Auth _auth = new Auth();
 
   @override
@@ -36,7 +37,17 @@ class App extends StatelessWidget {
       child: MaterialApp( // Now MaterialApp, AuthListener, and all future widgets will have access to the value in the StreamProvider (cross-widget communication!)
         key: Key(Keys.app),
         title: 'TUESPairs',
-        home: AuthListener()
+        home: FutureBuilder<String>(
+          future: MessagingService.getUserDeviceToken(), // get the user's device token once and set it
+          builder: (context, snapshot) {
+            if(snapshot.connectionState == ConnectionState.done) {
+              App.currentUserDeviceToken = snapshot.data;
+              return AuthListener();
+            } else {
+              return Loading();
+            }
+          }
+        )
       )
     );
   }

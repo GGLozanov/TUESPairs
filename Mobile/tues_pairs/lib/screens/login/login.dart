@@ -158,6 +158,7 @@ class _LoginState extends State<Login> {
                             baseAuth.clearAndAddError('Invalid login credentials or too many attempts.');
                           });
                         } else {
+                          // Add the device token if not present in DB user
                           logger.i('Login: User w/ id "' + user.uid + '" has successfully logged in');
                         }
                       }
