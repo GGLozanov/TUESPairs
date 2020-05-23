@@ -84,12 +84,15 @@ class _TagCardState extends State<TagCard> {
     if(widget.user == null) widget.user = Provider.of<User>(context);
 
     // TODO: For future reference, UI errors with tags can be caused due to fontsize (decrease)
-    final tagName = Text(
-      widget.tag.name,
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 16,
-        fontFamily: 'BebasNeue',
+    final tagName = FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Text(
+        widget.tag.name,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontFamily: 'BebasNeue',
+        ),
       ),
     );
 

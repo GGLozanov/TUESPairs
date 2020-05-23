@@ -44,6 +44,7 @@ dependencies:
   email_validator: ^1.0.4
   firebase_messaging: ^6.0.15
   double_back_to_close_app: ^1.2.0
+  auto_size_text: ^2.1.0
 
 dev_dependencies:
   flutter_driver:

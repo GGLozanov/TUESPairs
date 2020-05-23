@@ -31,10 +31,16 @@ class _NotificationListState extends State<NotificationList> {
                       fontFamily: 'Nilam',
                       color: Colors.white,
                     ),
-                    textAlign: TextAlign.start,
+                    textAlign: TextAlign.center,
                   ),
                   Text(
-                    NotificationList.notifications[idx].message
+                    NotificationList.notifications[idx].message,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontFamily: 'Nilam',
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
                   )
                 ],
               ),
