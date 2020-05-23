@@ -1,6 +1,7 @@
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/screens/register/extern_register.dart';
 import 'package:tues_pairs/services/database.dart';
+import 'package:tues_pairs/services/messaging.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,13 +11,15 @@ import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/shared/constants.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MessagingService.configureFirebaseListeners();
 
   runApp(App());
 }
 
 class App extends StatelessWidget {
+  static String currentUserDeviceToken = '';
   final Auth _auth = new Auth();
 
   @override

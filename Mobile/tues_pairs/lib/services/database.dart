@@ -5,7 +5,10 @@ import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/teacher.dart';
 import 'package:tues_pairs/modules/student.dart';
+import 'package:tues_pairs/services/messaging.dart';
 import 'package:tues_pairs/shared/constants.dart';
+
+import '../main.dart';
 
 // Firestore - new DB by Google designed to make it easier to store information with collections and documents inside collections
 // Collection reference - reference to a Firestore collection in the Firestore console (like a table in a relational DB)
@@ -56,13 +59,31 @@ class Database {
   }
 
   // method to update user data by given information in custom registration fields
-  Future updateUserData(User user) async {
+  Future updateUserData(User user, {bool isBeingLoggedOut = false}) async {
     // TODO: Fix tags method
     // TODO: Create field in users for id for matched user
     // TODO: Don't have tags be null here too; tags.forEach((tag) async => await updateTagData(tag.name, tag.color)); -> fix later
 
     if(user != null && uid != null) {
       logger.i('Database: UpdateUserData Received user for update w/ id "' + uid + '"');
+
+      // PUT DEVICETOKEN AS ARRAY AND APPEND IF NOT ALREADY IN ARRAY
+      // CHECK IF DEVICETOKEN ALREADY IN ARRAY HERE AND ADD IT ACCORDINGLY
+      // this handles multiple devices
+
+      // DELETE DEVICETOKEN FROM DB IF USER LOGS OUT
+      // this handles user logouts
+
+      // WHEN CHECKING TOID IN JS LISTENER, WE CAN ACCESS DEVICETOKENS ARRAY
+      // WHICH MEANS WE CAN SEND TO THE APPROPRIATE LOGGED IN DEVICES W/DEVICETOKENS NOT LOGGED OUT
+      // this handles user logouts
+
+      // Handle device token filtration outside
+      if(user.deviceTokens != null &&
+          !user.deviceTokens.contains(App.currentUserDeviceToken) &&
+          !isBeingLoggedOut) { // add the device token if not present in the not-null list and not called from logout
+        user.deviceTokens.add(App.currentUserDeviceToken);
+      }
 
       logger.i('Database: UpdateUserData Updating passed user w/ ' +
           '(GPA: "' + user.GPA.toString() + '", ' +
@@ -71,7 +92,8 @@ class Database {
           'matchedUserID: "' + user.matchedUserID.toString() + '", ' +
           'skippedUserIDs: "' + user.skippedUserIDs.toString() + '",' +
           'tagIDs: "' + user.tagIDs.toString() + '",' +
-          'description: "' + user.description.toString() + '")'
+          'description: "' + user.description.toString() + '",' +
+          'deviceToken: "' + App.currentUserDeviceToken .toString() + '")' // TODO: fix maybe?
       );
 
       return await _userCollectionReference.document(uid).setData({
@@ -83,7 +105,8 @@ class Database {
         'matchedUserID': user.matchedUserID,
         'skippedUserIDs': user.skippedUserIDs ?? <String>[],
         'tagIDs': user.tagIDs ?? <String>[],
-        'description': user.description ?? ''
+        'description': user.description ?? '',
+        'deviceTokens': user.deviceTokens ?? <String>[App.currentUserDeviceToken], // if null, list w/ current token
       });
     }
 
@@ -93,8 +116,14 @@ class Database {
   }
 
   User getUserBySnapshot(DocumentSnapshot doc) {
-    if(doc.data != null) {
+    if(doc != null && doc.data != null) {
       logger.i('Database: Received document snapshot of user with information w/ uid "' + doc.documentID + '"');
+
+      List<String> deviceTokens = doc.data['deviceTokens'] == null ? List<String>.from(doc.data['deviceTokens']) // do conversion to List of Strings
+            : <String>[App.currentUserDeviceToken];
+      if(doc.data['deviceTokens'] != null && !deviceTokens.contains(App.currentUserDeviceToken)) {
+        deviceTokens.add(App.currentUserDeviceToken); // add the device token if not present in the not-null list
+      }
 
       logger.i('Database: Receiving user w/ ' +
           '(GPA: "' + doc.data['GPA'].toString() + '", ' +
@@ -103,7 +132,8 @@ class Database {
           'matchedUserID: "' + doc.data['matchedUserID'].toString() + '", ' +
           'skippedUserIDs: "' + (doc.data['skippedUserIDs'].toString() ?? <String>[].toString()) + '", ' +
           'tagIDs: "' + doc.data['tagIDs'].toString() + '").' +
-          'description: "' + doc.data['description'].toString() + '")'
+          'description: "' + doc.data['description'].toString() +
+          'deviceTokens: "' + doc.data['deviceTokens'].toString() + '")'
       );
 
       return doc.data['isTeacher'] ?
@@ -116,7 +146,8 @@ class Database {
           matchedUserID: doc.data['matchedUserID'] ?? null,
           skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : List<String>.from(doc.data['skippedUserIDs']),
           tagIDs: doc.data['tagIDs'] == null ? <String>[] : List<String>.from(doc.data['tagIDs']),
-          description: doc.data['description'] ?? ''
+          description: doc.data['description'] ?? '',
+          deviceTokens: deviceTokens ?? <String>[App.currentUserDeviceToken],
         ) : Student(
           uid: doc.documentID,
           email: doc.data['email'] ?? '',
@@ -127,7 +158,8 @@ class Database {
           matchedUserID: doc.data['matchedUserID'] ?? null,
           skippedUserIDs: doc.data['skippedUserIDs'] == null ? <String>[] : List<String>.from(doc.data['skippedUserIDs']),
           tagIDs: doc.data['tagIDs'] == null ? <String>[] : List<String>.from(doc.data['tagIDs']),
-          description: doc.data['description'] ?? ''
+          description: doc.data['description'] ?? '',
+          deviceTokens: deviceTokens ?? <String>[App.currentUserDeviceToken],
       );
     }
 
@@ -138,9 +170,28 @@ class Database {
 
   // TODO: clean code to avoid all redundant checks
   Future<User> getUserById() async {
+    // always gets called after main because AuthListener
+    App.currentUserDeviceToken = await MessagingService.getUserDeviceToken(); // TODO: Fix overhead (bool callback flag for authlistener?)
+
     if(uid != null) {
       logger.i('Database: getUserById called with passed in uid for Database');
       return getUserBySnapshot(await _userCollectionReference.document(uid).get());
+    }
+
+    logger.w('Database: getUserById called without passed in uid for Database => returning null');
+
+    return null;
+  }
+
+  Future<List<String>> getUserDeviceTokensById() async {
+    if(uid != null) {
+      logger.i('Database: getUserDeviceTokensById called with passed in uid for Database');
+      return await _userCollectionReference.document(uid).get().then((doc) {
+        if(doc != null && doc.data != null) {
+          return doc.data['deviceTokens'];
+        }
+        return null;
+      });
     }
 
     logger.w('Database: getUserById called without passed in uid for Database => returning null');

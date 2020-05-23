@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/screens/main/settings.dart';
 import 'package:tues_pairs/screens/main/chat.dart';
 import 'package:tues_pairs/screens/main/match.dart';
+import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/shared/keys.dart';
+import 'package:tues_pairs/widgets/notifications/notification_list.dart';
+
+import '../../main.dart';
 
 class Home extends StatefulWidget {
   static int selectedIndex = 1; 
@@ -50,6 +56,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = Provider.of<User>(context);
+
     return Scaffold(
       key: Key(Keys.homeScaffold),
       appBar: buildAppBar(
@@ -57,9 +65,13 @@ class _HomeState extends State<Home> {
         actions: <Widget>[
           FlatButton.icon(
             key: Key(Keys.logOutButton),
-            onPressed: () {
+            onPressed: () async {
               Home.selectedIndex = 1; // restores back to match page on logout
-              _auth.logout();
+
+              currentUser.deviceTokens.remove(App.currentUserDeviceToken); // TODO: Check/optimize
+              await Database(uid: currentUser.uid).updateUserData(currentUser, isBeingLoggedOut: true); // set the flag to true in order to not re-add the token
+
+              await _auth.logout();
             },
             icon: Icon(
               Icons.exit_to_app,
@@ -77,6 +89,10 @@ class _HomeState extends State<Home> {
             ),
           ),
         ],
+      ),
+      
+      drawer: Drawer(
+        child: NotificationList(), // ListView to display all notifications
       ),
 
       body: PageView(
