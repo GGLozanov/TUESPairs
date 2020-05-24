@@ -42,12 +42,12 @@ class _NotificationListState extends State<NotificationList> {
                 color: darkGreyColor,
               ),
               onDismissed: (direction) async {
-                String nid = notifications[idx].nid;
-                setState(() =>
-                    notifications.removeAt(idx) // remove dismissed notification from list
-                ); // needs to be called first or throws exception; needles overhead :(
-                await Database(uid: currentUser.uid)
-                    .deleteNotification(nid); // delete notification from DB
+                setState(() {
+                  String nid = notifications[idx].nid;
+                  notifications.removeAt(idx); // remove dismissed notification from list
+                  Database(uid: currentUser.uid)
+                      .deleteNotification(nid); // delete notification from DB
+                }); // needs to be called first or throws exception; needles overhead :(
               },
               child: Card(
                 color: notifications[idx].color,
