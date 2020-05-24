@@ -93,7 +93,7 @@ class _TagCardState extends State<TagCard> {
       widget.tag.name,
       style: TextStyle(
         color: Colors.white,
-        fontSize: 16,
+        fontSize: widget.tagFontSize,
         fontFamily: 'BebasNeue',
       ),
     );

@@ -120,7 +120,7 @@ class _HomeState extends State<Home> {
               'Logout',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 35.0,
+                fontSize: 22.0,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.5,
               ),
