@@ -5,6 +5,8 @@ import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_card.dart';
 
+// TODO: Clean up code here and encapsulate in classes
+
 const textInputDecoration = InputDecoration(
   hintStyle: TextStyle(
     color: Colors.white24
@@ -58,13 +60,6 @@ enum ExternalSignInType {
 enum RegisterPageType {
   REGISTER,
   TAG_SELECTION
-}
-
-class StackPageHandler {
-  static int topPageIndex = 1; // TODO: Change if add more pages (keep track of pages)
-  static int currentPage = topPageIndex;
-  static AnimationController registerController;
-  static AnimationController settingsController;
 }
 
 const int EXIT_CODE_SUCCESS = 1;
@@ -130,7 +125,8 @@ List<TagCard> mapTagsToTagCards(
 
 Widget buildAppBar({
   @required pageTitle,
-  List<Widget> actions = const []
+  List<Widget> actions = const [],
+  Widget leading
 }) {
   assert(pageTitle != null);
   return AppBar(
@@ -144,6 +140,7 @@ Widget buildAppBar({
         letterSpacing: 1.5,
       ),
     ),
+    leading: leading,
     actions: actions
   );
 }
@@ -168,4 +165,8 @@ void scrollAnimation(ScrollController scrollController) {
     duration: Duration(milliseconds: 300),
     curve: Curves.easeOut
   );
+}
+
+int diffInDays(DateTime date1, DateTime date2) {
+  return ((date1.difference(date2) - Duration(hours: date1.hour) + Duration(hours: date2.hour)).inHours / 24).round();
 }

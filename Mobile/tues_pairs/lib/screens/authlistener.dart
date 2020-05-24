@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/modules/notification.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/screens/register/extern_register.dart';
 import 'package:tues_pairs/screens/register/register.dart';
@@ -83,17 +84,28 @@ class _AuthListenerState extends State<AuthListener> {
                 }
               }
 
+              final userDatabase = Database(uid: authUser.uid);
+              final userNotifications = userDatabase.userNotifications;
+
               // give authUser info to user here
               user.isExternalUser = authUser.isExternalUser;  // used in settings
               // may need to pass more info later
 
               // update again to reinitialize device key
-              Database(uid: authUser.uid).updateUserData(user); // this is doen to keep track of the device key; can't afford to await
+              userDatabase.updateUserData(user); // this is done to keep track of the device key; can't afford to await
               // TODO: Optimize; way too many DB queries
 
               logger.i('AuthListener: Current user w/ username "' + user.username + '" received and authenticated');
-              return Provider<User>.value(
-                value: user,
+
+              return MultiProvider(
+                providers: [
+                  StreamProvider<List<MessageNotification>>.value(
+                    value: userNotifications, // pass down the user's notifications
+                  ),
+                  Provider<User>.value(
+                    value: user,
+                  )
+                ],
                 child: Home(),
               );
             } else return Loading();

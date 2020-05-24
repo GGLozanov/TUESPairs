@@ -60,6 +60,7 @@ class Keys {
   // home keys
   static const String homeScaffold = 'homeScaffold';
   static const String bottomNavigationBar = 'bottomNavigationBar';
+  static const String dismissibleNotification = 'dismissibleNotification';
   // -------------------------
 
   // -------------------------

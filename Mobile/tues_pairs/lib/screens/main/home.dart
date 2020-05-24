@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/modules/notification.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/screens/main/settings.dart';
@@ -58,12 +59,47 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final notifications = Provider.of<List<MessageNotification>>(context);
     final currentUser = Provider.of<User>(context);
 
     return Scaffold(
       key: Key(Keys.homeScaffold),
       appBar: buildAppBar(
         pageTitle: _widgets[Home.selectedIndex].toString(),
+        leading: Builder( // need to get new context because it uses the current scaffold state context (either this or a key)
+          builder: (context) => Stack(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.menu, size: 35.0),
+                alignment: Alignment.centerRight,
+                onPressed: () => Scaffold.of(context).openDrawer(),
+              ),
+              notifications == null || notifications.length == 0 ? SizedBox() : Positioned(
+                right: 0,
+                child: Container(
+                  padding: EdgeInsets.all(2.0),
+                  margin: EdgeInsets.symmetric(horizontal: 7.0, vertical: 7.0),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(7.0),
+                  ),
+                  constraints: BoxConstraints(
+                    minWidth: 17,
+                    minHeight: 17,
+                  ),
+                  child: Text(
+                    '${notifications.length}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ]
+          ),
+        ), // ListView to display all notifications
         actions: <Widget>[
           FlatButton.icon(
             key: Key(Keys.logOutButton),
@@ -92,9 +128,9 @@ class _HomeState extends State<Home> {
           ),
         ]
       ),
-
+      
       drawer: Drawer(
-        child: NotificationList(), // ListView to display all notifications
+        child: NotificationList(),
       ),
 
       body: PageView(

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore_mocks/cloud_firestore_mocks.dart';
 import 'package:tues_pairs/modules/message.dart';
+import 'package:tues_pairs/modules/notification.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/teacher.dart';
@@ -26,6 +27,7 @@ class Database {
   CollectionReference _userCollectionReference;
   CollectionReference _tagsCollectionReference;
   CollectionReference _messagesCollectionReference;
+  CollectionReference _notificationCollectionReference;
   // every time the user registers, we will take the unique ID and create a new document (record/row) for the user in the Cloud Firestore DB
 
   final String uid; // user id property
@@ -35,6 +37,7 @@ class Database {
     _userCollectionReference = Firestore.instance.collection('users');
     _tagsCollectionReference = Firestore.instance.collection('tags');
     _messagesCollectionReference = Firestore.instance.collection('messages');
+    _notificationCollectionReference = Firestore.instance.collection('notifications');
   }
 
   Database.mock({this.uid}) { // named constructor for initializing a mock database
@@ -44,6 +47,7 @@ class Database {
     _userCollectionReference = mockInstance.collection('users');
     _tagsCollectionReference = mockInstance.collection('tags');
     _messagesCollectionReference = mockInstance.collection('messages');
+    _notificationCollectionReference = mockInstance.collection('notifications');
   }
 
   // ------------------------------------------
@@ -240,7 +244,7 @@ class Database {
   }
 
   Tag getTagBySnapshot(DocumentSnapshot doc) {
-    if(doc.data != null) {
+    if(doc != null && doc.data != null) {
       logger.i('Database: getTagBySnapshot Received document snapshot of tag with information w/ tid "' + doc.documentID + '"');
 
       logger.i('Database: Receiving tag w/ ' +
@@ -290,7 +294,7 @@ class Database {
   }
 
   Message getMessageBySnapshot(DocumentSnapshot doc){
-    if(doc.data != null) {
+    if(doc != null && doc.data != null) {
       logger.i('Database: getMessageBySnapshot Received document snapshot of message with information w/ mid "' + doc.documentID + '"');
 
       logger.i('Database: Receiving message w/ '
@@ -301,15 +305,13 @@ class Database {
           'sentTime: "' + doc.data['sentTime'].toString() + '").'
       );
 
-      Message message = Message(
+      return Message(
         mid: doc.documentID,
-        content: doc.data['content'] ?? null,
-        fromId: doc.data['fromId'] ?? null,
-        toId: doc.data['toId'] ?? null,
-        sentTime: doc.data['sentTime'] ?? null,
+        content: doc.data['content'] ?? '',
+        fromId: doc.data['fromId'] ?? '',
+        toId: doc.data['toId'] ?? '',
+        sentTime: doc.data['sentTime'] ?? '',
       );
-
-      return message;
     }
 
     logger.w('Database: getMessageBySnapshot passed documentSnapshot data is null => returning null');
@@ -330,7 +332,6 @@ class Database {
 
   Future addMessage(Message message) async {
     if(message != null) {
-
       logger.i('Database: addMessage Received message for addition w/ fromId "' +
           message.fromId.toString() +
           '" and toId "' +
@@ -365,6 +366,104 @@ class Database {
     }
 
     logger.w('Database: deleteMessage called without passed in mid for deleteMessage => returning null');
+
+    return null;
+  }
+
+  // ----------------------------------
+  // Notification database implementation
+  // ----------------------------------
+
+  // notifications are stored in DB as 'notifications' but used as 'MessageNotification' instances here
+  // because of a naming conflict with Flutter's internal modules
+
+  // two separate method paradigms:
+  //     - getters for all notifications (may be used sometime)
+  //     - getters for notifications of a single user w/ passed in uid
+  // only the latter is used now but the rest are kept if to be used later
+
+  List<MessageNotification> _listNotificationFromQuerySnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map(
+            (doc) => getNotificationBySnapshot(doc)
+    ).toList();
+  }
+
+  List<MessageNotification> _listUserNotificationFromQuerySnapshot(QuerySnapshot snapshot) { // lists only notifications for user with passed in id
+    List<MessageNotification> notifications = snapshot.documents.map(
+            (doc) => getNotificationBySnapshot(doc, shouldUserFilter: true)
+    ).toList();
+
+    final currentTime = DateTime.now();
+
+    notifications.removeWhere((notification) {
+      if(notification == null) return true;
+
+      if(notification.isNotificationTooOld(currentTime)) {
+        deleteNotification(notification.nid); // cannot await; hope it doesn't cause a problem
+        return true;
+      }
+
+      return false;
+    });
+
+    return notifications;
+  }
+
+  Stream<List<MessageNotification>> get notifications {
+    return _notificationCollectionReference.orderBy('sentTime', descending: true).snapshots().map(
+        _listNotificationFromQuerySnapshot // map each snapshot to a list of notifications
+    );
+  }
+
+  Stream<List<MessageNotification>> get userNotifications {
+    if(uid != null) {
+      return _notificationCollectionReference.orderBy('sentTime', descending: true).snapshots().map(
+          _listUserNotificationFromQuerySnapshot // map each snapshot to a list of notifications
+      );
+    }
+
+    logger.w('Database: userNotifications getter called without passed in uid => returning null.');
+
+    return null;
+  }
+
+  MessageNotification getNotificationBySnapshot(DocumentSnapshot doc, {bool shouldUserFilter = false}) {
+    if(doc != null && doc.data != null) {
+      logger.i('Database: getNotificationBySnapshot Received document snapshot of notification with information w/ id "' + doc.documentID + '"');
+
+      logger.i('Database: Receiving notification w/ '
+          '(nid: "' + doc.documentID + '", ' +
+          'userID: "' + doc.data['userID'].toString() + '", ' +
+          'message: "' + doc.data['message'].toString() + '", ' +
+          'sentTime: "' + doc.data['sentTime'].toString() + '").'
+      );
+
+      // check whether filter is needed and what to return in that case
+      // entire MessageNotification result should be null if uid is null
+      if(shouldUserFilter && (uid != doc.data['userID'] || uid == null)) {
+        return null;
+      }
+
+      return MessageNotification(
+        nid: doc.documentID,
+        userID: doc.data['userID'],
+        message: doc.data['message'],
+        sentTime: doc.data['sentTime'],
+      );
+    }
+
+    logger.w('Database: getNotificationBySnapshot doc snapshot is null => returning null');
+
+    return null;
+  }
+
+  Future deleteNotification(String nid) async {
+    if(nid != null) {
+      logger.i('Database: deleteNotification called with passed in nid for deleteNotification');
+      return await _notificationCollectionReference.document(nid).delete();
+    }
+
+    logger.w('Database: deleteNotification called without nid for deleteNotification => returning null');
 
     return null;
   }
