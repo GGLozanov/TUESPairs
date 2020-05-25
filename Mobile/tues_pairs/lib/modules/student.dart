@@ -11,7 +11,8 @@ class Student extends User {
     String description,
     String matchedUserID,
     List<String> skippedUserIDs,
-    List<String> tagIDs
+    List<String> tagIDs,
+    List<String> deviceTokens
   }) :
     assert(isTeacher == false || isTeacher == null),
     super(
@@ -24,6 +25,7 @@ class Student extends User {
         description: description,
         matchedUserID: matchedUserID,
         skippedUserIDs: skippedUserIDs,
-        tagIDs: tagIDs
+        tagIDs: tagIDs,
+        deviceTokens: deviceTokens
     );
 }

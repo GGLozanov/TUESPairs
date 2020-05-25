@@ -41,6 +41,7 @@ class AlreadyMatched extends StatelessWidget {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
+                    SizedBox(height: 10.0),
                     CenteredText(
                       text: alreadyMatchedText['title']
                     ),

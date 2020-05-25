@@ -22,6 +22,7 @@ import 'package:tues_pairs/widgets/login/forgot_password_form.dart';
 import 'package:tues_pairs/widgets/register/register_form.dart';
 import 'package:tues_pairs/widgets/register/register_wrapper.dart';
 
+import '../../main.dart';
 import '../../templates/baseauth.dart';
 import '../authlistener.dart';
 
@@ -156,7 +157,10 @@ class _LoginState extends State<Login> {
                           setState(() {
                             baseAuth.clearAndAddError('Invalid login credentials or too many attempts.');
                           });
-                        } else logger.i('Login: User w/ id "' + user.uid + '" has successfully logged in');
+                        } else {
+                          // Add the device token if not present in DB user
+                          logger.i('Login: User w/ id "' + user.uid + '" has successfully logged in');
+                        }
                       }
                     },
                   ),

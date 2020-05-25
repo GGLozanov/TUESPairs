@@ -78,7 +78,7 @@ class _UserListState extends State<UserList> {
   int getListIndex(User user, {User currentUser}) {
     // TODO: Optimise this retarded ass fix
     logger.w('UserCard: onSkip user w/ id "' + currentUser.uid +
-        '" has skipped incorrect users and has triggered skip exception handler.'); // user removes bad
+        '" has skipped incorrect users and has tt\t\t[[triggered skip exception handler.'); // user removes bad
 
     for (int idx = 0; idx < userCards.length; idx++) {
       if (userCards[idx].user == user) {

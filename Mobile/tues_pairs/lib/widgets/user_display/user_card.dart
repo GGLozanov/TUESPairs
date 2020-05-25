@@ -128,14 +128,29 @@ class _UserCardState extends State<UserCard> {
                   ),
                 ) : SizedBox(),
                 SizedBox(height: widget.user.description != '' ? 5.0 : 0.0),
-                Text(
-                  widget.user.description,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold
+                widget.user.description != '' ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Text(
+                    widget.user.isTeacher ? 'Qualified in' : 'Interested in',
+                    style: TextStyle(
+                        color: Colors.orange,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold
+                    ),
+                    textAlign: TextAlign.center
                   ),
-                  textAlign: TextAlign.center
+                ) : SizedBox(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    widget.user.description,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold
+                    ),
+                    textAlign: TextAlign.center
+                  ),
                 ),
                 SizedBox(height: widget.user.description != '' ? 7.5 : 0.0),
               ]
@@ -156,7 +171,7 @@ class _UserCardState extends State<UserCard> {
                       child: Text(
                         'Match',
                       ),
-                      backgroundColor: Colors.deepOrangeAccent
+                      backgroundColor: Colors.deepOrange
                     ),
                   ),
                 ),
@@ -173,7 +188,7 @@ class _UserCardState extends State<UserCard> {
                       child: Text(
                         'Skip',
                       ),
-                      backgroundColor: Colors.deepOrangeAccent
+                      backgroundColor: Colors.deepOrange
                     ),
                   ),
                 ),
@@ -181,9 +196,12 @@ class _UserCardState extends State<UserCard> {
             ) : SizedBox(),
             SizedBox(height: 10.0),
             IgnorePointer(
-              child: Wrap(
-                alignment: WrapAlignment.spaceEvenly,
-                children: widget.tagCards,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Wrap(
+                  alignment: WrapAlignment.spaceEvenly,
+                  children: widget.tagCards,
+                ),
               )
             ),
             SizedBox(height: 10.0),

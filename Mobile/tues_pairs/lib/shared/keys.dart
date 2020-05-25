@@ -16,6 +16,7 @@ class Keys {
   static const String toggleToRegisterButton = 'toggleToRegisterButton';
   static const String toggleToLoginButton = 'toggleToLoginButton';
   static const String logOutButton = 'logOutButton';
+  static const String exitAppButton = 'exitAppButton';
   // -------------------------
 
   // -------------------------
@@ -59,6 +60,7 @@ class Keys {
   // home keys
   static const String homeScaffold = 'homeScaffold';
   static const String bottomNavigationBar = 'bottomNavigationBar';
+  static const String dismissibleNotification = 'dismissibleNotification';
   // -------------------------
 
   // -------------------------

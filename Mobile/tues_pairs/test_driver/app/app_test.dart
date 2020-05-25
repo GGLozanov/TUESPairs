@@ -5,9 +5,6 @@ import 'package:tues_pairs/modules/user.dart';
 
 void main() {
 
-
-  // TODO: FIX FROM AFTER REGISTRATION PAGE OVERHAUL
-
   final String userCardIndex = '0';
 
   const int waitDuration = 2000; // milliseconds

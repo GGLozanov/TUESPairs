@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/modules/notification.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/screens/register/extern_register.dart';
 import 'package:tues_pairs/screens/register/register.dart';
@@ -14,6 +15,8 @@ import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
+
+import '../main.dart';
 
 class AuthListener extends StatefulWidget {
 
@@ -38,7 +41,7 @@ class _AuthListenerState extends State<AuthListener> {
 
     // this widget is instantiated in main.dart
     // and since we're using StreamProvider and its instantiation is derived inside of the StreamProvider.value() widget
-    // that means we can use the value set in the StreamProvider widget here as well!
+    // that means we can use the value set in the StreamProvider widget here as well
 
     // using the Provider.of() generic method
     // return either register or login widget if User is auth'ed
@@ -81,13 +84,28 @@ class _AuthListenerState extends State<AuthListener> {
                 }
               }
 
+              final userDatabase = Database(uid: authUser.uid);
+              final userNotifications = userDatabase.userNotifications;
+
               // give authUser info to user here
               user.isExternalUser = authUser.isExternalUser;  // used in settings
               // may need to pass more info later
 
+              // update again to reinitialize device key
+              userDatabase.updateUserData(user); // this is done to keep track of the device key; can't afford to await
+              // TODO: Optimize; way too many DB queries
+
               logger.i('AuthListener: Current user w/ username "' + user.username + '" received and authenticated');
-              return Provider<User>.value(
-                value: user,
+
+              return MultiProvider(
+                providers: [
+                  StreamProvider<List<MessageNotification>>.value(
+                    value: userNotifications, // pass down the user's notifications
+                  ),
+                  Provider<User>.value(
+                    value: user,
+                  )
+                ],
                 child: Home(),
               );
             } else return Loading();

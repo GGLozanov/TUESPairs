@@ -4,7 +4,6 @@ import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/modules/tag.dart';
 
 class Teacher extends User {
-
   Teacher({
     String uid,
     String email,
@@ -14,7 +13,8 @@ class Teacher extends User {
     String description,
     String matchedUserID,
     List<String> skippedUserIDs,
-    List<String> tagIDs
+    List<String> tagIDs,
+    List<String> deviceTokens
   }) :
       assert(isTeacher == true || isTeacher == null),
       super(
@@ -26,7 +26,8 @@ class Teacher extends User {
         description: description,
         matchedUserID: matchedUserID,
         skippedUserIDs: skippedUserIDs,
-        tagIDs: tagIDs
+        tagIDs: tagIDs,
+        deviceTokens: deviceTokens
     );
 
 }
