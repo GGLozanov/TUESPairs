@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/services/image.dart';
@@ -118,10 +119,10 @@ class _LoginState extends State<Login> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                     child: Text(
-                      'Welcome to TUESPairs',
+                      AppLocalizations.of(context).translate('loginScreenHeader'),
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.orange,
-                        fontFamily: 'BebasNeue',
                         letterSpacing: 1.0,
                         fontSize: 40.0,
                         fontWeight: FontWeight.bold,

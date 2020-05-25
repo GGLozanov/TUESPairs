@@ -1,5 +1,6 @@
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
 import 'package:tues_pairs/screens/register/extern_register.dart';
@@ -13,6 +14,7 @@ import 'package:tues_pairs/screens/authlistener.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/shared/constants.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +41,24 @@ class App extends StatelessWidget {
       child: MaterialApp( // Now MaterialApp, AuthListener, and all future widgets will have access to the value in the StreamProvider (cross-widget communication!)
         key: Key(Keys.app),
         title: 'TUESPairs',
+        supportedLocales: [
+          Locale('en', 'US'),
+          Locale('bg', 'BG'),
+        ],
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        localeListResolutionCallback: (locale, supportedLocales) {
+          for (var supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale.first.languageCode &&
+                supportedLocale.countryCode == locale.first.countryCode) {
+              return supportedLocale;
+            }
+          }
+          return supportedLocales.first;
+        },
         home: FutureBuilder<String>(
           future: MessagingService.getUserDeviceToken(), // get the user's device token once and set it
           builder: (context, snapshot) {

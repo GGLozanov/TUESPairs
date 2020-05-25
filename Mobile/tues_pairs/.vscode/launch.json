@@ -5,23 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Dart",
-            "program": "tues_pairs/lib/main.dart",
+            "name": "Flutter",
             "request": "launch",
             "type": "dart",
             "args": [
                 "--flavor",
-                "dev_flavor"
-            ]
-        },
-        {
-            "name": "Dart Dev",
-            "program": "tues_pairs/lib/main.dart",
-            "request": "launch",
-            "type": "dart",
-            "args": [
-                "--flavor",
-                "dev_flavor"
+                "dev"
             ]
         }
     ]
