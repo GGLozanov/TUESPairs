@@ -61,6 +61,13 @@
         }
     }
 
+    .notifications-button {
+        transition: 0.2s;
+        &:hover {
+            color: gray;
+        }
+    }
+
     button {
         align-self: center;
         margin: 10px;
@@ -80,6 +87,16 @@
         &:focus {
           outline: none;
         }
+    }
+}
+
+.ui.labeled.icon.menu .item {
+    border-radius: 25px;
+    margin: 10px;
+    background-color: rgb(252, 152, 0);
+
+    &:hover {
+        background-color: rgb(255, 195, 106);
     }
 }
 

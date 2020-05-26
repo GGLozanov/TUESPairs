@@ -59,6 +59,8 @@ const config = {
 
     tag = tid => this.db.doc(`tags/${tid}`);
 
+    notifications = () => this.db.collection(`notifications`);
+
     getUserFromSnapshot = snapshot => {
         const firebaseUser = snapshot.data();
         let tags = [];
@@ -90,6 +92,20 @@ const config = {
         });
 
         return tags;
+    }
+
+    getUserNotifications = async (uid) => {
+        let notifications = [];
+
+        this.notifications().onSnapshot(snapshot => {
+            snapshot.forEach(doc => {
+                if(doc.data().userID === uid) {
+                    notifications.push({ ...doc.data(), nid: doc.id });
+                }
+            })
+        });
+
+        return notifications;
     }
 
   }
