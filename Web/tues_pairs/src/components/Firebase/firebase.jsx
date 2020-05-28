@@ -21,6 +21,7 @@ const config = {
         this.auth = app.auth();
         this.db = app.firestore();
         this.storage = app.storage();
+        this.messaging = app.messaging();
     }
 
     doCreateUserWithEmailAndPassword = (email, password) =>

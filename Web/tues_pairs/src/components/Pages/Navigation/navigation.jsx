@@ -8,8 +8,8 @@ import ChatIcon from '@material-ui/icons/Chat';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.scss';
-import { Header, Icon, Image, Menu, Segment, Sidebar } from 'semantic-ui-react'
-import { Navbar, Nav, Button } from 'react-bootstrap';
+import { Menu, Sidebar } from 'semantic-ui-react'
+import { Navbar, Nav } from 'react-bootstrap';
 import DehazeIcon from '@material-ui/icons/Dehaze';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context.jsx';
@@ -42,11 +42,12 @@ class NavigationLoggedBase extends Component {
   }
 
   deleteNotifictaion = nid => {
-    this.props.firebase.db.collection("notifications").doc(nid).delete();
+    //this.props.firebase.db.collection("notifications").doc(nid).delete();
   }
 
   render() {
-    const {show, notifications} = this.state;
+    const { show, notifications } = this.state;
+    
 
     return (
       <>
