@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/modules/notification.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
@@ -20,6 +21,7 @@ class _NotificationListState extends State<NotificationList> {
   Widget build(BuildContext context) {
     final notifications = Provider.of<List<MessageNotification>>(context);
     final currentUser = Provider.of<User>(context);
+    final AppLocalizations localizator = AppLocalizations.of(context);
 
     return Container(
       color: greyColor,
@@ -27,7 +29,7 @@ class _NotificationListState extends State<NotificationList> {
         itemCount: notifications == null ? 0 : notifications.length,
         itemBuilder: (context, idx) {
           return Tooltip(
-            message: 'Swipe to dismiss!',
+            message: localizator.translate('swipe'),
             height: 25.0,
             verticalOffset: 50.0,
             textStyle: TextStyle(
@@ -69,7 +71,7 @@ class _NotificationListState extends State<NotificationList> {
                       ),
                       SizedBox(height: 10.0),
                       Text(
-                        'At: ' + notifications[idx].sentTime,
+                        localizator.translate('at') + ': ' + notifications[idx].sentTime,
                         style: TextStyle(
                           fontSize: 14.0,
                           fontFamily: 'Nilam',

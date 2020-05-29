@@ -78,10 +78,12 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizator = AppLocalizations.of(context);
+
     return baseAuth.isLoading ? Loading() : Scaffold(
       key: _scaffold,
       appBar: buildAppBar(
-        pageTitle: 'Login',
+        pageTitle: localizator.translate('login'),
         actions: <Widget>[
           FlatButton.icon(
             key: Key(Keys.toggleToRegisterButton),
@@ -92,7 +94,7 @@ class _LoginState extends State<Login> {
               size: 30.0,
             ),
             label: Text(
-              'Register',
+              localizator.translate('register'),
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -119,7 +121,7 @@ class _LoginState extends State<Login> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                     child: Text(
-                      AppLocalizations.of(context).translate('loginScreenHeader'),
+                      localizator.translate('welcome'),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.orange,
@@ -139,14 +141,14 @@ class _LoginState extends State<Login> {
                   PasswordInputField(
                     key: Key(Keys.loginPasswordInputField),
                     onChanged: (value) => setState(() => baseAuth.password = value),
-                    hintText: 'Enter a password',
+                    hintText: 'enterPassword',
                   ),
                   SizedBox(height: 25.0),
                   InputButton(
                     key: Key(Keys.logInButton),
                     minWidth: 250.0,
                     height: 60.0,
-                    text: 'Log in',
+                    text: 'login',
                     onPressed: () async {
                       if(baseAuth.key.currentState.validate()) {
                         setState(() => baseAuth.toggleLoading());
@@ -156,7 +158,7 @@ class _LoginState extends State<Login> {
                         if(user == null) {
                           logger.w('Login: Failed user login (invalid credentials)');
                           setState(() {
-                            baseAuth.clearAndAddError('Invalid login credentials or too many attempts.');
+                            baseAuth.clearAndAddError('invalidLoginCredentials');
                           });
                         } else {
                           // Add the device token if not present in DB user
@@ -175,7 +177,7 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     child: Text(
-                      'Reset password?',
+                      localizator.translate('resetPassword'),
                       key: Key(Keys.passwordForgotText),
                       style: TextStyle(
                         fontSize: 24.0,
@@ -215,7 +217,7 @@ class _LoginState extends State<Login> {
                       ),
                       SizedBox(height: 20.0),
                       Text(
-                        'Coming Soon',
+                        localizator.translate('comingSoon'),
                         style: TextStyle(
                           fontFamily: 'BebasNeue',
                           fontSize: 32.0,

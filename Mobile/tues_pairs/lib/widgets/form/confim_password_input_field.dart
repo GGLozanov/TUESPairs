@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/form/input_field.dart';
 
+import '../../locale/app_localization.dart';
+
 class ConfirmPasswordInputField extends InputField {
 
   final String sourcePassword;
@@ -10,7 +12,7 @@ class ConfirmPasswordInputField extends InputField {
     Key key,
     @required Function onChanged,
     @required this.sourcePassword,
-    String hintText = 'Confirm password',
+    String hintText = 'confirmPassword',
     int maxLines
   }) :
     assert(onChanged != null),
@@ -24,17 +26,19 @@ class ConfirmPasswordInputField extends InputField {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizator = AppLocalizations.of(context);
+
     return TextFormField(
       obscureText: true, // obscures text (like for a password)
       onChanged: onChanged,
       style: textInputColor,
       validator: (value) {
         if(value.isEmpty) {
-          return 'Enter confirm password';
+          return localizator.translate('enterConfirmPassword');
         }
 
         if(value != sourcePassword) {
-          return 'Passwords do not match!';
+          return localizator.translate('passwordsDoNotMatch');
         }
 
         return null;
@@ -45,7 +49,7 @@ class ConfirmPasswordInputField extends InputField {
           Icons.repeat,
           color: Colors.orange,
         ),
-        hintText: hintText,
+        hintText: localizator.translate(hintText),
       ),
     );
   }

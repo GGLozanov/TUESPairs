@@ -30,9 +30,9 @@ class AlreadyMatched extends StatelessWidget {
 
             final alreadyMatchedText = {
               'title' : !isCurrentUserMatched ?
-                  'You have sent a match request to ' : 'You are matched with ',
+                  'sentRequestTo' : 'matchedWith',
               'description' : !isCurrentUserMatched ?
-                  'Why not go ahead and chat with them when they accept it?' : 'Go ahead and chat!'
+                  'goAheadAndChatWhenAccepted' : 'goAheadAndChat'
             };
 
             return ListView(

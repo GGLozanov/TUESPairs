@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/shared/constants.dart';
 
+import '../../locale/app_localization.dart';
+
 class InputButton extends StatelessWidget {
 
   final double minWidth;
@@ -24,12 +26,14 @@ class InputButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizator = AppLocalizations.of(context);
+
     return ButtonTheme(
       minWidth: minWidth,
       height: height,
       child: RaisedButton(
         child: Text(
-          text,
+          localizator.translate(text),
           style: TextStyle(
             fontSize: 20.0,
           ),

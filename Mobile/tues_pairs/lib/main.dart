@@ -29,11 +29,11 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]); // limit the orientation to portrait up and portrait down
-
     logger.i('App: App started.');
 
     return StreamProvider<User>.value( // StreamProvider package allows us to send data through a stream to see whether the auth state has changed here. This data can travel through the widget tree.
@@ -73,7 +73,7 @@ class App extends StatelessWidget {
                     ),
                     backgroundColor: Colors.orange,
                     content: Text(
-                      'Tap again to leave',
+                      AppLocalizations.of(context).translate('tapAgainToLeave'),
                       style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Nilam',

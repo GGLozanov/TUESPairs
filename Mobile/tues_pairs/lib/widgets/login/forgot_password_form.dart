@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/services/auth.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/shared/keys.dart';
@@ -20,6 +21,8 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizator = AppLocalizations.of(context);
+
     final screenSize = MediaQuery.of(context).size;
     final btnHeight = screenSize.height / (widgetReasonableHeightMargin - 1);
     final btnWidth = screenSize.width / (widgetReasonableWidthMargin - 1);
@@ -27,7 +30,7 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
     return Scaffold(
       backgroundColor: greyColor,
       appBar: buildAppBar(
-        pageTitle: 'Redo Password'
+        pageTitle: localizator.translate('redoPassword')
       ),
       body: Container(
         child: Form(
@@ -43,7 +46,7 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
                 ),
                 SizedBox(height: 10.0),
                 Text( // Wrap in align?
-                  'You can recover your password here. Please enter your E-mail to do so.',
+                  localizator.translate('recoverPasswordHere'),
                   style: TextStyle(
                     fontFamily: 'BebasNeue',
                     fontSize: 30.0,
@@ -78,14 +81,14 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
                       } catch(e) {
                         logger.e('ForgotPassword: ' + e.toString());
                         setState(() =>
-                            baseAuth.clearAndAddError('Invalid E-mail address! Make sure you\'ve registered with the correct E-mail!')
+                            baseAuth.clearAndAddError('invalidEmailOnPasswordRecovery')
                         );
                         return;
                       }
                       Navigator.pop(context);
                     } else {
                       setState(() =>
-                        baseAuth.clearAndAddError('Invalid info in forms! Please try again with valid information!')
+                        baseAuth.clearAndAddError('invalidFormInfoOnPasswordRecovery')
                       );
                     }
                   },

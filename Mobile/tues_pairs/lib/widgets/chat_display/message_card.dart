@@ -41,7 +41,7 @@ class _MessageCardState extends State<MessageCard> {
     );
   }
   String getMessageInfo() {
-    return widget.isMe ? widget.sentTime + " - " + currentUser.username : widget.matchedUser.username + ' - ' + widget.sentTime;
+    return widget.isMe ? widget.sentTime + ' - ' + currentUser.username : widget.matchedUser.username + ' - ' + widget.sentTime;
   }
   Widget displayImage(User user){
     if(user.photoURL != null) {

@@ -3,6 +3,8 @@ import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/form/input_field.dart';
 
+import '../../locale/app_localization.dart';
+
 class PasswordInputField extends InputField {
 
   PasswordInputField({
@@ -21,16 +23,19 @@ class PasswordInputField extends InputField {
 
   @override
   Widget build(BuildContext context) {
+
+    final AppLocalizations localizator = AppLocalizations.of(context);
+
     return TextFormField(
       obscureText: true, // obscures text (like for a password)
       onChanged: onChanged,
       style: textInputColor,
       validator: (value) {
         if(value.isEmpty) {
-          return 'Enter a password';
+          return localizator.translate('enterPassword');
         }
         if(value.length < 6) {
-          return 'Enter a longer password';
+          return localizator.translate('longerPassword');
         }
         return null;
       },
@@ -40,7 +45,7 @@ class PasswordInputField extends InputField {
           Icons.lock,
           color: Colors.orange,
         ),
-        hintText: hintText,
+        hintText: localizator.translate(hintText),
       ),
     );
   }

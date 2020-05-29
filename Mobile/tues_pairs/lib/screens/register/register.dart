@@ -10,6 +10,8 @@ import 'package:tues_pairs/widgets/register/register_form.dart';
 import 'package:tues_pairs/widgets/register/register_wrapper.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_selection.dart';
 
+import '../../locale/app_localization.dart';
+
 class Register extends StatefulWidget {
   final Function toggleView;
 
@@ -26,12 +28,13 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizator = AppLocalizations.of(context);
 
     return baseAuth.isLoading ? Loading() : Scaffold( // Scaffold grants the material design palette and general layout of the app (properties like appBar)
       key: Key(Keys.registerScaffold),
       backgroundColor: greyColor,
       appBar: buildAppBar(
-        pageTitle: 'Register',
+        pageTitle: localizator.translate('register'),
         actions: <Widget>[
           FlatButton.icon(
             key: Key(Keys.toggleToLoginButton),
@@ -42,7 +45,7 @@ class _RegisterState extends State<Register> {
               size: 30.0,
             ),
             label: Text(
-              'Log in',
+              localizator.translate('login'),
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,

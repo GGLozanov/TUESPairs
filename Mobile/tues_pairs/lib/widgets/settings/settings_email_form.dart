@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/screens/main/home.dart';
 import 'package:tues_pairs/services/auth.dart';
@@ -43,9 +44,13 @@ class _SettingsEmailFormState extends State<SettingsEmailForm> {
     final btnHeight = screenSize.height / (widgetReasonableHeightMargin - 1.25);
     final btnWidth = screenSize.width / (widgetReasonableWidthMargin - 1.25);
 
+    final AppLocalizations localizator = AppLocalizations.of(context);
+
     return Scaffold( // Scaffold grants the material design palette and general layout of the app (properties like appBar)
       backgroundColor: greyColor,
-      appBar: buildAppBar(pageTitle: 'Edit E-mail'),
+      appBar: buildAppBar(
+        pageTitle: localizator.translate('editEmail')
+      ),
       body: Container(
         child: ListView(
           children: <Widget>[
@@ -62,7 +67,7 @@ class _SettingsEmailFormState extends State<SettingsEmailForm> {
                     ),
                     SizedBox(height: 10.0),
                     Text( // Wrap in align?
-                      'You can change your sensitive information (E-mail, password) in these pages.',
+                      localizator.translate('changeSensitiveInformation'),
                       style: TextStyle(
                         fontFamily: 'BebasNeue',
                         fontSize: 30.0,
@@ -79,7 +84,7 @@ class _SettingsEmailFormState extends State<SettingsEmailForm> {
                     SizedBox(height: 10.0),
                     PasswordInputField(
                       onChanged: (value) => userPassword = value,
-                      hintText: 'Enter your password',
+                      hintText: 'enterYourPassword',
                       maxLines: maxSensitiveInfoLines,
                     ),
                     SizedBox(height: 10.0),
@@ -101,7 +106,7 @@ class _SettingsEmailFormState extends State<SettingsEmailForm> {
                         )
                       ),
                       child: Text(
-                        'Change password?',
+                        localizator.translate('changePassword'),
                         style: TextStyle(
                           fontFamily: 'Nilam',
                           fontSize: 25.0,
@@ -132,7 +137,7 @@ class _SettingsEmailFormState extends State<SettingsEmailForm> {
                             String currentEmail = currentFirebaseUser.email; // email in FirebaseSDK
 
                             if(currentEmail == currentUser.email) {
-                              widget.baseAuth.errorMessages.add('E-mail is not changed!');
+                              widget.baseAuth.errorMessages.add('emailNotChanged');
                               throw new PlatformException(
                                   code: 'ERROR_EMAIL_NOT_CHANGED',
                                   message: 'User has entered an unchanged e-mail. Do not update e-mail!'
@@ -144,7 +149,7 @@ class _SettingsEmailFormState extends State<SettingsEmailForm> {
                                   currentUser.email
                               ).catchError((e) {
                                 logger.e('SettingsSensitive: UpdateEmail ' + e.toString());
-                                widget.baseAuth.errorMessages.add('E-mail couldn\'t be changed! You may need to relog into your account!');
+                                widget.baseAuth.errorMessages.add('emailNotChangedRelog');
                                 throw new PlatformException(
                                     code: 'ERROR_INCORRECT_EMAIL',
                                     message: 'User has entered an incorrect e-mail (may be in use). Do not update e-mail!'
@@ -159,7 +164,7 @@ class _SettingsEmailFormState extends State<SettingsEmailForm> {
                                   logger.e('SettingsSensitive: Reauthenticate ' + e.toString());
                                   currentUser.email = currentEmail;
                                   await currentFirebaseUser.updateEmail(currentEmail); // update back to old e-mail
-                                  widget.baseAuth.errorMessages.add('Password is not valid/correct!');
+                                  widget.baseAuth.errorMessages.add('invalidPassword');
                                   throw new PlatformException(
                                     code: 'ERROR_INCORRECT_PASSWORD',
                                     message: 'User has entered an incorrect password. Do not update e-mail!'
@@ -187,7 +192,7 @@ class _SettingsEmailFormState extends State<SettingsEmailForm> {
                           } else {
                             logger.e('SettingsSensitive: Current user has entered incorrect form information.');
                             widget.baseAuth
-                                .clearAndAddError('Invalid info in forms or passwords do not match!');
+                                .clearAndAddError('invalidFormsOrPasswordsMismatch');
                             throw new PlatformException(
                                 code: 'ERROR_FORM_INVALID',
                                 message: 'User has written incorrect info in forms. Cancel update!'

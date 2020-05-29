@@ -13,6 +13,7 @@ import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/widgets/notifications/notification_list.dart';
 import 'dart:io' show Platform, exit;
 
+import '../../locale/app_localization.dart';
 import '../../main.dart';
 
 class Home extends StatefulWidget {
@@ -41,7 +42,7 @@ class _HomeState extends State<Home> {
     Match(),
     Settings(),
   ]; // list of children widgets to navigate between
-
+  
   void onItemSwipe(int index) {
     setState(() {
       Home.selectedIndex = index;
@@ -61,11 +62,12 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final notifications = Provider.of<List<MessageNotification>>(context);
     final currentUser = Provider.of<User>(context);
+    final AppLocalizations localizator = AppLocalizations.of(context);
 
     return Scaffold(
       key: Key(Keys.homeScaffold),
       appBar: buildAppBar(
-        pageTitle: _widgets[Home.selectedIndex].toString(),
+        pageTitle: localizator.translate(_widgets[Home.selectedIndex].toString().toLowerCase()),
         leading: Builder( // need to get new context because it uses the current scaffold state context (either this or a key)
           builder: (context) => Stack(
             children: <Widget>[
@@ -117,7 +119,7 @@ class _HomeState extends State<Home> {
               size: 25.0,
             ),
             label: Text(
-              'Logout',
+              localizator.translate('logout'),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 22.0,
@@ -148,7 +150,7 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
             title: Text(
-              'Chat',
+              localizator.translate('chat'),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 10.0,
@@ -160,7 +162,7 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
               icon: Icon(Icons.person),
               title: Text(
-                'Match',
+                localizator.translate('match'),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 10.0,
@@ -172,7 +174,7 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             title: Text(
-              'Settings',
+              localizator.translate('settings'),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 10.0,
