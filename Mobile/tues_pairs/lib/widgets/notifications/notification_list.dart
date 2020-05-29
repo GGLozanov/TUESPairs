@@ -6,6 +6,7 @@ import 'package:tues_pairs/modules/notification.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/shared/constants.dart';
+import 'package:tues_pairs/shared/extract.dart';
 import 'package:tues_pairs/shared/keys.dart';
 
 class NotificationList extends StatefulWidget {
@@ -61,7 +62,11 @@ class _NotificationListState extends State<NotificationList> {
                   child: Column(
                     children: <Widget>[
                       Text(
-                        notifications[idx].message,
+                        localizator.translate(getNotificationKey(notifications[idx].message) + 'PartOne') +
+                        ' ' +
+                        extractUsernameFromNotification(notifications[idx].message) +
+                        ' ' +
+                        localizator.translate(getNotificationKey(notifications[idx].message) + 'PartTwo'),
                         style: TextStyle(
                           fontSize: 18.0,
                           fontFamily: 'Nilam',

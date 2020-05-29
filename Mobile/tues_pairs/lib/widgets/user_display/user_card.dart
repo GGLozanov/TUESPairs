@@ -174,6 +174,7 @@ class _UserCardState extends State<UserCard> {
                       },
                       child: Text(
                         localizator.translate('match'),
+                        textAlign: TextAlign.center,
                       ),
                       backgroundColor: Colors.deepOrange
                     ),
@@ -191,6 +192,7 @@ class _UserCardState extends State<UserCard> {
                       },
                       child: Text(
                         localizator.translate('skip'),
+                        textAlign: TextAlign.center,
                       ),
                       backgroundColor: Colors.deepOrange
                     ),

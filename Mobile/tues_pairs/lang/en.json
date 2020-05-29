@@ -71,7 +71,7 @@
     "finishAccount" : "Finish Account",
     "createAccount" : "Create Account",
     "errorTryAgain" : "An error has occurred! Please try again!",
-    "expiredAuthToken" : "Could't go back to login. Your auth token may have expired. Please exit and try again.",
+    "expiredAuthToken" : "Couldn't go back to login. Your auth token may have expired. Please exit and try again.",
     "editEmail" : "Edit E-mail",
     "changeSensitiveInformation" : "You can change your sensitive information (E-mail, password) in these pages.",
     "enterYourPassword" : "Enter your password",
@@ -101,5 +101,17 @@
     "interestedIn" : "Interested in",
     "skip" : "Skip",
     "noUsersToMatchWith" : "Whoops, looks like there isn't anyone to match with! Try clearing your skipped users to make sure you haven't skipped your potential matches.",
-    "tapAgainToLeave" : "Tap again to leave"
+    "tapAgainToLeave" : "Tap again to leave",
+    "newRequestNotificationPartOne" : "You've received a new match request from",
+    "newRequestNotificationPartTwo" : "Check it out!",
+    "lostPotentialPairNotificationPartOne" : "You lost",
+    "lostPotentialPairNotificationPartTwo" : "as a potential pair! Find a new one!",
+    "unmatchedNotificationPartOne" : "You've been unmatched by",
+    "unmatchedNotificationPartTwo" : "! Find a new pair!",
+    "newMessageNotificationPartOne" : "You've received a new message from",
+    "newMessageNotificationPartTwo" : "",
+    "matchRequestAcceptedNotificationPartOne" : "Your match request has been accepted by",
+    "matchRequestAcceptedNotificationPartTwo" : "! Go and chat!",
+    "unknownNotificationPartOne" : "There was a problem with this notification",
+    "unknownNotificationPartTwo" : ""
 }
