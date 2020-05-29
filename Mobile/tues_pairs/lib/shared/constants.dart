@@ -1,5 +1,7 @@
+import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:tues_pairs/locale/application.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/shared/keys.dart';
@@ -169,4 +171,54 @@ void scrollAnimation(ScrollController scrollController) {
 
 int diffInDays(DateTime date1, DateTime date2) {
   return ((date1.difference(date2) - Duration(hours: date1.hour) + Duration(hours: date2.hour)).inHours / 24).round();
+}
+
+
+Row languageChangeButtons() {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: <Widget>[
+      GestureDetector(
+        child: Flag(
+          'us',
+          height: 50,
+          width: 100,
+        ),
+        onTap: () => changeLanguage('English'),
+      ),
+      GestureDetector(
+        child: Flag(
+          'bg',
+          height: 50,
+          width: 100,
+        ),
+        onTap: () => changeLanguage('Български'),
+      ),
+    ],
+  );
+}
+
+
+PopupMenuButton popupMenuButton(BuildContext context) {
+  return PopupMenuButton<String>(
+    onSelected: changeLanguage,
+    itemBuilder: (context) {
+      return supportedLanguages.map((language) {
+        return PopupMenuItem<String>(
+          value: language,
+          child: Text(language),
+        );
+      }).toList();
+    },
+  );
+}
+
+List<String> supportedLanguages = ['English', 'Български'];
+
+void changeLanguage(String language) {
+  if (language == 'English') {
+    applic.onLocaleChanged(new Locale('en',''));
+  } else if (language == "Български") {
+    applic.onLocaleChanged(new Locale('bg',''));
+  }
 }

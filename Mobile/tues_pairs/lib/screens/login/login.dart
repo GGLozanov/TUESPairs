@@ -102,7 +102,9 @@ class _LoginState extends State<Login> {
                 fontSize: 25.0,
               )
             ),
-          )
+          ),
+          popupMenuButton(context),
+          
         ],
       ),
 
@@ -235,6 +237,8 @@ class _LoginState extends State<Login> {
                           onPressed: () => {},
                         )
                       ),
+                      SizedBox(height: 20.0),
+                      languageChangeButtons()
                     ]
                   ),
                 ],

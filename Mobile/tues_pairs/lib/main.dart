@@ -1,6 +1,7 @@
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tues_pairs/locale/app_localization.dart';
+import 'package:tues_pairs/locale/application.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
 import 'package:tues_pairs/screens/register/extern_register.dart';
@@ -23,9 +24,30 @@ void main() async {
   runApp(App());
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   static String currentUserDeviceToken;
+
+  @override
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<App> {
   final Auth _auth = new Auth();
+  SpecificAppLocalizationsDelegate _localeOverrideDelegate;
+
+  @override
+  void initState() {
+    super.initState();
+    _localeOverrideDelegate = new SpecificAppLocalizationsDelegate(null);
+
+    applic.onLocaleChanged = onLocaleChange;
+  }
+
+  onLocaleChange(Locale locale) {
+    setState(() {
+      _localeOverrideDelegate = new SpecificAppLocalizationsDelegate(locale);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,24 +63,13 @@ class App extends StatelessWidget {
       child: MaterialApp( // Now MaterialApp, AuthListener, and all future widgets will have access to the value in the StreamProvider (cross-widget communication!)
         key: Key(Keys.app),
         title: 'TUESPairs',
-        supportedLocales: [
-          Locale('en', 'US'),
-          Locale('bg', 'BG'),
-        ],
         localizationsDelegates: [
-          AppLocalizations.delegate,
+          _localeOverrideDelegate,
+          const AppLocalizationsDelegate(),
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
-        localeListResolutionCallback: (locale, supportedLocales) {
-          for (var supportedLocale in supportedLocales) {
-            if (supportedLocale.languageCode == locale.first.languageCode &&
-                supportedLocale.countryCode == locale.first.countryCode) {
-              return supportedLocale;
-            }
-          }
-          return supportedLocales.first;
-        },
+        supportedLocales: applic.supportedLocales(),
         home: FutureBuilder<String>(
           future: MessagingService.getUserDeviceToken(), // get the user's device token once and set it
           builder: (context, snapshot) {

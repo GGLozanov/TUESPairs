@@ -31,7 +31,7 @@ class MessageInput extends StatelessWidget {
                   hintStyle: TextStyle(
                     color: Colors.white,
                   ),
-                  hintText: 'enterMessage',
+                  hintText: localizator.translate('enterMessage'),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: new BorderRadius.circular(25.0),
                     borderSide: BorderSide(color: darkGreyColor, width: 2.0),

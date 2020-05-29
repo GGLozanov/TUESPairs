@@ -32,14 +32,14 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
       appBar: buildAppBar(
         pageTitle: localizator.translate('redoPassword')
       ),
-      body: Container(
-        child: Form(
-          key: baseAuth.key,
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: ListView(
-              children: <Widget>[
-                Column(
+      body: ListView(
+        children:<Widget>[ 
+          Container(
+            child: Form(
+              key: baseAuth.key,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
                   children: <Widget>[
                     Center(
                       child: Image.asset(
@@ -99,10 +99,10 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
                     BaseAuthErrorDisplay(baseAuth: baseAuth,)
                   ]
                 ),
-              ]
-            ),
+              ),
+            )
           ),
-        )
+        ]
       ),
     );
   }

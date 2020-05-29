@@ -42,7 +42,7 @@ class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
     return Scaffold(
       backgroundColor: greyColor,
       appBar: buildAppBar(
-        pageTitle: localizator.translate('editPassword')
+        pageTitle: localizator.translate('editPassword'),
       ),
       body: Container(
         child: ListView(

@@ -2,54 +2,64 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tues_pairs/locale/application.dart';
 
 class AppLocalizations {
-  final Locale locale;
 
-  AppLocalizations(this.locale);
+  AppLocalizations(Locale locale) {
+    this.locale = locale;
+    _localizedStrings = null;
+  }
+  
+  Locale locale;
+  static Map<dynamic, dynamic> _localizedStrings;
 
   static AppLocalizations of(BuildContext context) {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
-
-  Map<String, String> _localizedStrings;
-
-  Future<bool> load() async {
-    String jsonString = await rootBundle.loadString('lang/${locale.languageCode}.json');
-    Map<String, dynamic> jsonMap = json.decode(jsonString);
-
-    _localizedStrings = jsonMap.map((key, value) {
-      return MapEntry(key, value.toString());
-    });
-
-    return true;
-  }
-
   String translate(String key) {
-    return _localizedStrings[key];
+    return _localizedStrings[key] ?? '$key not found';
   }
+
+  static Future<AppLocalizations> load(Locale locale) async {
+    AppLocalizations appLocalizations = new AppLocalizations(locale);
+    String jsonString = await rootBundle.loadString('lang/${locale.languageCode}.json');
+    _localizedStrings = json.decode(jsonString);
+
+    return appLocalizations;
+  }
+
+  get currentLanguage => locale.languageCode;
+
   
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
-  const _AppLocalizationsDelegate();
+class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+  const AppLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) {
-    return ['en', 'bg'].contains(locale.languageCode);
-  }
+  bool isSupported(Locale locale) => applic.supportedLanguages.contains(locale.languageCode);
 
   @override
-  Future<AppLocalizations> load(Locale locale) async{
-    AppLocalizations localizations = new AppLocalizations(locale);
-    await localizations.load();
-
-    return localizations;
-  }
+  Future<AppLocalizations> load(Locale locale) => AppLocalizations.load(locale);
 
   @override
-  bool shouldReload(LocalizationsDelegate<AppLocalizations> old) => false;
+  bool shouldReload(AppLocalizationsDelegate old) => false;
 
+}
+
+class SpecificAppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+  final Locale overriddenLocale;
+
+  const SpecificAppLocalizationsDelegate(this.overriddenLocale);
+
+  @override
+  bool isSupported(Locale locale) => overriddenLocale != null;
+
+  @override
+  Future<AppLocalizations> load(Locale locale) => AppLocalizations.load(overriddenLocale);
+
+  @override
+  bool shouldReload(LocalizationsDelegate<AppLocalizations> old) => true;
 }
