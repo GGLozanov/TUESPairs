@@ -28,12 +28,23 @@ const withAuthentication = Component => {
                         }).then(() => {
                             this.props.firebase.messaging.requestPermission().then(() => {
                                 this.props.firebase.messaging.getToken().then(token => {
-                                    let deviceTokens = [];
-                                    deviceTokens.push(token);
+                                    let deviceTokens;
+                                    if(authUser.deviceTokens) {
+                                        deviceTokens = authUser.deviceTokens;
+                                    } else {
+                                        deviceTokens = [];
+                                    }
+                                    if(!deviceTokens.includes(token)) {
+                                        deviceTokens.push(token);
+                                    }
 
                                     this.props.firebase.db.collection("users").doc(authUser.uid).set({
                                         deviceTokens: deviceTokens
                                     }, { merge: true });
+
+                                    authUser.deviceTokens = deviceTokens;
+
+                                    this.setState({ authUser });
                                 }).catch(error => {
                                     log.error(error);
                                 });

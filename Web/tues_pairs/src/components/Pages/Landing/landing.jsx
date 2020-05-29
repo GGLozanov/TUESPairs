@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './style.scss';
 import { Card, Button } from 'react-bootstrap';
 import { Link, withRouter } from 'react-router-dom';
@@ -8,7 +8,6 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 const LandingPageBase = () => {
     return(
         <div className="landing-page">
-            <img className="background-image" alt="Landing-page" src="https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/tues_pairs_landing.png?alt=media&token=004e7b32-7e45-4756-9575-8e78f5fee82e"></img>
             <Card bg="dark" style={{ width: '400px', height: '500px' }} className="landing-card">    
                 <Card.Img
                     className="tues-pairs-logo"

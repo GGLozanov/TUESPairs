@@ -4,9 +4,14 @@ import { withFirebase } from '../../Firebase';
 import { withCurrentUser } from '../../Authentication/context';
 import { compose } from 'recompose';
 
-const SignOutButtonBase = ({ firebase }) => {
+const SignOutButtonBase = ({ firebase, authUser }) => {
+        console.log(authUser);
+
+        function signOut() {
+            firebase.doSignOut(authUser)
+        }
         return(
-            <button type="button" data-testid="signout-button" onClick={firebase.doSignOut}>
+            <button type="button" data-testid="signout-button" onClick={signOut}>
                 Sign Out
             </button>
         )

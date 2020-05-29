@@ -1,15 +1,24 @@
-.landing-page {
-    margin: 0;
+body, html {
+    height: 100%;
+}
 
-    .background-image {
-        width: 1675px;
-        height: 788px;
-    }
+nav {
+    display: none;
+}
+
+.landing-page {
+    background-image: url(https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/tues_pairs_landing.png?alt=media&token=062ffaf6-d62d-4a05-89d8-5d0a5977eb52);
+    /* Full height */
+    height: 94.4vh;
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
 
     @media only screen and (max-width: 625px) {
-        .background-image {
-            display: none;
-        }
+        background-image: none;
     }
 
     .landing-card {
@@ -20,7 +29,7 @@
 
         @media only screen and (max-width: 625px) {
             top: 225px;
-            right: 35px;
+            right: 5px;
         }
 
         right: 170px;

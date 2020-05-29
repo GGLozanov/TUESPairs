@@ -2,6 +2,7 @@ import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
+import log from '../../constants/logger';
 
 const config = {
     apiKey: "AIzaSyCKbaA0epDZJnNLaehLEb5iuhwHAbXCe7Y",
@@ -30,7 +31,22 @@ const config = {
     doSignInWithEmailAndPassword = (email, password) =>
         this.auth.signInWithEmailAndPassword(email, password);
 
-    doSignOut = () => this.auth.signOut();
+    doSignOut = (currentUser) => {
+        let deviceTokens = currentUser.deviceTokens;
+        this.messaging.getToken().then(token => {
+            if(currentUser.deviceTokens) {
+                deviceTokens.splice(deviceTokens.indexOf(token), 1);
+            }
+            this.db.collection("users").doc(currentUser.uid).set({
+                deviceTokens: deviceTokens
+            }, {merge: true});
+        }).then(() => {
+            this.auth.signOut();
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
 
     doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
 
