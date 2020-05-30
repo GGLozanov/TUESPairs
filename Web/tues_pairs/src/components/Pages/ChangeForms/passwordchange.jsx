@@ -8,6 +8,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { Card, Button, Form, FormControl } from 'react-bootstrap';
 import { withFirebase } from '../../Firebase';
 import log from '../../../constants/logger';
+import Loading from '../../../constants/loading';
 
 class PasswordChange extends Component {
     constructor(props) {
@@ -19,8 +20,25 @@ class PasswordChange extends Component {
             newPassword: '',
             confirmNewPassword: '',
             currentUser: Object,
-            credential: Object
+            credential: Object,
+            loading: true,
+            currentUser: this.props.authUser
         };
+    }
+
+    componentDidMount() {
+        let currentUser = this.props.authUser;
+        this.setState({ loading: true });
+    
+        this.unsubscribe = this.props.firebase.user(currentUser.uid).get()
+        .then(snapshot => {
+            const currentUser = this.props.firebase.getUserFromSnapshot(snapshot);
+            log.info("Received current user inside account! Current user is: " + currentUser.toString());
+            if(currentUser.username == null) {
+                this.props.history.push(ROUTES.USER_INFO);
+            }
+            this.setState({ currentUser, loading: false });
+        });
     }
 
     onSubmit = event => {
@@ -54,7 +72,7 @@ class PasswordChange extends Component {
     };
 
     render() {
-        const { error, currentPassword, newPassword, confirmNewPassword } = this.state;
+        const { error, currentPassword, newPassword, confirmNewPassword, loading } = this.state;
 
         const isInvalid =
             newPassword !== confirmNewPassword ||
@@ -64,6 +82,7 @@ class PasswordChange extends Component {
 
         return (
             <div className="email-confirmation">
+                { loading && <Loading /> }
                 <div className="password-card">
                     <Card bg="dark">
                         <Card.Img 

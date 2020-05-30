@@ -94,9 +94,24 @@
     border-radius: 25px;
     margin: 10px;
     background-color: rgb(252, 152, 0);
+    min-height: 130px;
+
+    h2 {
+        display: none;
+    }
 
     &:hover {
-        background-color: rgb(255, 195, 106);
+        h2 {
+            margin-top: 30px;
+            display: block;
+        }
+        h6 {
+            display: none;
+        }
+        p {
+            display: none;
+        }
+        background-color: rgb(163, 98, 0);
     }
 }
 

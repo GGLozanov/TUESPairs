@@ -14,6 +14,8 @@ import DehazeIcon from '@material-ui/icons/Dehaze';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context.jsx';
 import { withFirebase } from '../../Firebase/index.jsx';
+import moment from 'moment';
+import log from '../../../constants/logger.jsx';
 
 const Navigation = () => (
       <AuthUserContext.Consumer>
@@ -42,13 +44,21 @@ class NavigationLoggedBase extends Component {
   }
 
   deleteNotifictaion = nid => {
-    //this.props.firebase.db.collection("notifications").doc(nid).delete();
+    let notifications = this.state.notifications.filter(notification => {
+      return notification.nid !== nid
+      //returns filtered notifications list without the deleted notification
+    });
+    this.setState({ notifications });
+
+    this.props.firebase.db.collection("notifications").doc(nid).delete()
+    .catch(error => {
+      log.error(error);
+    });
   }
 
   render() {
     const { show, notifications } = this.state;
     
-
     return (
       <>
         <Sidebar
@@ -64,10 +74,11 @@ class NavigationLoggedBase extends Component {
           {notifications.map(notification => (
             <Menu.Item key={notification.sentTime + notification.userID} 
               as='a'
-              onClick={this.deleteNotifictaion(notification.nid)}
+              onClick={this.deleteNotifictaion.bind(this, notification.nid)}
             >
+              <h2>Click to dismiss</h2>
               <p>{notification.message}</p>
-              <h6>{notification.sentTime}</h6>
+              <h6>{moment(notification.sentTime).format('LLL')}</h6>
             </Menu.Item>
           ))}
             

@@ -5,8 +5,6 @@ import { withCurrentUser } from '../../Authentication/context';
 import { compose } from 'recompose';
 
 const SignOutButtonBase = ({ firebase, authUser }) => {
-        console.log(authUser);
-
         function signOut() {
             firebase.doSignOut(authUser)
         }
