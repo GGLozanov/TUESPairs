@@ -68,9 +68,9 @@ class _HomeState extends State<Home> {
       key: Key(Keys.homeScaffold),
       appBar: buildAppBar(
         pageTitle: localizator.translate(
-            _widgets[Home.selectedIndex]
-                .toString()
-                .toLowerCase()
+          _widgets[Home.selectedIndex]
+              .toString()
+              .toLowerCase()
         ),
         leading: Builder( // need to get new context because it uses the current scaffold state context (either this or a key)
           builder: (context) => Stack(

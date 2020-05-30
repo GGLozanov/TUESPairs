@@ -36,6 +36,31 @@ class _SettingsEmailFormState extends State<SettingsEmailForm> {
 
   bool isInvalidReauth = false;
 
+  Future<void> updateUserEmail(
+      FirebaseUser currentFirebaseUser,
+      User currentUser,
+      String currentEmail
+  ) async {
+    await currentFirebaseUser.updateEmail(
+        currentUser.email
+    ); // allow exception to be thrown as to handle it below
+    await currentFirebaseUser.reauthenticateWithCredential(
+        EmailAuthProvider.getCredential(
+          email: currentUser.email,
+          password: userPassword,
+        )
+    ).catchError((e) async {
+      logger.e('SettingsSensitive: Reauthenticate ' + e.toString());
+      currentUser.email = currentEmail;
+      await currentFirebaseUser.updateEmail(currentEmail); // update back to old e-mail
+      widget.baseAuth.errorMessages.add('invalidPassword');
+      throw new PlatformException(
+        code: 'ERROR_INCORRECT_PASSWORD',
+        message: 'User has entered an incorrect password. Do not update e-mail!'
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUser = Provider.of<User>(context);
@@ -134,7 +159,7 @@ class _SettingsEmailFormState extends State<SettingsEmailForm> {
                               userConfirmPassword == userPassword) {
 
                             final currentFirebaseUser = await _auth.currentUser;
-                            String currentEmail = currentFirebaseUser.email; // email in FirebaseSDK
+                            String currentEmail = currentFirebaseUser.email; // email in FirebaseSDK (original)
 
                             if(currentEmail == currentUser.email) {
                               widget.baseAuth.errorMessages.add('emailNotChanged');
@@ -145,41 +170,36 @@ class _SettingsEmailFormState extends State<SettingsEmailForm> {
                             }
 
                             try {
-                              await currentFirebaseUser.updateEmail(
-                                  currentUser.email
-                              ).catchError((e) {
-                                logger.e('SettingsSensitive: UpdateEmail ' + e.toString());
-                                widget.baseAuth.errorMessages.add('emailNotChangedRelog');
-                                throw new PlatformException(
-                                    code: 'ERROR_INCORRECT_EMAIL',
-                                    message: 'User has entered an incorrect e-mail (may be in use). Do not update e-mail!'
-                                );
-                              });
-                              await currentFirebaseUser.reauthenticateWithCredential(
-                                EmailAuthProvider.getCredential(
-                                  email: currentUser.email,
-                                  password: userPassword,
-                                )
-                              ).catchError((e) async {
-                                  logger.e('SettingsSensitive: Reauthenticate ' + e.toString());
-                                  currentUser.email = currentEmail;
-                                  await currentFirebaseUser.updateEmail(currentEmail); // update back to old e-mail
-                                  widget.baseAuth.errorMessages.add('invalidPassword');
-                                  throw new PlatformException(
-                                    code: 'ERROR_INCORRECT_PASSWORD',
-                                    message: 'User has entered an incorrect password. Do not update e-mail!'
-                                  );
-                              });
-                            } catch(e) {
+                              await updateUserEmail(currentFirebaseUser, currentUser, currentEmail);
+                            } on PlatformException catch(e) {
                               logger.e('SettingsSensitive: UpdateEmail ' +
                                   e.toString());
                               logger.i(
                                   'SettingsSensitive: Reauth is invalid. Ending.');
 
-                              throw new PlatformException(
-                                code: 'ERROR_REAUTH_FAILED',
-                                message: 'User reauth has failed. Do not update e-mail!'
-                              );
+                              if(e.code == 'ERROR_REQUIRES_RECENT_LOGIN') {
+                                await currentFirebaseUser.reauthenticateWithCredential(
+                                    EmailAuthProvider.getCredential(
+                                      email: currentEmail,
+                                      password: userPassword,
+                                    )
+                                ).catchError((e) async {
+                                  logger.e('SettingsSensitive: Reauthenticate error handler ' + e.toString());
+                                  currentUser.email = currentEmail;
+                                  widget.baseAuth.errorMessages.add('emailNotChangedRelog');
+                                  throw new PlatformException(
+                                      code: 'ERROR_REAUTH_FAILED',
+                                      message: 'User error handling reauth with original credentials has failed. Do not update e-mail!'
+                                  );
+                                });
+                                await updateUserEmail(currentFirebaseUser, currentUser, currentEmail); // update email again
+                              } else {
+                                widget.baseAuth.errorMessages.add('emailNotChangedRelog');
+                                throw new PlatformException(
+                                    code: 'ERROR_REAUTH_FAILED',
+                                    message: 'User reauth has failed. Do not update e-mail!'
+                                );
+                              }
                             }
 
                             setState(() =>
@@ -188,7 +208,6 @@ class _SettingsEmailFormState extends State<SettingsEmailForm> {
                             await Database(uid: currentUser.uid).updateUserData(currentUser); // update e-mail in DB
                             Home.selectedIndex = 2; // change selected page indexw
                             Navigator.pop(context);
-
                           } else {
                             logger.e('SettingsSensitive: Current user has entered incorrect form information.');
                             widget.baseAuth
