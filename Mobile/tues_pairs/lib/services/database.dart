@@ -55,7 +55,9 @@ class Database {
   // ------------------------------------------
 
   List<User> _listUserFromQuerySnapshot(QuerySnapshot querySnapshot) {
-    return querySnapshot.documents.map((doc) => getUserBySnapshot(doc)).toList();
+    List<User> users = querySnapshot.documents.map((doc) => getUserBySnapshot(doc)).toList();
+    users.removeWhere((user) => user == null); // remove invalid users
+    return users;
   }
 
   CollectionReference get userCollectionReference {
@@ -134,6 +136,10 @@ class Database {
           'deviceTokens: "' + doc.data['deviceTokens'].toString() + '")'
       );
 
+      if(doc.data['isTeacher'] == null) {
+        return null;
+      }
+
       return doc.data['isTeacher'] ?
         Teacher(
           uid: doc.documentID,
@@ -209,8 +215,10 @@ class Database {
   }
 
   Stream<List<User>> get users {
-    return _userCollectionReference.snapshots().map(
-        _listUserFromQuerySnapshot
+    return _userCollectionReference
+        .snapshots()
+        .map(
+      _listUserFromQuerySnapshot
     );
   }
 
@@ -218,14 +226,18 @@ class Database {
   // Tag Database Implementation
   // ----------------------------------
 
-  Stream<List<Tag>> get tags {
-    return _tagsCollectionReference.snapshots().map(
-      _listTagFromQuerySnapshot
-    );
+  List<Tag> _listTagFromQuerySnapshot(QuerySnapshot querySnapshot) {
+    List<Tag> tags = querySnapshot.documents.map((doc) => getTagBySnapshot(doc)).toList();
+    tags.removeWhere((tag) => tag == null);
+    return tags;
   }
 
-  List<Tag> _listTagFromQuerySnapshot(QuerySnapshot querySnapshot) {
-    return querySnapshot.documents.map((doc) => getTagBySnapshot(doc)).toList();
+  Stream<List<Tag>> get tags {
+    return _tagsCollectionReference
+        .snapshots()
+        .map(
+      _listTagFromQuerySnapshot
+    );
   }
 
   Future updateTagData(Tag tag) async {
@@ -280,7 +292,9 @@ class Database {
   // ----------------------------------
 
   List<Message> _listMessageFromQuerySnapshot(QuerySnapshot querySnapshot) {
-    return querySnapshot.documents.map((doc) => getMessageBySnapshot(doc)).toList();
+    List<Message> messages = querySnapshot.documents.map((doc) => getMessageBySnapshot(doc)).toList();
+    messages.removeWhere((message) => message == null); // remove invalid message
+    return messages;
   }
 
   Stream<List<Message>> get messages {
@@ -384,7 +398,7 @@ class Database {
 
   List<MessageNotification> _listNotificationFromQuerySnapshot(QuerySnapshot snapshot) {
     return snapshot.documents.map(
-            (doc) => getNotificationBySnapshot(doc)
+      (doc) => getNotificationBySnapshot(doc)
     ).toList();
   }
 
@@ -396,7 +410,9 @@ class Database {
     final currentTime = DateTime.now();
 
     notifications.removeWhere((notification) {
-      if(notification == null) return true;
+      if(notification == null) {
+        return true;
+      }
 
       if(notification.isNotificationTooOld(currentTime)) {
         deleteNotification(notification.nid); // cannot await; hope it doesn't cause a problem

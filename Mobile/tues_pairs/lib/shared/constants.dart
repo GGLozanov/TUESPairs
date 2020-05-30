@@ -174,7 +174,7 @@ int diffInDays(DateTime date1, DateTime date2) {
 }
 
 
-Row languageChangeButtons() {
+Row languageChangeButtons() { // TODO: extract in widget
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: <Widget>[
@@ -199,7 +199,7 @@ Row languageChangeButtons() {
 }
 
 
-PopupMenuButton popupMenuButton(BuildContext context) {
+PopupMenuButton popupMenuButton(BuildContext context) { // TODO: extract in widget
   return PopupMenuButton<String>(
     onSelected: changeLanguage,
     itemBuilder: (context) {
@@ -213,7 +213,7 @@ PopupMenuButton popupMenuButton(BuildContext context) {
   );
 }
 
-List<String> supportedLanguages = ['English', 'Български'];
+List<String> supportedLanguages = ['English', 'Български']; // TODO: Extract in class
 
 void changeLanguage(String language) {
   if (language == 'English') {

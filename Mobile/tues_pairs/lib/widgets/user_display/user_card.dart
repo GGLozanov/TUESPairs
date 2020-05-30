@@ -134,8 +134,8 @@ class _UserCardState extends State<UserCard> {
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Text(
                     widget.user.isTeacher ?
-                    localizator.translate('qualifiedIn') : 
-                    localizator.translate('interestedIn'),
+                      localizator.translate('qualifiedIn') :
+                        localizator.translate('interestedIn'),
                     style: TextStyle(
                         color: Colors.orange,
                         fontSize: 24,
@@ -173,7 +173,7 @@ class _UserCardState extends State<UserCard> {
                         widget.onMatch();
                       },
                       child: Text(
-                        localizator.translate('match'),
+                        localizator.translate('matchYes'),
                         textAlign: TextAlign.center,
                       ),
                       backgroundColor: Colors.deepOrange
@@ -191,7 +191,7 @@ class _UserCardState extends State<UserCard> {
                         widget.onSkip(); // destroy the widget
                       },
                       child: Text(
-                        localizator.translate('skip'),
+                        localizator.translate('matchNo'),
                         textAlign: TextAlign.center,
                       ),
                       backgroundColor: Colors.deepOrange

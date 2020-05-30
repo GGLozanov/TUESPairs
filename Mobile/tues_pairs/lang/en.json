@@ -11,6 +11,8 @@
     "logout" : "Logout",
     "chat" : "Chat",
     "match" : "Match",
+    "matchYes" : "Match",
+    "matchNo" : "Skip",
     "settings" : "Settings",
     "confirmAccountDeletionLabel" : "Confirm Account Deletion",
     "confirmAccountDeletionDescription" : "Are you absolutely sure you want to delete your account?",
