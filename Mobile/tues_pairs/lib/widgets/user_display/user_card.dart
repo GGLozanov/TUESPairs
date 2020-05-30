@@ -120,14 +120,16 @@ class _UserCardState extends State<UserCard> {
                     fontSize: 22,
                     fontWeight: FontWeight.bold
                   ),
+                  textAlign: TextAlign.center,
                 ) : SizedBox(),
                 widget.hasUserSentMatchRequestToCurrent ? Text(
                   localizator.translate('userHasSentMatchRequest'),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 19,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                   ),
+                  textAlign: TextAlign.center,
                 ) : SizedBox(),
                 SizedBox(height: widget.user.description != '' ? 5.0 : 0.0),
                 widget.user.description != '' ? Padding(

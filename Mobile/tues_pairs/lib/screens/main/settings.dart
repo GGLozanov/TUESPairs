@@ -9,6 +9,7 @@ import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/avatar/avatar_wrapper.dart';
 import 'package:tues_pairs/widgets/general/centered_text.dart';
+import 'package:tues_pairs/widgets/general/localization_buttons.dart';
 import 'package:tues_pairs/widgets/settings/settings_form.dart';
 import 'package:tues_pairs/templates/error_notifier.dart';
 import 'package:tues_pairs/widgets/form/input_button.dart';
@@ -333,6 +334,9 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                 },
               ),
             ),
+            SizedBox(height: 25.0),
+            LocalizationButtons(),
+            SizedBox(height: 10.0),
           ],
         ),
       ),

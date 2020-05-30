@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:tues_pairs/shared/constants.dart';
 
 class MessageNotification {
   String nid; // notification id
@@ -28,6 +27,10 @@ class MessageNotification {
 
   void _formatSentDateTime(DateFormat formatter, DateTime sentTime) {
     this.sentTime = formatter.format(sentTime);
+  }
+
+  int diffInDays(DateTime date1, DateTime date2) {
+    return ((date1.difference(date2) - Duration(hours: date1.hour) + Duration(hours: date2.hour)).inHours / 24).round();
   }
 
   bool isNotificationTooOld(DateTime currentTime) {

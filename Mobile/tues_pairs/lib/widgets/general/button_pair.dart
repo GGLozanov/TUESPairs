@@ -35,8 +35,6 @@ class ButtonPair extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations localizator = AppLocalizations.of(context);
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
@@ -48,6 +46,7 @@ class ButtonPair extends StatelessWidget {
           onPressed: onLeftPressed,
           color: leftBtnColor
         ),
+        SizedBox(width: 5.0),
         InputButton(
           key: rightBtnKey,
           minWidth: btnsWidth,

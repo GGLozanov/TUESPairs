@@ -18,6 +18,7 @@ import 'package:tues_pairs/widgets/form/email_input_field.dart';
 import 'package:tues_pairs/widgets/form/password_input_field.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/general/baseauth_error_display.dart';
+import 'package:tues_pairs/widgets/general/localization_buttons.dart';
 import 'package:tues_pairs/widgets/general/spaced_divider.dart';
 import 'package:tues_pairs/widgets/login/forgot_password_form.dart';
 import 'package:tues_pairs/widgets/register/register_form.dart';
@@ -103,8 +104,6 @@ class _LoginState extends State<Login> {
               )
             ),
           ),
-          popupMenuButton(context),
-          
         ],
       ),
 
@@ -238,7 +237,7 @@ class _LoginState extends State<Login> {
                         )
                       ),
                       SizedBox(height: 20.0),
-                      languageChangeButtons()
+                      LocalizationButtons()
                     ]
                   ),
                 ],

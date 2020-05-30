@@ -49,6 +49,7 @@ dependencies:
   double_back_to_close_app: ^1.2.0
   auto_size_text: ^2.1.0
   flag: ^3.0.1
+  shared_preferences: ^0.5.7+3
 
 dev_dependencies:
   flutter_driver:

@@ -1,5 +1,6 @@
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/locale/application.dart';
 import 'package:tues_pairs/modules/tag.dart';
@@ -26,6 +27,8 @@ void main() async {
 
 class App extends StatefulWidget {
   static String currentUserDeviceToken;
+  static SharedPreferences sharedPreferences;
+  static bool isLocaleCallback = false;
 
   @override
   _AppState createState() => _AppState();
@@ -35,30 +38,49 @@ class _AppState extends State<App> {
   final Auth _auth = new Auth();
   SpecificAppLocalizationsDelegate _localeOverrideDelegate;
 
+  changeLocale(Locale locale) {
+    _localeOverrideDelegate = new SpecificAppLocalizationsDelegate(locale);
+  }
+
+  onLocaleChange(Locale locale) {
+    setState(() =>
+      changeLocale(locale)
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _localeOverrideDelegate = new SpecificAppLocalizationsDelegate(null);
 
-    applic.onLocaleChanged = onLocaleChange;
-  }
+    SharedPreferences.getInstance().then((sharedPrefs) {
+      setState(() { // call setState() after the async finishes to rebuild the widget (it's already built cause async)
+        App.sharedPreferences = sharedPrefs; // need this var in localization_buttons.dart
 
-  onLocaleChange(Locale locale) {
-    setState(() {
-      _localeOverrideDelegate = new SpecificAppLocalizationsDelegate(locale);
+        applic.onLocaleChanged = changeLocale; // change the locale without setState call (init with sharedprefs)
+
+        applic.changeLanguage(
+          App.sharedPreferences.containsKey('lang') ?
+            App.sharedPreferences.getString('lang')
+                : 'English'
+        );
+
+        applic.onLocaleChanged = onLocaleChange; // switch the callback to setState one for manual change
+      });
     });
+
   }
 
   @override
   Widget build(BuildContext context) {
-
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]); // limit the orientation to portrait up and portrait down
+
     logger.i('App: App started.');
 
-    return StreamProvider<User>.value( // StreamProvider package allows us to send data through a stream to see whether the auth state has changed here. This data can travel through the widget tree.
+    return StreamProvider<User>.value( // StreamProvider allows us to send data through a stream to see whether the auth state has changed here. This data can travel through the widget tree.
       value: _auth.user, // create an instance of AuthListener() and set the value of the stream listener to the user stream (and auth.onAuthStateChanged gives that)
       child: MaterialApp( // Now MaterialApp, AuthListener, and all future widgets will have access to the value in the StreamProvider (cross-widget communication!)
         key: Key(Keys.app),
@@ -75,6 +97,7 @@ class _AppState extends State<App> {
           builder: (context, snapshot) {
             if(snapshot.connectionState == ConnectionState.done) {
               App.currentUserDeviceToken = snapshot.data;
+
               return Scaffold(
                 body: DoubleBackToCloseApp(
                   snackBar: SnackBar(

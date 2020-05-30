@@ -39,10 +39,10 @@ class SettingsFormState extends State<SettingsForm> {
             children: <Widget>[
               currentUser.username != '' &&
                   currentUser.username != null ?
-                UsernameInputField(
-                  onChanged: (value) => setState(() => currentUser.username = value),
-                  initialValue: currentUser.username
-                ) : SizedBox(),
+              UsernameInputField(
+                onChanged: (value) => setState(() => currentUser.username = value),
+                initialValue: currentUser.username
+              ) : SizedBox(),
               SizedBox(height: 10.0),
               currentUser.isTeacher ? SizedBox() : GPAInputField(
                 onChanged: (value) => setState(() => currentUser.GPA = double.tryParse(value)),

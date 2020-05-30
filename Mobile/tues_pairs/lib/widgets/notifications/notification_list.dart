@@ -29,6 +29,8 @@ class _NotificationListState extends State<NotificationList> {
       child: ListView.builder( // notification drawer
         itemCount: notifications == null ? 0 : notifications.length,
         itemBuilder: (context, idx) {
+          String nid = notifications[idx].nid;
+
           return Tooltip(
             message: localizator.translate('swipe'),
             height: 25.0,
@@ -39,18 +41,17 @@ class _NotificationListState extends State<NotificationList> {
               color: Colors.white,
             ),
             child: Dismissible(
-              key: Key(Keys.dismissibleNotification + idx.toString()), // avoid duplicate keys
+              key: UniqueKey(), // avoid duplicate keys using UniqueKey
               direction: DismissDirection.endToStart,
               background: Container(
                 color: darkGreyColor,
               ),
               onDismissed: (direction) async {
-                setState(() {
-                  String nid = notifications[idx].nid;
+                setState(() { // needs to be called first
                   notifications.removeAt(idx); // remove dismissed notification from list
-                  Database(uid: currentUser.uid)
-                      .deleteNotification(nid); // delete notification from DB
-                }); // needs to be called first or throws exception; needles overhead :(
+                });
+                await Database(uid: currentUser.uid)
+                    .deleteNotification(nid); // delete notification from DB
               },
               child: Card(
                 color: notifications[idx].color,
