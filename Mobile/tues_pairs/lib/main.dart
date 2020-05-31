@@ -28,7 +28,6 @@ void main() async {
 class App extends StatefulWidget {
   static String currentUserDeviceToken;
   static SharedPreferences sharedPreferences;
-  static bool isLocaleCallback = false;
 
   @override
   _AppState createState() => _AppState();
