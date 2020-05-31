@@ -20,6 +20,7 @@ test('User card render parameters', () => {
         isTeacher: false,
         gpa: 5.32,
         tags: tags,
+        email: 'example@exmp.com'
     };
 
     const container = render(
@@ -30,6 +31,7 @@ test('User card render parameters', () => {
     const username = container.getByTestId('username');
     const student = container.getByTestId('student');
     const gpa = container.getByTestId('gpa');
+    const email = container.getByTestId('email');
 
     expect(defaultImage.src).toBe("https://x-treme.com.mt/wp-content/uploads/2014/01/default-team-member.png");
 
@@ -39,4 +41,6 @@ test('User card render parameters', () => {
     expect(expected).toBe(student);
     expected = container.getByText('GPA:');
     expect(expected).toBe(gpa);
+    expected = container.getByText('example@exmp.com');
+    expect(expected).toBe(email);
 })

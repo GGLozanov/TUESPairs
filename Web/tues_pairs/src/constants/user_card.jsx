@@ -30,7 +30,7 @@ const UserCard = props => {
                 {thisUser.isTeacher &&<Card.Subtitle data-testid="teacher">Teacher</Card.Subtitle>}
                 {!thisUser.isTeacher &&<Card.Subtitle data-testid="student">Student</Card.Subtitle>}
                 {!thisUser.isTeacher &&<Card.Text data-testid="gpa">GPA: {thisUser.GPA}</Card.Text>}
-                <Card.Text data-testid="gpa">{thisUser.email}</Card.Text>
+                <Card.Text data-testid="email">{thisUser.email}</Card.Text>
                 {!thisUser.isTeacher &&<Card.Subtitle className="description" data-testid="student-idea">His idea</Card.Subtitle>}
                 {thisUser.isTeacher &&<Card.Subtitle className="description" data-testid="teacher-idea">Interested in</Card.Subtitle>}
                 {!thisUser.description &&<Card.Text data-testid="empty-description">Empty as the void inside our hearts!</Card.Text>}
