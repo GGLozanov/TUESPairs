@@ -94,6 +94,7 @@ const config = {
             ...firebaseUser,
             uid: uid,
             tags: tags,
+            providerData: this.auth.currentUser.providerData
         };
     }
     

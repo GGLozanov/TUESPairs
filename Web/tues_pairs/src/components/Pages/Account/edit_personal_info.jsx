@@ -38,6 +38,7 @@ class EditPersonalInfo extends Component{
             show: false,
             password: '',
             description: '',
+            providerData: []
         };
     }
 
@@ -54,7 +55,9 @@ class EditPersonalInfo extends Component{
                 email: currentUser.email, 
                 tagIDs: currentUser.tagIDs, 
                 description: currentUser.description,
-                loading: false });
+                providerData: currentUser.providerData,
+                loading: false 
+            });
         }).then(() => {
             this.tagProvider = this.props.firebase.tags()
             .onSnapshot(snapshot => {
@@ -226,7 +229,7 @@ class EditPersonalInfo extends Component{
     }
 
     render() {
-        const { username, email, photoURL, GPA, loading, error, tags, show, description} = this.state;
+        const { username, email, photoURL, GPA, loading, error, tags, show, description, providerData } = this.state;
 
         const isTeacher = this.props.authUser.isTeacher ? false : true;
 
@@ -235,6 +238,14 @@ class EditPersonalInfo extends Component{
         const hasSkipped = this.props.authUser.skippedUserIDs.length > 0 ? true : false;
 
         const hasImage = photoURL ? true : false;
+
+        let valid = true;
+
+        providerData.forEach(provider => {
+            if(provider.providerId !== 'password') {
+                valid = false;
+            }
+        });
 
         return(
             <div className="edit-page-info">
@@ -312,8 +323,8 @@ class EditPersonalInfo extends Component{
                             { email }
                         </Button>
 
-                        <EmailChangeLink />
-                        <PasswordChangeLink />
+                        {valid &&<EmailChangeLink />}
+                        {valid &&<PasswordChangeLink />}
 
                         <div className="tag-list">
                             <ButtonGroup as={Row}>
