@@ -2,6 +2,7 @@ import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
+import log from '../../constants/logger';
 
 const config = {
     apiKey: "AIzaSyCKbaA0epDZJnNLaehLEb5iuhwHAbXCe7Y",
@@ -43,7 +44,7 @@ const config = {
             this.auth.signOut();
         })
         .catch(error => {
-            console.error(error);
+            log.error(error);
         });
     }
 
@@ -116,7 +117,7 @@ const config = {
 
         this.notifications().onSnapshot(snapshot => {
             snapshot.forEach(doc => {
-                if(doc.data().userID === uid) {
+                if(doc.data().userID === uid) { // Todo: Change that with firebase query filter method
                     notifications.push({ ...doc.data(), nid: doc.id });
                 }
             })

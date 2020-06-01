@@ -34,8 +34,10 @@ class Chat extends Component{
         }
 
         function filterMessage(message){
-            return ((message.fromId === currentUser.uid && message.toId === matchedUser.uid) || 
-                (message.fromId === matchedUser.uid && message.toId === currentUser.uid))
+            return ((message.fromId === currentUser.uid && 
+                    message.toId === matchedUser.uid) || 
+                    (message.fromId === matchedUser.uid && 
+                    message.toId === currentUser.uid))
         }
         this.getMatchedUser = this.props.firebase.user(currentUser.matchedUserID).get()
         .then(snapshot => {
@@ -56,7 +58,11 @@ class Chat extends Component{
                 this.getMessages = this.props.firebase.messages()
                     .orderBy("sentTime").onSnapshot(snapshot => {
                     let messages = [];
-                    log.info("Received all messages between current user w/ id " + currentUser.uid + " and matched user w/ id " + matchedUser.uid);
+                    log.info("Received all messages between current user w/ id " + 
+                        currentUser.uid + 
+                        " and matched user w/ id " + 
+                        matchedUser.uid
+                    );
                     snapshot.forEach(doc => {
                         let message = { ...doc.data(), mid: doc.id}
                         message.sentTime = moment(message.sentTime).format('LLL');

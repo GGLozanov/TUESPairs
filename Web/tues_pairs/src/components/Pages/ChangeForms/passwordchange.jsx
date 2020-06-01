@@ -19,7 +19,6 @@ class PasswordChange extends Component {
             currentPassword: '',
             newPassword: '',
             confirmNewPassword: '',
-            currentUser: Object,
             credential: Object,
             loading: true,
             currentUser: this.props.authUser
