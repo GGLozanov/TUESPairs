@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/screens/main/home.dart';
 import 'package:tues_pairs/services/auth.dart';
@@ -36,9 +37,13 @@ class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
     final btnHeight = screenSize.height / (widgetReasonableHeightMargin - 1.25);
     final btnWidth  = screenSize.width / (widgetReasonableWidthMargin - 1.25);
 
+    final AppLocalizations localizator = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: greyColor,
-      appBar: buildAppBar(pageTitle: 'Edit Password'),
+      appBar: buildAppBar(
+        pageTitle: localizator.translate('editPassword'),
+      ),
       body: Container(
         child: ListView(
           children: <Widget>[
@@ -55,7 +60,7 @@ class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
                     ),
                     SizedBox(height: 10.0),
                     Text(
-                      'You can change your password here.',
+                      localizator.translate('changePasswordHere'),
                       style: TextStyle(
                         fontFamily: 'BebasNeue',
                         fontSize: 30.0,
@@ -66,19 +71,19 @@ class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
                     SizedBox(height: 15.0),
                     PasswordInputField(
                       key: Key(Keys.settingsPasswordFormOldPasswordInputField),
-                      hintText: 'Enter your old password',
+                      hintText: 'oldPassword',
                       onChanged: (value) => oldUserPassword = value,
                     ),
                     SizedBox(height: 15.0),
                     PasswordInputField(
                       key: Key(Keys.settingsPasswordFormPasswordInputField),
-                      hintText: 'Enter your new password',
+                      hintText: 'newPassword',
                       onChanged: (value) => newUserPassword = value,
                     ),
                     SizedBox(height: 15.0),
                     ConfirmPasswordInputField(
                       key: Key(Keys.settingsPasswordFormConfirmPasswordInputField),
-                      hintText: 'Confirm your new password',
+                      hintText: 'confirmNewPassword',
                       onChanged: (value) => newUserConfirmPassword = value,
                       sourcePassword: newUserPassword,
                     ),
@@ -104,7 +109,7 @@ class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
                               if(oldUserPassword == newUserPassword) {
                                 logger.e('SettingsPassword: Old password and new password match!');
                                 widget.baseAuth.clearAndAddError(
-                                    'Invalid information. Old password is the same as the new one!'
+                                    'oldPasswordSameAsNew'
                                 );
                                 throw new PlatformException(
                                   code: 'ERROR_INVALID_PASSWORD_SELECTION',
@@ -134,7 +139,7 @@ class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
                                       .catchError((e) {
                                         logger.e('SettingPassword: Reauth with new password ' + e.toString());
                                         widget.baseAuth.errorMessages.add(
-                                          'Invalid information. New passwords do not match or the password itself is invalid!'
+                                          'newPasswordsMismatchOrInvalid'
                                         );
                                         throw new PlatformException(
                                           code: 'ERROR_INCORRECT_NEW_PASSWORD',
@@ -144,7 +149,7 @@ class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
                                   }).catchError((e) {
                                     logger.e('SettingPassword: UpdatePassword ' + e.toString());
                                     widget.baseAuth.errorMessages.add(
-                                        'Could not update with new password! You may need to relogin or provide a longer password!'
+                                        'passwordUpdateFailTryLonger'
                                     );
                                     throw new PlatformException(
                                         code: 'ERROR_BAD_PASSWORD',
@@ -154,7 +159,7 @@ class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
                                 }).catchError((e) {
                                   logger.e('SettingPassword: Reauth with old password ' + e.toString());
                                   widget.baseAuth.errorMessages.add(
-                                      'Invalid information. New passwords do not match or the password itself is invalid!'
+                                      'newPasswordsMismatchOrInvalid'
                                   );
                                   throw new PlatformException(
                                       code: 'ERROR_INCORRECT_OLD_PASSWORD',
@@ -164,7 +169,7 @@ class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
                               } catch(e) {
                                 logger.e('SettingsPassword: Reauthenticate ' + e.toString());
                                 widget.baseAuth.errorMessages.add(
-                                  'Auth info is incorrect!'
+                                  'authInfoIncorrect'
                                 );
                                 throw new PlatformException(
                                   code: 'ERROR_INVALID_AUTH',
@@ -176,7 +181,7 @@ class _SettingsPasswordFormState extends State<SettingsPasswordForm> {
                           } else {
                             logger.e('SettingsPassword: Invalid information entered in form!');
                             widget.baseAuth.clearAndAddError(
-                              'Invalid information in forms or new passwords do not match!'
+                              'invalidInfoOrNewPasswordsMismatch'
                             );
                             throw new PlatformException(
                               code: 'ERROR_INVALID_FORM_INFO',

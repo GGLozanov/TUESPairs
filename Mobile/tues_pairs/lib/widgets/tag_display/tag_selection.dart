@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/screens/main/home.dart';
@@ -46,10 +47,12 @@ class _TagSelectionState extends State<TagSelection> {
     final btnHeight = screenSize.height / (widgetReasonableHeightMargin - 1.25);
     final btnWidth = screenSize.width / (widgetReasonableWidthMargin - 1.25);
 
+    final AppLocalizations localizator = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: buildAppBar(
         pageTitle: widget.isCurrentUserAvailable ?
-          'Edit Tags' : 'Select Tags'
+          localizator.translate('editTags') : localizator.translate('selectTags')
       ),
       body: Container(
         color: greyColor,
@@ -71,7 +74,7 @@ class _TagSelectionState extends State<TagSelection> {
               rightBtnKey: Key(Keys.nextButton),
               btnsHeight: btnHeight,
               btnsWidth: btnWidth,
-              rightBtnText: 'Confirm Tags', // no need to pass left text because set to default
+              rightBtnText: 'confirmTags', // no need to pass left text because set to default
               onLeftPressed: () async {
                 if(widget.isCurrentUserAvailable) {
                   currentUser.tagIDs = await database.getUserById()

@@ -86,11 +86,14 @@ class _TagCardState extends State<TagCard> {
 
   @override
   Widget build(BuildContext context) {
-    if(widget.user == null) widget.user = Provider.of<User>(context);
+    if(widget.user == null) {
+      widget.user = Provider.of<User>(context);
+    }
 
     // TODO: For future reference, UI errors with tags can be caused due to fontsize (decrease)
     final tagName = Text(
       widget.tag.name,
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
         color: Colors.white,
         fontSize: widget.tagFontSize,
@@ -98,7 +101,9 @@ class _TagCardState extends State<TagCard> {
       ),
     );
 
-    if(widget.user.tagIDs.contains(widget.tag.tid)) widget.isChosen = true;
+    if(widget.user.tagIDs.contains(widget.tag.tid)) {
+      widget.isChosen = true;
+    }
 
     return Container(
       height: widget.tagHeight,

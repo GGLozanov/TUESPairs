@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:tues_pairs/widgets/form/input_field.dart';
 import 'package:tues_pairs/shared/constants.dart';
 
+import '../../locale/app_localization.dart';
+
 class DescriptionInputField extends InputField {
 
   final bool isTeacher; // is the user a teacher or not
-  String descriptionTag; // tag to append at the end ('interest'/'idea')
 
   DescriptionInputField({
     Key key,
@@ -14,26 +15,30 @@ class DescriptionInputField extends InputField {
     String initialValue,
     int maxLines
   }) : assert(isTeacher != null),
-    descriptionTag = isTeacher ? 'qualifiactions as a teacher' :
-    'TUES diploma project idea',
     super(
       key: key,
       onChanged: onChanged,
       initialValue: initialValue,
-      hintText: 'Describe your ' + (isTeacher ? 'qualifiactions as a teacher' :
-        'TUES diploma project idea') + ' (Optional)', // have to repeat this here because descriptionTag isn't static
+      hintText: isTeacher ? 'describeQualifications' : 'describeProjectIdea',
       maxLines: maxLines,
     );
 
   @override
   Widget build(BuildContext context) {
+
+    final AppLocalizations localizator = AppLocalizations.of(context);
+
     return TextFormField(
       initialValue: initialValue ?? '',
       onChanged: onChanged,
       style: textInputColor,
       validator: (value) {
         if(value.length > 200) {
-          return 'Enter a shorter' + descriptionTag;
+          return (
+            isTeacher ? 
+            localizator.translate('shorterQualifications') :
+            localizator.translate('shorterProjectIdea')
+          );
         }
         return null;
       }, // validator property is used for the validation of separate TextFormFields (takes a function with a value and you can
@@ -46,7 +51,7 @@ class DescriptionInputField extends InputField {
           Icons.code,
           color: Colors.orange,
         ),
-        hintText: hintText,
+        hintText: localizator.translate(hintText),
       ),
     );
   }

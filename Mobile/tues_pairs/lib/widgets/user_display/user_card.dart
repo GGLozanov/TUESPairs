@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/shared/constants.dart';
@@ -65,6 +66,7 @@ class _UserCardState extends State<UserCard> {
   Widget build(BuildContext context) {
 
     logger.i('UserCard: Rendering user card for user w/ id "' + widget.user.uid + '"');
+    final AppLocalizations localizator = AppLocalizations.of(context);
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.0),
@@ -112,26 +114,30 @@ class _UserCardState extends State<UserCard> {
                 ),
                 SizedBox(height: !widget.user.isTeacher ? 10.0 : 0.0),
                 !widget.user.isTeacher ? Text(
-                  'GPA: ' + widget.user.GPA.toString(),
+                  localizator.translate('GPA') + ': '+ widget.user.GPA.toString(),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 22,
                     fontWeight: FontWeight.bold
                   ),
+                  textAlign: TextAlign.center,
                 ) : SizedBox(),
                 widget.hasUserSentMatchRequestToCurrent ? Text(
-                  'User has sent a match request to you!',
+                  localizator.translate('userHasSentMatchRequest'),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 19,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                   ),
+                  textAlign: TextAlign.center,
                 ) : SizedBox(),
                 SizedBox(height: widget.user.description != '' ? 5.0 : 0.0),
                 widget.user.description != '' ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Text(
-                    widget.user.isTeacher ? 'Qualified in' : 'Interested in',
+                    widget.user.isTeacher ?
+                      localizator.translate('qualifiedIn') :
+                        localizator.translate('interestedIn'),
                     style: TextStyle(
                         color: Colors.orange,
                         fontSize: 24,
@@ -169,7 +175,8 @@ class _UserCardState extends State<UserCard> {
                         widget.onMatch();
                       },
                       child: Text(
-                        'Match',
+                        localizator.translate('matchYes'),
+                        textAlign: TextAlign.center,
                       ),
                       backgroundColor: Colors.deepOrange
                     ),
@@ -186,7 +193,8 @@ class _UserCardState extends State<UserCard> {
                         widget.onSkip(); // destroy the widget
                       },
                       child: Text(
-                        'Skip',
+                        localizator.translate('matchNo'),
+                        textAlign: TextAlign.center,
                       ),
                       backgroundColor: Colors.deepOrange
                     ),

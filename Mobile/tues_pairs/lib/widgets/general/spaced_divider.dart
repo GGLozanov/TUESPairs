@@ -7,7 +7,7 @@ class SpacedDivider extends StatelessWidget {
     return Column(
       children: <Widget>[
         SizedBox(height: 25.0),
-        Divider(height: 15.0, thickness: 10.0, color: darkGreyColor),
+        Divider(height: 15.0, thickness: 2.0, color: darkGreyColor),
         SizedBox(height: 25.0),
       ]
     );

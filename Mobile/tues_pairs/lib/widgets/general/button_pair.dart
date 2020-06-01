@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/form/input_button.dart';
 
@@ -23,8 +24,8 @@ class ButtonPair extends StatelessWidget {
     this.btnsWidth = 300 / widgetReasonableWidthMargin,
     @required this.onLeftPressed,
     @required this.onRightPressed,
-    this.leftBtnText = 'Back',
-    this.rightBtnText = 'Confirm',
+    this.leftBtnText = 'back',
+    this.rightBtnText = 'confirm',
     this.leftBtnColor = darkGreyColor,
     this.rightBtnColor = darkGreyColor
   }) :
@@ -45,6 +46,7 @@ class ButtonPair extends StatelessWidget {
           onPressed: onLeftPressed,
           color: leftBtnColor
         ),
+        SizedBox(width: 5.0),
         InputButton(
           key: rightBtnKey,
           minWidth: btnsWidth,

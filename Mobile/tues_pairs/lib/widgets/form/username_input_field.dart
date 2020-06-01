@@ -3,13 +3,15 @@ import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/form/input_field.dart';
 
+import '../../locale/app_localization.dart';
+
 class UsernameInputField extends InputField {
 
   UsernameInputField({
     Key key,
     @required Function onChanged,
     String initialValue,
-    String hintText = 'Enter a username',
+    String hintText = 'username',
     int maxLines
   }) : super(
       key: key,
@@ -21,6 +23,8 @@ class UsernameInputField extends InputField {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizator = AppLocalizations.of(context);
+
     return TextFormField(
       initialValue: initialValue ?? '',
       onChanged: onChanged,
@@ -28,10 +32,10 @@ class UsernameInputField extends InputField {
       style: textInputColor,
       validator: (value) {
         if(value.isEmpty) {
-          return 'Enter a username';
+          return localizator.translate('enterUsername');
         }
         if(value.length > 30) {
-          return 'Enter a shorter username!';
+          return localizator.translate('shorterUsername');
         }
         return null;
       }, // validator returns string (tag to put on the field if input is invalid)
@@ -41,7 +45,7 @@ class UsernameInputField extends InputField {
           Icons.person,
           color: Colors.orange,
         ),
-        hintText: hintText,
+        hintText: localizator.translate(hintText),
       ),
     );
   }

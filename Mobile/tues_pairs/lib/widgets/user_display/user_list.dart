@@ -240,8 +240,7 @@ class _UserListState extends State<UserList> {
 
     if(users.isEmpty) {
       return CenteredText(
-        text: 'Whoops, looks like there isn\'t anyone to match with! '
-            'Make sure you haven\'t skipped your potential matches by clearing your skipped users!'
+        text: 'noUsersToMatchWith'
       );
     }
 

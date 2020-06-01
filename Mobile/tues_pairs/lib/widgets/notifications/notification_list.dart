@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/modules/notification.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/shared/constants.dart';
+import 'package:tues_pairs/shared/extract.dart';
 import 'package:tues_pairs/shared/keys.dart';
 
 class NotificationList extends StatefulWidget {
@@ -20,14 +22,17 @@ class _NotificationListState extends State<NotificationList> {
   Widget build(BuildContext context) {
     final notifications = Provider.of<List<MessageNotification>>(context);
     final currentUser = Provider.of<User>(context);
+    final AppLocalizations localizator = AppLocalizations.of(context);
 
     return Container(
       color: greyColor,
       child: ListView.builder( // notification drawer
         itemCount: notifications == null ? 0 : notifications.length,
         itemBuilder: (context, idx) {
+          String nid = notifications[idx].nid;
+
           return Tooltip(
-            message: 'Swipe to dismiss!',
+            message: localizator.translate('swipe'),
             height: 25.0,
             verticalOffset: 50.0,
             textStyle: TextStyle(
@@ -36,18 +41,17 @@ class _NotificationListState extends State<NotificationList> {
               color: Colors.white,
             ),
             child: Dismissible(
-              key: Key(Keys.dismissibleNotification + idx.toString()), // avoid duplicate keys
+              key: UniqueKey(), // avoid duplicate keys using UniqueKey
               direction: DismissDirection.endToStart,
               background: Container(
                 color: darkGreyColor,
               ),
               onDismissed: (direction) async {
-                setState(() {
-                  String nid = notifications[idx].nid;
+                setState(() { // needs to be called first
                   notifications.removeAt(idx); // remove dismissed notification from list
-                  Database(uid: currentUser.uid)
-                      .deleteNotification(nid); // delete notification from DB
-                }); // needs to be called first or throws exception; needles overhead :(
+                });
+                await Database(uid: currentUser.uid)
+                    .deleteNotification(nid); // delete notification from DB
               },
               child: Card(
                 color: notifications[idx].color,
@@ -59,7 +63,11 @@ class _NotificationListState extends State<NotificationList> {
                   child: Column(
                     children: <Widget>[
                       Text(
-                        notifications[idx].message,
+                        localizator.translate(getNotificationKey(notifications[idx].message) + 'PartOne') +
+                        ' ' +
+                        extractUsernameFromNotification(notifications[idx].message) +
+                        ' ' +
+                        localizator.translate(getNotificationKey(notifications[idx].message) + 'PartTwo'),
                         style: TextStyle(
                           fontSize: 18.0,
                           fontFamily: 'Nilam',
@@ -69,7 +77,7 @@ class _NotificationListState extends State<NotificationList> {
                       ),
                       SizedBox(height: 10.0),
                       Text(
-                        'At: ' + notifications[idx].sentTime,
+                        localizator.translate('at') + ': ' + notifications[idx].sentTime,
                         style: TextStyle(
                           fontSize: 14.0,
                           fontFamily: 'Nilam',

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/database.dart';
@@ -43,22 +44,22 @@ class RegisterForm extends StatefulWidget {
 
       formStates.removeWhere((state) => state == null); // remove null states (like GPA if deselected)
 
-      baseAuth.errorMessages = [''];
+      baseAuth.errorMessages = [];
       if(formStates.firstWhere(
           (state) => !state.validate(), // if no element is found to satisfy this condition, the form is valid
           orElse: () => null) != null) {
         logger.w('Register: User is invalid (stepper forms are invalid)');
-        baseAuth.errorMessages.add('Invalid info in forms!');
+        baseAuth.errorMessages.add('invalidFormInfo');
         return false;
       }
       if(usernameExists(baseAuth.user.username, users)) {
         logger.w('Register: User is invalid (username already exists)');
-        baseAuth.errorMessages.add('Username exists');
+        baseAuth.errorMessages.add('usernameExists');
         return false;
       }
       if(baseAuth.password != baseAuth.confirmPassword) {
         logger.w('Register: User is invalid (passwords do not match)');
-        baseAuth.errorMessages.add('Passwords do not match');
+        baseAuth.errorMessages.add('passwordsDoNotMatch');
         return false;
       }
 
@@ -114,17 +115,17 @@ class RegisterForm extends StatefulWidget {
 
       formStates.removeWhere((state) => state == null); // remove null states (like GPA if deselected)
 
-      baseAuth.errorMessages = [''];
+      baseAuth.errorMessages = [];
       if(formStates.firstWhere(
               (state) => !state.validate(), // if no element is found to satisfy this condition, the form is valid
           orElse: () => null) != null) {
         logger.w('Register: User is invalid (stepper forms are invalid)');
-        baseAuth.errorMessages.add('Invalid info in forms!');
+        baseAuth.errorMessages.add('invalidFormInfo');
         return false;
       }
       if(usernameExists(baseAuth.user.username, users)) {
         logger.w('Register: User is invalid (username already exists)');
-        baseAuth.errorMessages.add('Username exists!');
+        baseAuth.errorMessages.add('usernameExists');
         return false;
       }
 
@@ -178,7 +179,7 @@ class _RegisterFormState extends State<RegisterForm> {
       Widget content,
       int stepIdx,
       bool innerCondition,
-      {bool isActive = true}
+      {bool isActive = true, AppLocalizations localizator}
   ) {
     assert(content != null);
     assert(stepIdx != null);
@@ -186,7 +187,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
     return Step(
       title: Text(
-        _stepInfos[stepIdx].name,
+        localizator.translate(_stepInfos[stepIdx].name),
         style: TextStyle(
           fontFamily: 'Nilam',
           fontSize: 20.0,
@@ -205,7 +206,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
   List<Step> _getSteps(
       List<Widget> fields,
-      {bool isCurrentTeacher = false}
+      {bool isCurrentTeacher = false, AppLocalizations localizator}
   ) {
     final steps = fields.map((widget) {
       final stepIdx = fields.indexOf(widget);
@@ -213,19 +214,20 @@ class _RegisterFormState extends State<RegisterForm> {
       if(widget is InputField) { // decide which conversion func to call
         // retrieve whether the form is currently filled (should not save currentState)
         if(widget is DescriptionInputField) { // TODO: limit conversion checks
-          _stepInfos[stepIdx].name = (isCurrentTeacher ?
-            'Qualifications' : 'Idea') + ' (Optional)';
+          _stepInfos[stepIdx].name = isCurrentTeacher ?
+            'qualificationsOptional' : 'ideaOptional';
           // change the stepTitle to 'Qualifications' if teacher
         }
 
         return _stepFromWidget(
           Form(
             key: _stepInfos[stepIdx].formKey,
-            child: widget
+            child: widget,
           ), // content
           stepIdx, // step index
           _stepInfos[stepIdx].isFormValid(shouldSave: false), // inner condition for state (edit, indexed, complete)
-          isActive: currentStep >= stepIdx // isActive (highlighted w/ blue)
+          isActive: currentStep >= stepIdx, // isActive (highlighted w/ blue)
+          localizator: localizator
         );
       }
       if(widget is Row) {
@@ -234,7 +236,8 @@ class _RegisterFormState extends State<RegisterForm> {
           widget,
           stepIdx,
           currentStep > stepIdx,
-          isActive: currentStep >= stepIdx
+          isActive: currentStep >= stepIdx,
+          localizator: localizator
         );
       }
       return null;
@@ -251,12 +254,12 @@ class _RegisterFormState extends State<RegisterForm> {
       [
         new StepInfo(
           stepIdx: 0,
-          name: 'Are you a teacher?',
+          name: 'askIfTeacher',
           formKey: null
         ),
         new StepInfo(
           stepIdx: 1,
-          name: 'Username',
+          name: 'username',
           formKey: GlobalKey<FormState>(debugLabel: 'Username')
         ),
         new StepInfo(
@@ -266,34 +269,34 @@ class _RegisterFormState extends State<RegisterForm> {
         ),
         new StepInfo(
           stepIdx: 3,
-          name: 'Idea (Optional)',
+          name: 'ideaOptional',
           formKey: GlobalKey<FormState>(debugLabel: 'Description')
         )
       ]
     : [
       new StepInfo(
         stepIdx: 0,
-        name: 'Are you a teacher?',
+        name: 'askIfTeacher',
         formKey: null
       ),
       new StepInfo(
         stepIdx: 1,
-        name: 'E-mail',
+        name: 'email',
         formKey: GlobalKey<FormState>(debugLabel: 'E-mail'),
       ),
       new StepInfo(
         stepIdx: 2,
-        name: 'Password',
+        name: 'password',
         formKey: GlobalKey<FormState>(debugLabel: 'Password'),
       ),
       new StepInfo(
         stepIdx: 3,
-        name: 'Confirm Password',
+        name: 'confirmPassword',
         formKey: GlobalKey<FormState>(debugLabel: 'Confirm Password'),
       ),
       new StepInfo(
         stepIdx: 4,
-        name: 'Username',
+        name: 'username',
         formKey: GlobalKey<FormState>(debugLabel: 'Username'),
       ),
       new StepInfo(
@@ -303,7 +306,7 @@ class _RegisterFormState extends State<RegisterForm> {
       ),
       new StepInfo(
         stepIdx: 6,
-        name: 'Idea (Optional)',
+        name: 'ideaOptional',
         formKey: GlobalKey<FormState>(debugLabel: 'Description')
       )
     ];
@@ -320,13 +323,15 @@ class _RegisterFormState extends State<RegisterForm> {
     final screenSize = MediaQuery.of(context).size;
     final btnHeight = screenSize.height / (widgetReasonableHeightMargin - 1.25);
     final btnWidth = screenSize.width / (widgetReasonableWidthMargin - 1.25);
-
+    
+    final AppLocalizations localizator = AppLocalizations.of(context);
+    
     final _isTeacherField = <Widget>[
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            'Tap the switch if you are',
+            localizator.translate('tapSwitch'),
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -353,7 +358,7 @@ class _RegisterFormState extends State<RegisterForm> {
       PasswordInputField(
         key: Key(Keys.registerPasswordInputField),
         onChanged: (value) => setState(() {baseAuth.password = value;}),
-        hintText: 'Enter a password',
+        hintText: 'enterPassword',
       ),
       ConfirmPasswordInputField(
         key: Key(Keys.registerConfirmPasswordInputField),
@@ -393,10 +398,12 @@ class _RegisterFormState extends State<RegisterForm> {
       _getSteps(
         _externFields.expand((widget) => widget).toList(),
         isCurrentTeacher: baseAuth.user.isTeacher,
+        localizator: localizator
       ) :
         _getSteps(
           _defaultFields.expand((widget) => widget).toList(),
-          isCurrentTeacher: baseAuth.user.isTeacher
+          isCurrentTeacher: baseAuth.user.isTeacher,
+          localizator: localizator
       );
 
     if(currentStep >= _steps.length) {
@@ -469,7 +476,7 @@ class _RegisterFormState extends State<RegisterForm> {
                             screenSize: screenSize,
                             key: Key(Keys.registerStepNextButton),
                             child: Text(
-                              isFinalStep ? 'Go to Start' : 'Continue',
+                              isFinalStep ? localizator.translate('goToStart') : localizator.translate('continue'),
                               style: TextStyle(
                                 fontFamily: 'Nilam',
                                 fontSize: 22.0,
@@ -484,7 +491,7 @@ class _RegisterFormState extends State<RegisterForm> {
                             screenSize: screenSize,
                             key: Key(Keys.registerStepBackButton),
                             child: Text(
-                              'Back',
+                              localizator.translate('back'),
                               style: TextStyle(
                                 fontFamily: 'Nilam',
                                 fontSize: 22.0,
@@ -505,8 +512,8 @@ class _RegisterFormState extends State<RegisterForm> {
                   rightBtnKey: Key(Keys.registerButton),
                   btnsHeight: btnHeight,
                   btnsWidth: btnWidth,
-                  leftBtnText: 'Choose Tags',
-                  rightBtnText: widget.isExternalAuth ? 'Finish Account' : 'Create account',
+                  leftBtnText: 'chooseTags',
+                  rightBtnText: widget.isExternalAuth ? 'finishAccount' : 'createAccount',
                   onLeftPressed: () {
                     Navigator.push(
                         context,
@@ -536,7 +543,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       // TODO: Reimplement setState(() => {}); threw exception beforehand -> done
                       setState(() =>
                           baseAuth.errorMessages.add(
-                              'An error has occurred! Please try again!'
+                              'errorTryAgain'
                           )
                       );
                     }
@@ -548,14 +555,14 @@ class _RegisterFormState extends State<RegisterForm> {
                   key: Key(Keys.externBackButton),
                   minWidth: 300.0,
                   height: 60.0,
-                  text: 'Back',
+                  text: 'back',
                   onPressed: () async {
                     try {
                       await baseAuth.authInstance.deleteCurrentFirebaseUser();
                     } catch(e) {
                       logger.e('RegisterForm: Back ' + e.toString());
                       setState(() =>
-                          baseAuth.clearAndAddError('Could not go back to login. Your auth token may have expired. Please exit and try again.')
+                          baseAuth.clearAndAddError('expiredAuthToken')
                       );
                     }
                   },

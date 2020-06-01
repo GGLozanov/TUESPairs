@@ -50,7 +50,7 @@ class _ChatState extends State<Chat> {
     return Container(
       color: greyColor,
       child: currentUser.matchedUserID == null ? CenteredText(
-        text: 'You are not matched with anyone!'
+        text: 'notMatchedWithAnyone'
       ) : FutureBuilder<User>(
         future: database.getUserById(),
         builder: (context, snapshot){
@@ -61,7 +61,7 @@ class _ChatState extends State<Chat> {
               child: currentUser.matchedUserID == matchedUser.uid && matchedUser.matchedUserID == currentUser.uid 
                 ? ChatDisplay(matchedUser: matchedUser, messageController: messageController, callback: sendMessage, scrollController: scrollController) 
                 : CenteredText(
-                    text: 'Wait until your request is accepted!'
+                    text: 'waitForAccept'
                 )
             );
           } else return Loading();

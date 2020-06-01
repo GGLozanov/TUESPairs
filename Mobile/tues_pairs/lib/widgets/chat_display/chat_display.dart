@@ -6,6 +6,7 @@ import 'package:tues_pairs/modules/message.dart';
 import 'package:tues_pairs/widgets/chat_display/chat_input.dart';
 import 'package:tues_pairs/widgets/chat_display/message_card.dart';
 
+import '../../locale/app_localization.dart';
 import '../../modules/user.dart';
 import '../../shared/constants.dart';
 
@@ -25,6 +26,7 @@ class _ChatDisplayState extends State<ChatDisplay> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizator = AppLocalizations.of(context);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if(widget.scrollController.hasClients) {
@@ -74,7 +76,7 @@ class _ChatDisplayState extends State<ChatDisplay> {
               Padding(
                 padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                 child: Text(
-                  sentDate == today ? "Today" : sentDate,
+                  sentDate == today ? localizator.translate('today') : sentDate,
                   style: TextStyle(
                     color: Colors.white24,
                   ),

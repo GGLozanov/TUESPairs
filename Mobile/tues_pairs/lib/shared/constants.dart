@@ -1,5 +1,7 @@
+import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:tues_pairs/locale/application.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/shared/keys.dart';
@@ -165,8 +167,4 @@ void scrollAnimation(ScrollController scrollController) {
     duration: Duration(milliseconds: 300),
     curve: Curves.easeOut
   );
-}
-
-int diffInDays(DateTime date1, DateTime date2) {
-  return ((date1.difference(date2) - Duration(hours: date1.hour) + Duration(hours: date2.hour)).inHours / 24).round();
 }

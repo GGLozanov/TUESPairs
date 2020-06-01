@@ -9,12 +9,14 @@ import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/widgets/avatar/avatar_wrapper.dart';
 import 'package:tues_pairs/widgets/general/centered_text.dart';
+import 'package:tues_pairs/widgets/general/localization_buttons.dart';
 import 'package:tues_pairs/widgets/settings/settings_form.dart';
 import 'package:tues_pairs/templates/error_notifier.dart';
 import 'package:tues_pairs/widgets/form/input_button.dart';
 import 'package:tues_pairs/widgets/settings/settings_email_form.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_selection.dart';
 
+import '../../locale/app_localization.dart';
 import '../../services/auth.dart';
 import '../../services/database.dart';
 import '../../services/image.dart';
@@ -42,7 +44,8 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
   Future<void> _showDeleteAlertDialog({
     @required BuildContext context,
     @required User currentUser,
-    @required List<User> users
+    @required List<User> users,
+    @required AppLocalizations localizator
   }) async {
     return showDialog<void>(
       context: context,
@@ -55,7 +58,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
             borderRadius: BorderRadius.circular(25.0),
           ),
           title: Text(
-            'Confirm Account Deletion',
+            localizator.translate('confirmAccountDeletionLabel'),
             style: TextStyle(
               fontFamily: 'Nilam',
               fontSize: 30.0,
@@ -67,7 +70,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
             child: ListBody(
               children: <Widget>[
                 Text(
-                  'Are you absolutely sure you want to delete your account?',
+                  localizator.translate('confirmAccountDeletionDescription'),
                   style: TextStyle(
                     fontFamily: 'Nilam',
                     fontSize: 25.0,
@@ -77,7 +80,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                 ),
                 SizedBox(height: 10.0),
                 Text(
-                  'This change is permanent and cannot be reverted.',
+                  localizator.translate('confirmAccountDeletionAlert'),
                   style: TextStyle(
                     fontFamily: 'Nilam',
                     fontSize: 20.0,
@@ -92,7 +95,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
             FlatButton.icon(
               icon: Icon(Icons.arrow_back),
               label: Text(
-                'Back',
+                localizator.translate('back'),
                 style: TextStyle(
                   fontFamily: 'Nilam',
                   fontSize: 20.0,
@@ -107,7 +110,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
               key: Key(Keys.settingsConfirmDeleteAccountButton),
               icon: Icon(Icons.delete),
               label: Text(
-                'Approve',
+                localizator.translate('approve'),
                 style: TextStyle(
                   fontFamily: 'Nilam',
                   fontSize: 20.0,
@@ -156,6 +159,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
     final screenSize = MediaQuery.of(context).size;
     final btnHeight = screenSize.height / widgetReasonableHeightMargin;
     final btnWidth = screenSize.width / widgetReasonableWidthMargin;
+    final AppLocalizations localizator = AppLocalizations.of(context);
 
     return Provider<ImageService>.value(
       value: imageService,
@@ -174,7 +178,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                 key: Key(Keys.settingsEditTagsButton),
                 minWidth: btnWidth * 1.25, // wider
                 height: btnHeight, // shorter
-                text: 'Edit Tags',
+                text: 'editTags',
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(
                     builder: (context) => MultiProvider( // need to pass in the providers again due to different route
@@ -199,7 +203,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                 key: Key(Keys.settingsEditSensitiveButton),
                 minWidth: btnWidth * 1.25, // wider
                 height: btnHeight, // shorter
-                text: 'Edit Sensitive Info',
+                text: 'editSensitiveInfo',
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(
                     builder: (context) => Provider.value(
@@ -224,7 +228,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                     key: Key(Keys.settingsClearMatchedUserButton),
                     minWidth: btnWidth,
                     height: btnHeight,
-                    text: currentUser.isTeacher ? 'Clear Student' : 'Clear Teacher',
+                    text: currentUser.isTeacher ? 'clearStudent' : 'clearTeacher',
                     onPressed: () async {
                       // TODO: Use updateUserData from Database here to update matchedUserID
                       // TODO: Safeguard this option when two people are matched (have the other user consent to it w/bool flag notification maybe?)
@@ -241,7 +245,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                           logger.w('Settings: User w/ id "' +
                               currentUser.uid +
                               '" has attempted too many clears of matched teacher/student!');
-                          setError("Too many clears!");
+                          setError(localizator.translate('tooManyClears'));
                         }
                       }
                     },
@@ -251,7 +255,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                     key: Key(Keys.settingsClearSkippedUsersButton),
                     minWidth: btnWidth,
                     height: btnHeight,
-                    text: 'Clear Skipped',
+                    text: 'clearSkipped',
                     onPressed: () async {
                       if(currentUser.skippedUserIDs != []) {
                         logger.i('Settings: User w/ id "' + currentUser.uid +
@@ -274,12 +278,13 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                 minWidth: btnWidth,
                 height: btnHeight,
                 color: Colors.redAccent[700],
-                text: 'Delete',
+                text: 'delete',
                 onPressed: () async {
                   await _showDeleteAlertDialog(
                     context: context,
                     currentUser: currentUser,
                     users: users,
+                    localizator: localizator
                   );
                 },
               ),
@@ -292,7 +297,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                 minWidth: btnWidth * 1.25,
                 height: btnHeight,
                 color: Colors.orange,
-                text: 'Submit',
+                text: 'saveChanges',
                 onPressed: () async {
                   // TODO: Use updateUserData from Database here -> done
                   final FormState currentState = SettingsForm.baseAuth.key.currentState;
@@ -324,16 +329,14 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                     logger.w('Settings: User w/ id "' +
                         currentUser.uid +
                         '" has entered invalid information in Settings fields!');
-                    setError('Invalid info in fields or username already exists!');
+                    setError(localizator.translate('invalidInfoInFieldsUsernameExists'));
                   }
                 },
               ),
             ),
+            SizedBox(height: 25.0),
+            LocalizationButtons(),
             SizedBox(height: 10.0),
-            CenteredText(
-              text: 'Hint: Changes to account fields and image only take effect upon pressing the Submit button!',
-              fontSize: 22.0,
-            ),
           ],
         ),
       ),

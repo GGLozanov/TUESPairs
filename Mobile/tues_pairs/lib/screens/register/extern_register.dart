@@ -7,6 +7,8 @@ import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/widgets/register/register_wrapper.dart';
 
+import '../../locale/app_localization.dart';
+
 class ExternRegister extends StatefulWidget {
   BaseAuth baseAuth;
   Function callback; // callback passed down all the way to register_form that calls AuthListener rerender
@@ -28,10 +30,12 @@ class _ExternRegisterState extends State<ExternRegister> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizator = AppLocalizations.of(context);
+
     return Scaffold( // Scaffold grants the material design palette and general layout of the app (properties like appBar)
       backgroundColor: greyColor,
       appBar: buildAppBar(
-        pageTitle: 'Register'
+        pageTitle: localizator.translate('register')
       ),
       body: RegisterWrapper.external(baseAuth: widget.baseAuth, imageService: new ImageService(), callback: widget.callback),
     );

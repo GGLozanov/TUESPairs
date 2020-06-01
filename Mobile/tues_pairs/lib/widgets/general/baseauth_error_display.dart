@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 
 class BaseAuthErrorDisplay extends StatefulWidget {
@@ -13,12 +14,15 @@ class BaseAuthErrorDisplay extends StatefulWidget {
 }
 
 class _BaseAuthErrorDisplayState extends State<BaseAuthErrorDisplay> {
+
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizator = AppLocalizations.of(context);
+
     return Column(
       children: widget.baseAuth.
         errorMessages?.map((message) => Text(
-          "$message",
+          localizator.translate(message),
           style: TextStyle(
             color: Colors.red,
             fontFamily: 'Nilam',
