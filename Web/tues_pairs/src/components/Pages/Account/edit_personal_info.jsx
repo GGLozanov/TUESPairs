@@ -38,6 +38,7 @@ class EditPersonalInfo extends Component{
             show: false,
             password: '',
             description: '',
+            valid: true
         };
     }
 
@@ -49,12 +50,21 @@ class EditPersonalInfo extends Component{
         .then(snapshot => {
             const currentUser = this.props.firebase.getUserFromSnapshot(snapshot);
 
+            if(currentUser.providerData) {
+                currentUser.providerData.forEach(provider => {
+                    if(provider.providerId !== 'password') {
+                        this.setState({ valid: false });
+                    }
+                });
+            }
+
             this.setState({ 
                 photoURL: currentUser.photoURL, 
                 email: currentUser.email, 
                 tagIDs: currentUser.tagIDs, 
                 description: currentUser.description,
-                loading: false });
+                loading: false 
+            });
         }).then(() => {
             this.tagProvider = this.props.firebase.tags()
             .onSnapshot(snapshot => {
@@ -226,7 +236,7 @@ class EditPersonalInfo extends Component{
     }
 
     render() {
-        const { username, email, photoURL, GPA, loading, error, tags, show, description} = this.state;
+        const { username, email, photoURL, GPA, loading, error, tags, show, description, valid } = this.state;
 
         const isTeacher = this.props.authUser.isTeacher ? false : true;
 
@@ -312,8 +322,8 @@ class EditPersonalInfo extends Component{
                             { email }
                         </Button>
 
-                        <EmailChangeLink />
-                        <PasswordChangeLink />
+                        {valid &&<EmailChangeLink />}
+                        {valid &&<PasswordChangeLink />}
 
                         <div className="tag-list">
                             <ButtonGroup as={Row}>

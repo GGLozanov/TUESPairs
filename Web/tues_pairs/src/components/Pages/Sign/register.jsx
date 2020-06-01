@@ -40,6 +40,7 @@ class SignUpFormBase extends Component {
                         email: email,
                         isTeacher: null,
                         GPA: null,
+                        deviceTokens: [],
                         photoURL: null,
                         matchedUserID: null,
                         skippedUserIDs: [],

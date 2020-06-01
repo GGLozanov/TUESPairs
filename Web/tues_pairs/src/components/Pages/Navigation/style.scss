@@ -61,6 +61,13 @@
         }
     }
 
+    .notifications-button {
+        transition: 0.2s;
+        &:hover {
+            color: gray;
+        }
+    }
+
     button {
         align-self: center;
         margin: 10px;
@@ -80,6 +87,31 @@
         &:focus {
           outline: none;
         }
+    }
+}
+
+.ui.labeled.icon.menu .item {
+    border-radius: 25px;
+    margin: 10px;
+    background-color: rgb(252, 152, 0);
+    min-height: 130px;
+
+    h2 {
+        display: none;
+    }
+
+    &:hover {
+        h2 {
+            margin-top: 30px;
+            display: block;
+        }
+        h6 {
+            display: none;
+        }
+        p {
+            display: none;
+        }
+        background-color: rgb(163, 98, 0);
     }
 }
 

@@ -42,6 +42,15 @@ input::placeholder {
 }
 .container-reciever {
   max-width: 50%;
+  .trash-button {
+    visibility: hidden;
+  }
+  
+  &:hover {
+    .trash-button {
+      visibility: visible;
+    }
+  }
 }
 .container-sender {
   max-width: 44%;
@@ -52,11 +61,15 @@ input::placeholder {
 .bubble-container-reciever {
   background-color: rgb(252, 152, 0);
   color: white;
+  max-width: 13vw;
+  word-wrap: break-word;
 }
 
 .bubble-container-sender {
   background-color: rgb(34, 34, 43);
   color: white;
+  max-width: 13vw;
+  word-wrap: break-word;
 }
 
 .hint-container {

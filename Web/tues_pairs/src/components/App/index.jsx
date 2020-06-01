@@ -22,8 +22,8 @@ import LandingPageBase from '../Pages/Landing/landing';
 const App = () => (
     <Router>
         <Navigation />
+        <Route exact path={ROUTES.LANDING} component={LandingPageBase} />
         <div className="main">
-            <Route exact path={ROUTES.LANDING} component={LandingPageBase} />
             <Route path={ROUTES.SIGN} component={ChangeHandler} />
             <Route exact path={ROUTES.CHAT} component={ChatPage} />
             <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} />

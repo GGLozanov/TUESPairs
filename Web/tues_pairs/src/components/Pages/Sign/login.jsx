@@ -48,10 +48,13 @@ class SignInFormBase extends Component {
             matchedUserID: null,
             skippedUserIDs: [],
             tagIDs: [],
+            deviceTokens: []
           })
           .then(() => this.props.history.push(ROUTES.USER_INFO));
         }
       })
+    }).catch(error => {
+      log.error(error);
     });
   }
 

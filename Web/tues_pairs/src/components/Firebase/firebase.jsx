@@ -2,6 +2,7 @@ import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
+import log from '../../constants/logger';
 
 const config = {
     apiKey: "AIzaSyCKbaA0epDZJnNLaehLEb5iuhwHAbXCe7Y",
@@ -21,6 +22,7 @@ const config = {
         this.auth = app.auth();
         this.db = app.firestore();
         this.storage = app.storage();
+        this.messaging = app.messaging();
     }
 
     doCreateUserWithEmailAndPassword = (email, password) =>
@@ -29,7 +31,22 @@ const config = {
     doSignInWithEmailAndPassword = (email, password) =>
         this.auth.signInWithEmailAndPassword(email, password);
 
-    doSignOut = () => this.auth.signOut();
+    doSignOut = (currentUser) => {
+        let deviceTokens = currentUser.deviceTokens;
+        this.messaging.getToken().then(token => {
+            if(currentUser.deviceTokens) {
+                deviceTokens.splice(deviceTokens.indexOf(token), 1);
+            }
+            this.db.collection("users").doc(currentUser.uid).set({
+                deviceTokens: deviceTokens
+            }, {merge: true});
+        }).then(() => {
+            this.auth.signOut();
+        })
+        .catch(error => {
+            log.error(error);
+        });
+    }
 
     doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
 
@@ -59,6 +76,8 @@ const config = {
 
     tag = tid => this.db.doc(`tags/${tid}`);
 
+    notifications = () => this.db.collection(`notifications`);
+
     getUserFromSnapshot = snapshot => {
         const firebaseUser = snapshot.data();
         let tags = [];
@@ -76,6 +95,7 @@ const config = {
             ...firebaseUser,
             uid: uid,
             tags: tags,
+            providerData: this.auth.currentUser.providerData
         };
     }
     
@@ -90,6 +110,20 @@ const config = {
         });
 
         return tags;
+    }
+
+    getUserNotifications = async (uid) => {
+        let notifications = [];
+
+        this.notifications().onSnapshot(snapshot => {
+            snapshot.forEach(doc => {
+                if(doc.data().userID === uid) { // Todo: Change that with firebase query filter method
+                    notifications.push({ ...doc.data(), nid: doc.id });
+                }
+            })
+        });
+
+        return notifications;
     }
 
   }
