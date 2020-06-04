@@ -108,7 +108,11 @@ class _ChatDisplayState extends State<ChatDisplay> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: MessageInput(messageController: widget.messageController, callback: widget.callback, scrollController: widget.scrollController),
+                  child: MessageInput(
+                    messageController: widget.messageController,
+                    callback: widget.callback,
+                    scrollController: widget.scrollController
+                  ),
                 )
               ],
             ),

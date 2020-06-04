@@ -57,9 +57,14 @@ class _ChatState extends State<Chat> {
           if(snapshot.connectionState == ConnectionState.done){
             matchedUser = snapshot.data;
             return StreamProvider<List<Message>>.value(
-              value: database.messages,
+              value: database.messages, // get all messages; TODO: Update with filter()!!!
               child: currentUser.matchedUserID == matchedUser.uid && matchedUser.matchedUserID == currentUser.uid 
-                ? ChatDisplay(matchedUser: matchedUser, messageController: messageController, callback: sendMessage, scrollController: scrollController) 
+                ? ChatDisplay(
+                  matchedUser: matchedUser,
+                  messageController: messageController,
+                  callback: sendMessage,
+                  scrollController: scrollController
+                )
                 : CenteredText(
                     text: 'waitForAccept'
                 )

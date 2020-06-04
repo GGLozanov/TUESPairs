@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/modules/user.dart';
@@ -7,7 +8,9 @@ import 'package:tues_pairs/services/database.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/shared/constants.dart';
+import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/widgets/avatar/avatar_wrapper.dart';
+import 'package:tues_pairs/widgets/general/baseauth_error_display.dart';
 import 'package:tues_pairs/widgets/general/centered_text.dart';
 import 'package:tues_pairs/widgets/general/localization_buttons.dart';
 import 'package:tues_pairs/widgets/settings/settings_form.dart';
@@ -26,6 +29,7 @@ class Settings extends StatefulWidget {
   // TODO: export clear tracking into database and keep track of it in cloud
   static int currentMatchedUserClears = 0;
   static final int maxMatchedUserClears = 5;
+  BaseAuth errorBaseAuth = new BaseAuth();
 
   @override
   _SettingsState createState() => _SettingsState();
@@ -262,7 +266,7 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                             '" has cleared skipped users w/ ids "' +
                             currentUser.skippedUserIDs.join(' ') + '"');
                         currentUser.skippedUserIDs = [];
-                        await database.updateUserData(currentUser);
+                        await database.updateUserData(currentUser); // TODO: Replace in submit button
                       }
                     }
                   ),
@@ -301,13 +305,10 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                 onPressed: () async {
                   // TODO: Use updateUserData from Database here -> done
                   final FormState currentState = SettingsForm.baseAuth.key.currentState;
-                  final currentUserUsername = await database.getUserById().then((user) => user.username);
 
                   if(currentState.validate() &&
                       currentUser.email != null &&
-                      currentUser.username != null &&
-                      (!usernameExists(currentUser.username, users)
-                          || currentUser.username == currentUserUsername)) {
+                      currentUser.username != null) {
                     currentUser.photoURL = await imageService.uploadImage()
                         ?? currentUser.photoURL; // check if pfp changed
 
@@ -316,8 +317,23 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
                         '" has updated his settings w/ photoURL "' +
                         currentUser.photoURL.toString() + '"');
 
-                    await database.updateUserData(currentUser); // upload image + wait for update
-                    // TODO: Update w/ more fields in the future
+                    try {
+                      await database.updateUserData(currentUser).catchError((e) {
+                        logger.e('Settings: Save Changes' + e.toString());
+                        setState(() =>
+                            widget.errorBaseAuth.clearAndAddError(localizator.translate('tooManySubmits'))
+                        );
+                        throw new PlatformException(
+                            code: 'ERROR_INSUFFICIENT_PERM',
+                            message: 'User doesn\'t have permission to edit this info (probably due  to rapid changes in information)'
+                        );
+                      }); // upload image + wait for update
+                      // TODO: Update w/ more fields in the future
+                    } catch(e) {
+                      return;
+                    }
+
+                    widget.errorBaseAuth?.errorMessages?.clear();
 
                     logger.i('Settings: User w/ id "' + currentUser.uid.toString() +
                         '" has updated his settings w/ params ' +
@@ -336,7 +352,8 @@ class _SettingsState extends State<Settings> with SingleTickerProviderStateMixin
             ),
             SizedBox(height: 25.0),
             LocalizationButtons(),
-            SizedBox(height: 10.0),
+            SizedBox(height: 20.0),
+            BaseAuthErrorDisplay(baseAuth: widget.errorBaseAuth),
           ],
         ),
       ),
