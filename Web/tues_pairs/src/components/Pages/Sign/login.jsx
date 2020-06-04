@@ -48,7 +48,8 @@ class SignInFormBase extends Component {
             matchedUserID: null,
             skippedUserIDs: [],
             tagIDs: [],
-            deviceTokens: []
+            deviceTokens: [],
+            lastUpdateTime: this.props.firebase.fieldValue.serverTimestamp()
           })
           .then(() => this.props.history.push(ROUTES.USER_INFO));
         }

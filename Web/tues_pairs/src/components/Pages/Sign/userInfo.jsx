@@ -79,7 +79,8 @@ class UserInfo extends Component {
             isTeacher: Boolean(isTeacher),
             GPA: parseFloat(GPA),
             tagIDs: currentUser.tagIDs,
-            description: description
+            description: description,
+            lastUpdateTime: this.props.firebase.fieldValue.serverTimestamp()
         }, {merge: true})
         .then(() => {
             this.props.authUser.username = username;
