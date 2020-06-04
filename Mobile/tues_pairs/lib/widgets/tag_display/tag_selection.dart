@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/modules/tag.dart';
@@ -10,12 +11,14 @@ import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
 import 'package:tues_pairs/widgets/form/input_button.dart';
+import 'package:tues_pairs/widgets/general/baseauth_error_display.dart';
 import 'package:tues_pairs/widgets/general/button_pair.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_card.dart';
 
 class TagSelection extends StatefulWidget {
 
   bool isCurrentUserAvailable = false;
+  BaseAuth errorBaseAuth = new BaseAuth();
 
   TagSelection();
 
@@ -88,13 +91,30 @@ class _TagSelectionState extends State<TagSelection> {
               onRightPressed: () async {
                 // TODO: Optimise without database; keep initial tags separately
                 if(widget.isCurrentUserAvailable) {
-                  await database.updateUserData(currentUser);
+                  try {
+                    await database.updateUserData(currentUser)
+                      .catchError((e) {
+                        logger.e('Settings: TagSelection ' + e.toString());
+                      setState(() =>
+                        widget.errorBaseAuth.clearAndAddError(
+                            localizator.translate('tooManySubmits'))
+                      );
+                      throw new PlatformException(
+                          code: 'ERROR_INSUFFICIENT_PERM',
+                          message: 'User doesn\'t have permission to edit this info (probably due  to rapid changes in information)'
+                      );
+                    });
+                  } catch(e) {
+                    return;
+                  }
                   Home.selectedIndex = 2; // change selected page index
                 }
 
                 Navigator.pop(context);
               },
             ),
+            SizedBox(height: 15.0),
+            BaseAuthErrorDisplay(baseAuth: widget.errorBaseAuth)
           ],
         ),
       ),
