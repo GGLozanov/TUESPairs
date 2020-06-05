@@ -34,7 +34,10 @@ class Chat extends Component{
         }
 
         function filterMessage(message){
-            return ((message.fromId === currentUser.uid && message.toId === matchedUser.uid) || (message.fromId === matchedUser.uid && message.toId === currentUser.uid))
+            return ((message.fromId === currentUser.uid && 
+                    message.toId === matchedUser.uid) || 
+                    (message.fromId === matchedUser.uid && 
+                    message.toId === currentUser.uid))
         }
         this.getMatchedUser = this.props.firebase.user(currentUser.matchedUserID).get()
         .then(snapshot => {
@@ -55,7 +58,11 @@ class Chat extends Component{
                 this.getMessages = this.props.firebase.messages()
                     .orderBy("sentTime").onSnapshot(snapshot => {
                     let messages = [];
-                    log.info("Received all messages between current user w/ id " + currentUser.uid + " and matched user w/ id " + matchedUser.uid);
+                    log.info("Received all messages between current user w/ id " + 
+                        currentUser.uid + 
+                        " and matched user w/ id " + 
+                        matchedUser.uid
+                    );
                     snapshot.forEach(doc => {
                         let message = { ...doc.data(), mid: doc.id}
                         message.sentTime = moment(message.sentTime).format('LLL');
@@ -148,7 +155,20 @@ class Chat extends Component{
                         </div>
                         <div className="bg-light">
                             <div className="input-group">
-                                <input type="text" placeholder="Type a message" name="content" value={content} onChange={this.onChange} aria-describedby="button-addon2" className="form-control rounded-0 border-0 py-4 bg-light" />
+                                <input 
+                                    type="text" 
+                                    placeholder="Type a message" 
+                                    name="content" 
+                                    value={content} 
+                                    onChange={this.onChange} 
+                                    aria-describedby="button-addon2" 
+                                    className="form-control rounded-0 border-0 py-4 bg-light" 
+                                    onKeyPress={event => {
+                                        if (event.key === 'Enter' && !isInvalid) {
+                                          this.onSubmit(event)
+                                        }
+                                      }}
+                                    />
                                 <div className="input-groyp-append">
                                     <button id="button-addon2" type="submit" class="btn btn-link"
                                         disabled={isInvalid}
@@ -192,10 +212,10 @@ const ChatMessage = ({ message: {mid, fromId, sentTime, content }, avatar, usern
         return (
             <li>
                 <Media className="w-50 ml-auto mb-3 container-reciever">
-                    <button class="btn"
+                    <button class="btn trash-button"
                         onClick={onDelete(mid)}
                     >
-                        <FaTrash/>
+                        <FaTrash />
                     </button>
                     <Media.Body className="mr-3 container-content-reciever">
                         <div className="bubble-container-reciever rounded py-2 px-3 mb-2">

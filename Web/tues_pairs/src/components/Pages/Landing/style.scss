@@ -1,0 +1,89 @@
+body, html {
+    height: 100%;
+}
+
+nav {
+    display: none;
+}
+
+.landing-page {
+    background-image: url(https://firebasestorage.googleapis.com/v0/b/tuespairs.appspot.com/o/tues_pairs_landing.png?alt=media&token=062ffaf6-d62d-4a05-89d8-5d0a5977eb52);
+    /* Full height */
+    height: 94.4vh;
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+
+    @media only screen and (max-width: 625px) {
+        background-image: none;
+    }
+
+    .landing-card {
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        border: 1px solid #8d8d8d;
+        position: absolute;
+
+
+        @media only screen and (max-width: 625px) {
+            top: 225px;
+            right: 5px;
+        }
+
+        right: 170px;
+        top: 200px;
+
+        .tues-pairs-logo {
+            height: 100px;
+            width: 360px;
+            margin: 10px auto;
+        }
+
+        .perfect-pair {
+            color: #b8b8b8;
+            text-align: center;
+            font-weight: bold;
+            font-size: x-large;
+        }
+
+        a {
+
+            &:hover {
+                text-decoration: none;
+            }
+
+            .continue-button {
+                background-color: rgb(252, 152, 0);
+                color: whitesmoke;
+                display: block;
+                text-align: center;
+                margin: auto;
+                margin-top: 50px;
+                
+                &:hover {
+                    background-color: rgb(184, 122, 30);
+                }
+            }
+        }
+
+        .or-text {
+            margin: 2em 0;
+            p {
+                text-align: center;
+                color: #8e8e8e;
+            }
+
+            hr {
+                border: 0.4px solid #8e8e8e;
+            }
+        }
+
+        .app-download {
+            margin-top: 20px;
+            background-color: rgb(58, 64, 78);
+        }
+
+    }
+}

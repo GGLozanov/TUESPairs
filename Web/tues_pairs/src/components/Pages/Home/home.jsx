@@ -92,14 +92,16 @@ class UserList extends Component {
       if(!snapshot.exists) {
         snapshot.forEach(doc => {
           let tags = [];
-          doc.data().tagIDs.forEach(tag => {
-            if(tag) {
-              this.props.firebase.tag(tag).get()
-                .then(inforamtion => { // TODO: fix typo
-                  tags.push(inforamtion.data());
-                })
-            }
-          });
+          if(doc.data().tagIDs !== undefined) {
+            doc.data().tagIDs.forEach(tag => {
+              if(tag) {
+                this.props.firebase.tag(tag).get()
+                  .then(information => {
+                    tags.push(information.data());
+                  })
+              }
+            });
+          }
           users.push({ ...doc.data(), uid: doc.id, tags: tags });
         });
       }
@@ -174,8 +176,8 @@ class UserList extends Component {
               <Col xs={14} md={14}>
                 <UserCard user={user} currentUser={currentUser} />
                 <Button.Group>
-                  <Button value={user.uid} onClick={this.onMatch} variant="dark" style={{width: '100%'}, {backgroundColor: 'rgb(252, 152, 0)'}}>Match</Button>
-                  <Button.Or />
+                  <Button value={user.uid} onClick={this.onMatch} variant="dark" style={{ backgroundColor: 'rgb(252, 152, 0)'}}>Match</Button>
+                    <Button.Or />
                   <Button value={user.uid} onClick={this.onSkip} variant="dark">Skip</Button>
                 </Button.Group>
               </Col>

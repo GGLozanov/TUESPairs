@@ -40,6 +40,10 @@
                                 border: 1px solid rgb(252, 152, 0);
                                 box-shadow: none;
                             }
+
+                            &::placeholder {
+                                color: rgb(180, 180, 180);
+                            }
                         }
 
                     }
@@ -57,6 +61,11 @@
                             border-color: transparent;
                         }
                     }
+                }
+
+                .error-messages {
+                    margin: 10px;
+                    color: rgb(252, 152, 0);
                 }
 
                 .or-text {
@@ -104,7 +113,44 @@
     }
 }
 
-.password-forget-link{
+.change-link {
+    margin-top: 1em;
+    text-align: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    
+    a {      
+        text-decoration: none;
+        color: #dadada;
+  
+        &:hover{
+          text-decoration: none;
+          color:rgb(252, 152, 0);
+        }
+        
+        button {
+            background-color: rgb(58, 64, 78);
+            color: #dadada;
+
+            &:hover {
+                background-color: rgb(58, 64, 78);
+                color: rgb(252, 152, 0);
+                border-color: rgb(252, 152, 0);
+            }
+            
+            &:active {
+                border: none;
+                background-color: rgb(58, 64, 78);
+            }
+
+            &:not(:disabled):active {
+                border: none;
+                background-color: rgb(58, 64, 78);
+            }
+        }
+    }
+}
+
+.password-forget-link {
     margin-top: 1em;
     a {      
         text-decoration: none;
@@ -113,6 +159,60 @@
         &:hover{
           text-decoration: underline;
           text-emphasis-color:rgb(252, 152, 0);
+        }
+    }
+}
+
+.modal-content {
+    background-color: rgb(34, 34, 43);
+
+    color: #dadada;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    border: 1px solid #8e8e8e; 
+
+    .close {
+        color: rgb(252, 152, 0);
+    }
+
+    .modal-title {
+        color: rgb(252, 152, 0);
+        font-weight: bold;
+    }
+
+    .modal-body {
+        input {
+            background-color: rgb(58, 64, 78);
+            color: white;
+
+            &:focus {
+                border: 1px solid rgb(252, 152, 0);
+                box-shadow: none;
+            }
+
+            &::placeholder {
+                color: rgb(180, 180, 180);
+            }
+        }
+
+        p {
+            font-weight: bolder;
+            font-style: italic;
+        }
+    }
+
+    .modal-footer {
+        .submit {
+            background-color: rgb(252, 152, 0);
+            border: none;
+
+            &:hover {
+                background-color: rgb(211, 127, 0);
+            }
+
+            &:not(:disabled):active {
+                border: none;
+                background-color: rgb(211, 127, 0);
+            }
         }
     }
 }

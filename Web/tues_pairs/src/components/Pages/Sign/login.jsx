@@ -4,7 +4,7 @@ import { compose } from 'recompose';
 import firebase from 'firebase';
 import { withFirebase } from '../../Firebase';
 import * as ROUTES from '../../../constants/routes';
-import { PasswordForgetLink } from '../PasswordForget'
+import { PasswordForgetLink } from '../ChangeForms'
 import './style.scss';
 import { withCurrentUser } from '../../Authentication/context';
 import FacebookIcon from '@material-ui/icons/Facebook';
@@ -48,10 +48,14 @@ class SignInFormBase extends Component {
             matchedUserID: null,
             skippedUserIDs: [],
             tagIDs: [],
+            deviceTokens: [],
+            lastUpdateTime: this.props.firebase.fieldValue.serverTimestamp()
           })
           .then(() => this.props.history.push(ROUTES.USER_INFO));
         }
       })
+    }).catch(error => {
+      log.error(error);
     });
   }
 

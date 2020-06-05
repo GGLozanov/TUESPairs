@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import { withAuthorization } from '../../Authentication';
 
-import { withRouter } from 'react-router-dom';
+import * as ROUTES from '../../../constants/routes';
+import { withRouter, Link } from 'react-router-dom';
 import { compose } from 'recompose';
 import { withCurrentUser } from '../../Authentication/context';
 import { Button, ProgressBar, Form, Col, Image } from 'react-bootstrap';
@@ -140,9 +141,12 @@ class ImageUploadBase extends Component {
                 </button>}
             </div>
             <div>
-                <Button href="/account">
-                    Continue
-                </Button>
+                <Link to={ROUTES.ACCOUNT}>
+                    <Button>
+                        Continue
+                    </Button>
+                </Link>
+                    
             </div>
         </div>
         )
