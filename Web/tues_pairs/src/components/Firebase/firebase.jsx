@@ -5,14 +5,14 @@ import 'firebase/storage';
 import log from '../../constants/logger';
 
 const config = {
-    apiKey: "AIzaSyCKbaA0epDZJnNLaehLEb5iuhwHAbXCe7Y",
-    authDomain: "tuespairs.firebaseapp.com",
-    databaseURL: "https://tuespairs.firebaseio.com",
-    projectId: "tuespairs",
-    storageBucket: "tuespairs.appspot.com",
-    messagingSenderId: "911913368022",
-    appId: "1:911913368022:web:4035568fc570db81208c77",
-    measurementId: "G-8WP9R10Q34"
+    apiKey: "AIzaSyAB7quBVKdWxF6LCmfkJ49C6oawDiiaSvU",
+    authDomain: "tuespairs-production.firebaseapp.com",
+    databaseURL: "https://tuespairs-production.firebaseio.com",
+    projectId: "tuespairs-production",
+    storageBucket: "tuespairs-production.appspot.com",
+    messagingSenderId: "985891410700",
+    appId: "1:985891410700:web:c9a95ac7dec65426f92f29",
+    measurementId: "G-9HTMDTFG2J"
   };
 
   class Firebase {
@@ -21,6 +21,7 @@ const config = {
 
         this.auth = app.auth();
         this.db = app.firestore();
+        this.fieldValue = app.firestore.FieldValue;
         this.storage = app.storage();
         this.messaging = app.messaging();
     }

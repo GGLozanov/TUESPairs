@@ -45,6 +45,7 @@ class SignUpFormBase extends Component {
                         matchedUserID: null,
                         skippedUserIDs: [],
                         tagIDs: [],
+                        lastUpdateTime: this.props.firebase.fieldValue.serverTimestamp()
                     });
                 })
             })

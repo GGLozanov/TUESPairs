@@ -114,6 +114,7 @@ class EditPersonalInfo extends Component{
             email: email,
             tagIDs: tagIDs,
             description: description,
+            lastUpdateTime: this.props.firebase.fieldValue.serverTimestamp()
         }, {merge: true})
         .then(() => {
             log.info("Updated current user w/ id edited his settings inside Edit Personal Info page!");
@@ -121,7 +122,9 @@ class EditPersonalInfo extends Component{
             this.props.firebase.doEmailUpdate(email).then(this.props.history.push(ROUTES.ACCOUNT));
         })
         .catch(error => {
-            this.setState({ error });
+            if(error === "Missing or insufficient permissions.") {
+                this.setState({ error: "Please wait before submitting again!" });
+            } else this.setState({ error });
         });
 
         event.preventDefault();
@@ -136,9 +139,8 @@ class EditPersonalInfo extends Component{
         const currentUser = this.props.authUser;
 
         this.props.firebase.db.collection("users").doc(currentUser.uid).set({
-                matchedUserID: null,
-            }, 
-        {merge: true})
+            matchedUserID: null,
+        }, {merge: true})
         .then(() => {
             log.info("Updated current user w/ id " + currentUser.uid + " with a clear of matched user!");
             this.props.history.push(ROUTES.HOME);
@@ -154,8 +156,7 @@ class EditPersonalInfo extends Component{
 
         this.props.firebase.db.collection("users").doc(currentUser.uid).set({
             skippedUserIDs: [],
-        }, 
-        {merge: true})
+        }, {merge: true})
         .then(() => {
             log.info("Updated current user w/ id ", currentUser.uid, " with a clear of skipped users!");
             this.props.authUser.skippedUserIDs = [];
@@ -242,7 +243,11 @@ class EditPersonalInfo extends Component{
 
         const isMatched = this.props.authUser.matchedUserID ? true : false;
         
-        const hasSkipped = this.props.authUser.skippedUserIDs.length > 0 ? true : false;
+        let hasSkipped = false;
+
+        if(this.props.authUser.skippedUserIDs) {
+            hasSkipped = this.props.authUser.skippedUserIDs.length > 0 ? true : false;
+        }
 
         const hasImage = photoURL ? true : false;
 
@@ -386,7 +391,7 @@ class EditPersonalInfo extends Component{
                                 />
                             </Form.Group>
                             <p>
-                                Are you absolutely sure that you want to delete your account ?
+                                Are you absolutely sure that you want to delete your account?
                                 This change is permanent and cannot be reverted. Press the I'm Sure button to proceed.
                             </p>
                         </Modal.Body>

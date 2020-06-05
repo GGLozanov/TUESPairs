@@ -35,7 +35,7 @@ const UserCard = props => {
                 {thisUser.isTeacher &&<Card.Subtitle className="description" data-testid="teacher-idea">Interested in</Card.Subtitle>}
                 {!thisUser.description &&<Card.Text data-testid="empty-description">Empty as the void inside our hearts!</Card.Text>}
                 <Card.Text data-testid="description">{thisUser.description}</Card.Text>
-                {show && <Card.Text>User has sent you a match request</Card.Text>}
+                {show && <Card.Text>User has sent you a match request!</Card.Text>}
                 <div className="tag-list">
                     <TagListView tags={thisUser.tags} />
                 </div>
