@@ -39,8 +39,7 @@ class RegisterForm extends StatefulWidget {
     @required this.switchPage,
   }) : assert(switchPage != null) {
 
-    formIsValid = (BaseAuth baseAuth,
-        List<User> users, List<FormState> formStates) {
+    formIsValid = (BaseAuth baseAuth, List<FormState> formStates) {
 
       formStates.removeWhere((state) => state == null); // remove null states (like GPA if deselected)
 
@@ -50,11 +49,6 @@ class RegisterForm extends StatefulWidget {
           orElse: () => null) != null) {
         logger.w('Register: User is invalid (stepper forms are invalid)');
         baseAuth.errorMessages.add('invalidFormInfo');
-        return false;
-      }
-      if(usernameExists(baseAuth.user.username, users)) {
-        logger.w('Register: User is invalid (username already exists)');
-        baseAuth.errorMessages.add('usernameExists');
         return false;
       }
       if(baseAuth.password != baseAuth.confirmPassword) {
@@ -68,13 +62,13 @@ class RegisterForm extends StatefulWidget {
     };
 
     registerUser = (BaseAuth baseAuth,
-        ImageService imageService, List<User> users,
+        ImageService imageService,
         List<GlobalKey<FormState>> stepperKeys) async {
       final User registeredUser = baseAuth.user;
 
       stepperKeys.removeWhere((key) => key == null); // remove null keys (for fields that are not forms)
 
-      if(formIsValid(baseAuth, users, stepperKeys
+      if(formIsValid(baseAuth, stepperKeys
           .map((key) => key.currentState)
           .toList())) {
 
@@ -110,8 +104,7 @@ class RegisterForm extends StatefulWidget {
   assert(switchPage != null) {
     isExternalAuth = true;
 
-    formIsValid = (BaseAuth baseAuth,
-        List<User> users, List<FormState> formStates) {
+    formIsValid = (BaseAuth baseAuth, List<FormState> formStates) {
 
       formStates.removeWhere((state) => state == null); // remove null states (like GPA if deselected)
 
@@ -123,24 +116,19 @@ class RegisterForm extends StatefulWidget {
         baseAuth.errorMessages.add('invalidFormInfo');
         return false;
       }
-      if(usernameExists(baseAuth.user.username, users)) {
-        logger.w('Register: User is invalid (username already exists)');
-        baseAuth.errorMessages.add('usernameExists');
-        return false;
-      }
 
       logger.i('Register: User is valid');
       return true;
     };
 
     registerUser = (BaseAuth baseAuth,
-        ImageService imageService, List<User> users,
+        ImageService imageService,
         List<GlobalKey<FormState>> stepperKeys) async {
       final User registeredUser = baseAuth.user;
 
       stepperKeys.removeWhere((key) => key == null); // remove null keys (for fields that are not forms)
 
-      if(formIsValid(baseAuth, users, stepperKeys
+      if(formIsValid(baseAuth, stepperKeys
           .map((key) => key.currentState)
           .toList())) {
 
@@ -315,7 +303,6 @@ class _RegisterFormState extends State<RegisterForm> {
   @override
   Widget build(BuildContext context) {
 
-    final users = Provider.of<List<User>>(context) ?? [];
     final tags = Provider.of<List<Tag>>(context) ?? [];
     final baseAuth = Provider.of<BaseAuth>(context);
     final imageService = Provider.of<ImageService>(context);
@@ -535,7 +522,6 @@ class _RegisterFormState extends State<RegisterForm> {
                     var result = await widget.registerUser(
                         baseAuth,
                         imageService,
-                        users,
                         _stepInfos.map((stepInfo) => stepInfo.formKey).toList() // map to keys and get all them as a list
                     );
 

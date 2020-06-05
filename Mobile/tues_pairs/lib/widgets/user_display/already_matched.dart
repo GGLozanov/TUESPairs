@@ -19,6 +19,7 @@ class AlreadyMatched extends StatelessWidget {
 
     return FutureBuilder<User>( // TODO: export into home dart without killing app
       future: Database(uid: currentUser.matchedUserID).getUserById(),
+          // highly non-optimal because same user is used in chat.dart later...
       builder: (context, snapshot) {
         if(snapshot.connectionState == ConnectionState.done) {
             final matchedUser = snapshot.data;

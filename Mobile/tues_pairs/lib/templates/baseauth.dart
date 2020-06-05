@@ -14,7 +14,7 @@ class BaseAuth {
 
   User user = new User(isTeacher: false, tagIDs: <String>[]);
 
-  List<String> errorMessages = ['']; // and wrapping fields in getters and setters isn't considered a generally prudent move
+  List<String> errorMessages = []; // and wrapping fields in getters and setters isn't considered a generally prudent move
   String password = '';
   String confirmPassword = '';
   bool isCurrentAdmin = false;

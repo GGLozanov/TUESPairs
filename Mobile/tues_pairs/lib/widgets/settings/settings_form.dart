@@ -37,8 +37,7 @@ class SettingsFormState extends State<SettingsForm> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              currentUser.username != '' &&
-                  currentUser.username != null ?
+              currentUser.username != null ?
               UsernameInputField(
                 onChanged: (value) => setState(() => currentUser.username = value),
                 initialValue: currentUser.username

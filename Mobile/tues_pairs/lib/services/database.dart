@@ -96,10 +96,11 @@ class Database {
           'isTeacher: "' + user.isTeacher.toString() + '", ' +
           'photoURL: "' + user.photoURL.toString() + '", ' +
           'matchedUserID: "' + user.matchedUserID.toString() + '", ' +
-          'skippedUserIDs: "' + user.skippedUserIDs.toString() + '",' +
-          'tagIDs: "' + user.tagIDs.toString() + '",' +
-          'description: "' + user.description.toString() + '",' +
-          'deviceToken: "' + App.currentUserDeviceToken .toString() + '")' // TODO: fix maybe?
+          'skippedUserIDs: "' + user.skippedUserIDs.toString() + '", ' +
+          'tagIDs: "' + user.tagIDs.toString() + '", ' +
+          'description: "' + user.description.toString() + '", ' +
+          'deviceToken: "' + App.currentUserDeviceToken .toString() + '", ' + // TODO: fix maybe?
+          'lastUpdateTime: "' + FieldValue.serverTimestamp().toString() + '")'
       );
 
       return await _userCollectionReference.document(uid).setData({
@@ -113,6 +114,7 @@ class Database {
         'tagIDs': user.tagIDs ?? <String>[],
         'description': user.description ?? '',
         'deviceTokens': user.deviceTokens ?? <String>[App.currentUserDeviceToken], // if null, list w/ current token
+        'lastUpdateTime': FieldValue.serverTimestamp() // used in server-side antispam validation
       });
     }
 
@@ -131,9 +133,10 @@ class Database {
           'photoURL: "' + doc.data['photoURL'].toString() + '", ' +
           'matchedUserID: "' + doc.data['matchedUserID'].toString() + '", ' +
           'skippedUserIDs: "' + (doc.data['skippedUserIDs'].toString() ?? <String>[].toString()) + '", ' +
-          'tagIDs: "' + doc.data['tagIDs'].toString() + '").' +
+          'tagIDs: "' + doc.data['tagIDs'].toString() + '", ' +
           'description: "' + doc.data['description'].toString() +
-          'deviceTokens: "' + doc.data['deviceTokens'].toString() + '")'
+          'deviceTokens: "' + doc.data['deviceTokens'].toString() + '", ' +
+          'lastUpdateTime: "' + doc.data['lastUpdateTime'].toString() + '")'
       );
 
       if(doc.data['isTeacher'] == null) {
@@ -222,6 +225,15 @@ class Database {
     );
   }
 
+  Stream<List<User>> filteredUsers(User currentUser) {
+    // TODO: Filter by more margins (can't chain 'or's on where()s yet and can't filter or IDs not in skippedUserIDs)
+    return _userCollectionReference
+        .snapshots()
+        .map(
+        _listUserFromQuerySnapshot
+    );
+  }
+
   // ----------------------------------
   // Tag Database Implementation
   // ----------------------------------
@@ -234,8 +246,8 @@ class Database {
 
   Stream<List<Tag>> get tags {
     return _tagsCollectionReference
-        .snapshots()
-        .map(
+      .snapshots()
+      .map(
       _listTagFromQuerySnapshot
     );
   }

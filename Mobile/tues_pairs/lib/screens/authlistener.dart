@@ -49,20 +49,12 @@ class _AuthListenerState extends State<AuthListener> {
     // user is auth'd if Provder returns instance of FirebaseUser (or whichever class we passed as a generic parameter)
 
     final tags = database.tags;
-    final users = database.users;
 
     // TODO: give callback for here to setState() from register??
     User authUser = Provider.of<User>(context);
 
-    return MultiProvider(
-      providers: [
-        StreamProvider<List<User>>.value(
-          value: users,
-        ),
-        StreamProvider<List<Tag>>.value(
-          value: tags,
-        )
-      ],
+    return StreamProvider<List<Tag>>.value(
+      value: tags,
       child: authUser != null ?
         FutureBuilder<User>( // Get current user here for use down the entire widget tree
           future: Database(uid: authUser.uid).getUserById(), // the Provider.of() generic method takes context,
@@ -84,8 +76,12 @@ class _AuthListenerState extends State<AuthListener> {
                 }
               }
 
+              // get database for user device token update
               final userDatabase = Database(uid: authUser.uid);
+
+              // get needed user properties
               final userNotifications = userDatabase.userNotifications;
+              final users = database.filteredUsers(user);
 
               // give authUser info to user here
               user.isExternalUser = authUser.isExternalUser;  // used in settings
@@ -99,6 +95,9 @@ class _AuthListenerState extends State<AuthListener> {
 
               return MultiProvider(
                 providers: [
+                  StreamProvider<List<User>>.value(
+                    value: users, // pass down the user's notifications
+                  ),
                   StreamProvider<List<MessageNotification>>.value(
                     value: userNotifications, // pass down the user's notifications
                   ),

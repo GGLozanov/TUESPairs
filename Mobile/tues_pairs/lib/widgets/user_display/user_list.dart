@@ -20,6 +20,11 @@ class UserList extends StatefulWidget {
 
   final Function reinitializeMatch;
 
+  // TODO: Might remove refresh limit in the future (if scaling goes right)
+  static int allowedRefreshes = 5; // allowed page refreshes for a single state of user list
+  static int currentRefreshes = 0; // tracks current allowed refreshes
+  // user has to restart app to refresh again; doesn't overload DB
+
   UserList({this.reinitializeMatch});
 
   @override
@@ -249,33 +254,42 @@ class _UserListState extends State<UserList> {
     if(isFirstBuild) { // if list is just initialized (first build run)
       userCards = <UserCard>[];
 
-      userList = RefreshIndicator(
+      final userCardList = AnimatedList( // list of users widget
+        shrinkWrap: true,
+        key: _animatedListKey,
+        initialItemCount: userCards.length,
+        // ignore: missing_return
+        itemBuilder: (context, index, animation) { // context & index of whichever item we're iterating through
+          return SlideTransition(
+            position: animation.drive(Tween<Offset>(
+              begin: const Offset(1, 0), // represent a point in Cartesian (x-y coordinate) space; dx and dy are args for points
+              end: const Offset(0, 0), // points are between 1 and 0 (use that!)
+            ).chain(
+                CurveTween(
+                    curve: Curves.decelerate
+                )
+              )
+            ),
+            child: userCards?.elementAt(index) ?? SizedBox(), // get the generated user card from here
+          );
+        },
+      );
+
+      // check whether the user has exceeded their allowed refreshes
+      // render with our without refresh option accordingly
+      userList = UserList.currentRefreshes <
+          UserList.allowedRefreshes ?
+      RefreshIndicator(
         backgroundColor: greyColor,
         color: Colors.orange,
-        onRefresh: () async => setState(() => images = []),
+        onRefresh: () async => setState(() {
+          UserList.currentRefreshes++;
+          images = [];
+        }),
             // refresh user data by clearing images and triggering first build and DB retrieval again
             // TODO: Maybe fix this method as it isn't really clear
-        child: AnimatedList( // list of users widget
-          shrinkWrap: true,
-          key: _animatedListKey,
-          initialItemCount: userCards.length,
-          // ignore: missing_return
-          itemBuilder: (context, index, animation) { // context & index of whichever item we're iterating through
-            return SlideTransition(
-              position: animation.drive(Tween<Offset>(
-                begin: const Offset(1, 0), // represent a point in Cartesian (x-y coordinate) space; dx and dy are args for points
-                end: const Offset(0, 0), // points are between 1 and 0 (use that!)
-              ).chain(
-                  CurveTween(
-                    curve: Curves.decelerate
-                  )
-                )
-              ),
-              child: userCards?.elementAt(index) ?? SizedBox(), // get the generated user card from here
-            );
-          },
-        )
-      );
+        child: userCardList
+      ) : userCardList;
 
       return FutureBuilder<List<List<TagCard>>>(
         future: getUserTags(tags, currentUser, users),
