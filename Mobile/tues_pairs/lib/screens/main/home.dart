@@ -69,6 +69,7 @@ class _HomeState extends State<Home> {
       appBar: buildAppBar(
         pageTitle: localizator.translate(
           _widgets[Home.selectedIndex]
+              .runtimeType
               .toString()
               .toLowerCase()
         ),
