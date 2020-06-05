@@ -154,7 +154,7 @@ class UserInfo extends Component {
                             {this.state.isTeacher && <p>In what projects are you interested in?</p>}
                             <Form.Control as="textarea" 
                                 rows="3" 
-                                maxlength="200"
+                                maxLength="200"
                                 onChange={this.onChange}
                                 name="description"
                             />

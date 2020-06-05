@@ -243,7 +243,11 @@ class EditPersonalInfo extends Component{
 
         const isMatched = this.props.authUser.matchedUserID ? true : false;
         
-        const hasSkipped = this.props.authUser.skippedUserIDs.length > 0 ? true : false;
+        let hasSkipped = false;
+
+        if(this.props.authUser.skippedUserIDs) {
+            hasSkipped = this.props.authUser.skippedUserIDs.length > 0 ? true : false;
+        }
 
         const hasImage = photoURL ? true : false;
 
