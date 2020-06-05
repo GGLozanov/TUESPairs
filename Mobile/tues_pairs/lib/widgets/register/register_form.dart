@@ -503,19 +503,19 @@ class _RegisterFormState extends State<RegisterForm> {
                   rightBtnText: widget.isExternalAuth ? 'finishAccount' : 'createAccount',
                   onLeftPressed: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MultiProvider(
-                              providers: [
-                                Provider<List<Tag>>.value(value: tags),
-                                Provider<BaseAuth>.value(value: baseAuth),
-                              ],
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: TagSelection(),
-                              ),
-                            )
-                        )
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MultiProvider(
+                            providers: [
+                              Provider<List<Tag>>.value(value: tags),
+                              Provider<BaseAuth>.value(value: baseAuth),
+                            ],
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: TagSelection(),
+                            ),
+                          )
+                      )
                     );
                   },
                   onRightPressed: () async {
