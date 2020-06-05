@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:provider/provider.dart';
+import 'package:tues_pairs/locale/app_localization.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/services/image.dart';
@@ -15,9 +17,14 @@ import 'package:tues_pairs/widgets/form/input_button.dart';
 import 'package:tues_pairs/widgets/form/email_input_field.dart';
 import 'package:tues_pairs/widgets/form/password_input_field.dart';
 import 'package:tues_pairs/shared/constants.dart';
+import 'package:tues_pairs/widgets/general/baseauth_error_display.dart';
+import 'package:tues_pairs/widgets/general/localization_buttons.dart';
+import 'package:tues_pairs/widgets/general/spaced_divider.dart';
+import 'package:tues_pairs/widgets/login/forgot_password_form.dart';
 import 'package:tues_pairs/widgets/register/register_form.dart';
 import 'package:tues_pairs/widgets/register/register_wrapper.dart';
 
+import '../../main.dart';
 import '../../templates/baseauth.dart';
 import '../authlistener.dart';
 
@@ -53,9 +60,7 @@ class _LoginState extends State<Login> {
         // handle faceboook sign-in w/ auth here...
         baseAuth.authInstance.loginWithFacebook().then((authUser) =>
             _configureExternalSignIn(authUser)
-        ).catchError((e) =>
-            logger.w('Login: User has cancelled/failed Facebook Sign-In. Rerendering login page')
-        );
+        ).catchError((e) => logger.w('Login: User has cancelled/failed Facebook Sign-In. Rerendering login page'));
         break;
       case ExternalSignInType.GITHUB:
         // handle github sign-in w/ auth here...
@@ -74,19 +79,12 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizator = AppLocalizations.of(context);
+
     return baseAuth.isLoading ? Loading() : Scaffold(
       key: _scaffold,
-      appBar: AppBar(
-        backgroundColor: darkGreyColor,
-        title: Text(
-          'Login',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 40.0,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
-          )
-        ),
+      appBar: buildAppBar(
+        pageTitle: localizator.translate('login'),
         actions: <Widget>[
           FlatButton.icon(
             key: Key(Keys.toggleToRegisterButton),
@@ -97,7 +95,7 @@ class _LoginState extends State<Login> {
               size: 30.0,
             ),
             label: Text(
-              'Register',
+              localizator.translate('register'),
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -105,7 +103,7 @@ class _LoginState extends State<Login> {
                 fontSize: 25.0,
               )
             ),
-          )
+          ),
         ],
       ),
 
@@ -124,12 +122,13 @@ class _LoginState extends State<Login> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                     child: Text(
-                      'Welcome to TUESPairs',
+                      localizator.translate('welcome'),
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.orange,
-                        fontFamily: 'BebasNeue',
                         letterSpacing: 1.0,
                         fontSize: 40.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -143,13 +142,14 @@ class _LoginState extends State<Login> {
                   PasswordInputField(
                     key: Key(Keys.loginPasswordInputField),
                     onChanged: (value) => setState(() => baseAuth.password = value),
+                    hintText: 'enterPassword',
                   ),
                   SizedBox(height: 25.0),
                   InputButton(
                     key: Key(Keys.logInButton),
                     minWidth: 250.0,
                     height: 60.0,
-                    text: 'Log in',
+                    text: 'login',
                     onPressed: () async {
                       if(baseAuth.key.currentState.validate()) {
                         setState(() => baseAuth.toggleLoading());
@@ -159,28 +159,38 @@ class _LoginState extends State<Login> {
                         if(user == null) {
                           logger.w('Login: Failed user login (invalid credentials)');
                           setState(() {
-                            baseAuth.errorMessages = [];
-                            baseAuth.errorMessages.add('Invalid login credentials');
-                            baseAuth.toggleLoading();
+                            baseAuth.clearAndAddError('invalidLoginCredentials');
                           });
-                        } else logger.i('Login: User w/ id "' + user.uid + '" has successfully logged in');
+                        } else {
+                          // Add the device token if not present in DB user
+                          logger.i('Login: User w/ id "' + user.uid + '" has successfully logged in');
+                        }
                       }
                     },
                   ),
                   SizedBox(height: 20.0),
-                  Column(
-                    children: baseAuth.errorMessages?.map((message) => Text(
-                      "$message",
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontFamily: 'Nilam',
-                        fontSize: 25.0,
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                          ForgotPasswordForm()
                       ),
-                    ))?.toList() ?? [],
+                    ),
+                    child: Text(
+                      localizator.translate('resetPassword'),
+                      key: Key(Keys.passwordForgotText),
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontFamily: 'Nilam',
+                        fontStyle: FontStyle.normal,
+                        color: Colors.orange,
+                      )
+                    ),
                   ),
-                  SizedBox(height: 30.0),
-                  Divider(height: 15.0, thickness: 10.0, color: darkGreyColor),
-                  SizedBox(height: 30.0),
+                  SizedBox(height: 5.0),
+                  BaseAuthErrorDisplay(baseAuth: baseAuth,),
+                  SpacedDivider(),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -190,7 +200,10 @@ class _LoginState extends State<Login> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),
-                        onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext, signInType: ExternalSignInType.FACEBOOK),
+                        onPressed: () async => await _handleExternalSignIn(
+                            _scaffold.currentContext,
+                            signInType: ExternalSignInType.FACEBOOK
+                        ),
                       ),
                       SizedBox(height: 15.0),
                       SignInButton(
@@ -199,11 +212,13 @@ class _LoginState extends State<Login> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),
-                        onPressed: () async => await _handleExternalSignIn(_scaffold.currentContext),
+                        onPressed: () async => await _handleExternalSignIn(
+                            _scaffold.currentContext
+                        ),
                       ),
                       SizedBox(height: 20.0),
                       Text(
-                        'Coming Soon',
+                        localizator.translate('comingSoon'),
                         style: TextStyle(
                           fontFamily: 'BebasNeue',
                           fontSize: 32.0,
@@ -221,6 +236,8 @@ class _LoginState extends State<Login> {
                           onPressed: () => {},
                         )
                       ),
+                      SizedBox(height: 20.0),
+                      LocalizationButtons()
                     ]
                   ),
                 ],

@@ -8,7 +8,21 @@
             "name": "Dart",
             "program": "tues_pairs/lib/main.dart",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "args": [
+                "--flavor",
+                "dev_flavor"
+            ]
+        },
+        {
+            "name": "Dart Dev",
+            "program": "tues_pairs/lib/main.dart",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--flavor",
+                "dev_flavor"
+            ]
         }
     ]
 }

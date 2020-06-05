@@ -46,7 +46,7 @@ void main() {
       expect(result, 1); // throws exception
     });
 
-    test('Returns null upon failed Firebase user deletion (user does not exist)', () async {
+    test('Returns 1 upon failed Firebase user deletion (user does not exist)', () async {
       when(firebaseUserMock.delete()).thenThrow(new Exception('ERROR_USER_NOT_FOUND'));
       Auth auth = new Auth.mock(auth: firebaseAuthMock);
 
@@ -54,7 +54,7 @@ void main() {
 
       var result = await auth.deleteFirebaseUser(firebaseUserResult);
 
-      expect(result, isNull); // throws exception
+      expect(result, 1); // throws exception
     });
 
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/modules/message.dart';
 import 'package:tues_pairs/widgets/chat_display/chat_display.dart';
+import 'package:tues_pairs/widgets/general/centered_text.dart';
 
 import '../../modules/user.dart';
 import '../../services/database.dart';
@@ -49,18 +50,23 @@ class _ChatState extends State<Chat> {
     return Container(
       color: greyColor,
       child: currentUser.matchedUserID == null ? CenteredText(
-        text: 'You are not matched with anyone!'
+        text: 'notMatchedWithAnyone'
       ) : FutureBuilder<User>(
         future: database.getUserById(),
         builder: (context, snapshot){
           if(snapshot.connectionState == ConnectionState.done){
             matchedUser = snapshot.data;
             return StreamProvider<List<Message>>.value(
-              value: database.messages,
+              value: database.messages, // get all messages; TODO: Update with filter()!!!
               child: currentUser.matchedUserID == matchedUser.uid && matchedUser.matchedUserID == currentUser.uid 
-                ? ChatDisplay(matchedUser: matchedUser, messageController: messageController, callback: sendMessage, scrollController: scrollController) 
+                ? ChatDisplay(
+                  matchedUser: matchedUser,
+                  messageController: messageController,
+                  callback: sendMessage,
+                  scrollController: scrollController
+                )
                 : CenteredText(
-                    text: 'Wait until your request is accepted!'
+                    text: 'waitForAccept'
                 )
             );
           } else return Loading();

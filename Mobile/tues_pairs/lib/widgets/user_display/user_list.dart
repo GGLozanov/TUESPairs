@@ -3,13 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
-import 'package:tues_pairs/services/auth.dart';
+import 'package:tues_pairs/shared/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:tues_pairs/services/database.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/services/image.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/shared/keys.dart';
+import 'package:tues_pairs/widgets/general/centered_text.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_card.dart';
 import 'package:tues_pairs/widgets/user_display/user_card.dart';
 
@@ -18,6 +19,11 @@ import '../../services/database.dart';
 class UserList extends StatefulWidget {
 
   final Function reinitializeMatch;
+
+  // TODO: Might remove refresh limit in the future (if scaling goes right)
+  static int allowedRefreshes = 5; // allowed page refreshes for a single state of user list
+  static int currentRefreshes = 0; // tracks current allowed refreshes
+  // user has to restart app to refresh again; doesn't overload DB
 
   UserList({this.reinitializeMatch});
 
@@ -31,7 +37,6 @@ class _UserListState extends State<UserList> {
 
   NetworkImage currentUserImage;
 
-  List<User> users;
   List<NetworkImage> images = <NetworkImage>[];
   List<List<TagCard>> tagCards;
   List<UserCard> userCards;
@@ -52,28 +57,23 @@ class _UserListState extends State<UserList> {
         !user.skippedUserIDs.contains(currentUser);
   }
 
-  List<NetworkImage> getUserImages(User currentUser) {
+  List<NetworkImage> getUserImages(User currentUser, List<User> users) {
     List<NetworkImage> images = new List<NetworkImage>(users.length);
     for (int useridx = 0; useridx < images.length; useridx++) {
       final user = users[useridx];
-      if (isUserRenderableForCurrent(currentUser, user) && user.photoURL != null) {
-        images[useridx] = imageService.getImageByURL(users[useridx].photoURL);
+      if (user.photoURL != null) {
+        images[useridx] = ImageService.getImageByURL(users[useridx].photoURL);
       }
     }
     return images;
   }
 
-  Future<List<List<TagCard>>> getUserTags(List<Tag> tags, User currentUser) async {
+  Future<List<List<TagCard>>> getUserTags(List<Tag> tags, User currentUser, List<User> users) async {
     List<List<Tag>> userTags = new List<List<Tag>>(users.length);
 
     for (int useridx = 0; useridx < users.length; useridx++) {
-      userTags[useridx] = <Tag>[];
-      if (isUserRenderableForCurrent(currentUser, users[useridx])) {
-        for (var tid in users[useridx].tagIDs) {
-          userTags[useridx].add(tags.firstWhere((tag) => tag.tid == tid));
-        }
-        // get the Tag instance for each tag ID
-      }
+      userTags[useridx] = getUserMappedTags(tags, users[useridx]);
+      // get the Tag instance for each tag ID
     }
     return userTags.map((tags) =>
         mapTagsToTagCards(tags, cardType: TagCardType.VIEW))
@@ -83,7 +83,7 @@ class _UserListState extends State<UserList> {
   int getListIndex(User user, {User currentUser}) {
     // TODO: Optimise this retarded ass fix
     logger.w('UserCard: onSkip user w/ id "' + currentUser.uid +
-        '" has skipped incorrect users and has triggered skip exception handler.'); // user removes bad
+        '" has skipped incorrect users and has tt\t\t[[triggered skip exception handler.'); // user removes bad
 
     for (int idx = 0; idx < userCards.length; idx++) {
       if (userCards[idx].user == user) {
@@ -129,7 +129,7 @@ class _UserListState extends State<UserList> {
 
   }
 
-  UserCard buildUserCard(User currentUser, int userIndex, User user, {int initialListIndex}) {
+  UserCard buildUserCard(User currentUser, int userIndex, User user, List<User> users, {int initialListIndex}) {
     final Database database = new Database(uid: currentUser.uid);
 
     return UserCard(
@@ -189,32 +189,43 @@ class _UserListState extends State<UserList> {
     // TODO: Optimise filtration of users with removeWhere()
     var future = Future(() {});
     for (int idx = 0; idx < users.length; idx++) {
-      final user = users[idx];
-      if (isUserRenderableForCurrent(currentUser, user)) {
-        // reinitializing future with lvalue helps futures wait for one-another (+then)
-        future = future.then((_) {
-          return Future.delayed(Duration(milliseconds: 100), () {
-            final lastItemIndex = userCards.length;
-            userCards.add(buildUserCard(
-                currentUser,
-                idx,
-                users[idx],
-                initialListIndex: lastItemIndex,
-              )
-            ); // add card item here
-            try {
-              _animatedListKey.currentState.insertItem(
-                  lastItemIndex,
-              ); // insert the latest item here
-            } catch (e) {
-              logger.w('User w/ id "' + currentUser.uid +
-                  '" has navigated through match too fast!');
-              // TODO: log that user has navigated through the screens too fast -> done
-            }
-          });
+      // reinitializing future with lvalue helps futures wait for one-another (+then)
+      future = future.then((_) {
+        return Future.delayed(Duration(milliseconds: 100), () {
+          final lastItemIndex = userCards.length;
+          userCards.add(buildUserCard(
+              currentUser,
+              idx,
+              users[idx],
+              users,
+              initialListIndex: lastItemIndex,
+            )
+          ); // add card item here
+          try {
+            _animatedListKey.currentState.insertItem(
+                lastItemIndex,
+            ); // insert the latest item here
+          } catch (e) {
+            logger.w('User w/ id "' + currentUser.uid +
+                '" has navigated through match too fast!');
+            // TODO: log that user has navigated through the screens too fast -> done
+          }
         });
-      }
+      });
     }
+  }
+
+  List<User> _getFilteredUsers({
+    @required BuildContext context,
+    @required User currentUser
+  }) {
+    assert(context != null);
+    assert(currentUser != null);
+
+    final users = Provider.of<List<User>>(context) ?? [];
+    users.removeWhere((user) => user.isInvalid() ||
+        !isUserRenderableForCurrent(currentUser, user));
+    return users;
   }
 
   Widget userList;
@@ -225,38 +236,37 @@ class _UserListState extends State<UserList> {
     final currentUser = Provider.of<User>(context);
     final tags = Provider.of<List<Tag>>(context);
 
-    users = Provider.of<List<User>>(context) ?? [];
-    users.removeWhere((user) => user.isInvalid()); // removes invalid users w/ no Firestore records in order to not crash app (sync w/ WEB)
+    List<User> users = _getFilteredUsers(
+      context: context,
+      currentUser: currentUser,
+    );
+    // removes invalid users w/ no Firestore records in order to not crash app (sync w/ WEB)
+    // and users which are not rendereable
 
     if(users.isEmpty) {
       return CenteredText(
-        text: 'Whoops, looks like there isn\'t anyone to match with! '
-            'Make sure you haven\'t skipped your potential matches by clearing your skipped users!'
+        text: 'noUsersToMatchWith'
       );
     }
 
-    bool isFirstBuild = images.isEmpty;
+    bool isFirstBuild = images.isEmpty; // it's a first build if there are no rendered/mapped images
 
     if(isFirstBuild) { // if list is just initialized (first build run)
       userCards = <UserCard>[];
 
-      userList = AnimatedList( // list of users widget
+      final userCardList = AnimatedList( // list of users widget
         shrinkWrap: true,
         key: _animatedListKey,
         initialItemCount: userCards.length,
         // ignore: missing_return
         itemBuilder: (context, index, animation) { // context & index of whichever item we're iterating through
-          // TODO: get array of skipped users from database (user instance probably won't hold it) through FutureBuilder again maybe -> done
-          // TODO: then use contains method to check rendering in if statement -> done
-          // TODO: User NEVER enters this state if they have matchedUserID != null; do that check in match.dart -> done
-
           return SlideTransition(
             position: animation.drive(Tween<Offset>(
               begin: const Offset(1, 0), // represent a point in Cartesian (x-y coordinate) space; dx and dy are args for points
               end: const Offset(0, 0), // points are between 1 and 0 (use that!)
             ).chain(
                 CurveTween(
-                  curve: Curves.decelerate
+                    curve: Curves.decelerate
                 )
               )
             ),
@@ -265,8 +275,24 @@ class _UserListState extends State<UserList> {
         },
       );
 
+      // check whether the user has exceeded their allowed refreshes
+      // render with our without refresh option accordingly
+      userList = UserList.currentRefreshes <
+          UserList.allowedRefreshes ?
+      RefreshIndicator(
+        backgroundColor: greyColor,
+        color: Colors.orange,
+        onRefresh: () async => setState(() {
+          UserList.currentRefreshes++;
+          images = [];
+        }),
+            // refresh user data by clearing images and triggering first build and DB retrieval again
+            // TODO: Maybe fix this method as it isn't really clear
+        child: userCardList
+      ) : userCardList;
+
       return FutureBuilder<List<List<TagCard>>>(
-        future: getUserTags(tags, currentUser),
+        future: getUserTags(tags, currentUser, users),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             tagCards = snapshot.data;
@@ -278,7 +304,7 @@ class _UserListState extends State<UserList> {
 
             // --------------------
             // user images
-            images = getUserImages(currentUser);
+            images = getUserImages(currentUser, users);
             // --------------------
 
             return userList;

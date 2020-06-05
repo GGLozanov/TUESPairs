@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tues_pairs/modules/notification.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/screens/register/extern_register.dart';
 import 'package:tues_pairs/screens/register/register.dart';
@@ -14,6 +15,8 @@ import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/screens/loading/loading.dart';
 import 'package:tues_pairs/shared/constants.dart';
 import 'package:tues_pairs/templates/baseauth.dart';
+
+import '../main.dart';
 
 class AuthListener extends StatefulWidget {
 
@@ -38,7 +41,7 @@ class _AuthListenerState extends State<AuthListener> {
 
     // this widget is instantiated in main.dart
     // and since we're using StreamProvider and its instantiation is derived inside of the StreamProvider.value() widget
-    // that means we can use the value set in the StreamProvider widget here as well!
+    // that means we can use the value set in the StreamProvider widget here as well
 
     // using the Provider.of() generic method
     // return either register or login widget if User is auth'ed
@@ -46,20 +49,12 @@ class _AuthListenerState extends State<AuthListener> {
     // user is auth'd if Provder returns instance of FirebaseUser (or whichever class we passed as a generic parameter)
 
     final tags = database.tags;
-    final users = database.users;
 
     // TODO: give callback for here to setState() from register??
     User authUser = Provider.of<User>(context);
 
-    return MultiProvider(
-      providers: [
-        StreamProvider<List<User>>.value(
-          value: users,
-        ),
-        StreamProvider<List<Tag>>.value(
-          value: tags,
-        )
-      ],
+    return StreamProvider<List<Tag>>.value(
+      value: tags,
       child: authUser != null ?
         FutureBuilder<User>( // Get current user here for use down the entire widget tree
           future: Database(uid: authUser.uid).getUserById(), // the Provider.of() generic method takes context,
@@ -71,6 +66,7 @@ class _AuthListenerState extends State<AuthListener> {
                 if((!authUser.isExternalUser && !Login.isExternalCreated) ||
                     AuthListener.externRegister.isInvalid()) { // handle both typical user null errors and external user errors (w/ empty externRegister instances)
                   logger.i('AuthListener: Invalid authUser and/or not logged from extern provider. Deleting user.');
+
                   Auth().deleteCurrentFirebaseUser();
                   return Authenticate();
                 } else { // check if there has actually been a user in login
@@ -80,9 +76,35 @@ class _AuthListenerState extends State<AuthListener> {
                 }
               }
 
+              // get database for user device token update
+              final userDatabase = Database(uid: authUser.uid);
+
+              // get needed user properties
+              final userNotifications = userDatabase.userNotifications;
+              final users = database.filteredUsers(user);
+
+              // give authUser info to user here
+              user.isExternalUser = authUser.isExternalUser;  // used in settings
+              // may need to pass more info later
+
+              // update again to reinitialize device key
+              userDatabase.updateUserData(user); // this is done to keep track of the device key; can't afford to await
+              // TODO: Optimize; way too many DB queries
+
               logger.i('AuthListener: Current user w/ username "' + user.username + '" received and authenticated');
-              return Provider<User>.value(
-                value: user,
+
+              return MultiProvider(
+                providers: [
+                  StreamProvider<List<User>>.value(
+                    value: users, // pass down the user's notifications
+                  ),
+                  StreamProvider<List<MessageNotification>>.value(
+                    value: userNotifications, // pass down the user's notifications
+                  ),
+                  Provider<User>.value(
+                    value: user,
+                  )
+                ],
                 child: Home(),
               );
             } else return Loading();

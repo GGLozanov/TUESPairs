@@ -1,9 +1,13 @@
+import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:tues_pairs/locale/application.dart';
 import 'package:tues_pairs/modules/tag.dart';
 import 'package:tues_pairs/modules/user.dart';
 import 'package:tues_pairs/shared/keys.dart';
 import 'package:tues_pairs/widgets/tag_display/tag_card.dart';
+
+// TODO: Clean up code here and encapsulate in classes
 
 const textInputDecoration = InputDecoration(
   hintStyle: TextStyle(
@@ -55,18 +59,42 @@ enum ExternalSignInType {
   GITHUB
 }
 
-class StackPageHandler {
-  static int topPageIndex = 1; // TODO: Change if add more pages (keep track of pages)
-  static int currentPage = topPageIndex;
-  static AnimationController registerController;
-  static AnimationController settingsController;
+enum RegisterPageType {
+  REGISTER,
+  TAG_SELECTION
 }
 
 const int EXIT_CODE_SUCCESS = 1;
 const double widgetReasonableHeightMargin = 15.5; // represents the (reasonable) divisor margin for the screen height corresponding a given widget
 const double widgetReasonableWidthMargin = 3.75; // represents the (reasonable) divisor margin for the screen width corresponding a given widget
 
-List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardType.VIEW, User user}) {
+List<Tag> getUserMappedTags(
+  List<Tag> tags,
+  User user
+) {
+  List<Tag> userTagCards = [];
+  for(var tid in user.tagIDs) {
+    userTagCards.add(tags.firstWhere((tag) => tag.tid == tid));
+  }
+
+  return userTagCards;
+}
+
+List<TagCard> getUserTagCards(
+    List<Tag> tags,
+    User user
+) {
+  return mapTagsToTagCards(
+      getUserMappedTags(tags, user),
+      user: user
+  );
+}
+
+List<TagCard> mapTagsToTagCards(
+    List<Tag> tags,
+    {TagCardType cardType = TagCardType.VIEW,
+    User user}
+) {
   return tags.map((tag) {
     int tagIndex = tags.indexOf(tag);
     switch(cardType) {
@@ -97,20 +125,40 @@ List<TagCard> mapTagsToTagCards(List<Tag> tags, {TagCardType cardType = TagCardT
   ).toList();
 }
 
-Widget CenteredText({String text = ''}) { // acts like a widget, which is why convention is a bit iffy
-  return Center(
-    child: Padding(
-      padding: EdgeInsets.only(left: 10.0, right: 10.0),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.orange,
-          fontSize: 30.0,
-        ),
-        textAlign: TextAlign.center,
-      )
+Widget buildAppBar({
+  @required pageTitle,
+  List<Widget> actions = const [],
+  Widget leading
+}) {
+  assert(pageTitle != null);
+  return AppBar(
+    backgroundColor: darkGreyColor,
+    title: Text(
+      pageTitle, // convert widget title to string
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 40.0,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 1.5,
+      ),
     ),
+    leading: leading,
+    actions: actions
   );
+}
+
+bool usernameExists(
+  String username,
+  List<User> users
+) {
+  for(User data in users ?? []) {
+    if(username == data.username) {
+      logger.i('Username already exists');
+      return true;
+    }
+  }
+  logger.i('Username doesn\'t exist');
+  return false;
 }
 
 void scrollAnimation(ScrollController scrollController) {

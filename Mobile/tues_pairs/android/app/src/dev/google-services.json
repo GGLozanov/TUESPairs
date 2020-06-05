@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "911913368022",
+    "firebase_url": "https://tuespairs.firebaseio.com",
+    "project_id": "tuespairs",
+    "storage_bucket": "tuespairs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911913368022:android:36c68cefe7742d91208c77",
+        "android_client_info": {
+          "package_name": "com.example.tues_pairs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911913368022-g6ct7cf9ki3hpbbrmpb59tp2icpn7sor.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_iuwvG-XmZOHIPGpFKn1w_nssFqGHXnU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911913368022-g6ct7cf9ki3hpbbrmpb59tp2icpn7sor.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

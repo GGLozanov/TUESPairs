@@ -14,14 +14,20 @@ class BaseAuth {
 
   User user = new User(isTeacher: false, tagIDs: <String>[]);
 
-  List<String> errorMessages = ['']; // and wrapping fields in getters and setters isn't considered a generally prudent move
-  String password;
-  String confirmPassword;
+  List<String> errorMessages = []; // and wrapping fields in getters and setters isn't considered a generally prudent move
+  String password = '';
+  String confirmPassword = '';
   bool isCurrentAdmin = false;
   bool isLoading = false;
 
   void toggleLoading() {
     isLoading = !isLoading;
+  }
+
+  void clearAndAddError(String error) {
+    errorMessages = [];
+    errorMessages.add(error);
+    toggleLoading();
   }
 
   BaseAuth({this.errorMessages});

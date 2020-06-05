@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,7 @@ class TagCard extends StatefulWidget {
 
   double tagHeight;
   double tagWidth;
+  double tagFontSize;
 
   Function onTap;
 
@@ -33,6 +35,7 @@ class TagCard extends StatefulWidget {
     isChosen = false;
     tagWidth = 215.0;
     tagHeight = 100.0;
+    tagFontSize = 25.0;
     onTap = (user) {
       isChosen ? user.tagIDs.remove(tag.tid) : user.tagIDs.add(tag.tid);
       logger.i('User has ' + (isChosen ? 'removed' : 'chosen') + ' tag w/ list index ' + listIndex.toString());
@@ -50,6 +53,7 @@ class TagCard extends StatefulWidget {
     isChosen = true;
     tagWidth = 215.0;
     tagHeight = 100.0;
+    tagFontSize = 25.0;
     onTap = (user) {
       isChosen ? user.tagIDs.remove(tag.tid) : user.tagIDs.add(tag.tid);
       logger.i('User has ' + (isChosen ? 'removed' : 'chosen') + ' tag w/ list index ' + listIndex.toString());
@@ -67,6 +71,7 @@ class TagCard extends StatefulWidget {
     isChosen = true;
     tagWidth = 155.0;
     tagHeight = 55.0;
+    tagFontSize = 16.0;
     isViewTag = true;
     onTap = (user) => {}; // literally does nothing :o
   }
@@ -81,40 +86,45 @@ class _TagCardState extends State<TagCard> {
 
   @override
   Widget build(BuildContext context) {
-    if(widget.user == null) widget.user = Provider.of<User>(context);
+    if(widget.user == null) {
+      widget.user = Provider.of<User>(context);
+    }
 
     // TODO: For future reference, UI errors with tags can be caused due to fontsize (decrease)
     final tagName = Text(
       widget.tag.name,
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
         color: Colors.white,
-        fontSize: 16,
+        fontSize: widget.tagFontSize,
         fontFamily: 'BebasNeue',
       ),
     );
 
-    if(widget.user.tagIDs.contains(widget.tag.tid)) widget.isChosen = true;
+    if(widget.user.tagIDs.contains(widget.tag.tid)) {
+      widget.isChosen = true;
+    }
 
     return Container(
       height: widget.tagHeight,
       width: widget.tagWidth,
       child: Card(
-          elevation: 5.0,
-          color: widget.isChosen ? HexColor(widget.tag.color) : widget.unchosenColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
+        elevation: 5.0,
+        color: widget.isChosen ? HexColor(widget.tag.color) : widget.unchosenColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: ListTile(
+          leading: widget.isViewTag ? tagName : Icon(
+            widget.isChosen ? Icons.remove_circle : Icons.add_circle,
           ),
-          child: ListTile(
-              leading: widget.isViewTag ? tagName : Icon(
-                widget.isChosen ? Icons.remove_circle : Icons.add_circle,
-              ),
-              title: widget.isViewTag ? SizedBox() : tagName,
-              onTap: () {
-                widget.onTap(widget.user);
-                setState(() => {});
-                // re-render because onTap(); there are some useless re-renders with this but oh well
-              }
-          )
+          title: widget.isViewTag ? SizedBox() : tagName,
+          onTap: () {
+            widget.onTap(widget.user);
+            setState(() => {});
+            // re-render because onTap(); there are some useless re-renders with this but oh well
+          }
+        )
       ),
     );
   }

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "985891410700",
+    "firebase_url": "https://tuespairs-production.firebaseio.com",
+    "project_id": "tuespairs-production",
+    "storage_bucket": "tuespairs-production.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985891410700:android:54078d23ef9b860cf92f29",
+        "android_client_info": {
+          "package_name": "com.example.tues_pairs.prod"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985891410700-h43dck8ecoc5e5gpfc9ihhhhprhcnnfo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tues_pairs.prod",
+            "certificate_hash": "47c97b4094654c15ca2a3d4e72fac692df567d65"
+          }
+        },
+        {
+          "client_id": "985891410700-s605imkghqg1g74hovs59d2gj68899qj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVsBFlHdKOXACLfG8n2ICH0S4_W-6IFTc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "985891410700-s605imkghqg1g74hovs59d2gj68899qj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

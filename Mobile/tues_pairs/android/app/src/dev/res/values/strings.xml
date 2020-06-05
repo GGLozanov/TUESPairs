@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TUESPairs_Dev</string>
+    <string name="facebook_app_id">786307171896516</string>
+    <string name="fb_login_protocol_scheme">fb786307171896516</string>
+    <string name="default_notification_channel_id">Channel ID</string>
+</resources>
