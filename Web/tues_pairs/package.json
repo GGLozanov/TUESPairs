@@ -15,7 +15,7 @@
     "firestore": "^1.1.6",
     "mdbreact": "^4.25.6",
     "moment": "^2.24.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "react": "^16.13.0",
     "react-bootstrap": "^1.0.0",
     "react-dev-tools": "0.0.1",
